@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { TUITION_COURSES } from '@/data/tuitionData';
@@ -27,7 +27,8 @@ const BATCH_OPTIONS = [
   { value: 'Weekend', label: '📅 Weekend (Saturdays & Sundays)' },
 ];
 
-export default function EnrollPage() {
+// Inner component that uses useSearchParams — must be inside <Suspense>
+function EnrollForm() {
   const searchParams = useSearchParams();
   const preSelectedCourseId = searchParams?.get('course') || '';
 
@@ -110,7 +111,7 @@ export default function EnrollPage() {
               <p><span className="font-bold text-slate-800">Batch Preference:</span> {form.batchPreference}</p>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-800 font-medium leading-relaxed">
-              📱 <strong>What's Next?</strong> Our team will contact you on <strong>{form.phone}</strong> via WhatsApp within 24 hours to confirm your seat and share the class link.
+              📱 <strong>What&apos;s Next?</strong> Our team will contact you on <strong>{form.phone}</strong> via WhatsApp within 24 hours to confirm your seat and share the class link.
             </div>
             <div className="flex gap-3 pt-2">
               <Link href="/tuition" className="flex-1 py-2.5 border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-50 transition text-center">
@@ -315,5 +316,14 @@ export default function EnrollPage() {
       </section>
 
     </div>
+  );
+}
+
+// Page export wraps the form in Suspense so useSearchParams works during static generation
+export default function EnrollPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500 text-sm">Loading...</div>}>
+      <EnrollForm />
+    </Suspense>
   );
 }
