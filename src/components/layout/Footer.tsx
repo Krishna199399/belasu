@@ -152,7 +152,7 @@ export const Footer: React.FC = () => {
         {/* Sub-Footer Copyright & Payment Logos */}
         <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-sans">
           <p>
-            Designed and Developed by DIGIME– © <strong>Belesu {new Date().getFullYear()}</strong>.
+            Designed and Developed by Krishna. © <strong>Belesu {new Date().getFullYear()}</strong>.
           </p>
 
           {/* Payment Method Badges */}
