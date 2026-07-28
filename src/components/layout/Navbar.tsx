@@ -1,0 +1,210 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useCart } from '@/context/CartContext';
+import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
+
+export const Navbar: React.FC = () => {
+  const rawPathname = usePathname();
+  const [pathname, setPathname] = useState('');
+  const { toggleCart, totalItems, subtotal } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [purchaseDropdownOpen, setPurchaseDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    if (rawPathname) setPathname(rawPathname);
+  }, [rawPathname]);
+
+  const purchaseCategories = [
+    { label: 'Savi Kannada Class 1', href: '/books?series=Savi&grade=1' },
+    { label: 'Savi Kannada Class 2', href: '/books?series=Savi&grade=2' },
+    { label: 'Savi Kannada Class 3', href: '/books?series=Savi&grade=3' },
+    { label: 'Savi Kannada Class 4', href: '/books?series=Savi&grade=4' },
+    { label: 'Kali Kannada Class 1', href: '/books?series=Kali&grade=1' },
+    { label: 'Kali Kannada Class 2', href: '/books?series=Kali&grade=2' },
+    { label: 'Kali Kannada Class 3', href: '/books?series=Kali&grade=3' },
+    { label: 'Kali Kannada Class 4', href: '/books?series=Kali&grade=4' },
+    { label: 'Siri Kannada Class 5', href: '/books?series=Siri&grade=5' },
+    { label: 'Tili Kannada Class 5', href: '/books?series=Tili&grade=5' },
+  ];
+
+  const navLinks = [
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
+    { label: 'Team', href: '/team' },
+    { label: 'Tuition', href: '/tuition', isHighlight: true },
+    { label: 'Books', href: '/books', isDropdown: true },
+    { label: 'Videos', href: '/videos' },
+    { label: 'Reviews', href: '/reviews' },
+    { label: 'Contact', href: '/contact' },
+  ];
+
+  return (
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-stone-200 shadow-sm">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-5 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0 py-1">
+            <img
+              src="/Belesu-logo1.png"
+              alt="Belesu Logo"
+              className="h-14 sm:h-16 object-contain"
+            />
+          </Link>
+
+          {/* Desktop Nav */}
+          <nav className="hidden xl:flex items-center gap-1 text-[13px] font-bold tracking-wide text-slate-700">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+
+              if (link.isDropdown) {
+                return (
+                  <div
+                    key={link.label}
+                    className="relative"
+                    onMouseEnter={() => setPurchaseDropdownOpen(true)}
+                    onMouseLeave={() => setPurchaseDropdownOpen(false)}
+                  >
+                    <Link
+                      href={link.href}
+                      className={`flex items-center gap-1 px-3 py-2.5 rounded-md transition hover:bg-amber-50 hover:text-[#b5834e] ${
+                        isActive ? 'text-[#b5834e] bg-amber-50' : ''
+                      }`}
+                    >
+                      <span>{link.label}</span>
+                      <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${purchaseDropdownOpen ? 'rotate-180' : ''}`} />
+                    </Link>
+                    {purchaseDropdownOpen && (
+                      <div className="absolute top-full left-0 w-56 bg-white rounded-xl shadow-xl border border-stone-200 py-2 z-50">
+                        {purchaseCategories.map((cat) => (
+                          <Link
+                            key={cat.label}
+                            href={cat.href}
+                            onClick={() => setPurchaseDropdownOpen(false)}
+                            className="block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-[#b5834e] transition"
+                          >
+                            {cat.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              if ((link as { isHighlight?: boolean }).isHighlight) {
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className={`flex items-center gap-1 px-4 py-3 rounded-md font-extrabold text-amber-600 hover:text-amber-700 hover:bg-amber-50 transition ${
+                      isActive ? 'bg-amber-50' : ''
+                    }`}
+                  >
+                    {link.label}
+                    <span className="text-[7px] bg-amber-500 text-white font-black px-1 py-0.5 rounded-full leading-none">
+                      NEW
+                    </span>
+                  </Link>
+                );
+              }
+
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={`px-3 py-2.5 rounded-md transition hover:bg-amber-50 hover:text-[#b5834e] ${
+                    isActive ? 'text-[#b5834e] bg-amber-50' : ''
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right: BUY NOW + Cart + Hamburger */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+
+            {/* BUY NOW — hidden on small screens */}
+            <Link
+              href="/books"
+              className="hidden md:inline-flex items-center justify-center bg-[#b5834e] hover:bg-[#996d3f] text-white text-xs font-black px-5 py-2.5 rounded-lg uppercase tracking-wider shadow-sm transition whitespace-nowrap"
+            >
+              BUY NOW
+            </Link>
+
+            {/* Cart */}
+            <button
+              onClick={toggleCart}
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-[#b5834e] transition cursor-pointer whitespace-nowrap"
+              aria-label="Open Shopping Cart"
+            >
+              <div className="relative">
+                <ShoppingCart className="w-5 h-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-rose-600 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </div>
+              <span className="hidden sm:inline">
+                {totalItems} / {formatPrice(subtotal)}
+              </span>
+            </button>
+
+            {/* Hamburger — visible below xl */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="xl:hidden p-2 text-slate-700 hover:bg-stone-100 rounded-lg transition"
+              aria-label="Toggle Mobile Menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden bg-white border-b border-stone-200 px-5 py-5 shadow-xl">
+          <nav className="flex flex-col space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-3 py-2.5 rounded-lg text-sm font-semibold transition ${
+                  (link as { isHighlight?: boolean }).isHighlight
+                    ? 'text-amber-600 font-extrabold hover:bg-amber-50'
+                    : 'text-slate-700 hover:bg-stone-50 hover:text-[#b5834e]'
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  {link.label}
+                  {(link as { isHighlight?: boolean }).isHighlight && (
+                    <span className="text-[8px] bg-amber-500 text-white font-black px-1.5 py-0.5 rounded-full">NEW</span>
+                  )}
+                </span>
+              </Link>
+            ))}
+            <div className="pt-3 mt-2 border-t border-stone-100">
+              <Link
+                href="/books"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-center bg-[#b5834e] hover:bg-[#996d3f] text-white text-sm font-black px-4 py-3 rounded-xl uppercase tracking-wider transition"
+              >
+                BUY NOW
+              </Link>
+            </div>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+};

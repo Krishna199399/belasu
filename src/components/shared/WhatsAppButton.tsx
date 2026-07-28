@@ -1,0 +1,21 @@
+'use client';
+
+import React from 'react';
+import { MessageCircle } from 'lucide-react';
+
+export const WhatsAppButton: React.FC = () => {
+  return (
+    <a
+      href="https://wa.me/919902383451?text=Hello%20Belesu%20Team,%20I%20would%20like%20to%20know%20more%20about%20your%20English-translated%20Kannada%20guidebooks."
+      target="_blank"
+      rel="noreferrer"
+      className="fixed bottom-6 right-6 z-40 p-4 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group"
+      aria-label="Contact us on WhatsApp"
+    >
+      <MessageCircle className="w-7 h-7 fill-white text-emerald-500" />
+      <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out font-bold text-xs pl-0 group-hover:pl-2">
+        WhatsApp Inquiry
+      </span>
+    </a>
+  );
+};

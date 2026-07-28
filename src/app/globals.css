@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: var(--font-outfit), system-ui, sans-serif;
+    --font-body: var(--font-inter), system-ui, sans-serif;
+
+    --brand-gold: #f5a623;
+    --brand-gold-glow: rgba(245, 166, 35, 0.3);
+    --brand-crimson: #d01937;
+    --brand-dark: #0f172a;
+    --brand-cream: #faf8f5;
+  }
+
+  body {
+    background-color: var(--brand-cream);
+    color: var(--brand-dark);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Glassmorphism Styles */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom Gradients */
+.gradient-text-amber {
+  background: linear-gradient(135deg, #d97706 0%, #f5a623 50%, #e11d48 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-gold-btn {
+  background: linear-gradient(135deg, #f5a623 0%, #ea580c 100%);
+  box-shadow: 0 10px 25px -5px rgba(245, 166, 35, 0.4);
+}
+
+.gradient-gold-btn:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+  box-shadow: 0 15px 30px -5px rgba(245, 166, 35, 0.5);
+}
+
+.hero-mesh-bg {
+  background-color: #faf8f5;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(245, 166, 35, 0.18) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(225, 29, 72, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #faf8f5;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f5a623;
+}
+
+
