@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* ── DRM: Disable printing globally ─────────────────────────── */
+@media print {
+  body {
+    display: none !important;
+  }
+}
+
 @layer base {
   :root {
     --font-heading: var(--font-outfit), system-ui, sans-serif;

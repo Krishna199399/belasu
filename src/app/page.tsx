@@ -7,7 +7,6 @@ import { QuickLookBookSection } from '@/components/home/QuickLookBookSection';
 import { CurriculumExplorer } from '@/components/home/CurriculumExplorer';
 import { SeriesFilter } from '@/components/home/SeriesFilter';
 import { WhyChooseBelesu } from '@/components/home/WhyChooseBelesu';
-import { ComparisonSection } from '@/components/home/ComparisonSection';
 import { ParentFeedbackSection } from '@/components/home/ParentFeedbackSection';
 import { VideoReelsSection } from '@/components/home/VideoReelsSection';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
@@ -72,75 +71,59 @@ export default function HomePage() {
       {/* 6. Full Books Catalog / Series Filter */}
       <SeriesFilter onPreview={(book) => setPreviewBook(book)} />
 
-      {/* 7. Tuition vs Belesu Comparison Matrix */}
-      <ComparisonSection />
-
-      {/* 8. Why Choose Belesu Features Grid */}
+      {/* 7. Why Choose Belesu Features Grid */}
       <WhyChooseBelesu />
 
-      {/* 9. Online Tuition Classes Promo */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-amber-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 10% 50%, #f59e0b 0%, transparent 50%), radial-gradient(circle at 90% 20%, #f97316 0%, transparent 50%)',
-          }}
-        />
+      {/* 10. Parent Feedback / Testimonials */}
+      <ParentFeedbackSection />
+
+      {/* 10.5 Digital Books Promo (Classes 6–10) */}
+      <section className="py-16 md:py-20 bg-slate-50 text-slate-900 relative overflow-hidden border-y border-slate-200">
         <div className="relative max-w-[1200px] mx-auto px-3 sm:px-4 lg:px-5">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Copy */}
             <div className="space-y-6">
-              <span className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/40 rounded-full px-4 py-1.5 text-xs font-bold text-amber-300 uppercase tracking-widest">
-                🎓 New · Online Live Classes
+              <span className="inline-flex items-center gap-2 bg-indigo-100 border border-indigo-300 rounded-full px-4 py-1.5 text-xs font-bold text-indigo-700 uppercase tracking-widest">
+                💻 New · Digital Books Platform
               </span>
-              <h2 className="text-3xl sm:text-4xl font-black leading-tight">
-                Learn Kannada Online<br />
-                <span className="text-amber-400">with Expert Teachers</span>
+              <h2 className="text-3xl sm:text-4xl font-black leading-tight text-slate-900">
+                Classes 6th to 10th?<br />
+                <span className="text-indigo-600">We&apos;ve Got Digital Books</span>
               </h2>
-              <p className="text-slate-300 text-sm leading-relaxed max-w-md">
-                Now Belesu offers live online tuition classes for Classes 1–5 — perfectly aligned with your guidebook. Small batches, personalised attention, recorded sessions.
+              <p className="text-slate-600 text-sm leading-relaxed max-w-md">
+                Purchase once, read forever. Our secure web reader delivers Karnataka Board Kannada guidebooks for Classes 6–10 — protected against screenshots, downloads and screen recording.
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 {[
-                  { emoji: '👩‍🏫', text: 'Expert certified teachers' },
-                  { emoji: '🎯', text: 'Max 8 students per batch' },
-                  { emoji: '📚', text: 'Book-aligned syllabus' },
-                  { emoji: '📹', text: 'Recorded sessions included' },
+                  { emoji: '🔒', text: 'Secure web-only reader' },
+                  { emoji: '💰', text: 'From ₹199 per book' },
+                  { emoji: '♾️', text: 'Lifetime access' },
+                  { emoji: '📱', text: 'Mobile & desktop' },
                 ].map(item => (
-                  <div key={item.text} className="flex items-center gap-2 text-sm text-slate-200">
-                    <span>{item.emoji}</span>
-                    <span>{item.text}</span>
+                  <div key={item.text} className="flex items-center gap-2 text-sm text-slate-700">
+                    <span>{item.emoji}</span><span>{item.text}</span>
                   </div>
                 ))}
               </div>
               <div className="flex flex-wrap gap-3 pt-2">
-                <Link
-                  href="/tuition"
-                  className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-sm px-7 py-3.5 rounded-xl transition transform active:scale-95 uppercase tracking-wider"
-                >
-                  Browse Courses
-                </Link>
-                <Link
-                  href="/tuition/enroll"
-                  className="inline-flex items-center gap-2 border border-white/30 hover:bg-white/10 text-white font-bold text-sm px-7 py-3.5 rounded-xl transition"
-                >
-                  Quick Enroll
+                <Link href="/digital"
+                  className="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-black text-sm px-7 py-3.5 rounded-xl transition uppercase tracking-wider shadow-lg shadow-indigo-500/20">
+                  Browse Digital Books
                 </Link>
               </div>
             </div>
-
-            {/* Right: Stats */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { value: '10', label: 'Live Courses', sub: 'Classes 1–5 across all series', emoji: '📖' },
-                { value: '₹500', label: 'Per Month', sub: 'Affordable excellence', emoji: '💰' },
-                { value: '8', label: 'Max Students', sub: 'Focused personalised batches', emoji: '🎯' },
-                { value: '24h', label: 'Confirmation', sub: 'Via WhatsApp after enrollment', emoji: '📱' },
-              ].map(stat => (
-                <div key={stat.label} className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-5 text-center space-y-1">
-                  <div className="text-2xl">{stat.emoji}</div>
-                  <div className="text-2xl font-black text-amber-400">{stat.value}</div>
-                  <div className="text-xs font-bold text-white">{stat.label}</div>
-                  <div className="text-[10px] text-slate-400">{stat.sub}</div>
+                { grade: 6, subject: 'Kannada', label: 'Guidebook', emoji: '📚', color: 'from-amber-500 to-orange-600' },
+                { grade: 7, subject: 'Kannada', label: 'Guidebook', emoji: '📚', color: 'from-amber-600 to-amber-700' },
+                { grade: 8, subject: 'Kannada', label: 'Guidebook', emoji: '📚', color: 'from-orange-500 to-red-600' },
+                { grade: 9, subject: 'Kannada', label: 'Guidebook', emoji: '📚', color: 'from-rose-500 to-pink-600' },
+                { grade: 10, subject: 'Kannada', label: 'SSLC Special', emoji: '🏆', color: 'from-amber-600 to-yellow-600' },
+                { grade: '6–10', subject: 'Kannada', label: 'All Classes', emoji: '✨', color: 'from-indigo-600 to-purple-600' },
+              ].map((b, i) => (
+                <div key={i} className={`rounded-xl bg-gradient-to-br ${b.color} p-3 text-center text-white shadow-md`}>
+                  <div className="text-2xl mb-1">{b.emoji}</div>
+                  <div className="text-[11px] font-black">{typeof b.grade === 'number' ? `Class ${b.grade}` : `Classes ${b.grade}`}</div>
+                  <div className="text-[9px] opacity-90 font-semibold">{b.subject} · {b.label}</div>
                 </div>
               ))}
             </div>
@@ -148,11 +131,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 10. Parent Feedback / Testimonials */}
-      <ParentFeedbackSection />
-
-
-      {/* 10. Video Demonstration Reels */}
+      {/* 11. Video Demonstration Reels */}
       <VideoReelsSection />
 
       {/* 11. High-Converting Call To Action Banner */}

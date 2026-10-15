@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Typography consistency: Reduce font sizes from 13→8 distinct sizes and text colors from 20→10 colors per DESIGN_SYSTEM.md. Replace all instances of text-[9px], text-[10px], text-[11px], text-[13px], and consolidate slate-500/slate-800 into standardized palette. Independent of other FEATs.",
+  "status": "pending",
+  "steps": [
+    "Read DESIGN_SYSTEM.md to confirm the 8 canonical font sizes (xs/sm/base/lg/xl/2xl/3xl/4xl) and 10 text colors (slate-900/700/600/400, amber-600/800, indigo-600, emerald-600, rose-600, white)",
+    "Update Navbar.tsx: Replace text-[13px] with text-sm (line ~50), text-[10px] with text-xs (lines ~79, 83, 114, 118), text-[7px] with text-[8px] for NEW badges (lines ~192, 202, 208), consolidate all slate-500 to slate-600",
+    "Update Footer.tsx: Replace text-[10px] with text-xs (lines ~93-109 payment badges), change 'CKELP TECHNOLOGIES PRIVATE LIMITED' from all-caps to title case and remove font-extrabold",
+    "Update BookCard.tsx: Replace text-[11px] with text-xs (line ~33)",
+    "Update HeroCarousel.tsx: Replace text-[7px] with text-[8px] for badge (line ~125), text-[10px] with text-xs if any exist",
+    "Update ParentFeedbackSection.tsx: Replace text-[11px] with text-xs (line ~52), text-[10px] with text-xs (lines ~63, 65)",
+    "Update QuickLookBookSection.tsx: Remove uppercase from CTA button text (line ~89), change to sentence case",
+    "Update ElevatingKannadaSection.tsx: Verify H3 tags (line ~22) are actually H2 to fix heading skip from H1→H3",
+    "Update page.tsx (home): Replace text-[10px] with text-xs (lines ~60, 85, 93, 97), text-[9px] with text-xs (line ~128)",
+    "Update books/page.tsx: Replace text-[7px] with text-[8px] (line ~35), text-[10px] with text-xs if present",
+    "Update cart/page.tsx: Replace text-[10px] with text-xs (lines ~63, 104)"
+  ],
+  "acceptance_criteria": [
+    "All arbitrary pixel values (text-[9px], text-[10px], etc.) replaced with standard Tailwind classes",
+    "Font size count reduced to 8 or fewer distinct sizes",
+    "Text color palette reduced to 10 or fewer distinct colors",
+    "No console errors after changes",
+    "Visual inspection confirms text is readable (minimum 12px for body text)"
+  ],
+  "verification": [
+    "Run 'npm run dev' and navigate to http://localhost:3000/",
+    "Inspect navbar, footer, and all home page sections for proper font sizing",
+    "Navigate to /books and /cart pages to verify consistency",
+    "Use browser DevTools to confirm no text-[Npx] classes remain",
+    "Verify no layout shifts or text overflow issues"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

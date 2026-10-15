@@ -1,37 +1,210 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+import { Address } from '@/types';
 import { formatPrice } from '@/lib/utils';
-import { ShieldCheck, Truck, CreditCard, CheckCircle2, ArrowLeft, Lock } from 'lucide-react';
+import { ShieldCheck, CreditCard, CheckCircle2, ArrowLeft, Lock, Package, BookOpen, LogIn, Loader } from 'lucide-react';
 import Link from 'next/link';
+import AddressManager from '@/components/address/AddressManager';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { useRazorpay } from '@/hooks/useRazorpay';
 
 export default function CheckoutPage() {
-  const { cart, subtotal, clearCart } = useCart();
-  const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Card' | 'COD'>('UPI');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    street: '',
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    pincode: '',
-  });
+  const router = useRouter();
+  const { cart, subtotal, clearCart, hasPhysicalBooks, hasDigitalBooks, getPhysicalItems, getDigitalItems, needsShipping } = useCart();
+  const { user, isLoading: authLoading, refreshUser } = useAuth();
+  
+  const [paymentMethod, setPaymentMethod] = useState<'Razorpay' | 'COD'>('Razorpay');
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [placedOrderDetails, setPlacedOrderDetails] = useState<any>(null);
 
-  const freeShippingThreshold = 500;
-  const shippingFee = subtotal >= freeShippingThreshold ? 0 : 40;
+  const shippingFee = needsShipping() ? 45 : 0;
   const grandTotal = subtotal + shippingFee;
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
-    e.preventDefault();
-    const generatedId = `BLS-${Math.floor(100000 + Math.random() * 900000)}`;
-    setOrderId(generatedId);
-    setOrderPlaced(true);
-    clearCart();
+  const physicalItems = getPhysicalItems();
+  const digitalItems = getDigitalItems();
+
+  // Razorpay hook
+  const { initiatePayment, loading: paymentLoading } = useRazorpay({
+    onSuccess: async (response) => {
+      // Payment successful, create order
+      await createOrder(response.razorpay_payment_id, response.razorpay_order_id);
+    },
+    onFailure: (error) => {
+      console.error('Payment failed:', error);
+      setIsProcessing(false);
+    },
+  });
+
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (!authLoading && cart.length === 0) {
+      router.push('/cart');
+    }
+  }, [cart.length, authLoading, router]);
+
+  // Set default address when user data loads
+  useEffect(() => {
+    if (user?.addresses && user.addresses.length > 0 && !selectedAddress) {
+      const defaultAddr = user.addresses.find(a => a.isDefault) || user.addresses[0];
+      setSelectedAddress(defaultAddr);
+    }
+  }, [user, selectedAddress]);
+
+  // Create order after payment success
+  const createOrder = async (paymentId?: string, razorpayOrderId?: string) => {
+    try {
+      const orderData = {
+        items: cart.map(item => ({
+          id: item.product.id,
+          sku: item.product.sku,
+          title: item.product.title,
+          price: item.product.price,
+          quantity: item.quantity,
+          productType: item.productType,
+          slug: item.product.slug,
+        })),
+        shippingAddressId: selectedAddress?.id,
+        paymentMethod: paymentMethod === 'Razorpay' ? 'Razorpay - Online Payment' : 'Cash on Delivery',
+        paymentId,
+        razorpayOrderId,
+        shippingFee,
+      };
+
+      const response = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setOrderId(data.order.orderNumber);
+        setPlacedOrderDetails(data.order);
+        setOrderPlaced(true);
+        clearCart();
+        // Refresh user data to get updated purchased_books
+        await refreshUser();
+      } else {
+        throw new Error(data.error || 'Failed to create order');
+      }
+    } catch (error: any) {
+      console.error('Order creation error:', error);
+      alert(`Failed to create order: ${error.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
   };
+
+  const handlePlaceOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (needsShipping() && !selectedAddress) {
+      alert('Please select a delivery address');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      if (paymentMethod === 'Razorpay') {
+        // Initiate Razorpay payment
+        await initiatePayment({
+          amount: grandTotal,
+          description: `Order for ${cart.length} item(s)`,
+          notes: {
+            items: cart.length,
+            hasPhysical: hasPhysicalBooks(),
+            hasDigital: hasDigitalBooks(),
+          },
+        });
+      } else {
+        // COD order - create directly
+        await createOrder();
+      }
+    } catch (error) {
+      console.error('Order placement error:', error);
+      alert('Failed to place order. Please try again.');
+      setIsProcessing(false);
+    }
+  };
+
+  const handleSelectAddress = (address: Address) => {
+    setSelectedAddress(address);
+  };
+
+  // Loading state
+  if (authLoading) {
+    return (
+      <div className="py-20 bg-slate-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader className="w-8 h-8 animate-spin text-orange-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading checkout...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Login required
+  if (!user) {
+    return (
+      <div className="py-20 bg-slate-50 min-h-screen flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-gray-200 shadow-xl text-center space-y-6">
+          <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto">
+            <Lock className="w-12 h-12" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 mt-3">Login Required</h2>
+            <p className="text-sm text-slate-600 mt-2">
+              Please login to complete your purchase. We need your contact information to process orders and provide updates.
+            </p>
+          </div>
+          
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+            <p className="text-xs text-blue-800 font-bold mb-2">
+              Why login?
+            </p>
+            <ul className="text-xs text-blue-800 space-y-1 list-disc list-inside">
+              <li>Track your orders</li>
+              <li>Save delivery addresses</li>
+              <li>Access purchased digital books</li>
+              <li>Get order updates via SMS</li>
+            </ul>
+          </div>
+
+          <button
+            onClick={() => setShowAuthModal(true)}
+            className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold text-white bg-orange-600 hover:bg-orange-700 transition"
+          >
+            <LogIn className="w-5 h-5" />
+            Login to Continue
+          </button>
+
+          <Link
+            href="/cart"
+            className="block text-sm text-gray-600 hover:text-orange-600 transition"
+          >
+            ← Back to Cart
+          </Link>
+        </div>
+
+        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+      </div>
+    );
+  }
 
   if (orderPlaced) {
     return (
@@ -45,33 +218,89 @@ export default function CheckoutPage() {
               Order Confirmed
             </span>
             <h2 className="text-2xl font-black text-slate-900 mt-3">Thank You for Your Order!</h2>
-            <p className="text-xs text-slate-500 mt-1">Order Reference ID: <strong className="text-slate-900 font-mono">{orderId}</strong></p>
+            <p className="text-xs text-slate-500 mt-1">Order ID: <strong className="text-slate-900 font-mono">{orderId}</strong></p>
           </div>
 
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left text-xs space-y-2 text-slate-700">
             <div className="flex justify-between">
-              <span>Customer Name:</span>
-              <span className="font-bold">{formData.name}</span>
+              <span>Customer:</span>
+              <span className="font-bold">{user?.phone}</span>
             </div>
             <div className="flex justify-between">
-              <span>Payment Mode:</span>
+              <span>Payment:</span>
               <span className="font-bold text-amber-700">{paymentMethod}</span>
             </div>
             <div className="flex justify-between">
               <span>Total Amount:</span>
               <span className="font-bold text-emerald-700">{formatPrice(grandTotal)}</span>
             </div>
-            <div className="pt-2 border-t text-[11px] text-slate-500">
-              Dispatched within 24 hours. Doorstep delivery in 3-5 business days across Karnataka.
-            </div>
+            {hasPhysicalBooks() && (
+              <div className="pt-2 border-t text-[11px] text-slate-500">
+                📦 Hard copy books will be dispatched within 24 hours to your selected address.
+              </div>
+            )}
           </div>
 
-          <Link
-            href="/"
-            className="block py-3 px-6 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition text-xs shadow-md"
-          >
-            Return to Homepage
-          </Link>
+          {/* Digital Books Section with Reader Links */}
+          {hasDigitalBooks() && digitalItems.length > 0 && (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-5 text-left">
+              <div className="flex items-center gap-2 mb-3">
+                <BookOpen className="w-5 h-5 text-blue-600" />
+                <h3 className="font-bold text-blue-900">Your Digital Books Are Ready!</h3>
+              </div>
+              <p className="text-xs text-blue-700 mb-4">
+                Start reading instantly. Your books are now in your library with lifetime access.
+              </p>
+              <div className="space-y-2">
+                {digitalItems.map((item) => (
+                  <Link
+                    key={item.product.id}
+                    href={`/reader/${item.product.slug}`}
+                    className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-200 hover:border-blue-400 hover:shadow-md transition group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded flex items-center justify-center flex-shrink-0">
+                        <BookOpen className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-900 line-clamp-1">
+                          {item.product.title}
+                        </p>
+                        <p className="text-[10px] text-slate-500">
+                          {'subject' in item.product ? item.product.subject : 'Digital Book'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-blue-600 group-hover:text-blue-700">
+                      <span className="text-xs font-semibold">Open Reader</span>
+                      <ArrowLeft className="w-4 h-4 rotate-180" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <Link
+                href="/library"
+                className="block text-center mt-4 text-xs text-blue-700 hover:text-blue-900 font-semibold transition"
+              >
+                View All in Library →
+              </Link>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <Link
+              href="/library"
+              className="flex-1 py-3 px-4 rounded-xl font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition text-xs"
+            >
+              View Library
+            </Link>
+            <Link
+              href="/"
+              className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition text-xs shadow-md"
+            >
+              Continue Shopping
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -87,169 +316,161 @@ export default function CheckoutPage() {
             <ArrowLeft className="w-4 h-4" /> Back to Cart
           </Link>
           <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2">
-            <Lock className="w-7 h-7 text-amber-600" /> Secure Express Checkout
+            <Lock className="w-7 h-7 text-amber-600" /> Secure Checkout
           </h1>
+          <p className="text-sm text-gray-600 mt-2">Logged in as {user.phone}</p>
         </div>
 
         <form onSubmit={handlePlaceOrder}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
-            {/* Left Shipping & Payment Details (8 cols) */}
+            {/* Left: Address & Payment (8 cols) */}
             <div className="lg:col-span-8 space-y-8">
               
-              {/* Shipping Address */}
-              <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
-                <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                  <Truck className="w-5 h-5 text-amber-600" /> Doorstep Shipping Details
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
-                  <div>
-                    <label className="block mb-1">Full Name *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Roopa Sanjiv"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block mb-1">Phone Number (For Delivery Updates) *</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 99023 83451"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="text-xs font-semibold text-slate-700">
-                  <label className="block mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="e.g. name@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+              {/* Address Selection (only for physical books) */}
+              {needsShipping() && (
+                <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+                  <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                    <Package className="w-5 h-5 text-amber-600" /> Delivery Address
+                  </h3>
+                  
+                  <AddressManager 
+                    mode="select"
+                    onSelectAddress={handleSelectAddress}
+                    selectedAddressId={selectedAddress?.id}
                   />
                 </div>
+              )}
 
-                <div className="text-xs font-semibold text-slate-700">
-                  <label className="block mb-1">Flat / House No. / Street Address *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. 42, 3rd Main, Indiranagar"
-                    value={formData.street}
-                    onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                    className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-semibold text-slate-700">
-                  <div>
-                    <label className="block mb-1">City *</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block mb-1">State *</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.state}
-                      onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block mb-1">Pincode *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. 560038"
-                      value={formData.pincode}
-                      onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
-                    />
+              {/* Digital Books Info (if only digital) */}
+              {hasDigitalBooks() && !hasPhysicalBooks() && (
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+                  <div className="flex items-start gap-4">
+                    <BookOpen className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-bold text-blue-900 mb-2">Digital Purchase</h4>
+                      <p className="text-sm text-blue-800">
+                        Your digital books will be instantly available in your Library after payment completion.
+                        No shipping required!
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Payment Gateway Options */}
+              {/* Payment Method */}
               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
                 <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-amber-600" /> Select Payment Method
+                  <CreditCard className="w-5 h-5 text-amber-600" /> Payment Method
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
-                    { id: 'UPI', label: 'UPI / GPay / PhonePe', desc: 'Instant 1-Click Pay' },
-                    { id: 'Card', label: 'Credit / Debit Card', desc: 'Visa, Mastercard, RuPay' },
-                    { id: 'COD', label: 'Cash on Delivery', desc: 'Pay upon doorstep arrival' },
+                    { id: 'Razorpay', label: 'Online Payment', desc: 'UPI, Card, Net Banking, Wallets', icon: '💳' },
+                    { id: 'COD', label: 'Cash on Delivery', desc: hasPhysicalBooks() ? 'Pay upon delivery' : 'Not available for digital', disabled: !hasPhysicalBooks(), icon: '💵' },
                   ].map((method) => (
                     <button
                       key={method.id}
                       type="button"
-                      onClick={() => setPaymentMethod(method.id as any)}
-                      className={`p-4 rounded-2xl border text-left transition ${
+                      onClick={() => !method.disabled && setPaymentMethod(method.id as any)}
+                      disabled={method.disabled}
+                      className={`p-5 rounded-2xl border text-left transition ${
                         paymentMethod === method.id
                           ? 'border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20'
+                          : method.disabled
+                          ? 'border-slate-200 bg-slate-100 opacity-50 cursor-not-allowed'
                           : 'border-slate-200 hover:border-slate-300 bg-slate-50'
                       }`}
                     >
-                      <span className="font-bold text-xs text-slate-900 block">{method.label}</span>
-                      <span className="text-[10px] text-slate-500">{method.desc}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{method.icon}</span>
+                        <div className="flex-1">
+                          <span className="font-bold text-sm text-slate-900 block">{method.label}</span>
+                          <span className="text-[10px] text-slate-500">{method.desc}</span>
+                        </div>
+                        {paymentMethod === method.id && (
+                          <CheckCircle2 className="w-5 h-5 text-amber-600" />
+                        )}
+                      </div>
                     </button>
                   ))}
                 </div>
+
+                {paymentMethod === 'Razorpay' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-left">
+                    <div className="flex items-start gap-3">
+                      <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-bold text-blue-900 mb-1">
+                          🔒 Secure Payment via Razorpay
+                        </p>
+                        <p className="text-[10px] text-blue-700 leading-relaxed">
+                          Your payment information is encrypted and secure. We support UPI, Credit/Debit Cards, Net Banking, and digital wallets.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
             </div>
 
-            {/* Right Summary (4 cols) */}
+            {/* Right: Order Summary (4 cols) */}
             <div className="lg:col-span-4">
               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm sticky top-28 space-y-6">
                 <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">
-                  Order Breakdown
+                  Order Summary
                 </h3>
 
-                <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
-                  {cart.map(({ product, quantity }) => (
-                    <div key={product.id} className="flex justify-between items-center text-xs">
-                      <span className="font-medium text-slate-700 line-clamp-1 max-w-[180px]">
-                        {quantity}x {product.title}
-                      </span>
-                      <span className="font-bold text-slate-900">{formatPrice(product.price * quantity)}</span>
+                {/* Hard Copy Books */}
+                {physicalItems.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                      <Package className="w-3 h-3" /> Hard Copy Books
+                    </h4>
+                    <div className="space-y-2">
+                      {physicalItems.map(({ product, quantity }) => (
+                        <div key={product.id} className="flex justify-between items-center text-xs">
+                          <span className="font-medium text-slate-700 line-clamp-1 max-w-[180px]">
+                            {quantity}x {product.title}
+                          </span>
+                          <span className="font-bold text-slate-900">{formatPrice(product.price * quantity)}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
+
+                {/* Digital Books */}
+                {digitalItems.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                      <BookOpen className="w-3 h-3" /> Digital Books
+                    </h4>
+                    <div className="space-y-2">
+                      {digitalItems.map(({ product, quantity }) => (
+                        <div key={product.id} className="flex justify-between items-center text-xs">
+                          <span className="font-medium text-slate-700 line-clamp-1 max-w-[180px]">
+                            {product.title}
+                          </span>
+                          <span className="font-bold text-slate-900">{formatPrice(product.price)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
                     <span className="font-bold text-slate-900">{formatPrice(subtotal)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span className="font-bold text-emerald-600">
-                      {shippingFee === 0 ? 'FREE' : formatPrice(shippingFee)}
-                    </span>
-                  </div>
+                  {needsShipping() && (
+                    <div className="flex justify-between">
+                      <span>Shipping</span>
+                      <span className="font-bold text-slate-900">{formatPrice(shippingFee)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-100">
                     <span>Grand Total</span>
                     <span className="text-amber-600">{formatPrice(grandTotal)}</span>
@@ -258,10 +479,27 @@ export default function CheckoutPage() {
 
                 <button
                   type="submit"
-                  className="w-full py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 text-sm transition"
+                  disabled={isProcessing || paymentLoading || (needsShipping() && !selectedAddress)}
+                  className="w-full py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 text-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ShieldCheck className="w-5 h-5" /> Place Order ({formatPrice(grandTotal)})
+                  {isProcessing || paymentLoading ? (
+                    <>
+                      <Loader className="w-5 h-5 animate-spin" /> 
+                      {paymentMethod === 'Razorpay' ? 'Opening Payment Gateway...' : 'Processing...'}
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-5 h-5" /> 
+                      {paymentMethod === 'Razorpay' ? 'Pay Now' : 'Place Order'} ({formatPrice(grandTotal)})
+                    </>
+                  )}
                 </button>
+
+                {needsShipping() && !selectedAddress && (
+                  <p className="text-xs text-red-600 text-center">
+                    Please select a delivery address to continue
+                  </p>
+                )}
               </div>
             </div>
 
@@ -269,6 +507,8 @@ export default function CheckoutPage() {
         </form>
 
       </div>
+
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 }

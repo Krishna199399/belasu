@@ -26,7 +26,7 @@ export default function ShippingPolicyPage() {
 
             <h3 className="font-bold text-slate-900 text-base">Shipping Charges</h3>
             <p>
-              We offer <strong>FREE Delivery</strong> on all orders of ₹500 or more. For orders below ₹500, a nominal flat shipping fee of ₹40 applies.
+              We offer <strong>FREE Delivery</strong> on all orders of ₹500 or more. For orders below ₹500, a nominal flat shipping fee of ₹45 applies.
             </p>
 
             <h3 className="font-bold text-slate-900 text-base">Order Tracking</h3>

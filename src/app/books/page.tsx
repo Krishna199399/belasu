@@ -17,8 +17,20 @@ function BooksContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSeries, setSelectedSeries] = useState<BookSeries | 'All'>('All');
   const [selectedGrade, setSelectedGrade] = useState<number | 'All'>('All');
-  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'rating'>('default');
+  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
   const [previewBook, setPreviewBook] = useState<BookProduct | null>(null);
+  const [booksList, setBooksList] = useState<BookProduct[]>(BOOKS_DATA);
+
+  useEffect(() => {
+    fetch('/api/books')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.books) {
+          setBooksList(data.books);
+        }
+      })
+      .catch((err) => console.error('Failed to load live books:', err));
+  }, []);
 
   useEffect(() => {
     if (seriesParam && ['Savi', 'Kali', 'Siri', 'Tili'].includes(seriesParam)) {
@@ -34,16 +46,16 @@ function BooksContent() {
 
   const seriesCounts = useMemo(() => {
     return {
-      all: BOOKS_DATA.length,
-      kali: BOOKS_DATA.filter((b) => b.series === 'Kali').length,
-      savi: BOOKS_DATA.filter((b) => b.series === 'Savi').length,
-      siri: BOOKS_DATA.filter((b) => b.series === 'Siri').length,
-      tili: BOOKS_DATA.filter((b) => b.series === 'Tili').length,
+      all: booksList.length,
+      kali: booksList.filter((b) => b.series === 'Kali').length,
+      savi: booksList.filter((b) => b.series === 'Savi').length,
+      siri: booksList.filter((b) => b.series === 'Siri').length,
+      tili: booksList.filter((b) => b.series === 'Tili').length,
     };
-  }, []);
+  }, [booksList]);
 
   const filteredBooks = useMemo(() => {
-    let result = BOOKS_DATA.filter((book) => {
+    let result = booksList.filter((book) => {
       const matchesSearch =
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         book.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -56,8 +68,6 @@ function BooksContent() {
       result.sort((a, b) => a.price - b.price);
     } else if (sortBy === 'price-desc') {
       result.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'rating') {
-      result.sort((a, b) => b.rating - a.rating);
     }
 
     return result;
@@ -170,7 +180,6 @@ function BooksContent() {
                   <option value="default">Default sorting</option>
                   <option value="price-asc">Sort by price: low to high</option>
                   <option value="price-desc">Sort by price: high to low</option>
-                  <option value="rating">Sort by popularity</option>
                 </select>
               </div>
 

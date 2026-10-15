@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-003",
+  "type": "fix",
+  "description": "Fix text truncation and small badges (Issues 8-11): Remove max-w-[160px] and truncate classes from book-title badges in ParentFeedbackSection, upgrade text-[10px] to text-xs (12px minimum), allow text to wrap or use line-clamp-2. Independent of other FEATs.",
+  "status": "pending",
+  "steps": [
+    "Update ParentFeedbackSection.tsx line ~63-65: Change badge span from 'text-[10px] font-semibold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full max-w-[160px] truncate' to 'text-xs font-semibold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full' (remove max-w-[160px] and truncate)",
+    "Verify the badge text now wraps naturally or use line-clamp-2 if multi-line is acceptable: 'text-xs font-semibold text-amber-800 bg-amber-100 px-2.5 py-1.5 rounded-xl line-clamp-2'",
+    "Check if similar truncate patterns exist in BookCard.tsx, Navbar.tsx dropdown, or other components – apply same fix pattern"
+  ],
+  "acceptance_criteria": [
+    "All badge text is minimum 12px (text-xs)",
+    "No book title badges are truncated with ellipsis",
+    "Text wraps naturally within reasonable container width or uses line-clamp",
+    "Visual layout remains clean without overflow"
+  ],
+  "verification": [
+    "Run 'npm run dev' and navigate to http://localhost:3000/",
+    "Scroll to ParentFeedbackSection (testimonials)",
+    "Verify all 4 visible review cards show full book titles without ellipsis",
+    "Check badge sizing is readable at 12px minimum",
+    "Verify no horizontal overflow or layout breaks"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

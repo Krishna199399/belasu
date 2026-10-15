@@ -3,9 +3,10 @@
 import React from 'react';
 import { BookProduct } from '@/types';
 import { useCart } from '@/context/CartContext';
-import { ShoppingBag, Eye, Star, BookOpen } from 'lucide-react';
+import { Eye, BookOpen } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
+import { Button, IconButton, Badge } from '@/components/ui/Button';
 
 interface BookCardProps {
   book: BookProduct;
@@ -17,16 +18,11 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
 
   return (
     <div className="group relative bg-white rounded-2xl border border-slate-200/80 hover:border-amber-400 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-      {/* Top Badges */}
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
-        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide bg-amber-500 text-white shadow-xs">
+      {/* Class Badge */}
+      <div className="absolute top-3 left-3 z-10">
+        <Badge variant="amber">
           Class {book.gradeClass}
-        </span>
-        {book.badge && (
-          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-rose-600 text-white">
-            {book.badge}
-          </span>
-        )}
+        </Badge>
       </div>
 
       <div className="p-5 pb-3">
@@ -40,25 +36,21 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
 
           {/* Quick Preview Hover Overlay */}
           <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 p-3">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => onPreview(book)}
-              className="py-2 px-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-md flex items-center gap-1.5 transition"
             >
-              <Eye className="w-4 h-4 text-amber-600" /> Preview Pages
-            </button>
+              <Eye className="w-4 h-4" /> Preview
+            </Button>
           </div>
         </div>
 
-        {/* Series Tag & Rating */}
-        <div className="flex items-center justify-between gap-2 mb-2">
+        {/* Series Tag */}
+        <div className="mb-2">
           <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">
             {book.series} Kannada Series
           </span>
-          <div className="flex items-center gap-1 text-xs font-bold text-amber-600">
-            <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-            <span>{book.rating}</span>
-            <span className="text-slate-400 font-normal">({book.reviewCount})</span>
-          </div>
         </div>
 
         {/* Title */}
@@ -80,27 +72,39 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
           <span className="text-lg font-black text-slate-900 block leading-tight">
             {formatPrice(book.price)}
           </span>
-          {book.originalPrice && (
-            <span className="text-[11px] line-through text-slate-400">
-              {formatPrice(book.originalPrice)}
+          {book.stockQuantity <= 5 && book.stockQuantity > 0 && (
+            <span className="text-[10px] font-bold text-amber-700 block mt-0.5">
+              Only {book.stockQuantity} left!
             </span>
           )}
         </div>
 
         <div className="flex items-center gap-1.5">
-          <button
+          <IconButton
+            variant="default"
             onClick={() => onPreview(book)}
-            className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-amber-400 hover:text-amber-600 transition"
             title="Preview Book Pages"
           >
             <BookOpen className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => addToCart(book)}
-            className="py-2.5 px-3.5 rounded-xl font-bold text-xs text-white bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition"
-          >
-            <ShoppingBag className="w-4 h-4" /> Add
-          </button>
+          </IconButton>
+          {book.stockQuantity <= 0 ? (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled
+              className="opacity-60 cursor-not-allowed text-rose-600 border-rose-200"
+            >
+              Sold Out
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => addToCart(book, 'physical')}
+            >
+              Add
+            </Button>
+          )}
         </div>
       </div>
     </div>

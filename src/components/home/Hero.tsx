@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, ShieldCheck, Star, Play, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, BookOpen, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export const Hero: React.FC = () => {
   return (
@@ -59,16 +59,6 @@ export const Hero: React.FC = () => {
               >
                 <BookOpen className="w-5 h-5" /> Explore All Guidebooks <ArrowRight className="w-5 h-5" />
               </Link>
-              
-              <Link
-                href="/videos"
-                className="w-full sm:w-auto py-4 px-6 rounded-2xl font-bold text-slate-800 bg-white border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 shadow-xs flex items-center justify-center gap-2 text-sm transition"
-              >
-                <div className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
-                  <Play className="w-3 h-3 fill-rose-600" />
-                </div>
-                Watch Video Demos
-              </Link>
             </div>
 
             {/* Social Trust Ratings */}
@@ -81,9 +71,9 @@ export const Hero: React.FC = () => {
                 </div>
                 <div className="text-left text-xs">
                   <div className="flex items-center gap-1 text-amber-500 font-bold">
-                    <Star className="w-3.5 h-3.5 fill-amber-500" /> 4.9 / 5 Rating
+                    Loved by 5,000+ Families
                   </div>
-                  <span className="text-slate-500 font-medium">Loved by 5,000+ Families</span>
+                  <span className="text-slate-500 font-medium">Trusted Reviews</span>
                 </div>
               </div>
 

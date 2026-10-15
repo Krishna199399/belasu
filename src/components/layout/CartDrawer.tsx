@@ -1,19 +1,18 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
 
 export const CartDrawer: React.FC = () => {
-  const { cart, isOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems } = useCart();
+  const pathname = usePathname();
+  const { cart, isOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
+  const shippingFee = needsShipping() ? 45 : 0;
 
-  if (!isOpen) return null;
-
-  const freeShippingThreshold = 500;
-  const progressPercent = Math.min(100, (subtotal / freeShippingThreshold) * 100);
-  const remainingForFreeShipping = freeShippingThreshold - subtotal;
+  if (!isOpen || pathname?.startsWith('/admin')) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -40,27 +39,6 @@ export const CartDrawer: React.FC = () => {
             </button>
           </div>
 
-          {/* Free Shipping Progress Bar */}
-          <div className="bg-amber-50/80 p-3 px-5 border-b border-amber-100">
-            {subtotal >= freeShippingThreshold ? (
-              <p className="text-xs font-semibold text-emerald-700 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" /> You unlocked FREE Delivery across India!
-              </p>
-            ) : (
-              <div>
-                <p className="text-xs text-slate-700 mb-1.5">
-                  Add <span className="font-bold text-amber-700">{formatPrice(remainingForFreeShipping)}</span> more for <span className="font-bold text-emerald-700">FREE Shipping</span>
-                </p>
-                <div className="w-full h-1.5 bg-amber-200/60 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-300"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Cart Item List */}
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
             {cart.length === 0 ? (
@@ -80,7 +58,7 @@ export const CartDrawer: React.FC = () => {
                 </button>
               </div>
             ) : (
-              cart.map(({ product, quantity }) => (
+              cart.map(({ product, quantity, productType }) => (
                 <div
                   key={product.id}
                   className="flex gap-4 p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-amber-200 transition"
@@ -107,7 +85,8 @@ export const CartDrawer: React.FC = () => {
                         </button>
                       </div>
                       <span className="inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
-                        Class {product.gradeClass} ({product.series})
+                        Class {product.gradeClass} {productType === 'physical' && 'series' in product && `(${product.series} - Hard Copy)`}
+                        {productType === 'digital' && ' - Digital'}
                       </span>
                     </div>
 
@@ -116,21 +95,30 @@ export const CartDrawer: React.FC = () => {
                         {formatPrice(product.price * quantity)}
                       </span>
 
-                      <div className="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden">
-                        <button
-                          onClick={() => updateQuantity(product.id, quantity - 1)}
-                          className="p-1 hover:bg-slate-100 text-slate-600 transition"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="px-2.5 text-xs font-semibold text-slate-800">{quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(product.id, quantity + 1)}
-                          className="p-1 hover:bg-slate-100 text-slate-600 transition"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
-                      </div>
+                      {productType === 'physical' ? (
+                        <div className="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden">
+                          <button
+                            onClick={() => updateQuantity(product.id, quantity - 1)}
+                            className="p-1 hover:bg-slate-100 text-slate-600 transition"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="px-2.5 text-xs font-semibold text-slate-800">{quantity}</span>
+                          <button
+                            onClick={() => updateQuantity(product.id, quantity + 1)}
+                            className="p-1 hover:bg-slate-100 text-slate-600 transition"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-end">
+                          <div className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
+                            💻 Digital License
+                          </div>
+                          <span className="text-[9px] text-slate-500 mt-0.5">Qty: 1</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -147,14 +135,12 @@ export const CartDrawer: React.FC = () => {
                   <span className="font-semibold text-slate-900">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
-                  <span>Estimated Shipping</span>
-                  <span className="font-semibold text-emerald-600">
-                    {subtotal >= freeShippingThreshold ? 'FREE' : '₹40'}
-                  </span>
+                  <span>Shipping</span>
+                  <span className="font-semibold text-slate-900">{shippingFee === 0 ? 'FREE' : '₹45'}</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-100">
                   <span>Total</span>
-                  <span className="text-amber-600">{formatPrice(subtotal >= freeShippingThreshold ? subtotal : subtotal + 40)}</span>
+                  <span className="text-amber-600">{formatPrice(subtotal + shippingFee)}</span>
                 </div>
               </div>
 

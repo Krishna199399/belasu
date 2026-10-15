@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-002",
+  "type": "fix",
+  "description": "Fix all-caps text readability issues (Issues 5, 6, 7, 12): Remove uppercase class and change text to sentence/title case for all text runs >20 characters. Affects 4 specific elements identified in audit. Independent of other FEATs.",
+  "status": "pending",
+  "steps": [
+    "Update HeroCarousel.tsx line ~102: Change span.uppercase 'Kannada Mathadi, Kannada Belesi' to title case 'Kannada Mathadi, Kannada Belesi' and remove uppercase class",
+    "Update QuickLookBookSection.tsx line ~89: Remove uppercase class from CTA button text 'Order Complete Guidebook Series', keep bold",
+    "Update CurriculumExplorer.tsx line ~85: Change h4.uppercase 'TARGET ACADEMIC SKILLS BUILT:' to title case 'Target Academic Skills Built:' and remove uppercase class (or change to sentence case 'Target academic skills built:')",
+    "Update Footer.tsx line ~28: Change p text 'CKELP TECHNOLOGIES PRIVATE LIMITED' to title case 'Ckelp Technologies Private Limited' and remove font-extrabold class",
+    "Update Navbar.tsx: Check all uppercase labels in dropdown (lines ~79, 83) – if >20 chars, convert to title case and remove uppercase"
+  ],
+  "acceptance_criteria": [
+    "No text runs exceeding 20 characters use uppercase class or are styled in all-caps",
+    "Changed text remains bold/semibold as appropriate for hierarchy",
+    "Footer company name is readable in title case",
+    "CTA buttons remain visually prominent without uppercase"
+  ],
+  "verification": [
+    "Run 'npm run dev' and visually inspect http://localhost:3000/",
+    "Check HeroCarousel tagline is sentence case",
+    "Scroll to QuickLookBookSection CTA button – verify sentence case",
+    "Check CurriculumExplorer skills heading is title/sentence case",
+    "Check Footer for title-cased company name",
+    "Use browser DevTools search for 'uppercase' class on long text spans"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

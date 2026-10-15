@@ -2,9 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Phone, Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/reader')) {
+    return null;
+  }
+
   return (
     <footer className="bg-white border-t border-stone-200 text-slate-700 pt-16 pb-8 font-sans">
       <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-5">
@@ -31,8 +37,8 @@ export const Footer: React.FC = () => {
               <p>
                 <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore- 562125
               </p>
-              <p className="font-extrabold text-slate-900 pt-1">
-                CKELP TECHNOLOGIES PRIVATE LIMITED
+              <p className="font-bold text-slate-900 pt-1">
+                Ckelp Technologies Private Limited
               </p>
               <p>
                 <strong>Registered Office:</strong> Deshpande Startups, Next to International Airport, Gokul Road Hubballi - 580030 Karnataka
@@ -157,19 +163,19 @@ export const Footer: React.FC = () => {
 
           {/* Payment Method Badges */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-[10px] font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
               VISA
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-[10px] font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
               MasterCard
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-[10px] font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
               PayPal
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-[10px] font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
               AMEX
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-[10px] font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
               UPI
             </span>
           </div>

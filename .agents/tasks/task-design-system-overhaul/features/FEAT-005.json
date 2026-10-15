@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-005",
+  "type": "refactor",
+  "description": "Standardize spacing, border radii, and layout consistency (Issues 3, 17-21): Reduce border radii from 7→4 variants (rounded-lg/xl/2xl/full), standardize card padding to p-4/p-6, button gaps to gap-2, grid gaps to gap-4/6/8 per DESIGN_SYSTEM.md. Must run AFTER FEAT-001 typography changes to avoid conflicts.",
+  "status": "pending",
+  "steps": [
+    "Read DESIGN_SYSTEM.md spacing and border-radius sections to confirm standards: rounded-xl for buttons/cards (primary), rounded-lg for inputs, rounded-2xl for large containers, rounded-full for pills",
+    "Update Navbar.tsx: Standardize all rounded-md to rounded-lg, verify gap-2 on button content, p-2.5 on IconButtons",
+    "Update Footer.tsx: Standardize column padding to consistent values, ensure grid gap-6 or gap-8",
+    "Update BookCard.tsx: Verify rounded-2xl on outer card, rounded-xl on inner elements, p-5 or p-6 padding (consolidate p-5 → p-6)",
+    "Update all home section components: Replace rounded-3xl with rounded-2xl where appropriate, standardize card padding to p-6 for large cards and p-4 for small",
+    "Update button gaps: Ensure all Button components use gap-2 (already in Button.tsx, verify callers don't override)",
+    "Update grid gaps: Home page sections should use gap-6 for default grids, gap-4 for compact, gap-8 for spacious layouts",
+    "Search for rounded-sm, rounded-md, rounded-3xl and replace: rounded-sm/md → rounded-lg, rounded-3xl → rounded-2xl",
+    "Verify AddToCart buttons in BookCard use the Button component from Button.tsx (variant='primary' size='sm') and not inline styles"
+  ],
+  "acceptance_criteria": [
+    "Border radius count is 4 or fewer distinct values (rounded-lg/xl/2xl/full)",
+    "All card padding is standardized to p-4 (small) or p-6 (large)",
+    "All button content uses gap-2",
+    "Grid gaps follow pattern: gap-4 (compact), gap-6 (default), gap-8 (spacious)",
+    "AddToCart buttons use unified Button component, not inline Tailwind classes",
+    "Visual consistency across all pages and components"
+  ],
+  "verification": [
+    "Run 'npm run dev' and navigate to http://localhost:3000/",
+    "Visually inspect all sections for consistent spacing and border radii",
+    "Check BookCard AddToCart buttons match the Button component styling",
+    "Use DevTools to search for 'rounded-sm', 'rounded-md', 'rounded-3xl' (should find none or minimal)",
+    "Verify grid layouts have consistent gap values",
+    "Navigate to /books and /cart to verify consistency across pages"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

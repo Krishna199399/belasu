@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { BookOpen, Sparkles, CheckCircle2, ArrowRight, BookMarked, Award, Star } from 'lucide-react';
+import { BookOpen, Sparkles, CheckCircle2, ArrowRight, BookMarked, Award } from 'lucide-react';
 import { BOOKS_DATA } from '@/data/mockData';
 import { BookProduct } from '@/types';
 import Link from 'next/link';
@@ -137,9 +137,6 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-900 uppercase">
                         {book.series} Series
                       </span>
-                      <div className="flex items-center gap-1 text-xs font-bold text-amber-500">
-                        <Star className="w-3.5 h-3.5 fill-amber-400" /> {book.rating}
-                      </div>
                     </div>
 
                     <div className="h-40 bg-slate-50 rounded-xl border border-slate-100 p-2 flex items-center justify-center mb-3">

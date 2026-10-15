@@ -5,6 +5,7 @@ import { BookProduct } from '@/types';
 import { X, ChevronLeft, ChevronRight, BookOpen, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { formatPrice } from '@/lib/utils';
+import { IconButton, Badge } from '@/components/ui/Button';
 
 interface BookPreviewModalProps {
   book: BookProduct | null;
@@ -41,13 +42,14 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
         {/* Close Button */}
-        <button
+        <IconButton
+          variant="ghost"
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+          className="absolute top-4 right-4 z-20"
           aria-label="Close Preview"
         >
           <X className="w-5 h-5" />
-        </button>
+        </IconButton>
 
         {/* Left Side: Page Image / Viewer */}
         <div className="md:w-1/2 bg-slate-50 p-6 flex flex-col items-center justify-center relative border-r border-slate-100">
@@ -109,12 +111,12 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
         <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+              <Badge variant="amber">
                 Class {book.gradeClass}
-              </span>
-              <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-100 text-rose-800">
+              </Badge>
+              <Badge variant="rose">
                 {book.series} Kannada Series
-              </span>
+              </Badge>
             </div>
 
             <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-snug mb-3">
@@ -123,9 +125,6 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
 
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl font-black text-amber-600">{formatPrice(book.price)}</span>
-              {book.originalPrice && (
-                <span className="text-sm line-through text-slate-400">{formatPrice(book.originalPrice)}</span>
-              )}
               <span className="text-xs text-emerald-600 font-semibold px-2 py-0.5 bg-emerald-50 rounded">
                 In Stock & Free Shipping
               </span>
@@ -148,7 +147,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
           <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
             <button
               onClick={() => {
-                addToCart(book);
+                addToCart(book, 'physical');
                 onClose();
               }}
               className="flex-1 py-3 px-5 rounded-xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition"

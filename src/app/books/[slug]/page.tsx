@@ -1,21 +1,35 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, notFound } from 'next/navigation';
 import { BOOKS_DATA, PARENT_REVIEWS } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
 import { formatPrice } from '@/lib/utils';
-import { ShoppingBag, Eye, Star, CheckCircle2, ShieldCheck, Truck, ArrowLeft, BookOpen } from 'lucide-react';
+import { ShoppingBag, Eye, CheckCircle2, ShieldCheck, Truck, ArrowLeft, BookOpen, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import { BookProduct } from '@/types';
 
 export default function BookDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const { addToCart } = useCart();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [book, setBook] = useState<BookProduct>(
+    () => BOOKS_DATA.find((b) => b.slug === slug) || BOOKS_DATA[0]
+  );
 
-  const book = BOOKS_DATA.find((b) => b.slug === slug) || BOOKS_DATA[0];
+  useEffect(() => {
+    fetch('/api/books')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.books) {
+          const matched = data.books.find((b: BookProduct) => b.slug === slug);
+          if (matched) setBook(matched);
+        }
+      })
+      .catch((err) => console.error('Failed to load live book data:', err));
+  }, [slug]);
 
   return (
     <div className="py-12 bg-slate-50 min-h-screen">
@@ -56,12 +70,6 @@ export default function BookDetailPage() {
             {/* Right Details Column */}
             <div className="lg:col-span-7 space-y-6">
               <div>
-                <div className="flex items-center gap-2 text-xs font-bold text-amber-600 mb-2">
-                  <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-                  <span>{book.rating} out of 5.0</span>
-                  <span className="text-slate-400 font-normal">({book.reviewCount} parent reviews)</span>
-                </div>
-
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-snug">
                   {book.title}
                 </h1>
@@ -69,9 +77,6 @@ export default function BookDetailPage() {
 
               <div className="flex items-center gap-4 py-2 border-y border-slate-100">
                 <span className="text-3xl font-black text-amber-600">{formatPrice(book.price)}</span>
-                {book.originalPrice && (
-                  <span className="text-base line-through text-slate-400">{formatPrice(book.originalPrice)}</span>
-                )}
                 <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
                   In Stock & Free Shipping
                 </span>
@@ -81,18 +86,40 @@ export default function BookDetailPage() {
                 {book.description}
               </p>
 
+              {/* Stock Warning Banner if Low or Out */}
+              {book.stockQuantity <= 0 ? (
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-rose-800 text-xs font-bold">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                  <span>Currently Out of Stock. Please check back soon or contact support.</span>
+                </div>
+              ) : book.stockQuantity <= 5 ? (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2 text-amber-900 text-xs font-bold">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span>⚡ Hurry! Only {book.stockQuantity} copies remaining in stock.</span>
+                </div>
+              ) : null}
+
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                <button
-                  onClick={() => addToCart(book)}
-                  className="flex-1 py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 text-base transition"
-                >
-                  <ShoppingBag className="w-5 h-5" /> Add to Cart ({formatPrice(book.price)})
-                </button>
+                {book.stockQuantity <= 0 ? (
+                  <button
+                    disabled
+                    className="flex-1 py-4 px-6 rounded-2xl font-bold text-slate-400 bg-slate-100 border border-slate-200 cursor-not-allowed flex items-center justify-center gap-2 text-base"
+                  >
+                    <ShoppingBag className="w-5 h-5 text-slate-400" /> Out of Stock
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => addToCart(book, 'physical')}
+                    className="flex-1 py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 text-base transition cursor-pointer"
+                  >
+                    <ShoppingBag className="w-5 h-5" /> Add to Cart ({formatPrice(book.price)})
+                  </button>
+                )}
 
                 <button
                   onClick={() => setIsPreviewOpen(true)}
-                  className="py-4 px-6 rounded-2xl font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 transition text-sm flex items-center justify-center gap-2"
+                  className="py-4 px-6 rounded-2xl font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 transition text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4 text-amber-600" /> Preview Inside
                 </button>

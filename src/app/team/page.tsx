@@ -24,7 +24,7 @@ export default function TeamPage() {
       {/* 2. Team Members Showcase Grid */}
       <section className="py-16 md:py-20">
         <div className="max-w-[1200px] mx-auto px-3 sm:px-4 lg:px-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16">
+          <div className="grid grid-cols-1 gap-12 sm:gap-16 max-w-md mx-auto">
             
             {/* Member 1: Roopa Sanjiv P */}
             <div className="flex flex-col items-center text-center space-y-4">
@@ -48,32 +48,6 @@ export default function TeamPage() {
               <div className="w-full max-w-md border-t border-amber-800/30 pt-4">
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
                   Roopa has been volunteering for Kannada language for Teaching and Research. She has done extensive research on the issues that children, Parents, and school face for Kannada subject.
-                </p>
-              </div>
-            </div>
-
-            {/* Member 2: Anjali Sharma */}
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-full overflow-hidden border-4 border-stone-200 shadow-2xl p-1 bg-white">
-                <img
-                  src={TEAM_MEMBERS[1].imageUrl}
-                  alt="Anjali Sharma"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-              
-              <div>
-                <h3 className="text-2xl font-serif font-bold text-slate-900">
-                  Anjali Sharma
-                </h3>
-                <p className="text-xs sm:text-sm font-semibold text-amber-800 mt-1">
-                  Digital and Visual Content Consultant
-                </p>
-              </div>
-
-              <div className="w-full max-w-md border-t border-amber-800/30 pt-4">
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-                  Anjali handles one of the key roles as consultant for Digital and visual content. She builds framework to shape the visual content in a way that feels natural, balanced and easy to connect with, across both Digital Platform and offline spaces at Belesu.
                 </p>
               </div>
             </div>

@@ -14,6 +14,7 @@ export interface BookProduct {
   slug: string;
   series: BookSeries;
   gradeClass: number; // 1, 2, 3, 4, 5
+  sku: string; // NEW: "SK1", "SK2", etc. for order items
   price: number; // e.g. 280
   originalPrice?: number;
   badge?: string;
@@ -79,39 +80,301 @@ export interface OrderDetails {
   total: number;
 }
 
-export interface TuitionCourse {
-  id: string;
-  slug: string;
-  series: BookSeries;
-  gradeClass: number;
-  title: string;
-  shortDescription: string;
-  description: string;
-  syllabus: string[];
-  teacherName: string;
-  teacherBio: string;
-  teacherImage: string;
-  schedule: string;
-  platform: 'Google Meet' | 'Zoom';
-  batchSize: number;
-  slotsLeft: number;
-  durationMonths: number;
-  monthlyFee: number;
-  termFee: number;
-  linkedBookSlug: string;
-  coverImage: string;
-  badge?: string;
-  highlights: string[];
+// ─── Digital Platform (Classes 6–10) ───────────────────────────────────────
+
+export type DigitalSubject = 'Kannada';
+
+export interface DigitalBookChapter {
+  chapter: string;
+  startPage: number;
 }
 
-export interface EnrollmentFormData {
-  studentName: string;
-  parentName: string;
-  email: string;
+export interface DigitalBook {
+  id: string;
+  slug: string;
+  title: string;
+  subject: DigitalSubject;
+  gradeClass: number; // 6, 7, 8, 9, 10
+  sku: string; // NEW: "SD6", "SD7", etc. for order items
+  price: number;
+  originalPrice?: number;
+  coverImage: string;
+  totalPages: number;
+  description: string;
+  features: string[];
+  tableOfContents: DigitalBookChapter[];
+  badge?: string;
+  isFreePreviewPages: number; // how many pages are free (e.g. 5)
+  rating: number;
+  reviewCount: number;
+  author: string;
+  language: string; // 'English with Kannada' etc.
+}
+
+export interface DigitalOrder {
+  id: string;
+  userId: string;
+  bookId: string;
+  amount: number;
+  paymentStatus: 'Pending' | 'Paid' | 'Failed';
+  purchasedAt: string;
+}
+
+export interface ReadProgress {
+  userId: string;
+  bookId: string;
+  lastPage: number;
+  totalPages: number;
+  updatedAt: string;
+}
+
+// ─── Enhanced User System with Address Management ──────────────────────────
+
+export interface Address {
+  id: string;
+  userId: string;
+  
+  // Address details (matching old system structure)
+  firstName: string;
+  lastName: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  state: string;
+  postcode: string;
   phone: string;
-  courseId: string;
-  gradeClass: string;
-  batchPreference: 'Morning' | 'Evening' | 'Weekend';
-  message: string;
+  email?: string;
+  
+  // New features
+  label?: string; // "Home", "Office", "Parents House", etc.
+  isDefault: boolean;
+  
+  // Location data (optional)
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+  
+  // Usage tracking
+  usageCount: number;
+  lastUsedAt?: string;
+  
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AuthUser {
+  id: string;
+  phone: string;
+  name: string;
+  email?: string;
+  isAdmin?: boolean;
+  
+  // Address management
+  addresses: Address[];
+  defaultAddressId?: string;
+  
+  // Purchase tracking
+  purchasedBooks: {
+    physical: string[];   // Physical book IDs
+    digital: string[];    // Digital book IDs
+  };
+  orders: string[];       // Order IDs
+  
+  // User preferences
+  emailOptIn: boolean;
+  smsOptIn: boolean;
+  
+  // Migration support
+  legacyOrderEmails?: string[];  // For linking old orders
+  legacyOrderPhones?: string[];
+  
+  // Analytics
+  totalSpent: number;
+  lastPurchaseDate?: string;
+  
+  createdAt: string;
+  lastLoginAt: string;
+}
+
+// ─── Enhanced Order System (Backward Compatible) ────────────────────────────
+
+export type OrderStatus = 
+  | 'Pending' 
+  | 'Processing' 
+  | 'Completed' 
+  | 'Cancelled' 
+  | 'Refunded'
+  | 'Shipped'
+  | 'Delivered';
+
+export type PaymentMethod = 
+  | 'UPI' 
+  | 'Card' 
+  | 'NetBanking' 
+  | 'PayU/Bc'
+  | 'Credit Card/Debit Card/NetBanking';
+
+export interface BillingInfo {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  state?: string;
+  postcode: string;
+  phone: string;
+  email: string;
+}
+
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  
+  // Product info (matching old system)
+  itemSKU: string;              // "SK1", "SK2", etc.
+  itemName: string;             // "Savi Kannada Class 1"
+  quantity: number;
+  itemCost: number;
+  
+  // New: Product type
+  productType: 'physical' | 'digital';
+  productId: string;
+  
+  // Product details (for display)
+  product: BookProduct | DigitalBook;
+  
+  // Digital book specific
+  digitalBookDelivered?: boolean;
+  digitalBookDeliveredAt?: string;
+  
+  // Refund support (from old system)
+  quantityRefunded?: number;
+  
+  // Shipping (from old system)
+  shippingAmount: number;
+  
+  createdAt: string;
+}
+
+export interface Order {
+  // Core fields (matching old system)
+  id: string;
+  orderNumber: string;          // "16131", "16164", etc.
+  orderStatus: OrderStatus;
+  orderDate: string;
+  
+  // User link (NEW - null for migrated old orders)
+  userId?: string;
+  
+  // Billing info (preserved from old system)
+  billing: BillingInfo;
+  
+  // Shipping info (can be different from billing)
+  shippingAddressId?: string;   // FK to Address
+  shipping: BillingInfo;
+  
+  // Payment (matching old system)
+  paymentMethodTitle: PaymentMethod;
+  paymentId?: string;
+  paymentStatus: 'Pending' | 'Paid' | 'Failed';
+  
+  // Order items
+  items: OrderItem[];
+  itemsBreakdown: {
+    physicalBooks: OrderItem[];
+    digitalBooks: OrderItem[];
+  };
+  
+  // Amounts (matching old system)
+  orderSubtotalAmount: number;
+  shippingMethodTitle: string;  // "Flat rate"
+  orderShippingAmount: number;
+  orderRefundAmount: number;
+  orderTotalAmount: number;
+  orderTotalTaxAmount: number;
+  
+  // Product type flags
+  hasPhysicalProducts: boolean;
+  hasDigitalProducts: boolean;
+  
+  // Tracking (NEW)
+  trackingNumber?: string;
+  
+  // Timestamps
+  createdAt: string;
+  paidAt?: string;
+  shippedAt?: string;
+  deliveredAt?: string;
+  cancelledAt?: string;
+}
+
+// ─── User Digital Library ───────────────────────────────────────────────────
+
+export interface UserDigitalLibrary {
+  id: string;
+  userId: string;
+  digitalBookId: string;
+  
+  // Purchase info
+  orderId: string;
+  orderItemId: string;
+  purchasedAt: string;
+  
+  // Reading progress
+  lastReadPage: number;
+  totalPages: number;
+  progressPercent: number;
+  lastReadAt?: string;
+  
+  // Access control
+  accessToken: string;
+  expiresAt?: string;
+}
+
+// ─── Enhanced Cart System ───────────────────────────────────────────────────
+
+export type ProductType = 'physical' | 'digital';
+
+export interface EnhancedCartItem {
+  product: BookProduct | DigitalBook;
+  productType: ProductType;
+  quantity: number;
+}
+
+// Keep old CartItem for backward compatibility
+export interface CartItem {
+  product: BookProduct;
+  quantity: number;
+}
+
+// ─── Physical Inventory Management ──────────────────────────────────────────
+
+export interface PhysicalBookInventory {
+  bookId: string;
+  sku: string;
+  title: string;
+  series: BookSeries;
+  gradeClass: number;
+  stockQuantity: number;
+  lowStockThreshold: number;
+  isInStock: boolean;
+  coverImage: string;
+  price: number;
+  originalPrice?: number;
+  unitsSold: number;
+  revenue: number;
+  updatedAt?: string;
+}
+
+export interface InventoryLogItem {
+  id: string;
+  bookId: string;
+  changeAmount: number;
+  remainingStock: number;
+  reason: string;
+  createdAt: string;
+  bookTitle?: string;
+  sku?: string;
 }
 

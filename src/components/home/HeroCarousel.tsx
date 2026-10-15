@@ -70,7 +70,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       bgImg: '/3.png',
       headline: 'Kali Kannada Class 3',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
-      description: 'Master reading comprehension, grammar tenses, and synonyms without expensive private tuition classes.'
+      description: 'Master reading comprehension, grammar tenses, and synonyms with comprehensive learning support.'
     },
     {
       id: 's5',
@@ -187,24 +187,16 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               {activeSlide.description}
             </p>
 
-            {/* Price Tag & In-Stock Pill */}
+            {/* Price Tag */}
             <div className="flex items-center justify-center lg:justify-start gap-4 py-1">
               <span className="text-3xl font-black text-amber-600">₹{activeSlide.price}</span>
-              {activeSlide.originalPrice && (
-                <span className="text-base line-through text-slate-400 font-bold">
-                  ₹{activeSlide.originalPrice}
-                </span>
-              )}
-              <span className="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-full flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Free Delivery Across Karnataka
-              </span>
             </div>
 
             {/* Bright Yellow / Amber Buttons (Matching Original Design) */}
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <button
                 type="button"
-                onClick={() => addToCart(activeBook)}
+                onClick={() => addToCart(activeBook, 'physical')}
                 className="w-full sm:w-auto py-4 px-8 rounded-full font-black text-slate-950 bg-amber-400 hover:bg-amber-500 shadow-xl shadow-amber-400/30 flex items-center justify-center gap-2 text-sm uppercase tracking-wide transition transform active:scale-95 cursor-pointer"
               >
                 <ShoppingBag className="w-4 h-4 text-slate-950" /> Add to Cart (₹{activeSlide.price})
@@ -217,13 +209,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               >
                 <Eye className="w-4 h-4 text-amber-600" /> View More & Preview
               </button>
-
-              <Link
-                href="/videos"
-                className="w-full sm:w-auto py-4 px-5 rounded-full font-bold text-slate-700 hover:text-slate-900 bg-white/80 hover:bg-white border border-slate-200 transition text-xs flex items-center justify-center gap-1.5"
-              >
-                <Play className="w-3.5 h-3.5 fill-rose-600 text-rose-600" /> Demos
-              </Link>
             </div>
 
           </div>

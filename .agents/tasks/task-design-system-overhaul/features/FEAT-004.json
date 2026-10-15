@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-004",
+  "type": "fix",
+  "description": "Fix heading hierarchy violations (Issues 13-16): Correct all heading level skips (H1→H3, H2→H4) to ensure proper document outline per WCAG guidelines. Affects ElevatingKannadaSection, QuickLookBookSection, CurriculumExplorer, ParentFeedbackSection. Independent of other FEATs.",
+  "status": "pending",
+  "steps": [
+    "Update ElevatingKannadaSection.tsx line ~22: Change h3 'Language Preservation' to h2 (fixes H1→H3 skip from page title)",
+    "Update QuickLookBookSection.tsx line ~41: Change h4 'Savi Kannada Class 2 Guide Book for Reference' to h3 (fixes H2→H4 skip)",
+    "Update CurriculumExplorer.tsx line ~68: Change h3 'Class 4 Kannada Curriculum' to h2 if preceded by H1, or verify it follows H2 properly",
+    "Update ParentFeedbackSection.tsx line ~60: Change h4 author names to h3 or replace with p.font-bold (h4 follows h2 directly, skipping h3)",
+    "Review page.tsx home sections: ensure H1 (if exists) → H2 → H3 progression with no skips",
+    "Review books/page.tsx: verify H1 'Purchase Book' → H2 for series categories if they are headings"
+  ],
+  "acceptance_criteria": [
+    "No heading level skips exist (no H1→H3, no H2→H4)",
+    "Document outline follows logical hierarchy: H1 once per page, then H2, then H3, etc.",
+    "Visual hierarchy preserved (font sizes/weights remain appropriate)",
+    "HTML validator or accessibility checker shows no heading-level errors"
+  ],
+  "verification": [
+    "Run 'npm run dev' and navigate to http://localhost:3000/",
+    "Open browser DevTools and use HeadingsMap extension or manually inspect heading tags",
+    "Verify heading sequence: H1 → H2 → H3 with no skips",
+    "Navigate to /books page and verify heading hierarchy",
+    "Use browser's Accessibility tree inspector to confirm proper structure"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

@@ -29,7 +29,7 @@ export default function FAQsPage() {
     },
     {
       question: 'Can I order books in bulk for a school or learning center?',
-      answer: 'Yes, we offer bulk academic discounts for schools, educational institutions, and tuition centers. Please contact our support team at +91 99023 83451 or email kannada@belesu.in for custom quotes.'
+      answer: 'Yes, we offer bulk academic discounts for schools and educational institutions. Please contact our support team at +91 99023 83451 or email kannada@belesu.in for custom quotes.'
     }
   ];
 
