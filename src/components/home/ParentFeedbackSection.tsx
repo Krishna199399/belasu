@@ -46,7 +46,7 @@ export const ParentFeedbackSection: React.FC = () => {
                       <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <span className="text-[11px] font-semibold text-slate-400">{review.date}</span>
+                  <span className="text-xs font-semibold text-slate-400">{review.date}</span>
                 </div>
 
                 <Quote className="w-8 h-8 text-amber-300/60 mb-2" />
@@ -58,14 +58,14 @@ export const ParentFeedbackSection: React.FC = () => {
 
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                  <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
                     {review.parentName}
                     <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-100" />
-                  </h4>
-                  <p className="text-xs text-slate-500">{review.childGrade} • {review.location}</p>
+                  </h3>
+                  <p className="text-xs text-slate-600">{review.childGrade} • {review.location}</p>
                 </div>
                 {review.bookTitle && (
-                  <span className="text-[10px] font-semibold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full max-w-[160px] truncate">
+                  <span className="text-xs font-semibold text-amber-800 bg-amber-100 px-2.5 py-1.5 rounded-xl">
                     {review.bookTitle}
                   </span>
                 )}

@@ -143,11 +143,11 @@ export const Footer: React.FC = () => {
             <div className="space-y-2 text-xs text-slate-600 pt-2 border-t border-stone-100">
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-slate-400" />
-                <span>Phone: <a href="tel:+919902383451" className="font-bold text-slate-800 hover:text-amber-600">+91 9902383451</a></span>
+                <span>Phone: <a href="tel:+919902383451" className="font-bold text-slate-900 hover:text-amber-600">+91 9902383451</a></span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-slate-400" />
-                <span>Email: <a href="mailto:kannada@belesu.in" className="font-bold text-slate-800 hover:text-amber-600">kannada@belesu.in</a></span>
+                <span>Email: <a href="mailto:kannada@belesu.in" className="font-bold text-slate-900 hover:text-amber-600">kannada@belesu.in</a></span>
               </div>
             </div>
 
@@ -156,26 +156,26 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Sub-Footer Copyright & Payment Logos */}
-        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-sans">
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-600 font-sans">
           <p>
             Designed and Developed by Krishna. © <strong>Belesu {new Date().getFullYear()}</strong>.
           </p>
 
           {/* Payment Method Badges */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-black uppercase tracking-wider border border-slate-200">
               VISA
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-black uppercase tracking-wider border border-slate-200">
               MasterCard
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-black uppercase tracking-wider border border-slate-200">
               PayPal
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-black uppercase tracking-wider border border-slate-200">
               AMEX
             </span>
-            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-black uppercase tracking-wider border border-slate-200">
+            <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-black uppercase tracking-wider border border-slate-200">
               UPI
             </span>
           </div>

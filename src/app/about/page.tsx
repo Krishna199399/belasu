@@ -50,7 +50,7 @@ export default function AboutPage() {
             
             {/* Left Image: Mother & Child Reading */}
             <div className="lg:col-span-6">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-stone-200 aspect-[4/3]">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-stone-200 aspect-[4/3]">
                 <img
                   src="/mother-and-child.png"
                   alt="Mother and Child Reading Belesu Guidebook"
@@ -157,17 +157,17 @@ export default function AboutPage() {
 
             {/* Right Mockup Sign */}
             <div className="lg:col-span-6 flex justify-center">
-              <div className="bg-stone-50 border border-stone-300 rounded-3xl p-8 shadow-xl max-w-md w-full text-center space-y-4">
+              <div className="bg-stone-50 border border-stone-300 rounded-2xl p-8 shadow-xl max-w-md w-full text-center space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-600 flex items-center justify-center mx-auto">
                   <BookOpen className="w-8 h-8" />
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-2xl font-black text-amber-500">Belesu</h3>
-                  <p className="text-xs font-bold text-rose-600 tracking-wider uppercase">
-                    KANNADA MATHADI, KANNADA BELESI
+                  <p className="text-xs font-bold text-rose-600 tracking-wide">
+                    Kannada Mathadi, Kannada Belesi
                   </p>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   A Kannada Initiative for Academics and Communication
                 </p>
               </div>

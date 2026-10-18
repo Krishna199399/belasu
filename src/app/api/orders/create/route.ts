@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth';
 import { createAdminClient } from '@/lib/supabase';
 import { EnhancedCartItem } from '@/types';
 import { deductStockOnOrder } from '@/lib/inventory';
+import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
 
 export async function POST(request: NextRequest) {
   try {
@@ -266,6 +267,21 @@ export async function POST(request: NextRequest) {
       .from('order_items')
       .select('*')
       .eq('order_id', order.id);
+
+    // Dispatch non-blocking WhatsApp order confirmation
+    const customerPhone = user.phone || billingInfo.phone;
+    if (customerPhone) {
+      sendWhatsAppOrderConfirmation({
+        phone: customerPhone,
+        name: user.name || billingInfo.first_name || 'Customer',
+        orderNumber: order.order_number,
+        totalAmount: order.order_total_amount,
+        itemsSummary: items.map((i: any) => i.title).slice(0, 3).join(', '),
+        isDigital: hasDigital && !hasPhysical,
+      }).catch((err) => {
+        console.error('[orders/create] WhatsApp confirmation dispatch error:', err);
+      });
+    }
 
     return NextResponse.json({
       success: true,

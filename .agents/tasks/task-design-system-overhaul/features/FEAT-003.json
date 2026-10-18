@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "fix",
   "description": "Fix text truncation and small badges (Issues 8-11): Remove max-w-[160px] and truncate classes from book-title badges in ParentFeedbackSection, upgrade text-[10px] to text-xs (12px minimum), allow text to wrap or use line-clamp-2. Independent of other FEATs.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Update ParentFeedbackSection.tsx line ~63-65: Change badge span from 'text-[10px] font-semibold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full max-w-[160px] truncate' to 'text-xs font-semibold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full' (remove max-w-[160px] and truncate)",
     "Verify the badge text now wraps naturally or use line-clamp-2 if multi-line is acceptable: 'text-xs font-semibold text-amber-800 bg-amber-100 px-2.5 py-1.5 rounded-xl line-clamp-2'",

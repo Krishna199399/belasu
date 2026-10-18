@@ -75,7 +75,7 @@ export default function ReviewsPage() {
             {reviewsList.map((review) => (
               <div
                 key={review.id}
-                className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4"
+                className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1 text-amber-500">
@@ -83,7 +83,7 @@ export default function ReviewsPage() {
                       <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <span className="text-[11px] font-semibold text-slate-400">{review.date}</span>
+                  <span className="text-xs font-semibold text-slate-400">{review.date}</span>
                 </div>
 
                 <p className="text-sm text-slate-700 leading-relaxed font-medium">
@@ -96,10 +96,10 @@ export default function ReviewsPage() {
                       {review.parentName}
                       <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-100" />
                     </h4>
-                    <p className="text-[11px] text-slate-500">{review.childGrade} • {review.location}</p>
+                    <p className="text-xs text-slate-600">{review.childGrade} • {review.location}</p>
                   </div>
                   {review.bookTitle && (
-                    <span className="text-[10px] font-semibold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full hidden sm:inline-block">
+                    <span className="text-xs font-semibold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full hidden sm:inline-block">
                       {review.bookTitle}
                     </span>
                   )}
@@ -110,7 +110,7 @@ export default function ReviewsPage() {
 
           {/* Review Submission Form (Right 5 cols) */}
           <div className="lg:col-span-5">
-            <div className="bg-white p-8 rounded-3xl border border-amber-200 shadow-xl sticky top-28 space-y-6">
+            <div className="bg-white p-8 rounded-2xl border border-amber-200 shadow-xl sticky top-28 space-y-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Your Feedback is Important</h3>
                 <p className="text-xs text-slate-500 mt-1">

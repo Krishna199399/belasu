@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "fix",
   "description": "Fix all-caps text readability issues (Issues 5, 6, 7, 12): Remove uppercase class and change text to sentence/title case for all text runs >20 characters. Affects 4 specific elements identified in audit. Independent of other FEATs.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Update HeroCarousel.tsx line ~102: Change span.uppercase 'Kannada Mathadi, Kannada Belesi' to title case 'Kannada Mathadi, Kannada Belesi' and remove uppercase class",
     "Update QuickLookBookSection.tsx line ~89: Remove uppercase class from CTA button text 'Order Complete Guidebook Series', keep bold",

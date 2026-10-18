@@ -87,10 +87,10 @@ export const Hero: React.FC = () => {
 
           {/* Right Column: Visual Book Showcase Stack */}
           <div className="lg:col-span-5 relative flex justify-center">
-            <div className="relative w-full max-w-md aspect-square rounded-3xl bg-white p-6 shadow-2xl border border-amber-100/80 flex flex-col justify-between overflow-hidden group">
+            <div className="relative w-full max-w-md aspect-square rounded-2xl bg-white p-6 shadow-2xl border border-amber-100/80 flex flex-col justify-between overflow-hidden group">
               
               {/* Badge Overlay */}
-              <div className="absolute top-4 right-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[11px] font-extrabold px-3 py-1 rounded-full shadow-md">
+              <div className="absolute top-4 right-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow-md">
                 Official Belesu Edition
               </div>
 
@@ -106,7 +106,7 @@ export const Hero: React.FC = () => {
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex items-center justify-between">
                 <div>
                   <h4 className="font-bold text-slate-900 text-sm">Savi Kannada Guidebook</h4>
-                  <p className="text-xs text-slate-500">Class 1 to 4 • Line-by-line English Translation</p>
+                  <p className="text-xs text-slate-600">Class 1 to 4 • Line-by-line English Translation</p>
                 </div>
                 <Link
                   href="/books/savi-kannada-class-4"

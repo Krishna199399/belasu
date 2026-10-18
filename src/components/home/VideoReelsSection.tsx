@@ -52,10 +52,10 @@ export const VideoReelsSection: React.FC = () => {
               {/* Video Details */}
               <div className="p-6">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg">
                     Video Reel
                   </span>
-                  <span className="text-xs text-slate-500 font-medium">{reel.duration}</span>
+                  <span className="text-xs text-slate-600 font-medium">{reel.duration}</span>
                 </div>
 
                 <h3 className="font-bold text-slate-900 text-base leading-snug mb-2 group-hover:text-amber-600 transition">

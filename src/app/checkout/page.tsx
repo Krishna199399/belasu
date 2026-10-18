@@ -162,7 +162,7 @@ export default function CheckoutPage() {
   if (!user) {
     return (
       <div className="py-20 bg-slate-50 min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-gray-200 shadow-xl text-center space-y-6">
+        <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-gray-200 shadow-xl text-center space-y-6">
           <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto">
             <Lock className="w-12 h-12" />
           </div>
@@ -209,7 +209,7 @@ export default function CheckoutPage() {
   if (orderPlaced) {
     return (
       <div className="py-20 bg-slate-50 min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-emerald-200 shadow-2xl text-center space-y-6 animate-in zoom-in-95 duration-300">
+        <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-emerald-200 shadow-2xl text-center space-y-6 animate-in zoom-in-95 duration-300">
           <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-12 h-12" />
           </div>
@@ -218,7 +218,7 @@ export default function CheckoutPage() {
               Order Confirmed
             </span>
             <h2 className="text-2xl font-black text-slate-900 mt-3">Thank You for Your Order!</h2>
-            <p className="text-xs text-slate-500 mt-1">Order ID: <strong className="text-slate-900 font-mono">{orderId}</strong></p>
+            <p className="text-xs text-slate-600 mt-1">Order ID: <strong className="text-slate-900 font-mono">{orderId}</strong></p>
           </div>
 
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left text-xs space-y-2 text-slate-700">
@@ -329,7 +329,7 @@ export default function CheckoutPage() {
               
               {/* Address Selection (only for physical books) */}
               {needsShipping() && (
-                <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
                   <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
                     <Package className="w-5 h-5 text-amber-600" /> Delivery Address
                   </h3>
@@ -359,7 +359,7 @@ export default function CheckoutPage() {
               )}
 
               {/* Payment Method */}
-              <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+              <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
                 <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-amber-600" /> Payment Method
                 </h3>
@@ -386,7 +386,7 @@ export default function CheckoutPage() {
                         <span className="text-2xl">{method.icon}</span>
                         <div className="flex-1">
                           <span className="font-bold text-sm text-slate-900 block">{method.label}</span>
-                          <span className="text-[10px] text-slate-500">{method.desc}</span>
+                          <span className="text-xs text-slate-600">{method.desc}</span>
                         </div>
                         {paymentMethod === method.id && (
                           <CheckCircle2 className="w-5 h-5 text-amber-600" />
@@ -404,7 +404,7 @@ export default function CheckoutPage() {
                         <p className="text-xs font-bold text-blue-900 mb-1">
                           🔒 Secure Payment via Razorpay
                         </p>
-                        <p className="text-[10px] text-blue-700 leading-relaxed">
+                        <p className="text-xs text-blue-700 leading-relaxed">
                           Your payment information is encrypted and secure. We support UPI, Credit/Debit Cards, Net Banking, and digital wallets.
                         </p>
                       </div>
@@ -417,7 +417,7 @@ export default function CheckoutPage() {
 
             {/* Right: Order Summary (4 cols) */}
             <div className="lg:col-span-4">
-              <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm sticky top-28 space-y-6">
+              <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm sticky top-28 space-y-6">
                 <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">
                   Order Summary
                 </h3>

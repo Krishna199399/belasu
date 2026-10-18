@@ -46,10 +46,10 @@ export const ElevatingKannadaSection: React.FC = () => {
                   className="w-12 h-12 object-contain"
                 />
               </div>
-              <h3 className="text-base font-serif font-bold text-slate-900 mb-1">
+              <h2 className="text-base font-serif font-bold text-slate-900 mb-1">
                 {item.title}
-              </h3>
-              <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+              </h2>
+              <p className="text-xs text-slate-600 max-w-xs leading-relaxed">
                 {item.desc}
               </p>
             </div>

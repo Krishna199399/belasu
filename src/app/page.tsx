@@ -122,8 +122,8 @@ export default function HomePage() {
               ].map((b, i) => (
                 <div key={i} className={`rounded-xl bg-gradient-to-br ${b.color} p-3 text-center text-white shadow-md`}>
                   <div className="text-2xl mb-1">{b.emoji}</div>
-                  <div className="text-[11px] font-black">{typeof b.grade === 'number' ? `Class ${b.grade}` : `Classes ${b.grade}`}</div>
-                  <div className="text-[9px] opacity-90 font-semibold">{b.subject} · {b.label}</div>
+                  <div className="text-xs font-black">{typeof b.grade === 'number' ? `Class ${b.grade}` : `Classes ${b.grade}`}</div>
+                  <div className="text-xs opacity-90 font-semibold">{b.subject} · {b.label}</div>
                 </div>
               ))}
             </div>

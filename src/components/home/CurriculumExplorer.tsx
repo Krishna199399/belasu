@@ -84,7 +84,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
         </div>
 
         {/* Dynamic Grade Content Showcase */}
-        <div className="bg-slate-50/80 rounded-3xl p-8 md:p-12 border border-slate-200 shadow-sm">
+        <div className="bg-slate-50/80 rounded-2xl p-8 md:p-12 border border-slate-200 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             {/* Left Column: Grade Details & Skills */}
@@ -102,7 +102,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
               </div>
 
               <div className="space-y-3 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <h4 className="text-xs font-bold tracking-wide text-slate-600">
                   Target Academic Skills Built:
                 </h4>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700 font-semibold">
@@ -130,11 +130,11 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
               {activeGradeBooks.map((book) => (
                 <div
                   key={book.id}
-                  className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-amber-400 hover:shadow-lg transition flex flex-col justify-between"
+                  className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-amber-400 hover:shadow-lg transition flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-900 uppercase">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-900 uppercase">
                         {book.series} Series
                       </span>
                     </div>
@@ -154,7 +154,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
 
                   <button
                     onClick={() => onPreview(book)}
-                    className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-800 hover:text-amber-700 font-bold text-xs transition flex items-center justify-center gap-1.5 mt-2"
+                    className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-amber-50 text-slate-900 hover:text-amber-700 font-bold text-xs transition flex items-center justify-center gap-1.5 mt-2"
                   >
                     <BookOpen className="w-3.5 h-3.5 text-amber-600" /> Preview Inside
                   </button>

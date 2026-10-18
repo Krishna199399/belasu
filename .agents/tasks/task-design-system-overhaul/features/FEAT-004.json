@@ -2,7 +2,7 @@
   "id": "FEAT-004",
   "type": "fix",
   "description": "Fix heading hierarchy violations (Issues 13-16): Correct all heading level skips (H1→H3, H2→H4) to ensure proper document outline per WCAG guidelines. Affects ElevatingKannadaSection, QuickLookBookSection, CurriculumExplorer, ParentFeedbackSection. Independent of other FEATs.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Update ElevatingKannadaSection.tsx line ~22: Change h3 'Language Preservation' to h2 (fixes H1→H3 skip from page title)",
     "Update QuickLookBookSection.tsx line ~41: Change h4 'Savi Kannada Class 2 Guide Book for Reference' to h3 (fixes H2→H4 skip)",

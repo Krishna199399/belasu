@@ -2,7 +2,7 @@
   "id": "FEAT-005",
   "type": "refactor",
   "description": "Standardize spacing, border radii, and layout consistency (Issues 3, 17-21): Reduce border radii from 7→4 variants (rounded-lg/xl/2xl/full), standardize card padding to p-4/p-6, button gaps to gap-2, grid gaps to gap-4/6/8 per DESIGN_SYSTEM.md. Must run AFTER FEAT-001 typography changes to avoid conflicts.",
-  "status": "pending",
+  "status": "completed",
   "steps": [
     "Read DESIGN_SYSTEM.md spacing and border-radius sections to confirm standards: rounded-xl for buttons/cards (primary), rounded-lg for inputs, rounded-2xl for large containers, rounded-full for pills",
     "Update Navbar.tsx: Standardize all rounded-md to rounded-lg, verify gap-2 on button content, p-2.5 on IconButtons",

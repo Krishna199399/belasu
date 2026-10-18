@@ -101,22 +101,22 @@ export default function VideoGalleryPage() {
                   
                   {/* Overlay Badge */}
                   {video.badgeText && (
-                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-slate-900 font-extrabold text-[10px] uppercase px-3 py-1 rounded-sm shadow-xs border border-stone-200">
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-slate-900 font-extrabold text-xs uppercase px-2.5 py-1 rounded-lg shadow-xs border border-stone-200">
                       {video.badgeText}
                     </div>
                   )}
 
                   {/* Belesu Watermark Overlay */}
                   <div className="absolute top-3 right-3 opacity-80 pointer-events-none">
-                    <span className="text-[10px] font-black text-amber-500 bg-slate-900/80 px-2 py-0.5 rounded">
+                    <span className="text-xs font-black text-amber-500 bg-slate-900/80 px-2.5 py-1 rounded-lg">
                       Belesu • +91 99023 83451
                     </span>
                   </div>
                 </div>
 
                 {/* Video Info */}
-                <div className="p-5 space-y-2 bg-stone-50/40">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-amber-700">
+                <div className="p-6 space-y-2 bg-stone-50/40">
+                  <div className="flex items-center justify-between text-xs font-bold text-amber-700">
                     <span className="uppercase tracking-wider">Duration: {video.duration}</span>
                   </div>
                   <h3 className="font-bold text-slate-900 text-base leading-snug font-serif">

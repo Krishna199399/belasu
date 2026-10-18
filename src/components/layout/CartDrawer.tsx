@@ -84,7 +84,7 @@ export const CartDrawer: React.FC = () => {
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <span className="inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                      <span className="inline-block mt-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800">
                         Class {product.gradeClass} {productType === 'physical' && 'series' in product && `(${product.series} - Hard Copy)`}
                         {productType === 'digital' && ' - Digital'}
                       </span>
@@ -103,7 +103,7 @@ export const CartDrawer: React.FC = () => {
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="px-2.5 text-xs font-semibold text-slate-800">{quantity}</span>
+                          <span className="px-2.5 text-xs font-semibold text-slate-900">{quantity}</span>
                           <button
                             onClick={() => updateQuantity(product.id, quantity + 1)}
                             className="p-1 hover:bg-slate-100 text-slate-600 transition"
@@ -113,10 +113,10 @@ export const CartDrawer: React.FC = () => {
                         </div>
                       ) : (
                         <div className="flex flex-col items-end">
-                          <div className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
+                          <div className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">
                             💻 Digital License
                           </div>
-                          <span className="text-[9px] text-slate-500 mt-0.5">Qty: 1</span>
+                          <span className="text-xs text-slate-600 mt-0.5">Qty: 1</span>
                         </div>
                       )}
                     </div>

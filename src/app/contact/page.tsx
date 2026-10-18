@@ -48,7 +48,7 @@ export default function ContactPage() {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Quick WhatsApp Support Card */}
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-8 rounded-3xl shadow-xl space-y-4">
+            <div className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-8 rounded-2xl shadow-xl space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
                 <MessageCircle className="w-6 h-6 fill-white text-emerald-600" />
               </div>
@@ -67,7 +67,7 @@ export default function ContactPage() {
             </div>
 
             {/* Address & Contact Cards */}
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
               <h3 className="font-bold text-slate-900 text-lg">Contact Information</h3>
               
               <div className="space-y-4 text-xs sm:text-sm text-slate-700">
@@ -117,10 +117,10 @@ export default function ContactPage() {
 
           {/* Right Contact Form */}
           <div className="lg:col-span-7">
-            <div className="bg-white p-8 md:p-12 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <div className="bg-white p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-6">
               <div>
                 <h3 className="text-2xl font-black text-slate-900">Send Us a Message</h3>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-600 mt-1">
                   Fill out the form below and our academic advisor will reach out to you within 24 hours.
                 </p>
               </div>

@@ -5,7 +5,7 @@ export default function ShippingPolicyPage() {
   return (
     <div className="py-12 md:py-20 bg-slate-50 min-h-screen">
       <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-5">
-        <div className="bg-white p-8 md:p-12 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+        <div className="bg-white p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-6">
           <div className="border-b border-slate-100 pb-4">
             <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase">Legal & Logistics</span>
             <h1 className="text-3xl font-black text-slate-900 mt-2">Shipping Policy</h1>

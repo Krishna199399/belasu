@@ -172,7 +172,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
           <div key={`text-light-${activeSlide.id}`} className="lg:col-span-7 space-y-6 text-center lg:text-left animate-in fade-in slide-in-from-right-6 duration-500">
             
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-600 block">
+              <span className="text-xs font-bold tracking-wide text-slate-600 block">
                 {activeSlide.tagline}
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-slate-900 leading-tight">
@@ -197,7 +197,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               <button
                 type="button"
                 onClick={() => addToCart(activeBook, 'physical')}
-                className="w-full sm:w-auto py-4 px-8 rounded-full font-black text-slate-950 bg-amber-400 hover:bg-amber-500 shadow-xl shadow-amber-400/30 flex items-center justify-center gap-2 text-sm uppercase tracking-wide transition transform active:scale-95 cursor-pointer"
+                className="w-full sm:w-auto py-4 px-8 rounded-full font-black text-slate-950 bg-amber-400 hover:bg-amber-500 shadow-xl shadow-amber-400/30 flex items-center justify-center gap-2 text-sm tracking-wide transition transform active:scale-95 cursor-pointer"
               >
                 <ShoppingBag className="w-4 h-4 text-slate-950" /> Add to Cart (₹{activeSlide.price})
               </button>
@@ -205,7 +205,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               <button
                 type="button"
                 onClick={() => onPreview(activeBook)}
-                className="w-full sm:w-auto py-4 px-6 rounded-full font-bold text-slate-800 bg-white/90 hover:bg-white border border-slate-300 hover:border-slate-400 transition text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                className="w-full sm:w-auto py-4 px-6 rounded-full font-bold text-slate-900 bg-white/90 hover:bg-white border border-slate-300 hover:border-slate-400 transition text-xs tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer"
               >
                 <Eye className="w-4 h-4 text-amber-600" /> View More & Preview
               </button>
@@ -220,7 +220,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       <button
         type="button"
         onClick={handlePrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/80 hover:bg-amber-400 text-slate-800 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition cursor-pointer"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/80 hover:bg-amber-400 text-slate-900 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition cursor-pointer"
         aria-label="Previous Banner"
       >
         <ChevronLeft className="w-6 h-6" />
@@ -229,7 +229,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       <button
         type="button"
         onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/80 hover:bg-amber-400 text-slate-800 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition cursor-pointer"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/80 hover:bg-amber-400 text-slate-900 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition cursor-pointer"
         aria-label="Next Banner"
       >
         <ChevronRight className="w-6 h-6" />

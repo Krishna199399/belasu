@@ -40,7 +40,7 @@ function DigitalBookCard({ book }: { book: DigitalBook }) {
         </div>
         {!owned && (
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/50 to-transparent flex items-end justify-center pb-2.5 pt-6">
-            <div className="flex items-center gap-1.5 text-white text-[11px] font-semibold bg-black/40 backdrop-blur-xs px-3 py-1 rounded-full">
+            <div className="flex items-center gap-1.5 text-white text-xs font-semibold bg-black/40 backdrop-blur-xs px-3 py-1 rounded-full">
               <Lock className="w-3 h-3 text-amber-300" /> {book.isFreePreviewPages} pages free preview
             </div>
           </div>
@@ -48,9 +48,9 @@ function DigitalBookCard({ book }: { book: DigitalBook }) {
       </div>
 
       {/* Card Info */}
-      <div className="p-5 pb-3 flex flex-col flex-1">
+      <div className="p-6 pb-3 flex flex-col flex-1">
         <div className="mb-1.5">
-          <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
             {book.subject} · Digital Reader
           </span>
         </div>
@@ -61,11 +61,11 @@ function DigitalBookCard({ book }: { book: DigitalBook }) {
           </h3>
         </Link>
 
-        <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3">
+        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-3">
           {book.description}
         </p>
 
-        <div className="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-2">
+        <div className="mt-auto flex items-center gap-2 text-xs text-slate-600 font-medium pt-2">
           <BookOpen className="w-3.5 h-3.5 text-amber-600" />
           <span>{book.totalPages} Pages</span>
           <span className="text-slate-300">•</span>
@@ -74,12 +74,12 @@ function DigitalBookCard({ book }: { book: DigitalBook }) {
       </div>
 
       {/* Pricing & Actions Footer */}
-      <div className="p-5 pt-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
+      <div className="p-6 pt-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
         <div>
           <span className="text-xl font-black text-slate-900 block leading-tight">
             ₹{book.price}
           </span>
-          <span className="text-[10px] font-medium text-slate-500 block">Lifetime access</span>
+          <span className="text-xs font-medium text-slate-600 block">Lifetime access</span>
         </div>
 
         <div className="flex items-center gap-2">

@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Order } from '@/types';
@@ -11,7 +13,7 @@ import Link from 'next/link';
 
 type TabType = 'orders' | 'addresses' | 'profile' | 'library';
 
-export default function ProfilePage() {
+function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoading: authLoading, updateProfile, logout } = useAuth();
@@ -443,5 +445,19 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader className="w-8 h-8 animate-spin text-amber-500" />
+        </div>
+      }
+    >
+      <ProfileContent />
+    </Suspense>
   );
 }

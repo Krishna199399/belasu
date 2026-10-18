@@ -196,8 +196,8 @@ function BooksContent() {
           {filteredBooks.length === 0 ? (
             <div className="text-center py-20 bg-stone-50 rounded-2xl border border-stone-200">
               <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <h3 className="font-bold text-slate-800 text-lg">No books found</h3>
-              <p className="text-xs text-slate-500 mt-1 mb-6">Try searching for a different title or series.</p>
+              <h3 className="font-bold text-slate-900 text-lg">No books found</h3>
+              <p className="text-xs text-slate-600 mt-1 mb-6">Try searching for a different title or series.</p>
               <button
                 onClick={() => {
                   setSearchQuery('');
@@ -228,9 +228,9 @@ function BooksContent() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Building2 className="w-5 h-5 text-amber-400" />
-                <h4 className="font-extrabold text-base text-amber-400">
-                  CKELP TECHNOLOGIES PRIVATE LIMITED
-                </h4>
+                <h3 className="font-bold text-base text-amber-400">
+                  Ckelp Technologies Private Limited
+                </h3>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore- 562125

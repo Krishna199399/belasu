@@ -56,12 +56,12 @@ export const QuickLookBookSection: React.FC = () => {
         
         {/* Header Titles */}
         <div className="text-center space-y-3 mb-10">
-          <h3 className="text-3xl sm:text-4xl font-serif italic font-bold text-amber-800 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-serif italic font-bold text-amber-800 tracking-tight">
             A Quick Look at the Book
-          </h3>
-          <h2 className="text-xl sm:text-2xl font-serif font-extrabold text-slate-900 tracking-tight">
-            Savi & Siri Kannada Guide Book from 1-5 for Reference
           </h2>
+          <p className="text-xl sm:text-2xl font-serif font-extrabold text-slate-900 tracking-tight">
+            Savi & Siri Kannada Guide Book from 1-5 for Reference
+          </p>
         </div>
 
         {/* Grade Class Filter Tabs */}
@@ -83,9 +83,9 @@ export const QuickLookBookSection: React.FC = () => {
 
         {/* Active Class Subheading */}
         <div className="text-center mb-8">
-          <h4 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
+          <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
             {currentTabInfo.title}
-          </h4>
+          </h3>
         </div>
 
         {/* Sample Pages Showcase Gallery Grid */}
@@ -102,7 +102,7 @@ export const QuickLookBookSection: React.FC = () => {
                   className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <span className="text-xs font-bold text-slate-800 text-center leading-tight">
+              <span className="text-xs font-bold text-slate-900 text-center leading-tight">
                 {imgItem.title}
               </span>
             </div>
@@ -113,7 +113,7 @@ export const QuickLookBookSection: React.FC = () => {
         <div className="text-center pt-10">
           <Link
             href="/books"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-sm uppercase tracking-wider rounded-full shadow-lg transition transform active:scale-95"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm tracking-wide rounded-full shadow-lg transition transform active:scale-95"
           >
             <BookOpen className="w-4 h-4" /> Order Complete Guidebook Series <ChevronRight className="w-4 h-4" />
           </Link>

@@ -44,7 +44,7 @@ export default function BookDetailPage() {
         </Link>
 
         {/* Product Details Layout */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-12 mb-16">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-12 mb-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Image Showcase */}
@@ -142,7 +142,7 @@ export default function BookDetailPage() {
 
         {/* Table of Contents & Features */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-amber-600" /> Key Features & Highlights
             </h3>
@@ -156,7 +156,7 @@ export default function BookDetailPage() {
             </ul>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-amber-600" /> Table of Contents Overview
             </h3>

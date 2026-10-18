@@ -25,7 +25,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
         </Badge>
       </div>
 
-      <div className="p-5 pb-3">
+      <div className="p-6 pb-3">
         {/* Book Cover Container */}
         <div className="relative w-full h-56 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3 mb-4 group-hover:bg-amber-50/40 transition-colors overflow-hidden">
           <img
@@ -48,7 +48,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
 
         {/* Series Tag */}
         <div className="mb-2">
-          <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
             {book.series} Kannada Series
           </span>
         </div>
@@ -61,19 +61,19 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
         </Link>
 
         {/* Sub-description snippet */}
-        <p className="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">
+        <p className="text-xs text-slate-600 line-clamp-2 mb-4 leading-relaxed">
           {book.description}
         </p>
       </div>
 
       {/* Pricing & Add to Cart Footer */}
-      <div className="p-5 pt-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
+      <div className="p-6 pt-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
         <div>
           <span className="text-lg font-black text-slate-900 block leading-tight">
             {formatPrice(book.price)}
           </span>
           {book.stockQuantity <= 5 && book.stockQuantity > 0 && (
-            <span className="text-[10px] font-bold text-amber-700 block mt-0.5">
+            <span className="text-xs font-bold text-amber-700 block mt-0.5">
               Only {book.stockQuantity} left!
             </span>
           )}

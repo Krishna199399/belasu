@@ -85,7 +85,7 @@ export default function FAQsPage() {
         </div>
 
         {/* WhatsApp Help CTA */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-8 text-center space-y-4">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center space-y-4">
           <h3 className="text-xl font-bold text-emerald-900">Still have questions?</h3>
           <p className="text-xs text-emerald-700 max-w-md mx-auto">
             Our support team is available on WhatsApp to help you choose the right guidebook for your child.
