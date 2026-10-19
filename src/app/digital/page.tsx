@@ -119,10 +119,10 @@ export default function DigitalBooksPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetch('/api/digital/books')
+    fetch('/api/digital/books', { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.books && data.books.length > 0) {
+        if (data.success && Array.isArray(data.books)) {
           setBooksList(data.books);
         }
       })
@@ -163,17 +163,17 @@ export default function DigitalBooksPage() {
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-slate-900 tracking-tight leading-tight">
-              Study Smarter for <span className="text-amber-600">Classes 6th to 10th</span>
+              Study Smarter for <span className="text-amber-600">Class 6th</span>
             </h1>
 
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-              Purchase once, read forever. Our secure web reader lets you access Karnataka Board guidebooks anywhere — no app download needed. Protected against screenshots and downloads.
+              Purchase once, read forever. Our secure web reader lets you access the Karnataka Board Class 6 Kannada guidebook anywhere — no app download needed. Protected against screenshots and downloads.
             </p>
 
             <div className="flex flex-wrap gap-3 justify-center pt-2">
               {[
                 { icon: <ShieldCheck className="w-4 h-4 text-amber-600" />, text: 'Protected Web Reader' },
-                { icon: <BookOpen className="w-4 h-4 text-amber-600" />, text: 'Classes 6–10 Kannada Guides' },
+                { icon: <BookOpen className="w-4 h-4 text-amber-600" />, text: 'Class 6 Kannada Guide' },
                 { icon: <Lock className="w-4 h-4 text-amber-600" />, text: 'One-Time Lifetime Access' },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-2 text-xs font-bold text-slate-700 bg-white border border-stone-200 px-3.5 py-2 rounded-xl shadow-xs">

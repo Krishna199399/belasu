@@ -18,7 +18,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
 
   if (!book) return null;
 
-  const samples = book.samplePages && book.samplePages.length > 0 ? book.samplePages : [
+  const baseSamples = book.samplePages && book.samplePages.length > 0 ? book.samplePages : [
     {
       pageNumber: 1,
       title: 'Sample Lesson Translation',
@@ -27,6 +27,19 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
       englishTranslation: 'Line-by-line English transliteration and word meanings provided for every lesson.'
     }
   ];
+
+  const samples = book.karnatakaTextbookCover
+    ? [
+        ...baseSamples,
+        {
+          pageNumber: baseSamples.length + 1,
+          title: `Official Karnataka Board Class ${book.gradeClass} Textbook Cover`,
+          imageUrl: book.karnatakaTextbookCover,
+          kannadaText: `ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪಠ್ಯಪುಸ್ತಕ - ${book.series} ಕನ್ನಡ ತರಗತಿ ${book.gradeClass}`,
+          englishTranslation: 'Official Karnataka State Board school textbook. Belesu English-translated guidebook is strictly aligned to this book.'
+        }
+      ]
+    : baseSamples;
 
   const currentSample = samples[currentPage];
 

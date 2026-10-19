@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BookProduct } from '@/types';
 import { BOOKS_DATA } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
-import { ChevronLeft, ChevronRight, ShoppingBag, Eye, Play, CheckCircle2 } from 'lucide-react';
-import Link from 'next/link';
+import { ChevronLeft, ChevronRight, ShoppingBag, Eye } from 'lucide-react';
 
 interface HeroCarouselProps {
   onPreview: (book: BookProduct) => void;
@@ -14,6 +13,7 @@ interface HeroCarouselProps {
 export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
   const { addToCart } = useCart();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const slides = [
     {
@@ -24,7 +24,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       price: 280,
       originalPrice: 340,
       badge: 'Bestseller',
-      coverImg: '/cover-3.png',
+      coverImg: '/covers/savi-4.png',
       bgImg: '/slider-image.png',
       headline: 'Savi Kannada Class 4',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
@@ -38,7 +38,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       price: 250,
       originalPrice: 299,
       badge: 'Popular for Beginners',
-      coverImg: '/Savi-Class1-CoverPage.png',
+      coverImg: '/covers/savi-1.png',
       bgImg: '/2.png',
       headline: 'Savi Kannada Class 1',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
@@ -52,7 +52,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       price: 290,
       originalPrice: 350,
       badge: 'New Edition',
-      coverImg: '/2nd-1stpart.png',
+      coverImg: '/covers/kali-2.png',
       bgImg: '/background5.png',
       headline: 'Kali Kannada Class 2',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
@@ -66,7 +66,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       price: 290,
       originalPrice: 350,
       badge: 'Top Rated',
-      coverImg: '/SV-3-2.png',
+      coverImg: '/covers/kali-3.png',
       bgImg: '/3.png',
       headline: 'Kali Kannada Class 3',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
@@ -80,7 +80,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       price: 290,
       originalPrice: 350,
       badge: 'Class 5 Special',
-      coverImg: '/SV-5-2.png',
+      coverImg: '/covers/siri-5.png',
       bgImg: '/slider-960-x-760-px.jpg',
       headline: 'Siri Kannada Class 5',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
@@ -94,7 +94,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       price: 280,
       originalPrice: 330,
       badge: 'Parent Favorite',
-      coverImg: '/Savi-Class2-CoverPage.png',
+      coverImg: '/covers/savi-3.png',
       bgImg: '/2.png',
       headline: 'Savi Kannada Class 3',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
@@ -108,7 +108,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       price: 260,
       originalPrice: 310,
       badge: 'Recommended',
-      coverImg: '/savi-kannada-1st-1stpart.png',
+      coverImg: '/covers/savi-2.png',
       bgImg: '/background5.png',
       headline: 'Savi Kannada Class 2',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
@@ -116,13 +116,16 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
     }
   ];
 
-  // Auto-play timer every 3.5 seconds
+  // Auto-play timer every 6.0 seconds (comfortable reading speed)
   useEffect(() => {
+    if (isPaused) return;
+
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 3500);
+    }, 6000);
+
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [isPaused, slides.length, currentSlide]);
 
   const activeSlide = slides[currentSlide];
   const activeBook = BOOKS_DATA.find((b) => b.id === activeSlide.bookId) || BOOKS_DATA[0];
@@ -135,16 +138,24 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
+  const handleSelectSlide = (idx: number) => {
+    setCurrentSlide(idx);
+  };
+
   return (
-    <section className="relative w-full min-h-[580px] lg:h-[640px] bg-slate-50 text-slate-900 overflow-hidden border-b border-slate-200">
-      
+    <section
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      className="relative w-full min-h-[580px] lg:h-[640px] bg-slate-50 text-slate-900 overflow-hidden border-b border-slate-200 select-none group/carousel"
+    >
+
       {/* Vivid Background Image with Soft Light Gradient Overlay */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <img
           key={`bg-light-${activeSlide.id}`}
           src={activeSlide.bgImg}
           alt="Karnataka Landmark Background"
-          className="w-full h-full object-cover opacity-90 transition-opacity duration-700 animate-in fade-in"
+          className="w-full h-full object-cover opacity-90 animate-hero-bg pointer-events-none"
         />
         {/* Soft White/Light Gradient Overlay for Text Readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-white/40 via-white/85 to-white" />
@@ -154,13 +165,16 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       <div className="relative z-10 max-w-[1400px] mx-auto h-full px-6 sm:px-8 lg:px-12 flex items-center py-12 lg:py-0">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
-          {/* Left Side: Prominent Book Cover Showcase */}
-          <div key={`cover-light-${activeSlide.id}`} className="lg:col-span-5 flex items-center justify-center animate-in fade-in zoom-in-95 duration-500">
+          {/* Left Side: Prominent Book Cover Showcase with smooth fade + float animation */}
+          <div
+            key={`cover-light-${activeSlide.id}`}
+            className="lg:col-span-5 flex items-center justify-center animate-hero-cover"
+          >
             <div className="relative max-w-xs sm:max-w-sm w-full aspect-[3/4] flex items-center justify-center p-2 group">
               <img
                 src={activeSlide.coverImg}
                 alt={activeSlide.title}
-                className="max-h-[460px] max-w-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.25)] transform group-hover:scale-105 transition-transform duration-500"
+                className="max-h-[460px] max-w-full object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.22)] transform group-hover:scale-105 transition-transform duration-500"
               />
               <span className="absolute top-2 right-2 px-3 py-1 bg-amber-500 text-slate-950 font-black text-xs rounded-full shadow-lg">
                 ₹{activeSlide.price}
@@ -168,9 +182,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             </div>
           </div>
 
-          {/* Right Side: Editorial Book Copy & Vibrant Yellow/Amber CTAs */}
-          <div key={`text-light-${activeSlide.id}`} className="lg:col-span-7 space-y-6 text-center lg:text-left animate-in fade-in slide-in-from-right-6 duration-500">
-            
+          {/* Right Side: Editorial Book Copy & Vibrant Yellow/Amber CTAs with smooth slide animation */}
+          <div
+            key={`text-light-${activeSlide.id}`}
+            className="lg:col-span-7 space-y-6 text-center lg:text-left animate-hero-text"
+          >
             <div className="space-y-2">
               <span className="text-xs font-bold tracking-wide text-slate-600 block">
                 {activeSlide.tagline}
@@ -190,6 +206,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             {/* Price Tag */}
             <div className="flex items-center justify-center lg:justify-start gap-4 py-1">
               <span className="text-3xl font-black text-amber-600">₹{activeSlide.price}</span>
+              {activeSlide.originalPrice && (
+                <span className="text-sm text-slate-400 line-through">₹{activeSlide.originalPrice}</span>
+              )}
             </div>
 
             {/* Bright Yellow / Amber Buttons (Matching Original Design) */}
@@ -216,11 +235,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
         </div>
       </div>
 
-      {/* Translucent Light Arrow Controls */}
+      {/* Translucent Light Arrow Controls with Smooth Hover Scale */}
       <button
         type="button"
         onClick={handlePrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/80 hover:bg-amber-400 text-slate-900 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition cursor-pointer"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/85 hover:bg-amber-400 text-slate-900 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
         aria-label="Previous Banner"
       >
         <ChevronLeft className="w-6 h-6" />
@@ -229,23 +248,23 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       <button
         type="button"
         onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/80 hover:bg-amber-400 text-slate-900 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition cursor-pointer"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/85 hover:bg-amber-400 text-slate-900 hover:text-slate-950 border border-slate-300 shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
         aria-label="Next Banner"
       >
         <ChevronRight className="w-6 h-6" />
       </button>
 
-      {/* Bottom Amber Dot Indicators */}
+      {/* Bottom Amber Dot Indicators with Smooth Width Extension */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
         {slides.map((s, idx) => (
           <button
             key={`dot-light-${s.id}`}
             type="button"
-            onClick={() => setCurrentSlide(idx)}
-            className={`h-3 rounded-full transition-all duration-300 cursor-pointer ${
+            onClick={() => handleSelectSlide(idx)}
+            className={`h-3 rounded-full transition-all duration-500 cursor-pointer ${
               currentSlide === idx
-                ? 'w-8 bg-amber-500 shadow-sm'
-                : 'w-3 bg-slate-300 hover:bg-slate-400'
+                ? 'w-10 bg-amber-500 shadow-md shadow-amber-500/40'
+                : 'w-3 bg-slate-300/80 hover:bg-slate-400'
             }`}
             aria-label={`Go to slide ${idx + 1}`}
           />

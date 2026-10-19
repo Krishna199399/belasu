@@ -22,6 +22,7 @@ export interface BookProduct {
   features: string[];
   tableOfContents: string[];
   coverImage: string;
+  karnatakaTextbookCover?: string;
   samplePages: SamplePage[];
   inStock: boolean;
   stockQuantity: number;

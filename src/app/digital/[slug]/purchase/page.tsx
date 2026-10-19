@@ -1,31 +1,66 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getDigitalBookBySlug } from '@/data/digitalBooksData';
+import { DigitalBook } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 import { notFound } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { ShieldCheck, CreditCard, Smartphone, Banknote, ArrowRight, Lock } from 'lucide-react';
+import { ShieldCheck, CreditCard, Smartphone, Banknote, ArrowRight, Lock, BookOpen, Sparkles } from 'lucide-react';
 
 type PaymentMethod = 'UPI' | 'Card' | 'COD';
 
 export default function PurchasePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const book = getDigitalBookBySlug(slug);
-  const { user, refreshUser } = useAuth();
+  const [book, setBook] = useState<DigitalBook | undefined>(() => getDigitalBookBySlug(slug));
+  const [loadingBook, setLoadingBook] = useState(!book);
+  const { user, refreshUser, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [method, setMethod] = useState<PaymentMethod>('UPI');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  if (!book) notFound();
-  if (!user) {
-    router.push(`/auth/login?redirect=/digital/${slug}/purchase`);
-    return null;
+  useEffect(() => {
+    fetch(`/api/digital/books?slug=${encodeURIComponent(slug)}`, { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.book) {
+          setBook(data.book);
+        }
+      })
+      .catch((err) => console.error('Failed to load book for checkout:', err))
+      .finally(() => setLoadingBook(false));
+  }, [slug]);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push(`/auth/login?redirect=/digital/${slug}/purchase`);
+    }
+  }, [user, authLoading, router, slug]);
+
+  useEffect(() => {
+    if (user && book && user.purchasedBooks?.digital?.includes(book.id)) {
+      router.push(`/reader/${slug}`);
+    }
+  }, [user, book, router, slug]);
+
+  if (loadingBook) {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">
+        <div className="w-10 h-10 border-3 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+      </div>
+    );
   }
-  if (user.purchasedBooks?.digital?.includes(book.id)) {
-    router.push(`/reader/${slug}`);
-    return null;
+
+  if (!book) notFound();
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">
+        <div className="text-slate-500 text-sm">Redirecting to login...</div>
+      </div>
+    );
   }
 
   const handlePurchase = async () => {
@@ -52,105 +87,137 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-1">
-          <div className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-widest mb-3">
-            <Lock className="w-3 h-3" /> Secure Checkout
+    <div className="min-h-screen bg-stone-50 text-slate-900 flex flex-col justify-between py-10 px-4 sm:px-6">
+      <div className="w-full max-w-lg mx-auto space-y-6">
+        
+        {/* Header Breadcrumb / Logo */}
+        <div className="text-center space-y-2">
+          <Link href={`/digital/${book.slug}`} className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 transition">
+            &larr; Back to {book.title}
+          </Link>
+          <div className="pt-1">
+            <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+              <Lock className="w-3.5 h-3.5 text-amber-700" /> Instant Digital Access
+            </span>
           </div>
-          <h1 className="text-2xl font-black">Complete Your Purchase</h1>
-          <p className="text-slate-400 text-sm">You're one step away from digital access</p>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">
+            Complete Your Digital Order
+          </h1>
+          <p className="text-slate-600 text-xs sm:text-sm">
+            Instant lifetime reading access in our secure web reader
+          </p>
         </div>
 
-        {/* Order Summary */}
-        <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 space-y-3">
-          <h2 className="text-sm font-black text-slate-300 uppercase tracking-wider">Order Summary</h2>
-          <div className="flex items-start gap-3">
-            <div className="w-12 h-14 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-2xl flex-shrink-0">📖</div>
-            <div className="flex-1">
-              <p className="text-sm font-bold leading-snug text-white">{book.title}</p>
-              <p className="text-xs text-slate-400 mt-1">Class {book.gradeClass} · {book.subject} · {book.totalPages} pages</p>
-              <p className="text-xs text-emerald-400 mt-1">✓ Lifetime digital access</p>
+        {/* Order Summary Card */}
+        <div className="bg-white border border-stone-200/90 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+            <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider">Order Summary</h2>
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              Lifetime Access
+            </span>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-18 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-3xl flex-shrink-0 text-white shadow-xs">
+              📖
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold leading-snug text-slate-900 line-clamp-2">{book.title}</p>
+              <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-500 font-medium">
+                <span className="bg-stone-100 px-2 py-0.5 rounded font-semibold text-slate-700">Class {book.gradeClass}</span>
+                <span>•</span>
+                <span>{book.subject}</span>
+                <span>•</span>
+                <span>{book.totalPages} pages</span>
+              </div>
             </div>
           </div>
-          <div className="border-t border-slate-700/60 pt-3 flex justify-between items-center">
-            <span className="text-sm text-slate-400">Total</span>
+
+          <div className="border-t border-stone-100 pt-3 flex justify-between items-center">
+            <div>
+              <span className="text-xs text-slate-500 block">Total Payable</span>
+              <span className="text-xs text-emerald-600 font-semibold">Zero shipping fee (Digital)</span>
+            </div>
             <div className="text-right">
-              <span className="text-2xl font-black text-amber-400">₹{book.price}</span>
+              {book.originalPrice && book.originalPrice > book.price && (
+                <span className="text-xs text-slate-400 line-through mr-2 font-medium">₹{book.originalPrice}</span>
+              )}
+              <span className="text-2xl font-black text-amber-700 tracking-tight">₹{book.price}</span>
             </div>
           </div>
         </div>
 
-        {/* Payment Method */}
-        <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 space-y-3">
-          <h2 className="text-sm font-black text-slate-300 uppercase tracking-wider">Payment Method</h2>
-          <div className="grid grid-cols-3 gap-2">
+        {/* Payment Method Selector */}
+        <div className="bg-white border border-stone-200/90 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+          <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider">Select Payment Method</h2>
+          
+          <div className="grid grid-cols-3 gap-2.5">
             {([
-              { id: 'UPI' as PaymentMethod, icon: <Smartphone className="w-5 h-5" />, label: 'UPI' },
-              { id: 'Card' as PaymentMethod, icon: <CreditCard className="w-5 h-5" />, label: 'Card' },
-              { id: 'COD' as PaymentMethod, icon: <Banknote className="w-5 h-5" />, label: 'Cash' },
+              { id: 'UPI' as PaymentMethod, icon: <Smartphone className="w-4 h-4" />, label: 'UPI / QR' },
+              { id: 'Card' as PaymentMethod, icon: <CreditCard className="w-4 h-4" />, label: 'Debit / Card' },
+              { id: 'COD' as PaymentMethod, icon: <Banknote className="w-4 h-4" />, label: 'Direct Help' },
             ]).map((m) => (
               <button
                 key={m.id}
+                type="button"
                 onClick={() => setMethod(m.id)}
-                className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border text-xs font-bold transition ${
+                className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border text-xs font-bold transition cursor-pointer ${
                   method === m.id
-                    ? 'border-amber-500 bg-amber-500/10 text-amber-400'
-                    : 'border-slate-600 text-slate-400 hover:border-slate-500'
+                    ? 'border-amber-500 bg-amber-50/70 text-amber-900 shadow-xs'
+                    : 'border-stone-200 text-slate-600 hover:border-slate-300 bg-stone-50/50'
                 }`}
               >
                 {m.icon}
-                {m.label}
+                <span>{m.label}</span>
               </button>
             ))}
           </div>
 
           {method === 'UPI' && (
-            <div className="bg-slate-900/60 rounded-xl p-3 text-xs text-slate-400 text-center">
-              You'll be redirected to your UPI app to complete payment
+            <div className="bg-amber-50/60 border border-amber-200/60 rounded-xl p-3 text-xs text-amber-900 text-center">
+              Instant activation via PhonePe, Google Pay, Paytm or BHIM UPI
             </div>
           )}
           {method === 'Card' && (
-            <div className="space-y-2">
-              <input className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500" placeholder="Card number" />
-              <div className="grid grid-cols-2 gap-2">
-                <input className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500" placeholder="MM/YY" />
-                <input className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500" placeholder="CVV" />
-              </div>
+            <div className="bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-slate-600 text-center">
+              Credit card, debit card & NetBanking supported with 256-bit SSL encryption
             </div>
           )}
           {method === 'COD' && (
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-300">
-              ⚠️ Note: Digital books require payment before access. COD is processed via WhatsApp confirmation.
+            <div className="bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-slate-600 text-center">
+              Need assistance? Instant activation supported with our customer care team via WhatsApp
             </div>
           )}
         </div>
 
-        {/* Logged in as */}
-        <div className="text-xs text-slate-400 text-center">
-          Purchasing as <span className="text-white font-bold">{user.name}</span> ({user.phone})
+        {/* Logged in User Bar */}
+        <div className="text-xs text-slate-500 text-center bg-white border border-stone-200/80 rounded-xl py-2 px-4">
+          Ordering as <span className="font-bold text-slate-900">{user.name}</span> ({user.phone})
         </div>
 
-        {/* Pay Button */}
+        {/* Pay Action Button */}
         <button
           onClick={handlePurchase}
           disabled={isProcessing}
-          className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 font-black py-4 rounded-2xl transition text-sm"
+          className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black py-4 rounded-2xl shadow-md shadow-amber-500/20 transition text-sm cursor-pointer"
         >
           {isProcessing ? (
             <span className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-slate-900/40 border-t-slate-900 rounded-full animate-spin" />
-              Processing...
+              <div className="w-4 h-4 border-2 border-slate-950/40 border-t-slate-950 rounded-full animate-spin" />
+              Activating Digital Reader...
             </span>
           ) : (
             <>
               <ShieldCheck className="w-4 h-4" />
-              Pay ₹{book.price} & Start Reading
+              Pay ₹{book.price} & Read Now
               <ArrowRight className="w-4 h-4" />
             </>
           )}
         </button>
+
+        <div className="flex items-center justify-center gap-2 text-xs text-slate-400 text-center">
+          <Lock className="w-3.5 h-3.5" /> 100% Secure Checkout • DRM Protected Web Reader
+        </div>
       </div>
     </div>
   );

@@ -88,4 +88,51 @@
   background: #f5a623;
 }
 
+/* ── Hero Carousel Keyframes & Animation Utilities ── */
+@keyframes heroCoverFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes heroTextSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes heroBgCrossFade {
+  0% {
+    opacity: 0.2;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+
+.animate-hero-cover {
+  animation: heroCoverFadeIn 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-hero-text {
+  animation: heroTextSlideIn 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-hero-bg {
+  animation: heroBgCrossFade 1000ms ease-out both;
+}
+
 

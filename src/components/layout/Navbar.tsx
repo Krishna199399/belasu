@@ -279,20 +279,23 @@ export const Navbar: React.FC = () => {
                 </button>
                 {userDropdownOpen && (
                   <div className="absolute top-full right-0 w-52 bg-white rounded-xl shadow-xl border border-stone-200 py-2 z-50">
-                    {user.isAdmin && (
+                    {user.isAdmin ? (
                       <Link href="/admin" onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-amber-700 bg-amber-50/70 hover:bg-amber-100 transition border-b border-stone-100">
+                        className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-amber-700 bg-amber-50/70 hover:bg-amber-100 transition">
                         <Shield className="w-3.5 h-3.5 text-amber-600" /> Admin Portal
                       </Link>
+                    ) : (
+                      <>
+                        <Link href="/library" onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition">
+                          <Library className="w-3.5 h-3.5" /> My Library
+                        </Link>
+                        <Link href="/profile?tab=orders" onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition">
+                          <Package className="w-3.5 h-3.5" /> Purchase History
+                        </Link>
+                      </>
                     )}
-                    <Link href="/library" onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition">
-                      <Library className="w-3.5 h-3.5" /> My Library
-                    </Link>
-                    <Link href="/profile?tab=orders" onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition">
-                      <Package className="w-3.5 h-3.5" /> Purchase History
-                    </Link>
                     <div className="border-t border-stone-100 mt-1 pt-1">
                       <button onClick={() => { logout(); setUserDropdownOpen(false); }}
                         className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition">
@@ -432,16 +435,23 @@ export const Navbar: React.FC = () => {
             })}
             {user ? (
               <>
-                {user.isAdmin && (
+                {user.isAdmin ? (
                   <Link href="/admin" onClick={() => setMobileMenuOpen(false)}
                     className="px-3 py-2.5 rounded-lg text-sm font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 transition flex items-center gap-2">
                     <Shield className="w-4 h-4 text-amber-600" /> Admin Portal
                   </Link>
+                ) : (
+                  <>
+                    <Link href="/library" onClick={() => setMobileMenuOpen(false)}
+                      className="px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition flex items-center gap-2">
+                      <Library className="w-4 h-4" /> My Library
+                    </Link>
+                    <Link href="/profile?tab=orders" onClick={() => setMobileMenuOpen(false)}
+                      className="px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition flex items-center gap-2">
+                      <Package className="w-4 h-4" /> Purchase History
+                    </Link>
+                  </>
                 )}
-                <Link href="/library" onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-2.5 rounded-lg text-sm font-semibold text-indigo-600 hover:bg-indigo-50 transition flex items-center gap-2">
-                  <Library className="w-4 h-4" /> My Library
-                </Link>
                 <button onClick={() => { logout(); setMobileMenuOpen(false); }}
                   className="px-3 py-2.5 rounded-lg text-sm font-semibold text-red-500 hover:bg-red-50 transition text-left flex items-center gap-2">
                   <LogOut className="w-4 h-4" /> Logout

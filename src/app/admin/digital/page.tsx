@@ -22,6 +22,10 @@ import {
   DollarSign,
   Shield,
   BookMarked,
+  FileUp,
+  Upload,
+  Loader2,
+  Check,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { DigitalBook, DigitalBookChapter } from '@/types';
@@ -32,11 +36,7 @@ interface DigitalProductWithStats extends DigitalBook {
   revenue?: number;
 }
 
-const DEFAULT_CHAPTERS: DigitalBookChapter[] = [
-  { chapter: 'Chapter 1: Introduction & Overview', startPage: 1 },
-  { chapter: 'Chapter 2: Key Concepts & Summary', startPage: 15 },
-  { chapter: 'Chapter 3: Solved Questions & Model Answers', startPage: 30 },
-];
+const DEFAULT_CHAPTERS: DigitalBookChapter[] = [];
 
 export default function AdminDigitalPage() {
   const [digitalList, setDigitalList] = useState<DigitalProductWithStats[]>([]);
@@ -48,7 +48,7 @@ export default function AdminDigitalPage() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
-  const [activeTab, setActiveTab] = useState<'basic' | 'pricing' | 'content'>('basic');
+  const [activeTab, setActiveTab] = useState<'basic' | 'pricing' | 'content' | 'pdf'>('basic');
   const [submitting, setSubmitting] = useState(false);
 
   // Delete dialog state
@@ -82,9 +82,9 @@ export default function AdminDigitalPage() {
   const fetchDigital = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/digital');
+      const res = await fetch('/api/admin/digital', { cache: 'no-store' });
       const data = await res.json();
-      if (data.success && data.books) {
+      if (data.success && Array.isArray(data.books)) {
         setDigitalList(data.books);
       }
     } catch (err) {
@@ -98,6 +98,144 @@ export default function AdminDigitalPage() {
   useEffect(() => {
     fetchDigital();
   }, []);
+
+  // PDF Upload & DRM Conversion States
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pdfPageCount, setPdfPageCount] = useState<number | null>(null);
+  const [isConvertingPdf, setIsConvertingPdf] = useState(false);
+  const [conversionProgress, setConversionProgress] = useState<{
+    current: number;
+    total: number;
+    percent: number;
+    thumbnailUrl?: string;
+  } | null>(null);
+  const [uploadedStorageCount, setUploadedStorageCount] = useState<number | null>(null);
+  const [loadingStorageCount, setLoadingStorageCount] = useState(false);
+
+  const fetchStorageCount = async (id?: string) => {
+    const bookId = id || formData.id;
+    if (!bookId) return;
+    try {
+      setLoadingStorageCount(true);
+      const res = await fetch(`/api/admin/digital/upload-page?bookId=${encodeURIComponent(bookId)}`);
+      const data = await res.json();
+      if (data.success && typeof data.uploadedCount === 'number') {
+        setUploadedStorageCount(data.uploadedCount);
+      }
+    } catch (err) {
+      console.warn('Could not load storage count:', err);
+    } finally {
+      setLoadingStorageCount(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'pdf' && formData.id) {
+      fetchStorageCount(formData.id);
+    }
+  }, [activeTab, formData.id]);
+
+  const loadPdfJs = async (): Promise<any> => {
+    if ((window as any).pdfjsLib) {
+      return (window as any).pdfjsLib;
+    }
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.onload = () => {
+        const lib = (window as any).pdfjsLib;
+        lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        resolve(lib);
+      };
+      script.onerror = () => reject(new Error('Failed to load PDF processing engine'));
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePdfSelected = async (file: File) => {
+    setPdfFile(file);
+    try {
+      toast.loading('Analyzing PDF pages...', { id: 'pdf-load' });
+      const pdfjs = await loadPdfJs();
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+      setPdfPageCount(pdf.numPages);
+      toast.success(`PDF loaded: ${pdf.numPages} pages detected!`, { id: 'pdf-load' });
+    } catch (err: any) {
+      console.error('Error loading PDF:', err);
+      toast.error('Failed to parse PDF file. Ensure it is a valid PDF.', { id: 'pdf-load' });
+    }
+  };
+
+  const handleStartPdfConversion = async () => {
+    const bookId = formData.id;
+    if (!bookId) {
+      toast.error('Please save the book details first so an ID is registered.');
+      return;
+    }
+    if (!pdfFile) {
+      toast.error('Please select a PDF file first.');
+      return;
+    }
+
+    try {
+      setIsConvertingPdf(true);
+      const pdfjs = await loadPdfJs();
+      const arrayBuffer = await pdfFile.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+      const total = pdf.numPages;
+
+      for (let i = 1; i <= total; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) continue;
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const thumbnail = canvas.toDataURL('image/jpeg', 0.4);
+        const blob = await new Promise<Blob>((res) =>
+          canvas.toBlob((b) => res(b!), 'image/webp', 0.85)
+        );
+
+        const fd = new FormData();
+        fd.append('bookId', bookId);
+        fd.append('page', String(i));
+        if (i === total) fd.append('totalPages', String(total));
+        fd.append('image', blob, `page-${String(i).padStart(3, '0')}.webp`);
+
+        const uploadRes = await fetch('/api/admin/digital/upload-page', {
+          method: 'POST',
+          body: fd,
+        });
+
+        if (!uploadRes.ok) {
+          const errData = await uploadRes.json();
+          throw new Error(`Failed uploading page ${i}: ${errData.error || 'Server error'}`);
+        }
+
+        setConversionProgress({
+          current: i,
+          total,
+          percent: Math.round((i / total) * 100),
+          thumbnailUrl: thumbnail,
+        });
+      }
+
+      toast.success(`🎉 All ${total} pages converted and uploaded to Secure Reader!`);
+      setFormData((prev) => ({ ...prev, totalPages: total }));
+      fetchStorageCount(bookId);
+      fetchDigital();
+    } catch (err: any) {
+      console.error('PDF conversion error:', err);
+      toast.error(err.message || 'Error converting PDF');
+    } finally {
+      setIsConvertingPdf(false);
+    }
+  };
 
   const openCreateModal = () => {
     setModalMode('create');
@@ -122,18 +260,23 @@ export default function AdminDigitalPage() {
         'Solved textbook exercises with step-by-step answers',
         'Secure web reader with full mobile & tablet support',
       ],
-      tableOfContents: [
-        { chapter: 'Chapter 1: Introduction & Notes', startPage: 1 },
-        { chapter: 'Chapter 2: Core Lessons & Explanations', startPage: 15 },
-        { chapter: 'Chapter 3: Question Bank & Exercise Solutions', startPage: 35 },
-      ],
+      tableOfContents: [],
     });
+    setPdfFile(null);
+    setPdfPageCount(null);
+    setConversionProgress(null);
+    setUploadedStorageCount(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (book: DigitalProductWithStats) => {
     setModalMode('edit');
     setActiveTab('basic');
+    setPdfFile(null);
+    setPdfPageCount(null);
+    setConversionProgress(null);
+    setUploadedStorageCount(null);
+    fetchStorageCount(book.id);
     setFormData({
       id: book.id,
       title: book.title,
@@ -151,7 +294,7 @@ export default function AdminDigitalPage() {
       language: book.language,
       badge: book.badge || '',
       features: book.features && book.features.length > 0 ? book.features : ['Line-by-line English translation'],
-      tableOfContents: book.tableOfContents && book.tableOfContents.length > 0 ? book.tableOfContents : DEFAULT_CHAPTERS,
+      tableOfContents: [],
     });
     setIsModalOpen(true);
   };
@@ -163,33 +306,6 @@ export default function AdminDigitalPage() {
         updated.slug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       }
       return updated;
-    });
-  };
-
-  const handleChapterChange = (index: number, field: 'chapter' | 'startPage', value: any) => {
-    setFormData((prev) => {
-      const nextToc = [...(prev.tableOfContents || [])];
-      nextToc[index] = {
-        ...nextToc[index],
-        [field]: field === 'startPage' ? Number(value) || 1 : value,
-      };
-      return { ...prev, tableOfContents: nextToc };
-    });
-  };
-
-  const addChapterRow = () => {
-    setFormData((prev) => {
-      const nextToc = [...(prev.tableOfContents || [])];
-      const lastPage = nextToc.length > 0 ? (nextToc[nextToc.length - 1].startPage + 15) : 1;
-      nextToc.push({ chapter: `Chapter ${nextToc.length + 1}`, startPage: lastPage });
-      return { ...prev, tableOfContents: nextToc };
-    });
-  };
-
-  const removeChapterRow = (index: number) => {
-    setFormData((prev) => {
-      const nextToc = (prev.tableOfContents || []).filter((_, i) => i !== index);
-      return { ...prev, tableOfContents: nextToc };
     });
   };
 
@@ -554,6 +670,7 @@ export default function AdminDigitalPage() {
                 2. Pricing & DRM Settings
               </button>
               <button
+                type="button"
                 onClick={() => setActiveTab('content')}
                 className={`py-3 px-4 text-xs font-bold border-b-2 transition cursor-pointer ${
                   activeTab === 'content'
@@ -561,7 +678,18 @@ export default function AdminDigitalPage() {
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
-                3. Chapters & Features
+                3. Description & Features
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('pdf')}
+                className={`py-3 px-4 text-xs font-bold border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
+                  activeTab === 'pdf'
+                    ? 'border-amber-500 text-amber-700'
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <FileUp className="w-3.5 h-3.5" /> 4. PDF & Reader Pages
               </button>
             </div>
 
@@ -810,53 +938,166 @@ export default function AdminDigitalPage() {
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-hidden focus:border-amber-500 transition"
                     />
                   </div>
+                </div>
+              )}
 
-                  {/* Chapter Builder */}
-                  <div className="pt-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                        <BookMarked className="w-3.5 h-3.5 text-amber-600" />
-                        Table of Contents Chapters ({formData.tableOfContents?.length || 0})
-                      </label>
-                      <button
-                        type="button"
-                        onClick={addChapterRow}
-                        className="text-[11px] font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
-                      >
-                        + Add Chapter
-                      </button>
+              {/* TAB 4: PDF & READER PAGES */}
+              {activeTab === 'pdf' && (
+                <div className="space-y-5">
+                  {/* DRM Storage Status Banner */}
+                  <div className="p-4 rounded-xl border bg-slate-50 border-slate-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl">📁</span>
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-800">DRM Storage Status</h4>
+                          <p className="text-[11px] text-slate-500 font-mono">
+                            belesu-book-pages/{formData.id || 'new-book'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        {loadingStorageCount ? (
+                          <span className="text-xs text-slate-400 animate-pulse">Checking storage...</span>
+                        ) : uploadedStorageCount !== null && uploadedStorageCount > 0 ? (
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100/70 border border-emerald-300 px-2.5 py-1 rounded-full">
+                            <Check className="w-3.5 h-3.5 text-emerald-600" /> {uploadedStorageCount} pages active
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-100/70 border border-amber-300 px-2.5 py-1 rounded-full">
+                            0 pages (Demo Mode)
+                          </span>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                      {(formData.tableOfContents || []).map((ch, idx) => (
-                        <div key={idx} className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
-                          <span className="text-xs font-bold text-slate-400 w-5 text-center">{idx + 1}</span>
-                          <input
-                            type="text"
-                            placeholder="Chapter title"
-                            value={ch.chapter}
-                            onChange={(e) => handleChapterChange(idx, 'chapter', e.target.value)}
-                            className="flex-1 px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-hidden"
-                          />
-                          <div className="flex items-center gap-1">
-                            <span className="text-[11px] text-slate-400">p.</span>
-                            <input
-                              type="number"
-                              min={1}
-                              value={ch.startPage}
-                              onChange={(e) => handleChapterChange(idx, 'startPage', e.target.value)}
-                              className="w-16 px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800 focus:outline-hidden"
-                            />
+                    {formData.slug && uploadedStorageCount !== null && uploadedStorageCount > 0 && (
+                      <div className="mt-3 pt-2.5 border-t border-slate-200/80 flex items-center justify-between text-xs">
+                        <span className="text-slate-600">Want to test how readers see this book?</span>
+                        <Link
+                          href={`/reader/${formData.slug}?preview=true`}
+                          target="_blank"
+                          className="inline-flex items-center gap-1 font-bold text-amber-700 hover:text-amber-800"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> Preview in Web Reader &rarr;
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* PDF Upload Card */}
+                  <div className="bg-white border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center space-y-4 hover:border-amber-400 transition">
+                    <input
+                      type="file"
+                      id="pdf-upload-input"
+                      accept="application/pdf"
+                      disabled={isConvertingPdf}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handlePdfSelected(file);
+                      }}
+                      className="hidden"
+                    />
+
+                    {!pdfFile ? (
+                      <label htmlFor="pdf-upload-input" className="cursor-pointer block space-y-2">
+                        <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto shadow-xs">
+                          <FileUp className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-800 block">
+                            Click to select or drop Book PDF
+                          </span>
+                          <span className="text-xs text-slate-400 block mt-0.5">
+                            Standard PDF format (.pdf) • Automatically renders each page to DRM WebP
+                          </span>
+                        </div>
+                      </label>
+                    ) : (
+                      <div className="space-y-4 text-left">
+                        <div className="flex items-center justify-between bg-stone-50 p-3.5 rounded-xl border border-stone-200">
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl">📄</span>
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold text-slate-900 truncate max-w-xs">{pdfFile.name}</p>
+                              <p className="text-[11px] text-slate-500">
+                                {(pdfFile.size / (1024 * 1024)).toFixed(2)} MB • {pdfPageCount ? `${pdfPageCount} pages detected` : 'Parsing pages...'}
+                              </p>
+                            </div>
                           </div>
+                          {!isConvertingPdf && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPdfFile(null);
+                                setPdfPageCount(null);
+                                setConversionProgress(null);
+                              }}
+                              className="text-xs font-semibold text-slate-400 hover:text-rose-600 cursor-pointer"
+                            >
+                              Change file
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Progress Bar & Preview */}
+                        {isConvertingPdf && conversionProgress && (
+                          <div className="space-y-3 bg-amber-50/50 border border-amber-200 rounded-xl p-4">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="font-bold text-amber-900 flex items-center gap-1.5">
+                                <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-600" />
+                                Processing & Uploading: Page {conversionProgress.current} of {conversionProgress.total}
+                              </span>
+                              <span className="font-mono font-bold text-amber-900">{conversionProgress.percent}%</span>
+                            </div>
+
+                            <div className="w-full bg-amber-200/60 rounded-full h-2.5 overflow-hidden">
+                              <div
+                                className="bg-amber-600 h-2.5 rounded-full transition-all duration-200"
+                                style={{ width: `${conversionProgress.percent}%` }}
+                              />
+                            </div>
+
+                            {conversionProgress.thumbnailUrl && (
+                              <div className="flex items-center gap-3 pt-1">
+                                <div className="w-14 h-18 bg-white border border-amber-200 rounded shadow-xs overflow-hidden flex-shrink-0">
+                                  <img
+                                    src={conversionProgress.thumbnailUrl}
+                                    alt="Live Page Preview"
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                                <div className="text-[11px] text-slate-600">
+                                  <p className="font-semibold text-slate-800">DRM Conversion Active</p>
+                                  <p className="text-slate-500">Rendering vector PDF to signed WebP images with watermark security.</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Start Button */}
+                        {!isConvertingPdf && pdfPageCount && (
                           <button
                             type="button"
-                            onClick={() => removeChapterRow(idx)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 transition"
+                            onClick={handleStartPdfConversion}
+                            className="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-2 cursor-pointer"
                           >
-                            <X className="w-3.5 h-3.5" />
+                            <Upload className="w-4 h-4" /> Convert & Upload {pdfPageCount} Pages to Secure Reader
                           </button>
-                        </div>
-                      ))}
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Security Note */}
+                  <div className="flex items-start gap-2.5 text-xs text-slate-500 bg-stone-50 p-3.5 rounded-xl border border-stone-200/80">
+                    <Shield className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-slate-800">Why are pages converted to WebP images instead of raw PDF?</strong>
+                      <p className="mt-0.5 leading-relaxed">
+                        Raw PDFs can be downloaded and pirated in 1 click by anyone with browser DevTools. By rendering individual WebP page images, Belesu applies dynamic user watermarking, single-page signed URLs, and copy-protection DRM.
+                      </p>
                     </div>
                   </div>
                 </div>

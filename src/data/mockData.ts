@@ -24,7 +24,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Lesson 3: Simple Words & Daily Greetings',
       'Lesson 4: Solved Textbook Exercises & Worksheets'
     ],
-    coverImage: '/Savi-Class1-CoverPage.png',
+    coverImage: '/covers/savi-1.png',
+    karnatakaTextbookCover: '/covers/textbook-savi-1.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -69,7 +70,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Chapter 3: Gunintagalu Master Guide',
       'Chapter 4: Class 2 Exercise Answer Key'
     ],
-    coverImage: '/Savi-Class2-CoverPage.png',
+    coverImage: '/covers/savi-2.png',
+    karnatakaTextbookCover: '/covers/textbook-savi-2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -107,7 +109,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Lesson 3: Grammar - Naamapada (Nouns) & Kriyapada (Verbs)',
       'Lesson 4: Model Examination Papers'
     ],
-    coverImage: '/SV-3-2.png',
+    coverImage: '/covers/savi-3.png',
+    karnatakaTextbookCover: '/covers/textbook-savi-3.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -145,7 +148,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Unit 3: Sandhigalu & Vibhakti Pratyayagalu',
       'Unit 4: Question & Answer Bank'
     ],
-    coverImage: '/cover-3.png',
+    coverImage: '/covers/savi-4.png',
+    karnatakaTextbookCover: '/covers/textbook-savi-4.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -183,7 +187,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Module 3: Colours & Numbers in Kannada',
       'Module 4: Exercise Workbook'
     ],
-    coverImage: '/savi-kannada-1st-1stpart.png',
+    coverImage: '/covers/kali-1.png',
+    karnatakaTextbookCover: '/covers/textbook-kali-1.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -221,7 +226,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Part 3: Basic Kannada Grammar',
       'Part 4: Textbook Solved Answers'
     ],
-    coverImage: '/2nd-1stpart.png',
+    coverImage: '/covers/kali-2.png',
+    karnatakaTextbookCover: '/covers/textbook-kali-2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -259,7 +265,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Unit 3: Advanced Ottakshara Guide',
       'Unit 4: Exam Solved Questions'
     ],
-    coverImage: '/SV-3-2.png',
+    coverImage: '/covers/kali-3.png',
+    karnatakaTextbookCover: '/covers/textbook-kali-3.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -297,7 +304,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Chapter 3: Grammar Essentials',
       'Chapter 4: Question & Answer Solutions'
     ],
-    coverImage: '/SV-4-2.png',
+    coverImage: '/covers/kali-4.png',
+    karnatakaTextbookCover: '/covers/textbook-kali-4.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -335,7 +343,7 @@ export const BOOKS_DATA: BookProduct[] = [
       'Unit 3: Formal & Informal Letter Writing',
       'Unit 4: Solved Model Test Papers'
     ],
-    coverImage: '/SV-5-2.png',
+    coverImage: '/covers/siri-5.png',
     samplePages: [
       {
         pageNumber: 1,
@@ -373,7 +381,7 @@ export const BOOKS_DATA: BookProduct[] = [
       'Lesson 3: Advanced Grammar Masterclass',
       'Lesson 4: Comprehensive Answer Key'
     ],
-    coverImage: '/SV-5-2.png',
+    coverImage: '/covers/tili-5.png',
     samplePages: [
       {
         pageNumber: 1,

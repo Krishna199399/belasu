@@ -65,6 +65,24 @@ export default function BookDetailPage() {
               >
                 <Eye className="w-4 h-4 text-amber-600" /> Preview Sample Pages Inside
               </button>
+
+              {book.karnatakaTextbookCover && (
+                <div className="w-full mt-4 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center gap-3">
+                  <img
+                    src={book.karnatakaTextbookCover}
+                    alt={`Karnataka Board Class ${book.gradeClass} Textbook`}
+                    className="w-12 h-16 object-contain rounded border border-amber-300/80 shadow-2xs shrink-0"
+                  />
+                  <div className="text-left">
+                    <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
+                      Karnataka State Board Aligned
+                    </span>
+                    <span className="text-xs font-semibold text-slate-700 leading-tight block">
+                      English-translated companion for the official Class {book.gradeClass} {book.series} textbook.
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right Details Column */}

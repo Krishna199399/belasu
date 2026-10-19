@@ -7,7 +7,7 @@ import { getDigitalBookBySlug } from '@/data/digitalBooksData';
 import { DigitalBook } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
-import { Lock, BookOpen, ShieldCheck, ArrowRight, CheckCircle2, ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
+import { Lock, BookOpen, ShieldCheck, ArrowRight, CheckCircle2, ShoppingCart } from 'lucide-react';
 
 export default function DigitalBookDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -15,21 +15,23 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
   const [loading, setLoading] = useState(!book);
   const { user } = useAuth();
   const { addToCart } = useCart();
-  const [tocExpanded, setTocExpanded] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
 
   useEffect(() => {
-    fetch('/api/digital/books')
+    fetch(`/api/digital/books?slug=${encodeURIComponent(slug)}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.books) {
-          const matched = data.books.find((b: DigitalBook) => b.slug === slug);
-          if (matched) {
-            setBook(matched);
-          }
+        if (data.success && data.book) {
+          setBook(data.book);
+        } else {
+          setBook(undefined);
         }
       })
-      .catch((err) => console.error('Failed to load live book data:', err))
+      .catch((err) => {
+        console.error('Failed to load live book data:', err);
+        // Fallback to static if network failure
+        setBook(getDigitalBookBySlug(slug));
+      })
       .finally(() => setLoading(false));
   }, [slug]);
 
@@ -168,41 +170,6 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
                   This book is accessed through Belesu’s secure web reader — optimized for phones, tablets, and laptops. Protected against downloads and unauthorized sharing, with your registered user details securely watermarked.
                 </p>
               </div>
-            </div>
-
-            {/* Table of Contents Accordion */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
-              <button
-                onClick={() => setTocExpanded(!tocExpanded)}
-                className="w-full flex items-center justify-between p-5 text-left hover:bg-slate-50 transition cursor-pointer"
-              >
-                <h2 className="text-sm font-bold text-slate-900">
-                  Table of Contents ({book.tableOfContents.length} Chapters)
-                </h2>
-                {tocExpanded ? (
-                  <ChevronUp className="w-4 h-4 text-slate-500" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-slate-500" />
-                )}
-              </button>
-              {tocExpanded && (
-                <div className="border-t border-slate-100 divide-y divide-slate-100 bg-slate-50/50">
-                  {book.tableOfContents.map((ch, i) => (
-                    <div key={i} className="flex items-center justify-between px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-slate-400 w-5">{i + 1}</span>
-                        <span className="text-xs font-medium text-slate-800">{ch.chapter}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                        {!owned && i >= book.isFreePreviewPages && (
-                          <Lock className="w-3 h-3 text-amber-600" />
-                        )}
-                        <span>Page {ch.startPage}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
           </div>

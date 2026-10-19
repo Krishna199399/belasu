@@ -1,62 +1,16 @@
 import { NextRequest } from 'next/server';
 import { requireAdmin } from '@/lib/adminAuth';
 import { createAdminClient } from '@/lib/supabase';
+import { mapDbRowToBook, mapBookToDbRow } from '@/lib/digital';
 import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
 import { DigitalBook } from '@/types';
 
-// In-memory runtime override store (keeps mutations active even before SQL migration is executed in Supabase)
-let inMemoryDigitalBooks: DigitalBook[] = [...DIGITAL_BOOKS_DATA];
-
-function mapDbRowToBook(row: any): DigitalBook {
-  return {
-    id: row.id,
-    slug: row.slug,
-    title: row.title,
-    sku: row.sku,
-    subject: row.subject,
-    gradeClass: Number(row.grade_class),
-    price: Number(row.price),
-    originalPrice: row.original_price ? Number(row.original_price) : undefined,
-    coverImage: row.cover_image || '/digital-covers/kn-6.webp',
-    totalPages: Number(row.total_pages) || 50,
-    isFreePreviewPages: Number(row.is_free_preview_pages) || 5,
-    description: row.description || '',
-    author: row.author || 'Belesu Academic Team',
-    language: row.language || 'Kannada with English Translations',
-    badge: row.badge || undefined,
-    rating: row.rating ? Number(row.rating) : 5.0,
-    reviewCount: row.review_count ? Number(row.review_count) : 0,
-    features: Array.isArray(row.features) ? row.features : [],
-    tableOfContents: Array.isArray(row.table_of_contents) ? row.table_of_contents : [],
-  };
-}
-
-function mapBookToDbRow(book: Partial<DigitalBook>) {
-  return {
-    id: book.id,
-    slug: book.slug,
-    title: book.title,
-    sku: book.sku,
-    subject: book.subject,
-    grade_class: book.gradeClass,
-    price: book.price,
-    original_price: book.originalPrice || null,
-    cover_image: book.coverImage || '/digital-covers/kn-6.webp',
-    total_pages: book.totalPages || 50,
-    is_free_preview_pages: book.isFreePreviewPages ?? 5,
-    description: book.description || '',
-    author: book.author || 'Belesu Academic Team',
-    language: book.language || 'Kannada with English Translations',
-    badge: book.badge || null,
-    features: book.features || [],
-    table_of_contents: book.tableOfContents || [],
-    is_active: true,
-  };
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 /**
  * GET /api/admin/digital
- * Returns all digital books combined with order sales statistics
+ * Returns all digital books directly from Supabase DB combined with sales statistics
  */
 export async function GET() {
   const admin = await requireAdmin();
@@ -98,11 +52,11 @@ export async function GET() {
       .eq('is_active', true)
       .order('grade_class', { ascending: true });
 
-    if (!dbError && dbBooks && dbBooks.length > 0) {
+    if (!dbError && Array.isArray(dbBooks)) {
       books = dbBooks.map(mapDbRowToBook);
-    } else {
-      // Fallback to in-memory list (pre-seeded with initial digital books)
-      books = [...inMemoryDigitalBooks];
+    } else if (dbError) {
+      console.warn('Database error querying digital_books, falling back to static:', dbError.message);
+      books = [...DIGITAL_BOOKS_DATA];
     }
 
     // 3. Attach computed sales stats
@@ -115,11 +69,18 @@ export async function GET() {
       };
     });
 
-    return Response.json({
-      success: true,
-      books: booksWithStats,
-      totalCount: booksWithStats.length,
-    });
+    return Response.json(
+      {
+        success: true,
+        books: booksWithStats,
+        totalCount: booksWithStats.length,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        },
+      }
+    );
   } catch (err: any) {
     console.error('Failed to fetch digital books:', err);
     return Response.json({ success: false, error: err.message || 'Server error' }, { status: 500 });
@@ -128,7 +89,7 @@ export async function GET() {
 
 /**
  * POST /api/admin/digital
- * Creates a new digital book
+ * Creates a new digital book in Supabase DB
  */
 export async function POST(request: NextRequest) {
   const admin = await requireAdmin();
@@ -164,7 +125,7 @@ export async function POST(request: NextRequest) {
       body.id?.trim() ||
       `dbook-${gradeNum}-${String(body.subject).substring(0, 2).toLowerCase()}-${Date.now().toString().slice(-4)}`;
 
-    const newBook: DigitalBook = {
+    const newBookData: Partial<DigitalBook> = {
       id: generatedId,
       slug: generatedSlug,
       title: body.title.trim(),
@@ -175,33 +136,38 @@ export async function POST(request: NextRequest) {
       originalPrice: body.originalPrice ? Number(body.originalPrice) : undefined,
       coverImage: body.coverImage?.trim() || '/digital-covers/kn-6.webp',
       totalPages: Number(body.totalPages) || 50,
-      isFreePreviewPages: Number(body.isFreePreviewPages) || 5,
+      isFreePreviewPages: body.isFreePreviewPages !== undefined ? Number(body.isFreePreviewPages) : 5,
       description: body.description?.trim() || '',
       author: body.author?.trim() || 'Belesu Academic Team',
       language: body.language?.trim() || 'Kannada with English Translations',
       badge: body.badge?.trim() || undefined,
-      rating: 5.0,
-      reviewCount: 0,
       features: Array.isArray(body.features) ? body.features : (body.features ? [body.features] : []),
       tableOfContents: Array.isArray(body.tableOfContents) ? body.tableOfContents : [],
     };
 
-    // Attempt Supabase insert
     const supabase = createAdminClient();
-    const row = mapBookToDbRow(newBook);
-    const { error: insertError } = await supabase.from('digital_books').insert(row);
+    const row = mapBookToDbRow(newBookData);
+
+    const { data: insertedRow, error: insertError } = await supabase
+      .from('digital_books')
+      .insert(row)
+      .select()
+      .single();
 
     if (insertError) {
-      console.warn('Supabase table insert skipped/failed, keeping in runtime cache:', insertError.message);
+      console.error('Supabase insert error on digital_books:', insertError);
+      return Response.json(
+        { success: false, error: `Database error: ${insertError.message}` },
+        { status: 400 }
+      );
     }
 
-    // Always update runtime cache
-    inMemoryDigitalBooks = [newBook, ...inMemoryDigitalBooks.filter((b) => b.id !== newBook.id)];
+    const createdBook = mapDbRowToBook(insertedRow);
 
     return Response.json({
       success: true,
       message: 'Digital book created successfully',
-      book: newBook,
+      book: createdBook,
     });
   } catch (err: any) {
     console.error('Error creating digital book:', err);
@@ -211,7 +177,7 @@ export async function POST(request: NextRequest) {
 
 /**
  * PUT /api/admin/digital
- * Alters / Updates an existing digital book
+ * Alters / Updates an existing digital book in Supabase DB
  */
 export async function PUT(request: NextRequest) {
   const admin = await requireAdmin();
@@ -225,7 +191,7 @@ export async function PUT(request: NextRequest) {
       return Response.json({ success: false, error: 'Book ID is required for updating.' }, { status: 400 });
     }
 
-    const updatedBook: DigitalBook = {
+    const updatedBookData: Partial<DigitalBook> = {
       id: body.id,
       slug: body.slug,
       title: body.title,
@@ -235,41 +201,40 @@ export async function PUT(request: NextRequest) {
       price: Number(body.price),
       originalPrice: body.originalPrice ? Number(body.originalPrice) : undefined,
       coverImage: body.coverImage,
-      totalPages: Number(body.totalPages),
-      isFreePreviewPages: Number(body.isFreePreviewPages),
+      totalPages: Number(body.totalPages) || 50,
+      isFreePreviewPages: body.isFreePreviewPages !== undefined ? Number(body.isFreePreviewPages) : 5,
       description: body.description || '',
       author: body.author || 'Belesu Academic Team',
       language: body.language || 'Kannada with English Translations',
       badge: body.badge || undefined,
-      rating: body.rating ? Number(body.rating) : 5.0,
-      reviewCount: body.reviewCount ? Number(body.reviewCount) : 0,
       features: Array.isArray(body.features) ? body.features : [],
       tableOfContents: Array.isArray(body.tableOfContents) ? body.tableOfContents : [],
     };
 
     const supabase = createAdminClient();
-    const row = mapBookToDbRow(updatedBook);
-    const { error: updateError } = await supabase
+    const row = mapBookToDbRow(updatedBookData);
+
+    const { data: updatedRow, error: updateError } = await supabase
       .from('digital_books')
       .update(row)
-      .eq('id', body.id);
+      .eq('id', body.id)
+      .select()
+      .single();
 
     if (updateError) {
-      console.warn('Supabase update skipped/failed, updating runtime cache:', updateError.message);
+      console.error('Supabase update error on digital_books:', updateError);
+      return Response.json(
+        { success: false, error: `Database error: ${updateError.message}` },
+        { status: 400 }
+      );
     }
 
-    // Update in-memory runtime cache
-    const existingIdx = inMemoryDigitalBooks.findIndex((b) => b.id === body.id);
-    if (existingIdx !== -1) {
-      inMemoryDigitalBooks[existingIdx] = updatedBook;
-    } else {
-      inMemoryDigitalBooks.unshift(updatedBook);
-    }
+    const finalBook = mapDbRowToBook(updatedRow);
 
     return Response.json({
       success: true,
       message: 'Digital book updated successfully',
-      book: updatedBook,
+      book: finalBook,
     });
   } catch (err: any) {
     console.error('Error updating digital book:', err);
@@ -279,7 +244,7 @@ export async function PUT(request: NextRequest) {
 
 /**
  * DELETE /api/admin/digital?id=xxx
- * Deletes or deactivates a digital book
+ * Permanently removes or deactivates a digital book from Supabase DB
  */
 export async function DELETE(request: NextRequest) {
   const admin = await requireAdmin();
@@ -295,18 +260,19 @@ export async function DELETE(request: NextRequest) {
 
     const supabase = createAdminClient();
     
-    // Attempt hard delete or soft deactivate
+    // Perform delete in Supabase
     const { error: delError } = await supabase
       .from('digital_books')
       .delete()
       .eq('id', id);
 
     if (delError) {
-      console.warn('Supabase delete skipped/failed, removing from runtime cache:', delError.message);
+      console.error('Supabase delete error on digital_books:', delError);
+      return Response.json(
+        { success: false, error: `Database error: ${delError.message}` },
+        { status: 400 }
+      );
     }
-
-    // Remove from in-memory cache
-    inMemoryDigitalBooks = inMemoryDigitalBooks.filter((b) => b.id !== id);
 
     return Response.json({
       success: true,

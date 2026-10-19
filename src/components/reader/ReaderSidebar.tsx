@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { DigitalBook } from '@/types';
 
 interface ReaderSidebarProps {
@@ -39,33 +39,36 @@ export function ReaderSidebar({ book, currentPage, isOwned, freePreviewPages, on
         </div>
       </div>
 
-      {/* Table of Contents */}
+      {/* PDF Pages Navigator */}
       <div className="flex-1 overflow-y-auto p-3">
-        <p className="text-[10px] font-black text-slate-500 uppercase tracking-wider px-2 mb-2">Table of Contents</p>
-        <nav className="space-y-0.5">
-          {book.tableOfContents.map((ch, i) => {
-            const isLocked = !isOwned && i >= freePreviewPages;
-            const isActive = currentPage >= ch.startPage && (i === book.tableOfContents.length - 1 || currentPage < book.tableOfContents[i + 1].startPage);
+        <div className="flex items-center justify-between px-2 mb-2.5">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">PDF Pages</p>
+          <span className="text-[10px] text-slate-500 font-mono font-bold">{book.totalPages} pp</span>
+        </div>
+        <div className="grid grid-cols-4 gap-1.5 px-1 max-h-[calc(100vh-210px)] overflow-y-auto pr-1">
+          {Array.from({ length: book.totalPages || 1 }, (_, idx) => idx + 1).map((p) => {
+            const isLocked = !isOwned && p > freePreviewPages;
+            const isActive = currentPage === p;
             return (
               <button
-                key={i}
-                onClick={() => !isLocked && onPageJump(ch.startPage)}
+                key={p}
+                onClick={() => !isLocked && onPageJump(p)}
                 disabled={isLocked}
-                className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-2 text-[11px] transition group ${
+                title={isLocked ? `Page ${p} (Purchase required)` : `Jump to page ${p}`}
+                className={`py-2 px-1 text-xs font-bold rounded-lg border transition flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
                   isActive
-                    ? 'bg-amber-500/20 text-amber-300 font-bold'
+                    ? 'bg-amber-500 border-amber-400 text-slate-950 shadow-xs'
                     : isLocked
-                    ? 'text-slate-600 cursor-not-allowed'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-slate-800/40 border-slate-800 text-slate-600 cursor-not-allowed'
+                    : 'bg-slate-800 border-slate-700/80 text-slate-300 hover:bg-slate-700 hover:text-white'
                 }`}
               >
-                <BookOpen className={`w-3 h-3 flex-shrink-0 ${isActive ? 'text-amber-400' : ''}`} />
-                <span className="flex-1 line-clamp-1">{ch.chapter}</span>
-                {isLocked && <Lock className="w-3 h-3 flex-shrink-0 opacity-50" />}
+                <span>p. {p}</span>
+                {isLocked && <Lock className="w-2.5 h-2.5 opacity-60 text-slate-500" />}
               </button>
             );
           })}
-        </nav>
+        </div>
       </div>
     </aside>
   );

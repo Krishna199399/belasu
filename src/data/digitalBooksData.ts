@@ -28,22 +28,12 @@ export const DIGITAL_BOOKS_DATA: DigitalBook[] = [
       'Chapter summaries in both Kannada and English',
       'Secure digital-only access — read anywhere on the web',
     ],
-    tableOfContents: [
-      { chapter: 'Lesson 1: Naanu Yaaru (Who Am I)', startPage: 1 },
-      { chapter: 'Lesson 2: Bhumi Thaaye (Mother Earth) — Poem', startPage: 14 },
-      { chapter: 'Lesson 3: Shale Dinagalu (School Days)', startPage: 27 },
-      { chapter: 'Lesson 4: Jala Sanrakshane (Water Conservation)', startPage: 41 },
-      { chapter: 'Lesson 5: Veeragase Nritya (Veeragase Dance)', startPage: 55 },
-      { chapter: 'Grammar: Sandhi, Vibhakti, Samasa', startPage: 70 },
-      { chapter: 'Lesson 6: Desha Bhakti (Patriotism)', startPage: 90 },
-      { chapter: 'Lesson 7: Prakriti Soundarya (Nature\'s Beauty) — Poem', startPage: 104 },
-      { chapter: 'Lesson 8: Makkala Hakkugalu (Children\'s Rights)', startPage: 118 },
-      { chapter: 'Grammar: Ling, Vachana, Kala', startPage: 133 },
-      { chapter: 'Supplementary Lessons & Model Papers', startPage: 148 },
-      { chapter: 'Practice Question Bank', startPage: 165 },
-    ],
+    tableOfContents: [],
   },
+];
 
+// Preserved for upcoming launch as new books are completed
+export const UPCOMING_DIGITAL_BOOKS_DATA: DigitalBook[] = [
   // ── CLASS 7 ──────────────────────────────────────────────────────────────
   {
     id: 'dbook-7-kn-01',
@@ -212,7 +202,7 @@ export const DIGITAL_BOOKS_DATA: DigitalBook[] = [
 ];
 
 export function getDigitalBookBySlug(slug: string): DigitalBook | undefined {
-  return DIGITAL_BOOKS_DATA.find((b) => b.slug === slug);
+  return DIGITAL_BOOKS_DATA.find((b) => b.slug === slug) || UPCOMING_DIGITAL_BOOKS_DATA.find((b) => b.slug === slug);
 }
 
 export function getDigitalBooksByGrade(grade: number): DigitalBook[] {
@@ -223,6 +213,6 @@ export function getDigitalBooksBySubject(subject: string): DigitalBook[] {
   return DIGITAL_BOOKS_DATA.filter((b) => b.subject === subject);
 }
 
-export const DIGITAL_GRADES = [6, 7, 8, 9, 10] as const;
+export const DIGITAL_GRADES = [6] as const;
 export const DIGITAL_SUBJECTS = ['Kannada'] as const;
 export const digitalBooks = DIGITAL_BOOKS_DATA;

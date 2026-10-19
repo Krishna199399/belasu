@@ -1,44 +1,107 @@
+import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
-import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
+import { mapDbRowToBook } from '@/lib/digital';
+import { DIGITAL_BOOKS_DATA, getDigitalBookBySlug } from '@/data/digitalBooksData';
 import { DigitalBook } from '@/types';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = request.nextUrl;
+  const slug = searchParams.get('slug');
+  const id = searchParams.get('id');
+
   try {
     const supabase = createAdminClient();
+
+    // If specific slug is requested:
+    if (slug) {
+      const { data: dbBook, error } = await supabase
+        .from('digital_books')
+        .select('*')
+        .eq('slug', slug)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (!error && dbBook) {
+        return Response.json(
+          { success: true, book: mapDbRowToBook(dbBook) },
+          { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+        );
+      }
+
+      if (error) {
+        console.warn(`DB error fetching slug "${slug}":`, error.message);
+        const fallback = getDigitalBookBySlug(slug);
+        if (fallback) {
+          return Response.json(
+            { success: true, book: fallback },
+            { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+          );
+        }
+      }
+
+      return Response.json(
+        { success: false, error: 'Book not found' },
+        { status: 404, headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+      );
+    }
+
+    // If specific id is requested:
+    if (id) {
+      const { data: dbBook, error } = await supabase
+        .from('digital_books')
+        .select('*')
+        .eq('id', id)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (!error && dbBook) {
+        return Response.json(
+          { success: true, book: mapDbRowToBook(dbBook) },
+          { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+        );
+      }
+
+      return Response.json(
+        { success: false, error: 'Book not found' },
+        { status: 404, headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+      );
+    }
+
+    // Return all active digital books
     const { data: dbBooks, error } = await supabase
       .from('digital_books')
       .select('*')
       .eq('is_active', true)
       .order('grade_class', { ascending: true });
 
-    if (!error && dbBooks && dbBooks.length > 0) {
-      const books: DigitalBook[] = dbBooks.map((row: any) => ({
-        id: row.id,
-        slug: row.slug,
-        title: row.title,
-        sku: row.sku,
-        subject: row.subject,
-        gradeClass: Number(row.grade_class),
-        price: Number(row.price),
-        originalPrice: row.original_price ? Number(row.original_price) : undefined,
-        coverImage: row.cover_image || '/digital-covers/kn-6.webp',
-        totalPages: Number(row.total_pages) || 50,
-        isFreePreviewPages: Number(row.is_free_preview_pages) || 5,
-        description: row.description || '',
-        author: row.author || 'Belesu Academic Team',
-        language: row.language || 'Kannada with English Translations',
-        badge: row.badge || undefined,
-        rating: row.rating ? Number(row.rating) : 5.0,
-        reviewCount: row.review_count ? Number(row.review_count) : 0,
-        features: Array.isArray(row.features) ? row.features : [],
-        tableOfContents: Array.isArray(row.table_of_contents) ? row.table_of_contents : [],
-      }));
-
-      return Response.json({ success: true, books });
+    if (!error && Array.isArray(dbBooks)) {
+      const books: DigitalBook[] = dbBooks.map(mapDbRowToBook);
+      return Response.json(
+        { success: true, books },
+        { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+      );
     }
 
-    return Response.json({ success: true, books: DIGITAL_BOOKS_DATA });
+    if (error) {
+      console.warn('DB error fetching digital_books, falling back to static:', error.message);
+      return Response.json(
+        { success: true, books: DIGITAL_BOOKS_DATA },
+        { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+      );
+    }
+
+    return Response.json(
+      { success: true, books: [] },
+      { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+    );
   } catch (err: any) {
-    return Response.json({ success: true, books: DIGITAL_BOOKS_DATA });
+    console.error('Fatal error in /api/digital/books:', err);
+    return Response.json(
+      { success: true, books: DIGITAL_BOOKS_DATA },
+      { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate' } }
+    );
   }
 }
