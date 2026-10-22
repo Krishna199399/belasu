@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BookProduct } from '@/types';
 import { BOOKS_DATA } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
-import { ChevronLeft, ChevronRight, ShoppingBag, Eye } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight, BookOpen, Sparkles } from 'lucide-react';
 
 interface HeroCarouselProps {
   onPreview: (book: BookProduct) => void;
@@ -116,13 +117,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
     }
   ];
 
-  // Auto-play timer every 6.0 seconds (comfortable reading speed)
+  // Auto-play timer every 3.0 seconds per user request
   useEffect(() => {
     if (isPaused) return;
 
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
+    }, 3000);
 
     return () => clearInterval(timer);
   }, [isPaused, slides.length, currentSlide]);
@@ -146,7 +147,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
     <section
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full min-h-[580px] lg:h-[640px] bg-slate-50 text-slate-900 overflow-hidden border-b border-slate-200 select-none group/carousel"
+      className="relative w-full min-h-[620px] lg:min-h-[660px] bg-slate-50 text-slate-900 overflow-hidden border-b border-slate-200 select-none group/carousel flex items-center py-10 lg:py-14"
     >
 
       {/* Vivid Background Image with Soft Light Gradient Overlay */}
@@ -158,7 +159,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
           className="w-full h-full object-cover opacity-90 animate-hero-bg pointer-events-none"
         />
         {/* Soft White/Light Gradient Overlay for Text Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/40 via-white/85 to-white" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/50 via-white/90 to-white lg:from-white/40 lg:via-white/94 lg:to-white" />
       </div>
 
       {/* Main Content Container (Full Width Pad) */}
@@ -176,60 +177,71 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
                 alt={activeSlide.title}
                 className="max-h-[460px] max-w-full object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.22)] transform group-hover:scale-105 transition-transform duration-500"
               />
-              <span className="absolute top-2 right-2 px-3 py-1 bg-amber-500 text-slate-950 font-black text-xs rounded-full shadow-lg">
-                ₹{activeSlide.price}
-              </span>
             </div>
           </div>
 
-          {/* Right Side: Editorial Book Copy & Vibrant Yellow/Amber CTAs with smooth slide animation */}
+          {/* Right Side: Editorial Book Copy & Vibrant Yellow/Amber CTAs */}
           <div
-            key={`text-light-${activeSlide.id}`}
-            className="lg:col-span-7 space-y-6 text-center lg:text-left animate-hero-text"
+            className="lg:col-span-7 space-y-5 text-center lg:text-left"
           >
-            <div className="space-y-2">
-              <span className="text-xs font-bold tracking-wide text-slate-600 block">
-                {activeSlide.tagline}
-              </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-slate-900 leading-tight">
-                {activeSlide.headline}
-              </h1>
-              <p className="text-sm sm:text-base font-semibold text-slate-700 max-w-xl">
-                {activeSlide.subtitle}
-              </p>
+            {/* Tagline Badge */}
+            <div className="inline-flex items-center gap-2 bg-amber-100/90 border border-amber-300/80 text-amber-900 font-bold px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Kannada Mathadi, Kannada Belesi</span>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium">
-              {activeSlide.description}
-            </p>
+            {/* Main H1 Headline */}
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-serif font-black tracking-tight text-slate-900 leading-[1.18]">
+              English-Translated Kannada Academic Guidebooks for School Students
+            </h1>
 
-            {/* Price Tag */}
-            <div className="flex items-center justify-center lg:justify-start gap-4 py-1">
-              <span className="text-3xl font-black text-amber-600">₹{activeSlide.price}</span>
-              {activeSlide.originalPrice && (
-                <span className="text-sm text-slate-400 line-through">₹{activeSlide.originalPrice}</span>
+            {/* Feature Ribbon */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-0.5">
+              <span className="inline-flex items-center gap-1.5 bg-white/90 border border-amber-200/90 text-amber-900 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-lg shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                Innovative Academic Guidebooks
+              </span>
+              <span className="inline-flex items-center gap-1.5 bg-white/90 border border-amber-200/90 text-amber-900 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-lg shadow-2xs">
+                <BookOpen className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                Kannada-to-English Translation
+              </span>
+              <span className="inline-flex items-center gap-1.5 bg-white/90 border border-amber-200/90 text-amber-900 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-lg shadow-2xs">
+                🎯 Easy Kannada Learning & Exam Preparation
+              </span>
+            </div>
+
+            {/* Descriptive Body Paragraphs in High-Contrast Frosted Card */}
+            <div className="bg-white/85 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-amber-200/80 shadow-xs max-w-2xl mx-auto lg:mx-0 text-left border-l-4 border-l-amber-500">
+              <div className="space-y-2 text-xs sm:text-sm text-slate-800 leading-relaxed">
+                <p>
+                  Belesu’s innovative guidebooks make Kannada easier to learn by <strong className="font-bold text-slate-950">translating lessons from Kannada to English</strong>. Designed to support academic learning, they help students understand textbook chapters, learn correct pronunciation, and prepare for Kannada exams with greater confidence.
+                </p>
+                <p className="text-slate-700">
+                  When children find Kannada difficult to understand, parents may also struggle to help with schoolwork. Belesu makes this easier with English translations and learning support that <strong className="font-bold text-slate-950">help both students and parents follow their Kannada lessons</strong>.
+                </p>
+              </div>
+            </div>
+
+            {/* Dynamic Active Book Context Tag */}
+            <div className="flex items-center justify-center lg:justify-start gap-2 text-xs font-semibold text-slate-500 pt-1">
+              <span className="text-slate-400">Featured Book:</span>
+              <span className="text-slate-900 font-bold">{activeSlide.title}</span>
+              {activeSlide.badge && (
+                <span className="bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">
+                  {activeSlide.badge}
+                </span>
               )}
             </div>
 
-            {/* Bright Yellow / Amber Buttons (Matching Original Design) */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <button
-                type="button"
-                onClick={() => addToCart(activeBook, 'physical')}
-                className="w-full sm:w-auto py-4 px-8 rounded-full font-black text-slate-950 bg-amber-400 hover:bg-amber-500 shadow-xl shadow-amber-400/30 flex items-center justify-center gap-2 text-sm tracking-wide transition transform active:scale-95 cursor-pointer"
+            {/* CTA Button */}
+            <div className="pt-2 flex items-center justify-center lg:justify-start">
+              <Link
+                href="/books"
+                className="w-full sm:w-auto py-3.5 px-9 rounded-full font-black text-slate-950 bg-amber-400 hover:bg-amber-500 shadow-xl shadow-amber-400/30 flex items-center justify-center gap-2 text-sm tracking-wide transition transform active:scale-95 cursor-pointer uppercase"
               >
-                <ShoppingBag className="w-4 h-4 text-slate-950" /> Add to Cart (₹{activeSlide.price})
-              </button>
-
-              <button
-                type="button"
-                onClick={() => onPreview(activeBook)}
-                className="w-full sm:w-auto py-4 px-6 rounded-full font-bold text-slate-900 bg-white/90 hover:bg-white border border-slate-300 hover:border-slate-400 transition text-xs tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-              >
-                <Eye className="w-4 h-4 text-amber-600" /> View More & Preview
-              </button>
+                <BookOpen className="w-4 h-4 text-slate-950" /> Explore Kannada Guidebooks
+              </Link>
             </div>
-
           </div>
 
         </div>

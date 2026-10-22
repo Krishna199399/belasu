@@ -191,7 +191,7 @@ export default function BookDetailPage() {
       </div>
 
       {/* Book Preview Modal */}
-      <BookPreviewModal book={isPreviewOpen ? book : null} onClose={() => setIsPreviewOpen(false)} />
+      {isPreviewOpen && book && <BookPreviewModal book={book} onClose={() => setIsPreviewOpen(false)} />}
     </div>
   );
 }

@@ -29,17 +29,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Kannada Vowels with English Meaning',
-        imageUrl: '/savi-kannada-1st-1stpart.png',
-        kannadaText: 'ಅ - ಅರಸ (King), ಆ - ಆನೆ (Elephant), ಇ - ಇಲಿ (Mouse)',
-        englishTranslation: 'A - Arasa (King), Aa - Aane (Elephant), I - Ili (Mouse)'
+        title: 'Curriculum & Lesson Index',
+        imageUrl: '/previews/Savi Kannada class 1/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ವಿಷಯ ಸೂಚಿ - ಪಠ್ಯಕ್ರಮ ವಿವರ (Table of Contents)',
+        englishTranslation: 'Complete lesson list matching Karnataka State Board Class 1 textbook.'
       },
       {
         pageNumber: 2,
-        title: 'Daily Expressions & Greetings',
-        imageUrl: '/savi-kannada-1st-2ndpart.png',
-        kannadaText: 'ನಮಸ್ಕಾರ, ನೀವು ಹೇಗಿದ್ದೀರ? (Hello, how are you?)',
-        englishTranslation: 'Namaskara, neevu hegeeddeera? (Hello, how are you?)'
+        title: 'Sample Lesson with English Translation',
+        imageUrl: '/previews/Savi Kannada class 1/Lesson.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪಾಠ ವಿವರಣೆ ಮತ್ತು ಅರ್ಥ (Lesson Breakdown)',
+        englishTranslation: 'Line-by-line English transliteration and word meanings for easy home learning.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Solved Exercises & Worksheets',
+        imageUrl: '/previews/Savi Kannada class 1/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಅಭ್ಯಾಸ ಚಟುವಟಿಕೆಗಳು ಮತ್ತು ಉತ್ತರಗಳು (Exercise Answers)',
+        englishTranslation: 'Step-by-step solved textbook questions and activity solutions.'
       }
     ],
     inStock: true,
@@ -75,10 +85,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Poem Translation & Word Meanings',
-        imageUrl: '/2nd-1stpart.png',
-        kannadaText: 'ಬೆಳಗಾಯಿತು ಏಳಿರಿ, ಪಕ್ಷಿಗಳ ಹಾಡು ಕೇಳಿರಿ',
-        englishTranslation: 'Belagayitu eeliri, paksheegala haadu keeliri (Morning has broken, arise and listen to the birds singing)'
+        title: 'Curriculum & Chapter Index',
+        imageUrl: '/previews/Savi Kannada class 2/index.jpeg',
+        category: 'Index',
+        kannadaText: 'ವಿಷಯ ಸೂಚಿ (Table of Contents)',
+        englishTranslation: 'Full Karnataka State Board Class 2 Savi Kannada syllabus overview.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Poem Breakdown & Word Meanings',
+        imageUrl: '/previews/Savi Kannada class 2/poem.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪದ್ಯ ಅನುವಾದ ಮತ್ತು ಪದಗಳ ಅರ್ಥ (Poem Translation & Meanings)',
+        englishTranslation: 'Stanza-by-stanza English translation and bilingual glossary.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Solved Textbook Exercises',
+        imageUrl: '/previews/Savi Kannada class 2/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಪ್ರಶ್ನೋತ್ತರಗಳು ಮತ್ತು ಅಭ್ಯಾಸ (Exercise Solutions)',
+        englishTranslation: 'Complete answers for all textbook question-answer exercises.'
       }
     ],
     inStock: true,
@@ -114,10 +141,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Nouns & Verb Conjugation Guide',
-        imageUrl: '/SV-3-2.png',
-        kannadaText: 'ರಾಮನು ಶಾಲೆಗೆ ಹೋಗುತ್ತಾನೆ. (Ram goes to school.)',
-        englishTranslation: 'Ramanu shalege hoguttaane. (Ram goes to school.)'
+        title: 'Annual Syllabus & Chapter Index',
+        imageUrl: '/previews/Savi Kannada class 3/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ಪಠ್ಯಕ್ರಮ ಸೂಚಿ (Curriculum Index)',
+        englishTranslation: 'Complete unit breakdown aligned to the State Board Class 3 syllabus.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Poetry Translation & English Notes',
+        imageUrl: '/previews/Savi Kannada class 3/Poem.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪದ್ಯ ಭಾಗ - ಕನ್ನಡ ಮತ್ತು ಇಂಗ್ಲಿಷ್ (Poem & Translation)',
+        englishTranslation: 'Parallel English notes helping non-Kannadiga parents teach poetry.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Solved Exercise Questions',
+        imageUrl: '/previews/Savi Kannada class 3/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಅಭ್ಯಾಸ ಪ್ರಶ್ನೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು (Solved Exercises)',
+        englishTranslation: 'Thorough solved question bank for homework and exam prep.'
       }
     ],
     inStock: true,
@@ -153,10 +197,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Kitturu Chennamma Lesson Breakdown',
-        imageUrl: '/SV-4-2.png',
-        kannadaText: 'ಕಿತ್ತೂರಿನ ರಾಣಿ ಚೆನ್ನಮ್ಮ ಸ್ವಾತಂತ್ರ್ಯ ಪ್ರೇಮಿ.',
-        englishTranslation: 'Kitturina Rani Chennamma svaatantrya premi. (Queen Chennamma of Kittur was a freedom lover.)'
+        title: 'Complete Syllabus & Unit Index',
+        imageUrl: '/previews/Savi Kannada class 4/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ವಿಷಯಾನುಕ್ರಮಣಿಕೆ (Comprehensive Index)',
+        englishTranslation: 'Class 4 State Board chapters, prose, poetry, and grammar mapping.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Poem Translation & Word Breakdown',
+        imageUrl: '/previews/Savi Kannada class 4/Poem.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪದ್ಯ ಭಾಗ ಮತ್ತು ಸರಳ ಇಂಗ್ಲಿಷ್ ಅನುವಾದ (Poetry & Translation)',
+        englishTranslation: 'Detailed line-by-line translation and vocabulary key.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Solved Question Banks & Grammar',
+        imageUrl: '/previews/Savi Kannada class 4/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಅಭ್ಯಾಸ ಪತ್ರಿಕೆ ಮತ್ತು ಉತ್ತರಗಳು (Exercise Key)',
+        englishTranslation: 'Step-by-step answers for all textbook exercise questions.'
       }
     ],
     inStock: true,
@@ -192,10 +253,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Colors & Basic Words',
-        imageUrl: '/savi-kannada-1st-1stpart.png',
-        kannadaText: 'ಕೆಂಪು (Red), ನೀಲಿ (Blue), ಹಸಿರು (Green)',
-        englishTranslation: 'Kempu (Red), Neeli (Blue), Hasiru (Green)'
+        title: 'Alphabet & Module Index',
+        imageUrl: '/previews/Kali Kannada class 1/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ಅಕ್ಷರಮಾಲೆ ಮತ್ತು ಪಾಠ ಸೂಚಿ (Alphabet & Module Index)',
+        englishTranslation: 'Foundational learning roadmap for beginner Kannada students.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Script Practice & Solved Exercises',
+        imageUrl: '/previews/Kali Kannada class 1/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಅಭ್ಯಾಸ ಮತ್ತು ಬರವಣಿಗೆ (Writing Practice & Exercises)',
+        englishTranslation: 'Phonetic alphabet drills and guided letter tracing.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Workbook Activities & Solutions',
+        imageUrl: '/previews/Kali Kannada class 1/Exercises (2).jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಚಟುವಟಿಕೆಗಳು ಮತ್ತು ಉತ್ತರಗಳು (Workbook Activities)',
+        englishTranslation: 'Complete answers for primary workbook exercises.'
       }
     ],
     inStock: true,
@@ -231,10 +309,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Story Summary in English',
-        imageUrl: '/2nd-2nd-part.png',
-        kannadaText: 'ಒಂದಾನೊಂದು ಕಾಲದಲ್ಲಿ ಒಂದು ಕಾಡಿನಲ್ಲಿ ಸಿಂಹವಿತ್ತು.',
-        englishTranslation: 'Ondaanondu kaaladalli ondu kaadinalli simhavittu. (Once upon a time, there was a lion in a forest.)'
+        title: 'Curriculum & Story Index',
+        imageUrl: '/previews/Kali Kannada class 2/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ಪಾಠಗಳ ಪಟ್ಟಿ (Lesson & Story Index)',
+        englishTranslation: 'Overview of stories and grammar modules for Class 2.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Poem Translation & English Meaning',
+        imageUrl: '/previews/Kali Kannada class 2/Poem.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಕವಿತೆ ಮತ್ತು ಸರಳ ಅನುವಾದ (Poem & Translation)',
+        englishTranslation: 'Accurate English translation alongside prescribed Kannada rhymes.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Solved Textbook Answers',
+        imageUrl: '/previews/Kali Kannada class 2/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಪಠ್ಯಪುಸ್ತಕದ ಪ್ರಶ್ನೋತ್ತರಗಳು (Textbook Solutions)',
+        englishTranslation: 'Complete answers to workbook questions for stress-free homework.'
       }
     ],
     inStock: true,
@@ -270,10 +365,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Exam Preparation Notes',
-        imageUrl: '/SV-3-2.png',
-        kannadaText: 'ಪ್ರಶ್ನೆ: ಕರ್ನಾಟಕದ ರಾಜಧಾನಿ ಯಾವುದು? ಉತ್ತರ: ಬೆಂಗಳೂರು.',
-        englishTranslation: 'Question: What is the capital of Karnataka? Answer: Bengaluru.'
+        title: 'Syllabus & Chapter Index',
+        imageUrl: '/previews/Kali Kannada class 3/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ವಿಷಯ ಸೂಚಿ (Class 3 Syllabus Index)',
+        englishTranslation: 'Complete listing of chapters and grammar topics for Class 3.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Lesson Translation & Vocabulary Key',
+        imageUrl: '/previews/Kali Kannada class 3/Lesson.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪಾಠ ಅನುವಾದ ಮತ್ತು ಶಬ್ದಾರ್ಥ (Lesson & Vocabulary)',
+        englishTranslation: 'Detailed passage translation with English word-by-word meanings.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Solved Question Bank',
+        imageUrl: '/previews/Kali Kannada class 3/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಪ್ರಶ್ನೋತ್ತರ ಕೋಶ (Solved Question Bank)',
+        englishTranslation: 'Step-by-step solved exercises aligned to state standards.'
       }
     ],
     inStock: true,
@@ -309,10 +421,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Heritage Lesson Breakdown',
-        imageUrl: '/SV-4-2.png',
-        kannadaText: 'ಹಂಪಿ ವಿಜಯನಗರ ಸಾಮ್ರಾಜ್ಯದ ರಾಜಧಾನಿಯಾಗಿತ್ತು.',
-        englishTranslation: 'Hampi Vijayanagara saamraajyada raajadhaaniyaagittu. (Hampi was the capital of the Vijayanagara Empire.)'
+        title: 'Unit & Chapter Index',
+        imageUrl: '/previews/Kali Kannada class 4/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ಅಧ್ಯಾಯ ಸೂಚಿ (Chapter Index)',
+        englishTranslation: 'Full syllabus overview for Class 4 Kali Kannada curriculum.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Lesson Translation with Parallel English',
+        imageUrl: '/previews/Kali Kannada class 4/Lesson.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪಾಠ ಮತ್ತು ಇಂಗ್ಲಿಷ್ ವಿವರಣೆ (Lesson & Parallel English)',
+        englishTranslation: 'Full lesson text accompanied by parallel English translation.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Solved Exercises & Model Answers',
+        imageUrl: '/previews/Kali Kannada class 4/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಅಭ್ಯಾಸ ಪರಿಹಾರಗಳು (Exercise Solutions)',
+        englishTranslation: 'Comprehensive model answers for all chapter-end questions.'
       }
     ],
     inStock: true,
@@ -347,10 +476,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Letter Writing Template',
-        imageUrl: '/SV-5-2.png',
-        kannadaText: 'ರಜಾ ಪತ್ರ (Leave Letter Format & Example)',
-        englishTranslation: 'Raja Patra (Leave Letter Format & English Translation)'
+        title: 'Class 5 Siri Kannada Comprehensive Index',
+        imageUrl: '/previews/Siri Kannada class 5/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ಪರಿವಿಡಿ - ಸಿರಿ ಕನ್ನಡ ತರಗತಿ ೫ (Class 5 Index)',
+        englishTranslation: 'Middle school literature, grammar, and letter writing roadmap.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Poem Translation & Stanza Breakdown',
+        imageUrl: '/previews/Siri Kannada class 5/Poem.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪದ್ಯ ಭಾಗ ಮತ್ತು ಕವಿತಾ ಸಾರಾಂಶ (Poetry Translation)',
+        englishTranslation: 'Detailed stanza analysis with parallel English meaning.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Model Exam Paper Answer Keys',
+        imageUrl: '/previews/Siri Kannada class 5/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಮಾದರಿ ಪ್ರಶ್ನೋತ್ತರಗಳು (Exam Answer Keys)',
+        englishTranslation: 'Full question-and-answer solutions for school exam preparation.'
       }
     ],
     inStock: true,
@@ -385,10 +531,27 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
-        title: 'Grammar Masterclass',
-        imageUrl: '/SV-5-2.png',
-        kannadaText: 'ತತ್ಸಮ - ತದ್ಭವ ಪಟ್ಟಿ (Tatsama - Tadbhava List)',
-        englishTranslation: 'Tatsama - Tadbhava word list with English meanings.'
+        title: 'Class 5 Tili Kannada Syllabus Index',
+        imageUrl: '/previews/Tili Kannada class 5/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ಅಧ್ಯಾಯ ಪಟ್ಟಿ (Tili Kannada Chapter Index)',
+        englishTranslation: 'Comprehensive Class 5 curriculum syllabus structure.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Prose & Poetry Translation',
+        imageUrl: '/previews/Tili Kannada class 5/Poem.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪಾಠ ಅನುವಾದ ಮತ್ತು ಶಬ್ದ ಭಂಡಾರ (Translation & Vocabulary)',
+        englishTranslation: 'Chapter translations and advanced grammar rules in English.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Comprehensive Solved Exercise Bank',
+        imageUrl: '/previews/Tili Kannada class 5/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಅಭ್ಯಾಸ ಕೋಶ ಮತ್ತು ಉತ್ತರಗಳು (Solved Exercise Bank)',
+        englishTranslation: 'Complete answers for all textbook exercise and evaluation sections.'
       }
     ],
     inStock: true,
@@ -469,6 +632,50 @@ export const PARENT_REVIEWS: ParentReview[] = [
     date: 'April 12, 2026',
     verifiedPurchase: true,
     bookTitle: 'Kali Kannada English Translated Guidebook Class 2'
+  },
+  {
+    id: 'r5',
+    parentName: 'Rajeshwar Sen',
+    location: 'Electronic City, Bengaluru',
+    childGrade: 'Class 1 Parent',
+    rating: 5,
+    reviewText: 'Moving from Kolkata, we were anxious about Kannada as a compulsory subject. The Kali Kannada Class 1 guidebook with phonetic English transliteration made early alphabet and word formation effortless for our daughter!',
+    date: 'March 28, 2026',
+    verifiedPurchase: true,
+    bookTitle: 'Kali Kannada English Translated Guidebook Class 1'
+  },
+  {
+    id: 'r6',
+    parentName: 'Dr. Archana Rao',
+    location: 'Mangaluru, Karnataka',
+    childGrade: 'Class 4 Parent',
+    rating: 5,
+    reviewText: 'The word-by-word Kannada to English dictionary and chapter-wise solved question answers are brilliant. It builds self-reliance so children can complete school homework without hesitation.',
+    date: 'March 15, 2026',
+    verifiedPurchase: true,
+    bookTitle: 'Savi Kannada English Translated Guidebook Class 4'
+  },
+  {
+    id: 'r7',
+    parentName: 'Deepak Mehta',
+    location: 'Sarjapur Road, Bengaluru',
+    childGrade: 'Class 3 Parent',
+    rating: 5,
+    reviewText: 'Clear grammar explanations for Gunintagalu and Ottakshara gave us tremendous confidence. This is the single best academic companion for CBSE and State Syllabus Kannada.',
+    date: 'February 22, 2026',
+    verifiedPurchase: true,
+    bookTitle: 'Savi Kannada English Translated Guidebook Class 3'
+  },
+  {
+    id: 'r8',
+    parentName: 'Sneha Joshi',
+    location: 'Belagavi, Karnataka',
+    childGrade: 'Class 5 Parent',
+    rating: 5,
+    reviewText: 'Siri Kannada Class 5 guidebook explains middle school poetry stanza by stanza. My son went from fearing Kannada exams to scoring 92%! Heartfelt gratitude to the Belesu team.',
+    date: 'February 04, 2026',
+    verifiedPurchase: true,
+    bookTitle: 'Siri Kannada English Translated Guidebook Class 5'
   }
 ];
 

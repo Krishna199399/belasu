@@ -12,10 +12,28 @@ export const CartDrawer: React.FC = () => {
   const { cart, isOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
   const shippingFee = needsShipping() ? 45 : 0;
 
+  // Prevent background website scrolling when cart drawer is open
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+    };
+  }, [isOpen]);
+
   if (!isOpen || pathname?.startsWith('/admin')) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div className="fixed inset-0 z-50 overflow-hidden overscroll-contain">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"

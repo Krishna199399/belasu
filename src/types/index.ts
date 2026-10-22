@@ -1,11 +1,14 @@
 export type BookSeries = 'Kali' | 'Savi' | 'Siri' | 'Tili';
 
+export type SamplePageCategory = 'Index' | 'Poem' | 'Exercises' | 'Textbook';
+
 export interface SamplePage {
   pageNumber: number;
   title: string;
   imageUrl: string;
-  kannadaText: string;
-  englishTranslation: string;
+  category?: SamplePageCategory;
+  kannadaText?: string;
+  englishTranslation?: string;
 }
 
 export interface BookProduct {

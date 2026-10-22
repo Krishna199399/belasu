@@ -22,20 +22,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Belesu - English Translated Kannada Guidebooks (Classes 1 to 5)',
-  description: 'Kannada Mathadi, Kannada Belesi. Belesu offers research-backed, English-translated study guidebooks for Savi, Kali, Siri, and Tili Kannada curricula across primary classes in Karnataka.',
+  title: 'Kannada Guidebooks for Academic Learning | Belesu',
+  description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
   keywords: [
+    'Kannada guidebooks',
+    'Kannada guidebooks for school students',
+    'English-translated Kannada guidebooks',
+    'Kannada academic guidebooks',
+    'Kannada study books',
+    'Kannada learning books',
     'Belesu Kannada',
-    'English Translated Kannada Guidebook',
-    'Class 4 Savi Kannada',
-    'Class 5 Siri Kannada',
-    'Class 1 Kali Kannada',
-    'Kannada study aid for non Kannadiga parents'
+    'Kannada Mathadi, Kannada Belesi'
   ],
   authors: [{ name: 'Belesu Academic Publishers' }],
   openGraph: {
-    title: 'Belesu - English Translated Kannada Academic Guidebooks',
-    description: 'Empowering students & parents across Karnataka to master school Kannada with line-by-line English translations.',
+    title: 'Kannada Guidebooks for Academic Learning | Belesu',
+    description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
     url: 'https://belesu.in',
     siteName: 'Belesu',
     images: [
@@ -51,8 +53,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Belesu - English Translated Kannada Guidebooks',
-    description: 'Master primary school Kannada with clear English translations & solved exercise answers.',
+    title: 'Kannada Guidebooks for Academic Learning | Belesu',
+    description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
     site: '@kannadabelesu'
   }
 };

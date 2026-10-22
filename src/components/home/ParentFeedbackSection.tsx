@@ -2,79 +2,167 @@
 
 import React from 'react';
 import { PARENT_REVIEWS } from '@/data/mockData';
-import { Star, Quote, CheckCircle, ArrowRight } from 'lucide-react';
+import { Star, Quote, CheckCircle2, ArrowRight, ShieldCheck, Sparkles, Heart } from 'lucide-react';
 import Link from 'next/link';
+import { ParentReview } from '@/types';
+
+function ReviewCard({ review }: { review: ParentReview }) {
+  // Extract initials for visual avatar
+  const initials = review.parentName
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+  return (
+    <div className="w-[360px] sm:w-[420px] shrink-0 bg-white/95 backdrop-blur-xs p-6 sm:p-7 rounded-2xl border border-amber-200/70 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 mx-3 select-none group">
+      <div>
+        {/* Rating, Verified Pill & Date */}
+        <div className="flex items-center justify-between gap-2 mb-3.5">
+          <div className="flex items-center gap-1">
+            {Array.from({ length: review.rating }).map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+            ))}
+          </div>
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/80">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Verified Parent</span>
+          </div>
+        </div>
+
+        {/* Quote Icon & Review Text */}
+        <div className="relative mb-4">
+          <Quote className="w-7 h-7 text-amber-300/60 mb-1.5" />
+          <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+            &ldquo;{review.reviewText}&rdquo;
+          </p>
+        </div>
+      </div>
+
+      {/* Reviewer Details & Series Tag */}
+      <div className="pt-4 border-t border-stone-100 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+            {initials}
+          </div>
+          <div className="min-w-0">
+            <h4 className="font-bold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 truncate">
+              <span className="truncate">{review.parentName}</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            </h4>
+            <p className="text-[11px] text-slate-500 truncate">
+              {review.childGrade} • {review.location}
+            </p>
+          </div>
+        </div>
+
+        {review.bookTitle && (
+          <span className="text-[10px] font-bold text-amber-900 bg-amber-100/80 border border-amber-200/80 px-2 py-1 rounded-lg shrink-0 max-w-[130px] truncate text-right">
+            {review.bookTitle.split('English')[0].trim() || review.bookTitle}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export const ParentFeedbackSection: React.FC = () => {
+  // Split reviews into two distinct rows for dual marquee motion
+  const midpoint = Math.ceil(PARENT_REVIEWS.length / 2);
+  const row1 = PARENT_REVIEWS.slice(0, midpoint);
+  const row2 = PARENT_REVIEWS.slice(midpoint);
+
+  // Duplicate for seamless 100% infinite looping
+  const marqueeRow1 = [...row1, ...row1, ...row1];
+  const marqueeRow2 = [...row2, ...row2, ...row2];
+
   return (
-    <section className="py-20 bg-amber-50/50 border-b border-amber-100/60">
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-5">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-14">
-          <div>
-            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
-              Verified Parent Feedback
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mt-2">
-              What Parents Say About <span className="text-amber-600">Belesu Books</span>
+    <section className="py-20 lg:py-24 bg-gradient-to-b from-amber-50/60 via-amber-50/30 to-white border-b border-stone-200 relative overflow-hidden">
+      
+      {/* Container for Header matching Belesu - Contents.md verbatim */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+          <div className="max-w-2xl space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span>Parent Experiences</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+              What Parents Say About Belesu
             </h2>
-            <p className="text-sm text-slate-600 mt-2 max-w-xl">
-              Over 5,000 families across Karnataka rely on Belesu guidebooks for stress-free Kannada study.
+
+            <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
+              Every family’s learning experience is different. Read feedback from parents who have
+              used Belesu guidebooks to support their children’s Kannada studies and learning at
+              home.
             </p>
           </div>
 
-          <Link
-            href="/reviews"
-            className="inline-flex items-center gap-2 py-3 px-5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition"
-          >
-            Read All Reviews & Submit Feedback <ArrowRight className="w-4 h-4 text-amber-400" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 shrink-0">
+            {/* Social Proof Metric Pill */}
+            <div className="hidden lg:flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border border-amber-200 shadow-2xs text-xs">
+              <div className="flex items-center text-amber-500">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                <span className="font-bold text-slate-900 ml-1">4.9 / 5.0</span>
+              </div>
+              <span className="text-slate-300">•</span>
+              <span className="text-slate-600 font-medium">500+ Happy Families</span>
+            </div>
+
+            {/* CTA matching Belesu - Contents.md verbatim */}
+            <Link
+              href="/reviews"
+              className="inline-flex items-center gap-2 py-3.5 px-6 rounded-xl bg-slate-900 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 group cursor-pointer"
+            >
+              <span>Read More Parent Reviews</span>
+              <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          INFINITE MARQUEE SHOWCASE WITH EDGE GRADIENT MASKS & HOVER PAUSE
+      ══════════════════════════════════════════════════════════════════════ */}
+      <div className="relative overflow-hidden pause-hover py-2 space-y-6">
+        
+        {/* Left & Right Soft Blur Fade Masks */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-amber-50/95 via-amber-50/60 to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-amber-50/95 via-amber-50/60 to-transparent z-10" />
+
+        {/* Row 1: Smooth scrolling left */}
+        <div className="flex animate-marquee-left">
+          {marqueeRow1.map((review, idx) => (
+            <ReviewCard key={`row1-${review.id}-${idx}`} review={review} />
+          ))}
         </div>
 
-        {/* Reviews Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {PARENT_REVIEWS.slice(0, 4).map((review) => (
-            <div
-              key={review.id}
-              className="bg-white p-8 rounded-2xl border border-amber-200/60 shadow-xs hover:shadow-lg transition flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-4">
-                  <div className="flex items-center gap-1 text-amber-500">
-                    {Array.from({ length: review.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <span className="text-xs font-semibold text-slate-400">{review.date}</span>
-                </div>
-
-                <Quote className="w-8 h-8 text-amber-300/60 mb-2" />
-
-                <p className="text-sm text-slate-700 leading-relaxed font-medium mb-6">
-                  "{review.reviewText}"
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                    {review.parentName}
-                    <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-100" />
-                  </h3>
-                  <p className="text-xs text-slate-600">{review.childGrade} • {review.location}</p>
-                </div>
-                {review.bookTitle && (
-                  <span className="text-xs font-semibold text-amber-800 bg-amber-100 px-2.5 py-1.5 rounded-xl">
-                    {review.bookTitle}
-                  </span>
-                )}
-              </div>
-            </div>
+        {/* Row 2: Smooth scrolling right */}
+        <div className="flex animate-marquee-right">
+          {marqueeRow2.map((review, idx) => (
+            <ReviewCard key={`row2-${review.id}-${idx}`} review={review} />
           ))}
         </div>
 
       </div>
+
+      {/* Bottom Subtle Trust Ribbon */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-slate-500 font-medium text-center">
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> 100% Verified Parent Purchases
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> Trusted by Non-Kannadiga Families Across Karnataka
+          </span>
+          <span className="flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> Karnataka State Board Aligned (Classes 1–10)
+          </span>
+        </div>
+      </div>
+
     </section>
   );
 };
