@@ -68,23 +68,17 @@ function ReviewCard({ review }: { review: ParentReview }) {
 }
 
 export const ParentFeedbackSection: React.FC = () => {
-  // Split reviews into two distinct rows for dual marquee motion
-  const midpoint = Math.ceil(PARENT_REVIEWS.length / 2);
-  const row1 = PARENT_REVIEWS.slice(0, midpoint);
-  const row2 = PARENT_REVIEWS.slice(midpoint);
-
-  // Duplicate for seamless 100% infinite looping
-  const marqueeRow1 = [...row1, ...row1, ...row1];
-  const marqueeRow2 = [...row2, ...row2, ...row2];
+  // Single row of reviews duplicated for a seamless 100% infinite marquee loop
+  const marqueeReviews = [...PARENT_REVIEWS, ...PARENT_REVIEWS];
 
   return (
-    <section className="py-20 lg:py-24 bg-gradient-to-b from-amber-50/60 via-amber-50/30 to-white border-b border-stone-200 relative overflow-hidden">
+    <section className="py-12 sm:py-14 lg:py-16 bg-gradient-to-b from-amber-50/60 via-amber-50/30 to-white border-b border-stone-200 relative overflow-hidden">
       
       {/* Container for Header matching Belesu - Contents.md verbatim */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-10">
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-          <div className="max-w-2xl space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
+          <div className="max-w-2xl space-y-2.5">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               <span>Parent Experiences</span>
             </div>
@@ -93,7 +87,7 @@ export const ParentFeedbackSection: React.FC = () => {
               What Parents Say About Belesu
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
               Every family’s learning experience is different. Read feedback from parents who have
               used Belesu guidebooks to support their children’s Kannada studies and learning at
               home.
@@ -114,7 +108,7 @@ export const ParentFeedbackSection: React.FC = () => {
             {/* CTA matching Belesu - Contents.md verbatim */}
             <Link
               href="/reviews"
-              className="inline-flex items-center gap-2 py-3.5 px-6 rounded-xl bg-slate-900 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 group cursor-pointer"
+              className="inline-flex items-center gap-2 py-3 px-5 rounded-xl bg-slate-900 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 group cursor-pointer"
             >
               <span>Read More Parent Reviews</span>
               <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
@@ -124,32 +118,25 @@ export const ParentFeedbackSection: React.FC = () => {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          INFINITE MARQUEE SHOWCASE WITH EDGE GRADIENT MASKS & HOVER PAUSE
+          INFINITE MARQUEE SHOWCASE (SINGLE ROW WITH EDGE GRADIENT MASKS)
       ══════════════════════════════════════════════════════════════════════ */}
-      <div className="relative overflow-hidden pause-hover py-2 space-y-6">
+      <div className="relative overflow-hidden pause-hover py-1">
         
         {/* Left & Right Soft Blur Fade Masks */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-amber-50/95 via-amber-50/60 to-transparent z-10" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-amber-50/95 via-amber-50/60 to-transparent z-10" />
 
-        {/* Row 1: Smooth scrolling left */}
+        {/* Single Row: Smooth scrolling left */}
         <div className="flex animate-marquee-left">
-          {marqueeRow1.map((review, idx) => (
-            <ReviewCard key={`row1-${review.id}-${idx}`} review={review} />
-          ))}
-        </div>
-
-        {/* Row 2: Smooth scrolling right */}
-        <div className="flex animate-marquee-right">
-          {marqueeRow2.map((review, idx) => (
-            <ReviewCard key={`row2-${review.id}-${idx}`} review={review} />
+          {marqueeReviews.map((review, idx) => (
+            <ReviewCard key={`single-row-${review.id}-${idx}`} review={review} />
           ))}
         </div>
 
       </div>
 
       {/* Bottom Subtle Trust Ribbon */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8">
         <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-slate-500 font-medium text-center">
           <span className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> 100% Verified Parent Purchases

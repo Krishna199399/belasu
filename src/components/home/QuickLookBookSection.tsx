@@ -147,11 +147,11 @@ export const QuickLookBookSection: React.FC<QuickLookBookSectionProps> = ({ onPr
   const exercisesPage = samplePages[2];
 
   return (
-    <section className="bg-gradient-to-b from-stone-50 via-white to-stone-50 py-12 sm:py-16 lg:py-20 border-b border-stone-200">
+    <section className="bg-gradient-to-b from-stone-50 via-white to-stone-50 py-10 sm:py-12 lg:py-14 border-b border-stone-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* ── Section Header (Compact & High Impact) ── */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-8">
+        <div className="text-center max-w-3xl mx-auto space-y-2.5 mb-6">
           <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-bold uppercase tracking-wider shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
             <span>Interactive Sample Pages · All 10 Books</span>
@@ -550,7 +550,7 @@ export const QuickLookBookSection: React.FC<QuickLookBookSectionProps> = ({ onPr
         </div>
 
         {/* ── Curriculum Series Explore CTAs (Compact Footer) ── */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-10">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-6">
           <Link
             href="/books?series=Savi"
             className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs tracking-wide rounded-xl shadow-xs transition transform active:scale-95"

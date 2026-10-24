@@ -1,4 +1,4 @@
-export type BookSeries = 'Kali' | 'Savi' | 'Siri' | 'Tili';
+export type BookSeries = 'Kali' | 'Savi' | 'Siri' | 'Tili' | 'Spoken';
 
 export type SamplePageCategory = 'Index' | 'Poem' | 'Exercises' | 'Textbook';
 

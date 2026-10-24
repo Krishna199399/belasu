@@ -87,7 +87,10 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <strong className="block font-bold text-slate-900">Phone Support:</strong>
-                    <a href="tel:+919902383451" className="hover:text-amber-600 font-semibold">+91 99023 83451</a>
+                    <div className="flex flex-col gap-0.5">
+                      <a href="tel:+919606636804" className="hover:text-amber-600 font-semibold text-slate-900">+91 96066 36804</a>
+                      <a href="tel:+919902383451" className="hover:text-amber-600 text-xs text-slate-500">+91 99023 83451</a>
+                    </div>
                   </div>
                 </div>
 

@@ -57,11 +57,11 @@ const learningNeeds: LearningNeedItem[] = [
 
 export const LearningNeedsSection: React.FC = () => {
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-white border-b border-stone-200">
+    <section className="py-12 sm:py-14 lg:py-16 bg-white border-b border-stone-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
             Personalized Curriculum Support
           </span>
 
@@ -69,7 +69,7 @@ export const LearningNeedsSection: React.FC = () => {
             Designed for Different Kannada Learning Needs
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal pt-1">
+          <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal pt-1">
             Belesu’s innovative guidebooks are designed to support students learning Kannada as part of
             their school curriculum, while also helping parents and teachers participate more
             effectively in the learning process.
@@ -77,7 +77,7 @@ export const LearningNeedsSection: React.FC = () => {
         </div>
 
         {/* 6-Card Responsive Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-10">
           {learningNeeds.map((item, idx) => {
             const Icon = item.icon;
             return (

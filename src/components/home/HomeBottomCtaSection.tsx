@@ -16,7 +16,7 @@ import {
 
 export const HomeBottomCtaSection: React.FC = () => {
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-b from-white via-amber-50/40 to-amber-100/50 relative overflow-hidden">
+    <section className="py-12 sm:py-14 lg:py-16 bg-gradient-to-b from-white via-amber-50/40 to-amber-100/50 relative overflow-hidden">
       {/* Decorative ambient background glows */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-300/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-orange-300/20 rounded-full blur-3xl pointer-events-none" />
@@ -24,7 +24,7 @@ export const HomeBottomCtaSection: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Main Showcase Container */}
-        <div className="rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white p-8 sm:p-12 lg:p-16 shadow-2xl shadow-slate-950/20 border border-amber-500/20 relative overflow-hidden">
+        <div className="rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white p-6 sm:p-10 lg:p-12 shadow-2xl shadow-slate-950/20 border border-amber-500/20 relative overflow-hidden">
           
           {/* Subtle interior glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />

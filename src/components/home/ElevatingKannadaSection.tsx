@@ -24,12 +24,12 @@ export const ElevatingKannadaSection: React.FC = () => {
   ];
 
   return (
-    <section className="bg-stone-50/70 py-16 sm:py-20 lg:py-24 border-b border-stone-200">
+    <section className="bg-stone-50/70 py-12 sm:py-14 lg:py-16 border-b border-stone-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header matching Belesu - Contents.md verbatim */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-12 sm:mb-16">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
+        <div className="max-w-3xl mx-auto text-center space-y-3 mb-8 sm:mb-10">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
             <span>Vision & Cultural Impact</span>
           </span>

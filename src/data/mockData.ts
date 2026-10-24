@@ -558,6 +558,36 @@ export const BOOKS_DATA: BookProduct[] = [
     stockQuantity: 42,
     rating: 4.98,
     reviewCount: 78
+  },
+  {
+    id: '21500',
+    title: 'A Destination to Speak Kannada',
+    slug: 'a-destination-to-speak-kannada',
+    series: 'Spoken',
+    gradeClass: 0,
+    sku: 'DSK',
+    price: 295,
+    originalPrice: 350,
+    badge: 'Illustrated Edition',
+    description: 'Pictorially and innovatively crafted book to speak and learn Kannada for beginners and non-Kannada speakers across 23 practical conversation chapters.',
+    features: [
+      '23 chapters covering everyday situations and conversations',
+      'Pictorial approach connecting Kannada words to real-life scenarios',
+      'Practical Kannada vocabulary for travel, shopping, family and services',
+      'Language basics: numbers, pronouns, tenses and Gunithakshara'
+    ],
+    tableOfContents: [
+      'Part 1: Kannada Introductions & Family Conversations',
+      'Part 2: Questions, Pronouns, Numbers & Descriptions',
+      'Part 3: Travel, Transport, Shopping & Local Services',
+      'Part 4: Language Basics, Tenses & Everyday Vocabulary'
+    ],
+    coverImage: '/covers/savi-1.png',
+    samplePages: [],
+    inStock: true,
+    stockQuantity: 50,
+    rating: 4.95,
+    reviewCount: 86
   }
 ];
 
@@ -705,3 +735,4 @@ export const VIDEO_REELS: VideoReel[] = [
     duration: '0:55'
   }
 ];
+

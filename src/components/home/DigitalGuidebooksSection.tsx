@@ -21,18 +21,18 @@ import {
 
 export const DigitalGuidebooksSection: React.FC = () => {
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-b from-stone-50 via-amber-50/20 to-white relative overflow-hidden border-b border-stone-200">
+    <section className="py-12 sm:py-14 lg:py-16 bg-gradient-to-b from-stone-50 via-amber-50/20 to-white relative overflow-hidden border-b border-stone-200">
       {/* Ambient background glows */}
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 right-0 w-96 h-96 bg-orange-200/20 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* ══════════════════════════════════════════════════════════════════
               LEFT COLUMN (7 cols): Editorial, Value Pillars & Action CTAs
           ══════════════════════════════════════════════════════════════════ */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="lg:col-span-7 space-y-6">
             
             {/* Section Tag */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-2xs">

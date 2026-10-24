@@ -43,11 +43,11 @@ const subSections: SubSectionCard[] = [
 
 export const AcademicSupportSection: React.FC = () => {
   return (
-    <section className="bg-gradient-to-b from-stone-50 via-white to-amber-50/20 py-16 sm:py-20 lg:py-24 border-b border-stone-200/80">
+    <section className="bg-gradient-to-b from-stone-50 via-white to-amber-50/20 py-12 sm:py-14 lg:py-16 border-b border-stone-200/80">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header & Introductory Context */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
             <span>Bridging the Academic Gap</span>
           </div>
@@ -56,7 +56,7 @@ export const AcademicSupportSection: React.FC = () => {
             Making Kannada Learning Easier for Students and Parents
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal pt-1">
+          <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal pt-1">
             Learning Kannada as a school subject can be challenging when students struggle to understand
             the language or when parents are unfamiliar with Kannada. Belesu’s English-translated academic
             guidebooks help bridge this gap with additional support for understanding lessons, learning
@@ -65,7 +65,7 @@ export const AcademicSupportSection: React.FC = () => {
         </div>
 
         {/* 4-Card Sub-Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-12 sm:mt-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-8 sm:mt-10">
           {subSections.map((item) => {
             const Icon = item.icon;
             return (

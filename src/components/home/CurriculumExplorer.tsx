@@ -202,7 +202,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
   };
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-stone-50/80 via-white to-amber-50/20 border-b border-stone-200">
+    <section className="py-12 sm:py-14 lg:py-16 bg-gradient-to-b from-stone-50/80 via-white to-amber-50/20 border-b border-stone-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header matching Belesu - Contents.md verbatim */}
@@ -398,14 +398,13 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
 
                     {/* Dual CTAs matching Belesu - Contents.md */}
                     <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => onPreview(currentBook)}
+                      <Link
+                        href={`/books/${currentBook.slug}`}
                         className="w-full sm:w-1/2 py-3.5 px-6 rounded-xl font-bold text-sm bg-white hover:bg-stone-100 text-slate-900 border border-stone-300 shadow-2xs flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer"
                       >
                         <Eye className="w-4 h-4 text-amber-600" />
                         <span>Explore Book</span>
-                      </button>
+                      </Link>
 
                       <button
                         type="button"
@@ -450,9 +449,11 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                   </div>
 
                   {/* Central 3D Elevated Hero Book Mockup */}
-                  <div
+                  <Link
+                    href={`/books/${currentBook.slug}`}
                     key={currentBook.id}
-                    className="relative z-10 my-4 transform transition-transform duration-500 hover:scale-105 hover:-translate-y-2 drop-shadow-2xl"
+                    className="relative z-10 my-4 transform transition-transform duration-500 hover:scale-105 hover:-translate-y-2 drop-shadow-2xl group/mockup block cursor-pointer"
+                    title={`View ${currentBook.title}`}
                   >
                     <img
                       src={currentBook.coverImage}
@@ -460,11 +461,11 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                       className="max-h-72 sm:max-h-80 w-auto object-contain rounded-xl shadow-2xl"
                     />
                     <div className="text-center mt-3">
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-slate-900/80 text-white backdrop-blur-xs shadow-md">
+                      <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-slate-900/80 text-white backdrop-blur-xs shadow-md group-hover/mockup:bg-amber-600 transition-colors">
                         Class {activeGrade} · {activeSeries.id} Kannada
                       </span>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Series Thumbnail Strip */}
                   {seriesBooks.length > 1 && (
@@ -542,14 +543,18 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                       </span>
                     </div>
 
-                    {/* Book Mockup */}
-                    <div className="h-56 flex items-center justify-center my-2 transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md">
+                    {/* Book Mockup Linked to Specific Product Page */}
+                    <Link
+                      href={`/books/${bookForCard.slug}`}
+                      className="h-56 flex items-center justify-center my-2 transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md block cursor-pointer"
+                      title={`View ${bookForCard.title}`}
+                    >
                       <img
                         src={bookForCard.coverImage}
                         alt={bookForCard.title}
-                        className="max-h-full w-auto object-contain rounded-lg shadow-lg"
+                        className="max-h-full w-auto object-contain rounded-lg shadow-lg hover:brightness-105 transition-all"
                       />
-                    </div>
+                    </Link>
 
                     {/* Class Selector Pills for Multi-Grade Series */}
                     {series.grades.length > 1 && (
@@ -560,14 +565,16 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                             <button
                               key={grade}
                               type="button"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 if (series.id === 'Savi') setConcept1SaviGrade(grade);
                                 if (series.id === 'Kali') setConcept1KaliGrade(grade);
                               }}
+                              aria-label={`Select Class ${grade} for ${series.tabLabel}`}
                               className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
                                 isSel
-                                  ? 'bg-slate-900 text-white shadow-xs'
-                                  : 'bg-white/80 hover:bg-white text-slate-700 border border-stone-200'
+                                  ? 'bg-slate-900 text-white shadow-xs scale-105'
+                                  : 'bg-white/80 hover:bg-white text-slate-700 border border-stone-200 hover:border-slate-400'
                               }`}
                             >
                               Cl {grade}
@@ -582,7 +589,15 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div className="space-y-3">
                       <h3 className="text-lg font-serif font-black text-slate-900 leading-snug">
-                        {series.title}
+                        <Link
+                          href={`/books/${bookForCard.slug}`}
+                          className="hover:text-amber-600 transition-colors block"
+                          title={bookForCard.title}
+                        >
+                          {series.grades.length > 1
+                            ? `${series.tabLabel} Guidebook | Class ${cardGrade}`
+                            : series.title}
+                        </Link>
                       </h3>
 
                       <p className="text-xs text-slate-600 leading-relaxed font-normal line-clamp-3">
@@ -618,21 +633,22 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => onPreview(bookForCard)}
-                          className="w-full py-2.5 px-3 rounded-lg font-bold text-xs bg-stone-100 hover:bg-stone-200 text-slate-900 border border-stone-200 flex items-center justify-center gap-1 transition cursor-pointer"
+                        <Link
+                          href={`/books/${bookForCard.slug}`}
+                          title={`Explore ${bookForCard.title}`}
+                          className="w-full py-2.5 px-2 rounded-lg font-bold text-xs bg-stone-100 hover:bg-stone-200 text-slate-900 border border-stone-200 flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer shadow-2xs group/btn"
                         >
-                          <Eye className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Explore</span>
-                        </button>
+                          <Eye className="w-3.5 h-3.5 text-amber-600 shrink-0 group-hover/btn:scale-110 transition-transform" />
+                          <span className="truncate">Explore Book</span>
+                        </Link>
 
                         <button
                           type="button"
                           onClick={() => handleAddToCart(bookForCard)}
-                          className={`w-full py-2.5 px-3 rounded-lg font-bold text-xs ${series.theme.btnBg} ${series.theme.btnHover} ${series.theme.btnText} shadow-xs flex items-center justify-center gap-1 transition cursor-pointer`}
+                          title={`Add ${bookForCard.title} to cart`}
+                          className={`w-full py-2.5 px-2 rounded-lg font-bold text-xs ${series.theme.btnBg} ${series.theme.btnHover} ${series.theme.btnText} shadow-xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer uppercase tracking-wider`}
                         >
-                          <ShoppingBag className="w-3.5 h-3.5" />
+                          <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
                           <span>Add</span>
                         </button>
                       </div>

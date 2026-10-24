@@ -28,11 +28,11 @@ export const VideoReelsSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-white text-slate-900 overflow-hidden border-b border-stone-200">
+    <section className="py-12 sm:py-14 lg:py-16 bg-white text-slate-900 overflow-hidden border-b border-stone-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header matching Belesu - Contents.md verbatim */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-14">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-8 sm:mb-10">
           <div className="max-w-2xl space-y-3">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-100 border border-rose-300 text-rose-700 text-xs font-bold uppercase tracking-wider shadow-xs">
               <Video className="w-3.5 h-3.5 text-rose-600" /> Watch In Action
