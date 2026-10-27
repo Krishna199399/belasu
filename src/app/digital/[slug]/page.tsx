@@ -73,7 +73,7 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
   const gradient = subjectGradients[book.subject] || 'from-amber-500 to-orange-600';
 
   return (
-    <div className="min-h-screen bg-stone-50 text-slate-900 pb-16">
+    <div className="min-h-screen bg-stone-50 text-slate-900 pb-28 lg:pb-16">
       
       {/* Top Breadcrumb Nav Bar */}
       <div className="bg-white border-b border-stone-200 py-3">
@@ -90,15 +90,15 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
         </div>
       </div>
 
-      <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-8 md:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+      <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6 sm:py-8 md:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
 
           {/* Left: Book Info Details */}
           <div className="lg:col-span-2 space-y-6">
             
             {/* Header Hero Card */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row gap-6 items-center sm:items-start">
-              <div className={`w-32 h-44 rounded-xl bg-gradient-to-br ${gradient} flex-shrink-0 flex items-center justify-center text-5xl shadow-md text-white`}>
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-8 shadow-xs flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+              <div className={`w-28 h-40 sm:w-32 sm:h-44 rounded-xl bg-gradient-to-br ${gradient} flex-shrink-0 flex items-center justify-center text-4xl sm:text-5xl shadow-md text-white`}>
                 {subjectEmoji[book.subject] || '📖'}
               </div>
               <div className="space-y-3 text-center sm:text-left flex-1">
@@ -116,7 +116,7 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
                   )}
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 leading-tight">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 leading-tight">
                   {book.title}
                 </h1>
 
@@ -133,12 +133,12 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
             </div>
 
             {/* Description & Features Card */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 space-y-5 shadow-xs">
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-8 space-y-5 shadow-xs">
               <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <span className="w-1.5 h-5 bg-amber-500 rounded-full" />
                 About This Digital Book
               </h2>
-              <p className="text-slate-600 text-sm leading-relaxed font-normal">
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-normal">
                 {book.description}
               </p>
 
@@ -158,12 +158,12 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
             </div>
 
             {/* Secure Reader Callout */}
-            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 sm:p-6 flex gap-4 items-start shadow-xs">
-              <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-300 flex items-center justify-center flex-shrink-0">
-                <ShieldCheck className="w-6 h-6 text-amber-700" />
+            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 sm:p-6 flex gap-3 sm:gap-4 items-start shadow-xs">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/15 border border-amber-300 flex items-center justify-center flex-shrink-0">
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-amber-700" />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-sm text-amber-950 mb-1">
+                <h3 className="font-bold text-xs sm:text-sm text-amber-950 mb-1">
                   100% Secure Web-Only Reader
                 </h3>
                 <p className="text-xs text-amber-900/80 leading-relaxed font-medium">
@@ -176,12 +176,12 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
 
           {/* Right Column: Sticky Purchase & Access Card */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white border border-slate-200/90 rounded-2xl p-6 space-y-5 shadow-lg">
+            <div className="sticky top-24 bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 space-y-5 shadow-lg">
               
               {/* Pricing Box */}
               <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black text-slate-900">₹{book.price}</span>
+                  <span className="text-3xl sm:text-4xl font-black text-slate-900">₹{book.price}</span>
                   <span className="text-xs font-bold text-slate-500">INR</span>
                 </div>
                 <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-200">
@@ -200,7 +200,7 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
                   </div>
                   <Link
                     href={`/reader/${book.slug}`}
-                    className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition text-xs shadow-md"
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition text-xs sm:text-sm shadow-md"
                   >
                     <BookOpen className="w-4 h-4" /> Open in Web Reader <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -209,7 +209,7 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
                 <div className="space-y-3">
                   <button
                     onClick={handleAddToCart}
-                    className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl transition text-xs shadow-md shadow-amber-500/20 cursor-pointer"
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl transition text-xs sm:text-sm shadow-md shadow-amber-500/20 cursor-pointer active:scale-98"
                     disabled={addedToCart}
                   >
                     <ShoppingCart className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
                   </button>
                   <Link
                     href={`/reader/${book.slug}?preview=true`}
-                    className="w-full flex items-center justify-center gap-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 rounded-xl transition text-xs"
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 rounded-xl transition text-xs sm:text-sm"
                   >
                     <BookOpen className="w-4 h-4 text-amber-600" />
                     Preview {book.isFreePreviewPages} Free Pages
@@ -254,6 +254,48 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
             </div>
           </div>
 
+        </div>
+      </div>
+
+      {/* Mobile Sticky Bottom Purchase Bar */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-stone-200 px-4 py-3 pb-safe z-40 shadow-xl flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-lg sm:text-xl font-black text-slate-900 leading-tight">
+            ₹{book.price}
+          </div>
+          <div className="text-[10px] sm:text-[11px] font-bold text-amber-700 truncate">
+            {owned ? 'Owned Book' : 'Lifetime Access'}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {owned ? (
+            <Link
+              href={`/reader/${book.slug}`}
+              className="min-h-[44px] px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Read Now</span>
+            </Link>
+          ) : (
+            <>
+              <Link
+                href={`/reader/${book.slug}?preview=true`}
+                className="min-h-[44px] min-w-[44px] px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                aria-label="Preview sample pages"
+              >
+                <BookOpen className="w-4 h-4 text-amber-600" />
+                <span className="hidden xs:inline">Preview</span>
+              </Link>
+              <button
+                onClick={handleAddToCart}
+                disabled={addedToCart}
+                className="min-h-[44px] px-4 sm:px-5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 transition cursor-pointer active:scale-95"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>{addedToCart ? 'Added!' : 'Add to Cart'}</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -97,57 +97,57 @@ function ProfileContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 py-8 sm:py-12 pb-24 sm:pb-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-gray-200">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-sm border border-gray-200">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold shrink-0">
                 {user.name?.[0]?.toUpperCase() || 'U'}
               </div>
-              <div>
-                <h1 className="text-2xl font-black text-gray-900">{user.name || 'User'}</h1>
-                <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
-                  <Phone className="w-4 h-4" />
-                  {user.phone}
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-black text-gray-900 truncate">{user.name || 'User'}</h1>
+                <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1.5 mt-1">
+                  <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600 shrink-0" />
+                  <span className="font-mono">{user.phone}</span>
                 </p>
                 {user.email && (
-                  <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
-                    <Mail className="w-4 h-4" />
-                    {user.email}
+                  <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1.5 mt-1 truncate">
+                    <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600 shrink-0" />
+                    <span className="truncate">{user.email}</span>
                   </p>
                 )}
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="min-h-[40px] px-3.5 py-1.5 text-xs sm:text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer shrink-0"
             >
               Logout
             </button>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">{orders.length}</div>
-              <div className="text-xs text-gray-600 mt-1">Orders</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200">
+            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100 sm:bg-transparent sm:border-0 sm:p-0">
+              <div className="text-xl sm:text-2xl font-bold text-orange-600">{orders.length}</div>
+              <div className="text-[11px] sm:text-xs text-gray-600 mt-0.5">Orders</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
+            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100 sm:bg-transparent sm:border-0 sm:p-0">
+              <div className="text-xl sm:text-2xl font-bold text-blue-600">
                 {(user.purchasedBooks?.physical?.length || 0) + (user.purchasedBooks?.digital?.length || 0)}
               </div>
-              <div className="text-xs text-gray-600 mt-1">Books Owned</div>
+              <div className="text-[11px] sm:text-xs text-gray-600 mt-0.5">Books Owned</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{user.addresses?.length || 0}</div>
-              <div className="text-xs text-gray-600 mt-1">Saved Addresses</div>
+            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100 sm:bg-transparent sm:border-0 sm:p-0">
+              <div className="text-xl sm:text-2xl font-bold text-green-600">{user.addresses?.length || 0}</div>
+              <div className="text-[11px] sm:text-xs text-gray-600 mt-0.5">Saved Addresses</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{formatPrice(totalSpent)}</div>
-              <div className="text-xs text-gray-600 mt-1">Total Spent</div>
+            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100 sm:bg-transparent sm:border-0 sm:p-0">
+              <div className="text-xl sm:text-2xl font-bold text-purple-600">{formatPrice(totalSpent)}</div>
+              <div className="text-[11px] sm:text-xs text-gray-600 mt-0.5">Total Spent</div>
             </div>
           </div>
         </div>
@@ -155,7 +155,7 @@ function ProfileContent() {
         {/* Tabs */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
+            <nav className="flex flex-nowrap overflow-x-auto touch-scroll -mb-px px-2 sm:px-0">
               {[
                 { id: 'orders', label: 'Order History', icon: Package },
                 { id: 'addresses', label: 'Addresses', icon: MapPin },
@@ -165,38 +165,38 @@ function ProfileContent() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as TabType)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold border-b-2 transition-colors ${
+                  className={`min-h-[44px] flex items-center gap-2 px-4 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors shrink-0 whitespace-nowrap cursor-pointer ${
                     activeTab === tab.id
                       ? 'border-orange-500 text-orange-600'
                       : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
                   }`}
                 >
-                  <tab.icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  <tab.icon className="w-4 h-4 shrink-0" />
+                  <span>{tab.label}</span>
                 </button>
               ))}
             </nav>
           </div>
 
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {/* Orders Tab */}
             {activeTab === 'orders' && (
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Order History</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Order History</h2>
                 
                 {isLoadingOrders ? (
                   <div className="text-center py-12">
                     <Loader className="w-8 h-8 animate-spin text-orange-600 mx-auto mb-4" />
-                    <p className="text-gray-600">Loading orders...</p>
+                    <p className="text-gray-600 text-sm">Loading orders...</p>
                   </div>
                 ) : orders.length === 0 ? (
-                  <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                    <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
-                    <p className="text-gray-600 mb-6">Start shopping to see your order history here.</p>
+                  <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-6">
+                    <ShoppingBag className="w-14 h-14 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-6">Start shopping to see your order history here.</p>
                     <Link
                       href="/books"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                      className="min-h-[44px] inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-xs sm:text-sm font-bold"
                     >
                       Browse Books
                     </Link>
@@ -206,13 +206,13 @@ function ProfileContent() {
                     {orders.map((order) => (
                       <div
                         key={order.id}
-                        className="border border-gray-200 rounded-xl p-6 hover:border-orange-300 transition-colors"
+                        className="border border-gray-200 rounded-xl p-4 sm:p-6 hover:border-orange-300 transition-colors"
                       >
-                        <div className="flex items-start justify-between mb-4">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
                           <div>
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="font-bold text-gray-900">Order #{order.orderNumber}</h3>
-                              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+                              <h3 className="font-bold text-gray-900 text-sm sm:text-base">Order #{order.orderNumber}</h3>
+                              <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full ${
                                 order.orderStatus === 'Completed' ? 'bg-green-100 text-green-700' :
                                 order.orderStatus === 'Processing' ? 'bg-blue-100 text-blue-700' :
                                 order.orderStatus === 'Shipped' ? 'bg-purple-100 text-purple-700' :

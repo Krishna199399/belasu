@@ -135,7 +135,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
             name="firstName"
             value={formData.firstName}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.firstName ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isSubmitting}
@@ -152,7 +152,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
             name="lastName"
             value={formData.lastName}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.lastName ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isSubmitting}
@@ -171,7 +171,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
           value={formData.address1}
           onChange={handleInputChange}
           placeholder="House number, Street name"
-          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+          className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
             errors.address1 ? 'border-red-500' : 'border-gray-300'
           }`}
           disabled={isSubmitting}
@@ -189,7 +189,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
           value={formData.address2}
           onChange={handleInputChange}
           placeholder="Apartment, suite, unit, building (optional)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           disabled={isSubmitting}
         />
       </div>
@@ -204,7 +204,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
             name="city"
             value={formData.city}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.city ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isSubmitting}
@@ -220,7 +220,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
             name="state"
             value={formData.state}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.state ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isSubmitting}
@@ -247,7 +247,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
             onChange={handleInputChange}
             placeholder="560001"
             maxLength={6}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.postcode ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isSubmitting}
@@ -261,7 +261,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
           type="button"
           onClick={fetchCurrentLocation}
           disabled={isLoadingLocation || isSubmitting}
-          className="flex items-center gap-2 px-4 py-2 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50"
+          className="min-h-[44px] flex items-center gap-2 px-4 py-2 text-sm font-medium text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 active:scale-98 cursor-pointer"
         >
           {isLoadingLocation ? (
             <Loader className="w-4 h-4 animate-spin" />
@@ -284,7 +284,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
             onChange={handleInputChange}
             placeholder="9876543210"
             maxLength={10}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.phone ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isSubmitting}
@@ -302,7 +302,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
             value={formData.email}
             onChange={handleInputChange}
             placeholder="your@email.com (optional)"
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.email ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isSubmitting}
@@ -321,17 +321,17 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
           value={formData.label}
           onChange={handleInputChange}
           placeholder="Home, Office, etc."
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           disabled={isSubmitting}
         />
       </div>
 
-      <div className="flex justify-end gap-3 pt-4">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
         <button
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+          className="w-full sm:w-auto px-6 py-2.5 min-h-[44px] border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 active:scale-98 cursor-pointer text-sm font-semibold"
         >
           Cancel
         </button>
@@ -339,7 +339,7 @@ export default function AddressForm({ address, onSubmit, onCancel, isSubmitting 
           type={asNestedForm ? "button" : "submit"}
           onClick={asNestedForm ? () => { if (validateForm()) onSubmit(formData); } : undefined}
           disabled={isSubmitting}
-          className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="w-full sm:w-auto px-6 py-2.5 min-h-[44px] bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 active:scale-98 cursor-pointer text-sm font-semibold shadow-md"
         >
           {isSubmitting && <Loader className="w-4 h-4 animate-spin" />}
           {address ? 'Update Address' : 'Save Address'}

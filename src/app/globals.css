@@ -24,11 +24,35 @@
     color: var(--brand-dark);
     font-family: var(--font-body);
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }
+
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Prevent aggressive iOS Safari zoom on focus by enforcing 16px on mobile */
+  @media (max-width: 639px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* ── Mobile Safe Area Utilities ────────────────────────────── */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0);
+}
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 /* Glassmorphism Styles */
@@ -179,6 +203,30 @@
     animation-duration: 120s;
   }
 }
+/* ── Mobile Viewport & Touch Optimization ── */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
 
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 1rem);
+}
 
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
 
+/* Prevent iOS Safari auto-zoom on form inputs */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

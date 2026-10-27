@@ -212,11 +212,11 @@ export default function TermsPage() {
               <span>kannada@belesu.in</span>
             </a>
             <a
-              href="tel:+919902383451"
+              href="tel:+919606636804"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-amber-300 text-amber-900 hover:text-amber-700 hover:border-amber-400 transition shadow-xs"
             >
               <Phone className="w-4 h-4 text-amber-600" />
-              <span>9902383451</span>
+              <span>9606636804</span>
             </a>
           </div>
         </section>
@@ -244,6 +244,9 @@ export default function TermsPage() {
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                <strong>Operations Office:</strong> VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Registered Office:</strong> Deshpande Startups, Next to International Airport, Gokul Road Hubballi - 580030 Karnataka

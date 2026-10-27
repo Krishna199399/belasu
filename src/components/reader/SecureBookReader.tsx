@@ -23,15 +23,45 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isBlurred, setIsBlurred] = useState(false);
   const [devToolsDetected, setDevToolsDetected] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [zoom, setZoom] = useState(1.0);
   const [darkMode, setDarkMode] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
 
   const progressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedPageRef = useRef(initialPage);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   const maxPage = isOwned ? book.totalPages : book.isFreePreviewPages;
+
+  // On larger screens (desktop), open sidebar by default
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      setSidebarOpen(true);
+    }
+  }, []);
+
+  // ── Touch swipe navigation for mobile readers ─────────────────────────────
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
+    if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        goToPage(currentPage + 1);
+      } else {
+        goToPage(currentPage - 1);
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
 
   // ── DRM: Block all keyboard shortcuts ─────────────────────────────────────
   useEffect(() => {
@@ -178,26 +208,43 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
       />
 
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Sidebar */}
+        {/* Mobile Drawer Backdrop */}
         {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-30 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* Sidebar: Drawer on mobile, column on desktop */}
+        <div
+          className={`fixed md:relative inset-y-0 left-0 z-40 transition-transform duration-300 md:transition-none h-full ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full md:hidden'
+          }`}
+        >
           <ReaderSidebar
             book={book}
             currentPage={currentPage}
             isOwned={isOwned}
             freePreviewPages={book.isFreePreviewPages}
             onPageJump={goToPage}
+            onClose={() => setSidebarOpen(false)}
           />
-        )}
+        </div>
 
         {/* Reader Area */}
-        <main className="flex-1 overflow-auto flex items-start justify-center p-6 relative">
+        <main
+          className="flex-1 overflow-auto flex items-start justify-center p-2 sm:p-4 md:p-6 relative touch-scroll"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* DevTools Blur Overlay */}
           {devToolsDetected && (
-            <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl z-50 flex items-center justify-center p-4">
               <div className="text-center space-y-4">
-                <ShieldAlert className="w-14 h-14 text-amber-400 mx-auto" />
-                <h3 className="text-white font-black text-xl">Developer Tools Detected</h3>
-                <p className="text-slate-400 text-sm max-w-xs">Please close developer tools to continue reading. This content is protected.</p>
+                <ShieldAlert className="w-12 h-12 sm:w-14 sm:h-14 text-amber-400 mx-auto" />
+                <h3 className="text-white font-black text-lg sm:text-xl">Developer Tools Detected</h3>
+                <p className="text-slate-400 text-xs sm:text-sm max-w-xs mx-auto">Please close developer tools to continue reading. This content is protected.</p>
               </div>
             </div>
           )}
@@ -205,7 +252,7 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
           {/* Tab Switch Blur */}
           {isBlurred && !devToolsDetected && (
             <div
-              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl z-40 flex items-center justify-center cursor-pointer"
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl z-40 flex items-center justify-center cursor-pointer p-4"
               onClick={() => setIsBlurred(false)}
             >
               <div className="text-center space-y-3">
@@ -218,42 +265,42 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
           {/* Page Content */}
           <div
             style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s ease' }}
-            className="relative"
+            className="relative w-full max-w-[680px] mx-auto pb-20"
           >
             {isPageLoading ? (
               <div
-                className={`w-[680px] h-[900px] rounded-2xl flex items-center justify-center ${darkMode ? 'bg-amber-100' : 'bg-slate-800'}`}
+                className={`w-full max-w-[680px] h-[550px] sm:h-[800px] md:h-[900px] rounded-2xl flex items-center justify-center ${darkMode ? 'bg-amber-100' : 'bg-slate-800'}`}
               >
                 <div className="text-center space-y-3">
                   <div className="w-10 h-10 border-2 border-amber-500/40 border-t-amber-500 rounded-full animate-spin mx-auto" />
-                  <p className="text-sm text-slate-400">Loading page {currentPage}...</p>
+                  <p className="text-xs sm:text-sm text-slate-400">Loading page {currentPage}...</p>
                 </div>
               </div>
             ) : isDemoMode ? (
               /* Demo Mode — shows placeholder when no book images uploaded yet */
               <div
-                className={`w-[680px] min-h-[900px] rounded-2xl shadow-2xl relative overflow-hidden flex flex-col ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
+                className={`w-full max-w-[680px] min-h-[550px] sm:min-h-[800px] rounded-2xl shadow-2xl relative overflow-hidden flex flex-col ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
                 onDragStart={(e) => e.preventDefault()}
               >
                 <PageWatermark userPhone={userPhone} />
-                <div className="flex-1 flex flex-col items-center justify-center p-16 text-center gap-6">
-                  <div className="text-7xl">📖</div>
+                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 md:p-16 text-center gap-4 sm:gap-6">
+                  <div className="text-5xl sm:text-7xl">📖</div>
                   <div>
-                    <h3 className="text-xl font-black text-slate-900">{book.title}</h3>
-                    <p className="text-slate-500 text-sm mt-2">Page {currentPage} of {book.totalPages}</p>
+                    <h3 className="text-lg sm:text-xl font-black text-slate-900 leading-snug">{book.title}</h3>
+                    <p className="text-slate-500 text-xs sm:text-sm mt-1 sm:mt-2">Page {currentPage} of {book.totalPages}</p>
                   </div>
-                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-800 text-left max-w-sm">
-                    <p className="font-black mb-2">📚 Demo Mode</p>
+                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 text-xs sm:text-sm text-amber-800 text-left max-w-sm">
+                    <p className="font-black mb-1.5">📚 Demo Mode</p>
                     <p>Book pages will appear here once uploaded to Supabase Storage. The reader and all DRM protections are fully active.</p>
                   </div>
                   {/* Demo page content */}
-                  <div className="w-full border border-slate-200 rounded-xl p-6 text-left space-y-3">
-                    <h4 className="font-black text-slate-800">{book.tableOfContents.find((ch, i) =>
+                  <div className="w-full border border-slate-200 rounded-xl p-4 sm:p-6 text-left space-y-3">
+                    <h4 className="font-black text-slate-800 text-xs sm:text-sm">{book.tableOfContents.find((ch, i) =>
                       currentPage >= ch.startPage && (i === book.tableOfContents.length - 1 || currentPage < book.tableOfContents[i + 1].startPage)
                     )?.chapter || `Page ${currentPage}`}</h4>
                     <div className="space-y-2">
                       {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className={`h-3 rounded-full bg-slate-200 ${i % 3 === 0 ? 'w-3/4' : i % 3 === 1 ? 'w-full' : 'w-5/6'}`} />
+                        <div key={i} className={`h-2.5 sm:h-3 rounded-full bg-slate-200 ${i % 3 === 0 ? 'w-3/4' : i % 3 === 1 ? 'w-full' : 'w-5/6'}`} />
                       ))}
                     </div>
                   </div>
@@ -262,7 +309,7 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
             ) : pageImageUrl ? (
               /* Real Page Image from Supabase */
               <div
-                className={`relative rounded-2xl shadow-2xl overflow-hidden ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
+                className={`relative rounded-2xl shadow-2xl overflow-hidden w-full max-w-[680px] ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
                 onDragStart={(e) => e.preventDefault()}
               >
                 <PageWatermark userPhone={userPhone} />
@@ -271,7 +318,7 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                   src={pageImageUrl}
                   alt={`Page ${currentPage}`}
                   draggable={false}
-                  className="max-w-[680px] block"
+                  className="w-full max-w-[680px] block"
                   onContextMenu={(e) => e.preventDefault()}
                   style={{ userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
                 />
@@ -280,14 +327,14 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
 
             {/* Purchase prompt at preview boundary */}
             {isLastFreePageReached && (
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent rounded-2xl flex items-end justify-center pb-12">
-                <div className="text-center space-y-4 px-8">
-                  <Lock className="w-10 h-10 text-amber-400 mx-auto" />
-                  <h3 className="text-white font-black text-lg">Free Preview Ended</h3>
-                  <p className="text-slate-300 text-sm">Purchase this book to read all {book.totalPages} pages</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent rounded-2xl flex items-end justify-center pb-8 sm:pb-12">
+                <div className="text-center space-y-3 sm:space-y-4 px-4 sm:px-8">
+                  <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400 mx-auto" />
+                  <h3 className="text-white font-black text-base sm:text-lg">Free Preview Ended</h3>
+                  <p className="text-slate-300 text-xs sm:text-sm">Purchase this book to read all {book.totalPages} pages</p>
                   <Link
                     href={`/digital/${book.slug}/purchase`}
-                    className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black px-6 py-3 rounded-xl text-sm transition"
+                    className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black px-5 sm:px-6 py-3 rounded-xl text-xs sm:text-sm transition min-h-[44px]"
                   >
                     Buy for ₹{book.price} — Unlock All Pages
                   </Link>
@@ -298,19 +345,21 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
         </main>
 
         {/* Bottom page nav (mobile friendly) */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-slate-900/90 backdrop-blur border border-slate-700/60 rounded-full px-5 py-2.5 shadow-xl">
+        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 bg-slate-900/90 backdrop-blur border border-slate-700/60 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 shadow-xl pb-safe z-20">
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage <= 1}
-            className="text-slate-400 hover:text-white disabled:opacity-30 transition"
+            className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-30 transition cursor-pointer"
+            aria-label="Previous page"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <span className="text-white text-sm font-bold">{currentPage} / {maxPage}</span>
+          <span className="text-white text-xs sm:text-sm font-bold font-mono px-1">{currentPage} / {maxPage}</span>
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage >= maxPage}
-            className="text-slate-400 hover:text-white disabled:opacity-30 transition"
+            className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-30 transition cursor-pointer"
+            aria-label="Next page"
           >
             <ChevronRight className="w-5 h-5" />
           </button>

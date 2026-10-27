@@ -109,7 +109,7 @@ export default function VideoGalleryPage() {
                   {/* Belesu Watermark Overlay */}
                   <div className="absolute top-3 right-3 opacity-80 pointer-events-none">
                     <span className="text-xs font-black text-amber-500 bg-slate-900/80 px-2.5 py-1 rounded-lg">
-                      Belesu • +91 99023 83451
+                      Belesu • +91 96066 36804
                     </span>
                   </div>
                 </div>
@@ -148,6 +148,9 @@ export default function VideoGalleryPage() {
                 <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore- 562125
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
+                <strong>Operations Office:</strong> VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Registered Office:</strong> Deshpande Startups, Next to International Airport, Gokul Road Hubballi - 580030 Karnataka
               </p>
             </div>
@@ -155,7 +158,7 @@ export default function VideoGalleryPage() {
             <div className="text-center md:text-right space-y-3">
               <Link
                 href="/books"
-                className="inline-flex items-center gap-2 py-3 px-6 rounded-full font-black text-slate-900 bg-amber-400 hover:bg-amber-500 text-xs uppercase tracking-wider transition"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 min-h-[44px] rounded-full font-black text-slate-900 bg-amber-400 hover:bg-amber-500 text-xs uppercase tracking-wider transition active:scale-98 cursor-pointer"
               >
                 <BookOpen className="w-4 h-4" /> Explore Book Catalog <ChevronRight className="w-4 h-4" />
               </Link>

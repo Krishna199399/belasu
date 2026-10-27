@@ -40,17 +40,17 @@ export const CartDrawer: React.FC = () => {
         onClick={closeCart}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex sm:pl-10">
         <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
           {/* Header */}
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+          <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-amber-600" />
-              <h3 className="font-bold text-slate-900 text-lg">Your Cart ({totalItems})</h3>
+              <h3 className="font-bold text-slate-900 text-base sm:text-lg">Your Cart ({totalItems})</h3>
             </div>
             <button
               onClick={closeCart}
-              className="p-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition"
+              className="p-2.5 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition min-w-[44px] min-h-[44px] flex items-center justify-center"
               aria-label="Close cart"
             >
               <X className="w-5 h-5" />
@@ -146,7 +146,7 @@ export const CartDrawer: React.FC = () => {
 
           {/* Footer Subtotal & Checkout */}
           {cart.length > 0 && (
-            <div className="p-5 border-t border-slate-200 bg-white space-y-4">
+            <div className="p-4 sm:p-5 pb-safe border-t border-slate-200 bg-white space-y-4">
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-slate-600">
                   <span>Subtotal</span>
@@ -166,14 +166,14 @@ export const CartDrawer: React.FC = () => {
                 <Link
                   href="/checkout"
                   onClick={closeCart}
-                  className="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition text-sm"
+                  className="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition text-sm min-h-[48px]"
                 >
                   Proceed to Checkout <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/cart"
                   onClick={closeCart}
-                  className="block text-center py-2 text-xs font-semibold text-slate-600 hover:text-amber-600 transition"
+                  className="block text-center py-2 text-xs font-semibold text-slate-600 hover:text-amber-600 transition min-h-[40px] flex items-center justify-center"
                 >
                   View Full Cart Details
                 </Link>

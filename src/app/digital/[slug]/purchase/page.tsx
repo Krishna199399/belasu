@@ -87,12 +87,12 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 text-slate-900 flex flex-col justify-between py-10 px-4 sm:px-6">
-      <div className="w-full max-w-lg mx-auto space-y-6">
+    <div className="min-h-screen bg-stone-50 text-slate-900 flex flex-col justify-between py-6 sm:py-10 px-4 sm:px-6 pb-safe">
+      <div className="w-full max-w-lg mx-auto space-y-5 sm:space-y-6">
         
         {/* Header Breadcrumb / Logo */}
         <div className="text-center space-y-2">
-          <Link href={`/digital/${book.slug}`} className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 transition">
+          <Link href={`/digital/${book.slug}`} className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 transition min-h-[40px] px-2 py-1">
             &larr; Back to {book.title}
           </Link>
           <div className="pt-1">
@@ -109,7 +109,7 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
         </div>
 
         {/* Order Summary Card */}
-        <div className="bg-white border border-stone-200/90 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="bg-white border border-stone-200/90 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-stone-100">
             <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider">Order Summary</h2>
             <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
@@ -148,10 +148,10 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
         </div>
 
         {/* Payment Method Selector */}
-        <div className="bg-white border border-stone-200/90 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="bg-white border border-stone-200/90 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
           <h2 className="text-xs font-black text-slate-400 uppercase tracking-wider">Select Payment Method</h2>
           
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
             {([
               { id: 'UPI' as PaymentMethod, icon: <Smartphone className="w-4 h-4" />, label: 'UPI / QR' },
               { id: 'Card' as PaymentMethod, icon: <CreditCard className="w-4 h-4" />, label: 'Debit / Card' },
@@ -161,7 +161,7 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
                 key={m.id}
                 type="button"
                 onClick={() => setMethod(m.id)}
-                className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                className={`min-h-[52px] flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl border text-xs font-bold transition cursor-pointer active:scale-95 ${
                   method === m.id
                     ? 'border-amber-500 bg-amber-50/70 text-amber-900 shadow-xs'
                     : 'border-stone-200 text-slate-600 hover:border-slate-300 bg-stone-50/50'
@@ -191,7 +191,7 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
         </div>
 
         {/* Logged in User Bar */}
-        <div className="text-xs text-slate-500 text-center bg-white border border-stone-200/80 rounded-xl py-2 px-4">
+        <div className="text-xs text-slate-500 text-center bg-white border border-stone-200/80 rounded-xl py-2.5 px-4 truncate">
           Ordering as <span className="font-bold text-slate-900">{user.name}</span> ({user.phone})
         </div>
 
@@ -199,7 +199,7 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
         <button
           onClick={handlePurchase}
           disabled={isProcessing}
-          className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black py-4 rounded-2xl shadow-md shadow-amber-500/20 transition text-sm cursor-pointer"
+          className="w-full min-h-[48px] flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black py-4 px-6 rounded-2xl shadow-md shadow-amber-500/20 transition text-sm cursor-pointer active:scale-98"
         >
           {isProcessing ? (
             <span className="flex items-center gap-2">
@@ -215,7 +215,7 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
           )}
         </button>
 
-        <div className="flex items-center justify-center gap-2 text-xs text-slate-400 text-center">
+        <div className="flex items-center justify-center gap-2 text-xs text-slate-400 text-center pb-2">
           <Lock className="w-3.5 h-3.5" /> 100% Secure Checkout • DRM Protected Web Reader
         </div>
       </div>

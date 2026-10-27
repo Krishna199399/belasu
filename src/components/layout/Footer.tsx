@@ -8,12 +8,10 @@ import {
   Mail,
   MapPin,
   ShieldCheck,
-  BookOpen,
-  Truck,
-  Sparkles,
   ArrowUpRight,
-  Clock,
   MessageCircle,
+  BookOpen,
+  Laptop,
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -22,61 +20,18 @@ export const Footer: React.FC = () => {
     return null;
   }
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-gradient-to-b from-stone-50 via-amber-50/20 to-stone-100 border-t border-amber-200/70 text-slate-700 font-sans relative overflow-hidden">
-      {/* Top Value / Trust Pillars Strip */}
-      <div className="border-b border-amber-200/50 bg-white/70 backdrop-blur-xs">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-amber-50/50 border border-amber-200/50">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center shrink-0">
-                <BookOpen className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <h5 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Karnataka Board Aligned</h5>
-                <p className="text-[11px] text-slate-500 leading-snug">Strictly tailored to state syllabus</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-amber-50/50 border border-amber-200/50">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center shrink-0">
-                <Sparkles className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <h5 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Instant Digital Reader</h5>
-                <p className="text-[11px] text-slate-500 leading-snug">Read online immediately with zero wait</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-amber-50/50 border border-amber-200/50">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center shrink-0">
-                <Truck className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <h5 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Fast Doorstep Delivery</h5>
-                <p className="text-[11px] text-slate-500 leading-snug">Tracked dispatch across Karnataka</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-amber-50/50 border border-amber-200/50">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <h5 className="text-xs font-bold text-slate-900 uppercase tracking-wide">100% Secure Checkout</h5>
-                <p className="text-[11px] text-slate-500 leading-snug">UPI, Cards & NetBanking encrypted</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Grid */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-12 border-b border-amber-200/60">
+      {/* Main Footer Container */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12">
+        
+        {/* 5-Column Responsive Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pb-12 border-b border-amber-200/60">
           
-          {/* Column 1: Brand & Academic Mission (4 Cols) */}
-          <div className="lg:col-span-4 space-y-4">
+          {/* ── Column 1: Brand & Academic Mission (3.5 Cols) ── */}
+          <div className="lg:col-span-3 space-y-4">
             <Link href="/" className="inline-flex group">
               <img
                 src="/Belesu-logo1.png"
@@ -85,7 +40,7 @@ export const Footer: React.FC = () => {
               />
             </Link>
 
-            <p className="text-xs text-slate-600 leading-relaxed max-w-sm">
+            <p className="text-xs text-slate-600 leading-relaxed max-w-sm font-normal">
               Empowering students and parents across Karnataka with English-translated Kannada guidebooks, bilingual workbooks, and high-speed digital readers for stress-free exam success.
             </p>
 
@@ -94,104 +49,227 @@ export const Footer: React.FC = () => {
                 <span>🌱</span>
                 <span>ಕನ್ನಡ ಮಾತಾಡಿ, ಕನ್ನಡ ಬೆಳೆಸಿ</span>
               </div>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
                 An initiative by <strong className="text-slate-800">Ckelp Technologies Private Limited</strong>.
                 <br />Incubated at <strong className="text-slate-800">Deshpande Startups</strong>.
               </p>
             </div>
           </div>
 
-          {/* Column 2: Academics & Guidebooks (2 Cols) */}
+          {/* ── Column 2: Savi & Kali Kannada (2 Cols) ── */}
           <div className="lg:col-span-2 space-y-3.5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-              Academics
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5 pb-1 border-b border-stone-200/80">
+              <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+              <span>Savi & Kali Series</span>
             </h4>
-            <ul className="space-y-2 text-xs font-medium text-slate-600">
-              <li>
-                <Link
-                  href="/digital/kannada-class-6-guide"
-                  className="hover:text-amber-600 transition flex items-center gap-1 text-amber-700 font-bold"
-                >
-                  <span>Class 6 Digital Reader</span>
-                  <span className="text-[9px] bg-amber-500 text-white font-black px-1.5 py-0.2 rounded-full uppercase">Live</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/books" className="hover:text-amber-600 transition">
-                  Printed Guidebooks
-                </Link>
-              </li>
-              <li>
-                <Link href="/digital" className="hover:text-amber-600 transition">
-                  Digital Books Platform
-                </Link>
-              </li>
-              <li>
-                <Link href="/reader/kannada-class-6-guide?preview=true" className="hover:text-amber-600 transition">
-                  Free 5-Page Preview
-                </Link>
-              </li>
-              <li>
-                <Link href="/videos" className="hover:text-amber-600 transition">
-                  Video Demonstration Reels
-                </Link>
-              </li>
-              <li>
-                <Link href="/reviews" className="hover:text-amber-600 transition">
-                  Parent Reviews
-                </Link>
-              </li>
-            </ul>
+            <div className="space-y-3 text-xs font-medium text-slate-600">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 block mb-1">
+                  Savi Kannada (1–4)
+                </span>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link href="/books/savi-kannada-class-1" className="hover:text-amber-700 hover:underline transition">
+                      Class 1 · Savi Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/savi-kannada-class-2" className="hover:text-amber-700 hover:underline transition">
+                      Class 2 · Savi Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/savi-kannada-class-3" className="hover:text-amber-700 hover:underline transition">
+                      Class 3 · Savi Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/savi-kannada-class-4" className="hover:text-amber-700 hover:underline transition">
+                      Class 4 · Savi Kannada
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-1.5 border-t border-stone-200/60">
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 block mb-1">
+                  Kali Kannada (1–4)
+                </span>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-1" className="hover:text-amber-700 hover:underline transition">
+                      Class 1 · Kali Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-2" className="hover:text-amber-700 hover:underline transition">
+                      Class 2 · Kali Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-3" className="hover:text-amber-700 hover:underline transition">
+                      Class 3 · Kali Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-4" className="hover:text-amber-700 hover:underline transition">
+                      Class 4 · Kali Kannada
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
-          {/* Column 3: Help & Policies (2 Cols) */}
+          {/* ── Column 3: Class 5 & Digital Readers (2 Cols) ── */}
           <div className="lg:col-span-2 space-y-3.5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Support & Legal
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5 pb-1 border-b border-stone-200/80">
+              <Laptop className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Class 5 & Digital</span>
             </h4>
-            <ul className="space-y-2 text-xs font-medium text-slate-600">
-              <li>
-                <Link href="/about" className="hover:text-amber-600 transition">
-                  About Belesu
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-amber-600 transition">
-                  Contact Support
-                </Link>
-              </li>
-              <li>
-                <Link href="/policies/returns" className="hover:text-amber-600 transition">
-                  Returns & Refunds
-                </Link>
-              </li>
-              <li>
-                <Link href="/policies/shipping" className="hover:text-amber-600 transition">
-                  Shipping Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/policies/terms" className="hover:text-amber-600 transition">
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link href="/policies/privacy" className="hover:text-amber-600 transition">
-                  Privacy Policy
-                </Link>
-              </li>
-            </ul>
+            <div className="space-y-3 text-xs font-medium text-slate-600">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-800 block mb-1">
+                  Class 5 & Spoken
+                </span>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link href="/books/siri-kannada-english-translated-guidebook-class-5" className="hover:text-amber-700 hover:underline transition">
+                      Class 5 · Siri Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5" className="hover:text-amber-700 hover:underline transition">
+                      Class 5 · Tili Kannada
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/books/a-destination-to-speak-kannada" className="hover:text-amber-700 hover:underline transition">
+                      A Destination to Speak Kannada
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-1.5 border-t border-stone-200/60">
+                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block mb-1">
+                  Digital Platform
+                </span>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link
+                      href="/digital/kannada-class-6-guide"
+                      className="hover:text-indigo-700 transition flex items-center gap-1 text-indigo-700 font-bold"
+                    >
+                      <span>Class 6 Digital Guide</span>
+                      <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded-full uppercase">Live</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/digital" className="hover:text-indigo-700 hover:underline transition">
+                      Digital Readers Hub
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/reader/kannada-class-6-guide?preview=true" className="hover:text-indigo-700 hover:underline transition">
+                      Free 5-Page Preview
+                    </Link>
+                  </li>
+                  <li className="pt-1">
+                    <Link href="/books" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
+                      <span>Browse All 11 Books</span>
+                      <span>→</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
-          {/* Column 4: Offices, WhatsApp & Direct Connect (4 Cols) */}
-          <div className="lg:col-span-4 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Get in Touch
+          {/* ── Column 4: Company & Legal Policies (2 Cols) ── */}
+          <div className="lg:col-span-2 space-y-3.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5 pb-1 border-b border-stone-200/80">
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-700" />
+              <span>Company & Legal</span>
+            </h4>
+            <div className="space-y-3 text-xs font-medium text-slate-600">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-800 block mb-1">
+                  Explore Belesu
+                </span>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link href="/about" className="hover:text-amber-700 hover:underline transition">
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/team" className="hover:text-amber-700 hover:underline transition">
+                      Our Academic Team
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/videos" className="hover:text-amber-700 hover:underline transition">
+                      Video Demonstrations
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/reviews" className="hover:text-amber-700 hover:underline transition">
+                      Parent & Student Reviews
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/faqs" className="hover:text-amber-700 hover:underline transition">
+                      FAQs & Help
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/contact" className="hover:text-amber-700 hover:underline transition">
+                      Contact Us
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-1.5 border-t border-stone-200/60">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-800 block mb-1">
+                  Policies & Terms
+                </span>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link href="/policies/returns" className="hover:text-amber-700 hover:underline transition">
+                      Returns & Refunds
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/policies/shipping" className="hover:text-amber-700 hover:underline transition">
+                      Shipping Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/policies/terms" className="hover:text-amber-700 hover:underline transition">
+                      Terms & Conditions
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/policies/privacy" className="hover:text-amber-700 hover:underline transition">
+                      Privacy Policy
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Column 5: Offices, WhatsApp & Direct Connect (2.5 Cols) ── */}
+          <div className="lg:col-span-3 space-y-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 pb-1 border-b border-stone-200/80">
+              Offices & Support
             </h4>
 
             {/* Instant WhatsApp Card */}
             <a
-              href="https://wa.me/919902383451"
+              href="https://wa.me/919606636804?text=Hello%20Belesu%20Team,%20I%20would%20like%20to%20know%20more%20about%20your%20English-translated%20Kannada%20guidebooks."
               target="_blank"
               rel="noreferrer"
               className="flex items-center justify-between p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/15 transition group"
@@ -202,7 +280,7 @@ export const Footer: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition">
-                    WhatsApp Academic Support
+                    WhatsApp Support
                   </div>
                   <div className="text-[11px] text-emerald-700 font-medium">Quick answers for parents & teachers</div>
                 </div>
@@ -214,23 +292,33 @@ export const Footer: React.FC = () => {
             <div className="space-y-2 text-xs text-slate-600">
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                <span>Call: <a href="tel:+919902383451" className="font-bold text-slate-900 hover:text-amber-600">+91 9902383451</a></span>
+                <span>Call: <a href="tel:+919606636804" className="font-bold text-slate-900 hover:text-amber-600">+91 9606636804</a></span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                 <span>Email: <a href="mailto:kannada@belesu.in" className="font-bold text-slate-900 hover:text-amber-600">kannada@belesu.in</a></span>
               </div>
-              <div className="flex items-start gap-2 pt-1 text-[11px] text-slate-500">
-                <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
-                <span>
-                  <strong className="text-slate-700">Bangalore:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
-                </span>
-              </div>
-              <div className="flex items-start gap-2 text-[11px] text-slate-500">
-                <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
-                <span>
-                  <strong className="text-slate-700">Registered:</strong> Deshpande Startups, Gokul Road, Hubballi - 580030
-                </span>
+              
+              {/* All 3 Offices */}
+              <div className="space-y-1.5 pt-1 border-t border-stone-200/60 text-[11px] text-slate-500">
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong className="text-slate-700">Bangalore:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
+                  </span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong className="text-slate-700">Operations:</strong> VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum
+                  </span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong className="text-slate-700">Registered:</strong> Deshpande Startups, Gokul Road, Hubballi - 580030
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -277,7 +365,7 @@ export const Footer: React.FC = () => {
 
               {/* WhatsApp */}
               <a
-                href="https://wa.me/919902383451"
+                href="https://wa.me/919606636804"
                 target="_blank"
                 rel="noreferrer"
                 className="w-8 h-8 rounded-lg bg-white border border-stone-200 hover:border-emerald-400 hover:bg-emerald-600 hover:text-white text-slate-600 flex items-center justify-center transition shadow-xs"
@@ -292,10 +380,10 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Sub-Footer Copyright & Payment Logos */}
+        {/* ── Sub-Footer Copyright & Payment Logos ── */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-sans">
           <p className="text-center md:text-left">
-            Designed and Developed by Krishna. © <strong className="text-slate-800">Belesu {new Date().getFullYear()}</strong>. All rights reserved.
+            Designed and Developed by Krishna. © <strong className="text-slate-800">Belesu {currentYear}</strong>. All rights reserved.
           </p>
 
           {/* Payment Method Badges */}

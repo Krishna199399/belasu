@@ -7,17 +7,9 @@ import {
   Headphones,
   MessageSquare,
   Sparkles,
-  Compass,
   Target,
-  Users,
-  CheckCircle2,
-  Building2,
-  Mail,
-  Phone,
-  Layers,
-  HeartHandshake,
-  Laptop,
-  GraduationCap,
+  Compass,
+  PhoneCall,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -37,622 +29,293 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  // Static book preview gallery items (as requested: displayed without links)
-  const previewBooks = [
+  const guidebooks = [
     {
-      title: 'Savi Kannada Guidebook',
-      classes: 'Class 1 to 4',
-      badge: 'Printed Edition',
-      tagColor: 'bg-amber-100 text-amber-900 border-amber-300',
+      series: 'Savi Kannada',
+      classes: 'Classes 1 to 4',
       cover: '/covers/savi-4.png',
-      description: 'Parallel English translation, word meanings & solved exercises.',
+      badgeColor: 'bg-amber-100 text-amber-900 border-amber-300',
     },
     {
-      title: 'Kali Kannada Guidebook',
-      classes: 'Class 1 to 4',
-      badge: 'Printed Edition',
-      tagColor: 'bg-indigo-100 text-indigo-900 border-indigo-300',
+      series: 'Kali Kannada',
+      classes: 'Classes 1 to 4',
       cover: '/covers/kali-1.png',
-      description: 'Foundational script, pronunciation & transliteration support.',
+      badgeColor: 'bg-emerald-100 text-emerald-900 border-emerald-300',
     },
     {
-      title: 'Siri Kannada Guidebook',
+      series: 'Siri Kannada',
       classes: 'Class 5',
-      badge: 'Printed Edition',
-      tagColor: 'bg-rose-100 text-rose-900 border-rose-300',
       cover: '/covers/siri-5.png',
-      description: 'Middle school literature, grammar & model composition guides.',
+      badgeColor: 'bg-rose-100 text-rose-900 border-rose-300',
     },
     {
-      title: 'Tili Kannada Guidebook',
+      series: 'Tili Kannada',
       classes: 'Class 5',
-      badge: 'Printed Edition',
-      tagColor: 'bg-teal-100 text-teal-900 border-teal-300',
       cover: '/covers/tili-5.png',
-      description: 'Chapter takeaways, accurate translations & textbook solutions.',
+      badgeColor: 'bg-sky-100 text-sky-900 border-sky-300',
+    },
+  ];
+
+  const bhasyaAreas = [
+    {
+      title: 'Listening',
+      description:
+        'Helping children become familiar with Kannada words, sounds, and spoken language.',
+      icon: Headphones,
+      iconBg: 'bg-amber-500/10 text-amber-700 border-amber-500/20',
     },
     {
-      title: 'Siri Kannada Digital',
-      classes: 'Class 6 & Classes 7–10',
-      badge: 'Digital Reader',
-      tagColor: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-      cover: '/covers/siri-5.png',
-      description: 'Interactive digital access across smartphones, tablets & laptops.',
+      title: 'Speaking',
+      description:
+        'Encouraging children to use Kannada and build confidence in everyday conversations.',
+      icon: MessageSquare,
+      iconBg: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
     },
     {
-      title: 'Tili Kannada Digital',
-      classes: 'Class 6 & Classes 7–10',
-      badge: 'Digital Reader',
-      tagColor: 'bg-sky-100 text-sky-900 border-sky-300',
-      cover: '/covers/tili-5.png',
-      description: 'High school state curriculum companion available anywhere.',
+      title: 'Reading',
+      description:
+        'Helping children recognise written Kannada and develop their reading skills.',
+      icon: BookOpen,
+      iconBg: 'bg-indigo-500/10 text-indigo-700 border-indigo-500/20',
     },
   ];
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen text-slate-900 font-sans">
       
+      {/* ── Breadcrumb ── */}
+      <div className="bg-stone-50 border-b border-stone-200 py-2.5">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+            <Link href="/" className="hover:text-amber-600 transition">Home</Link>
+            <span>/</span>
+            <span className="text-slate-900 font-bold" aria-current="page">About Belesu</span>
+          </nav>
+        </div>
+      </div>
+
       {/* ══════════════════════════════════════════════════════════════════════════
-          1. HERO SECTION (H1) & BRAND PURPOSE
+          1. H1: About Belesu
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative pt-14 pb-16 sm:pt-20 sm:pb-22 bg-gradient-to-b from-amber-500/10 via-amber-100/30 to-white border-b border-stone-200 overflow-hidden">
-        {/* Ambient decorative blurs */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-amber-300/20 via-orange-200/25 to-transparent rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          
-          {/* Breadcrumb & Pill Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100/90 border border-amber-300/80 text-amber-950 text-xs font-bold uppercase tracking-wider mb-6 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            <span>Kannada Academic Learning Initiative</span>
-          </div>
+      <section className="py-8 sm:py-10 bg-gradient-to-b from-amber-50/50 via-amber-50/20 to-white border-b border-stone-200">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
+            
+            {/* Left Column: Heading & Introduction */}
+            <div className="md:col-span-7 space-y-3">
+              {/* Tagline */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-950 text-xs font-bold uppercase tracking-wider shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>Kannada Mathadi, Kannada Belesi</span>
+              </div>
 
-          {/* H1 Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-black text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
-            About Belesu
-          </h1>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+                About Belesu
+              </h1>
 
-          {/* Mottos & Cultural Script */}
-          <div className="pt-4 pb-6 flex flex-col items-center gap-2">
-            <span className="text-xl sm:text-2xl font-serif font-bold text-amber-800 italic">
-              “Kannada Mathadi, Kannada Belesi”
-            </span>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/90 border border-amber-200 shadow-2xs">
-              <span className="text-sm font-bold text-amber-900">ಕನ್ನಡ ಮಾತಾಡಿ, ಕನ್ನಡ ಬೆಳೆಸಿ</span>
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
+                Belesu is a Kannada learning initiative that helps children understand Kannada academically and build confidence in using the language in everyday life. Through structured learning resources, Belesu aims to make Kannada more accessible to both Kannada-speaking and non-Kannada-speaking students.
+              </p>
             </div>
-          </div>
 
-          {/* Core Introduction Copy */}
-          <div className="max-w-3xl mx-auto space-y-4 text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-            <p>
-              At Belesu, we believe that learning a language is about more than understanding words.
-              It is about building confidence, creating connections, and feeling comfortable using the
-              language in everyday life.
-            </p>
-            <p className="text-slate-600">
-              Belesu is a Kannada learning initiative that brings together academic learning and language
-              development. Through innovative guidebooks and learning approaches, we aim to help children
-              understand Kannada better, support parents in their learning journey, and encourage a
-              stronger connection with the language.
-            </p>
-          </div>
+            {/* Right Column: Mother and Child Visual */}
+            <div className="md:col-span-5 flex justify-center md:justify-end">
+              <div className="relative w-full max-w-[320px] sm:max-w-[360px] aspect-square rounded-2xl overflow-hidden border border-amber-200/90 bg-amber-50/40 shadow-sm">
+                <img
+                  src="/mother-and-child.png"
+                  alt="Mother and child learning Kannada together with Belesu"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
 
+          </div>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════════
-          2. OUR VISION & MISSION SECTION (H2)
+          2. H2: Our Vision & H2: Our Mission (Compact 2-Column Grid)
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-14 sm:py-20 bg-stone-50/70 border-b border-stone-200 relative">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+      <section className="py-8 sm:py-10 bg-white border-b border-stone-200">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             
-            {/* Vision Column (5 cols) */}
-            <div className="lg:col-span-5 bg-white rounded-3xl p-8 sm:p-10 border border-stone-200/90 shadow-md flex flex-col justify-between relative overflow-hidden group hover:border-amber-300 transition-colors">
-              <div className="absolute top-0 right-0 w-36 h-36 bg-amber-500/5 rounded-bl-full pointer-events-none" />
-              
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shadow-2xs">
-                  <Compass className="w-6 h-6" />
+            {/* Our Vision */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-50/70 border border-stone-200/90 hover:border-amber-400 transition-all duration-200 flex flex-col justify-between space-y-3">
+              <div>
+                <div className="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-700 border border-amber-500/20 flex items-center justify-center mb-3">
+                  <Compass className="w-4 h-4" />
                 </div>
-                
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-serif font-black text-slate-900 tracking-tight mb-2">
                   Our Vision
                 </h2>
-
-                <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-medium">
-                  Our vision is to elevate Kannada across Karnataka through innovative approaches that
-                  connect academic growth with everyday communication.
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                  Our vision is to promote Kannada across Karnataka by connecting academic learning with everyday communication. We want children to understand, learn and use Kannada confidently, both inside and outside the classroom.
                 </p>
-
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  We want children to see Kannada not simply as a subject they study in school, but as a
-                  language they can understand, appreciate and use with confidence. By making Kannada
-                  learning more accessible, we hope to nurture a lasting connection between young learners
-                  and the language around them.
-                </p>
-              </div>
-
-              <div className="pt-6 border-t border-stone-100 flex items-center gap-2 text-xs font-bold text-amber-800">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                <span>Nurturing a lifelong connection with Kannada</span>
               </div>
             </div>
 
-            {/* Mission Column (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-3xl p-8 sm:p-10 border border-stone-200/90 shadow-md flex flex-col justify-between relative overflow-hidden group hover:border-amber-300 transition-colors">
-              <div className="space-y-5">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-2xs">
-                    <Target className="w-6 h-6" />
-                  </div>
-                  <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                    Target 2030 Goal
-                  </span>
+            {/* Our Mission */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-50/70 border border-stone-200/90 hover:border-amber-400 transition-all duration-200 flex flex-col justify-between space-y-3">
+              <div>
+                <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 flex items-center justify-center mb-3">
+                  <Target className="w-4 h-4" />
                 </div>
-
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-serif font-black text-slate-900 tracking-tight mb-2">
                   Our Mission
                 </h2>
-
-                <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-medium">
-                  Belesu’s mission is to focus on primary school children and help them develop their
-                  Kannada language skills academically and in everyday communication.
-                </p>
-
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  We recognise that children learn languages in different environments. For some, Kannada
-                  is spoken at home; for others, school may be their primary opportunity to learn the
-                  language. We aim to make that learning experience more supportive through resources
-                  that help children understand lessons, practise reading and writing, and gradually
-                  become more confident in communicating in Kannada.
-                </p>
-
-                {/* Stated 2030 Long-Term Goal Highlight Box */}
-                <div className="bg-gradient-to-br from-amber-500/10 via-amber-100/40 to-orange-50/30 rounded-2xl p-5 border border-amber-200/80 shadow-2xs space-y-2">
-                  <div className="flex items-center gap-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
-                    <GraduationCap className="w-4 h-4 text-amber-600" />
-                    <span>Ambition: 18% Population Coverage by 2030</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
-                    Our stated long-term goal is to expand the base and reach of Kannada-speaking
-                    communities, with an ambition to increase Kannada-speaking population coverage to 18%
-                    by 2030. This reflects our belief that supporting children in their early learning
-                    years can contribute to a stronger connection with Kannada in the future.
+                <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                  <p>
+                    Belesu focuses on primary school children, helping them develop Kannada language skills alongside their academic learning. By making Kannada lessons easier to understand and practise, we aim to build a strong foundation in reading, writing and everyday communication.
+                  </p>
+                  <p className="text-slate-800 font-medium">
+                    Our long-term goal is to expand the reach of Kannada-speaking communities, with an ambition to increase Kannada-speaking population coverage to 18% by 2030.
                   </p>
                 </div>
               </div>
-
-              <div className="pt-6 border-t border-stone-100 flex items-center gap-2 text-xs font-bold text-slate-600">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>Early primary school focus · Inclusive for non-Kannadiga homes</span>
-              </div>
             </div>
 
           </div>
-
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════════
-          3. WHY BELESU MATTERS (H2)
+          3. H2: What We Do & H3: Our Kannada Guidebooks (Non-clickable Display)
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-14 sm:py-20 bg-white border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-8 sm:py-10 bg-stone-50/60 border-b border-stone-200">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold uppercase tracking-wider">
-                <HeartHandshake className="w-3.5 h-3.5 text-rose-600" />
-                <span>Bridging the Learning Gap</span>
-              </div>
-
-              <h2 className="text-3xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                Why Belesu Matters
-              </h2>
-
-              <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-                Language learning becomes more meaningful when children receive support both at school
-                and at home. However, when parents are unfamiliar with the language their children study,
-                helping with lessons and homework can become difficult.
-              </p>
-
-              <div className="space-y-4 pt-1">
-                <div className="flex items-start gap-3.5">
-                  <div className="w-7 h-7 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5 font-black text-xs">
-                    1
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900">Bridging School & Home</h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-0.5">
-                      Belesu aims to bridge this gap. We believe that children should have the opportunity
-                      to understand what they learn, while parents should have accessible ways to
-                      participate in their progress, even when they are still learning the language themselves.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3.5">
-                  <div className="w-7 h-7 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5 font-black text-xs">
-                    2
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900">Learning Together as a Family</h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-0.5">
-                      By bringing Kannada and English together through learning resources, we hope to make
-                      Kannada academic learning more approachable and encourage families to learn alongside
-                      their children.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Visual Card: School-Home Bridge Diagram */}
-            <div className="lg:col-span-5 bg-gradient-to-br from-stone-50 via-amber-50/40 to-stone-100 p-8 sm:p-10 rounded-3xl border border-stone-200 shadow-inner flex flex-col justify-center space-y-5">
-              <div className="text-center space-y-1">
-                <span className="text-xs font-bold uppercase tracking-widest text-amber-800">
-                  The Dual-Support Model
-                </span>
-                <h4 className="text-lg font-serif font-black text-slate-900">
-                  Empowering Every Household
-                </h4>
-              </div>
-
-              <div className="space-y-3">
-                <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0 font-bold">
-                    🏫
-                  </div>
-                  <div className="text-xs">
-                    <span className="font-bold text-slate-900 block">Classroom Instruction</span>
-                    <span className="text-slate-500">Prescribed Karnataka State Syllabus</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-center text-amber-600 font-bold text-xs">
-                  ↕ Belesu English-Translated Guidebook Bridge ↕
-                </div>
-
-                <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 font-bold">
-                    🏡
-                  </div>
-                  <div className="text-xs">
-                    <span className="font-bold text-slate-900 block">Home Learning & Revision</span>
-                    <span className="text-slate-500">Non-Kannadiga parents teach with ease</span>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-[11px] text-center text-slate-500 italic">
-                “When parents feel empowered to guide homework, children learn with joyful confidence.”
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          4. WHAT WE DO (H2) & STATIC BOOK PREVIEW SHOWCASE (WITHOUT LINKS)
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-14 sm:py-20 bg-stone-50/60 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          {/* Section Editorial Header */}
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider">
-              <BookOpen className="w-3.5 h-3.5 text-amber-600" />
-              <span>Comprehensive Academic Curricula</span>
-            </div>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+          <div className="max-w-3xl space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
               What We Do
             </h2>
-
-            <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-              Belesu develops innovative Kannada academic guidebooks to help students understand their
-              lessons, strengthen their language skills, and approach their schoolwork with greater confidence.
-            </p>
-
-            <div className="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-3 pt-2 text-left sm:text-center">
+            <div className="space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
               <p>
-                Our printed guidebook series includes <strong>Savi Kannada</strong> and <strong>Kali Kannada</strong> for Classes 1 to 4,
-                and <strong>Siri Kannada</strong> and <strong>Tili Kannada</strong> for Class 5. These books are designed to support students
-                through English translations, chapter-wise explanations, pronunciation guidance and exercise support, depending on the individual book.
+                Belesu develops Kannada academic guidebooks for Classes 1 to 5, designed for both Kannada-speaking and non-Kannada-speaking students. The books connect Kannada textbook content with English translations, helping children understand lessons, learn word meanings and improve pronunciation.
               </p>
               <p>
-                As students progress to higher classes, Belesu is extending its learning resources through digital guidebooks.
-                We offer a digital Siri Kannada guidebook for Class 6, along with Tili Kannada digital guidebooks for Class 6 and Classes 7 to 10,
-                and Siri Kannada digital guidebooks for Classes 7 to 10.
-              </p>
-              <p className="text-slate-500 italic">
-                Our English-translated learning resources help students connect Kannada text with familiar meanings,
-                making lessons easier to follow and supporting independent learning. They are designed to supplement
-                prescribed textbooks and give parents an additional resource to refer to when helping their children with Kannada studies at home.
+                They also support parents who may have limited knowledge of Kannada and find it difficult to help their children with schoolwork. These guidebooks are supplementary learning resources intended to be used alongside prescribed textbooks.
               </p>
             </div>
           </div>
 
-          {/* Book Preview Showcase Grid (Display Preview of the books WITHOUT links as specified) */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-stone-200 pb-3">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Visual Catalog Preview
-                </span>
-                <h3 className="text-base sm:text-lg font-serif font-black text-slate-900">
-                  Belesu Printed & Digital Guidebook Series
-                </h3>
-              </div>
-              <span className="text-[11px] font-bold text-slate-500 bg-stone-200/80 px-2.5 py-1 rounded-full">
-                6 Featured Series
-              </span>
-            </div>
+          {/* H3: Our Kannada Guidebooks */}
+          <div className="space-y-3 pt-2 border-t border-stone-200">
+            <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900 tracking-tight">
+              Our Kannada Guidebooks
+            </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
-              {previewBooks.map((item, idx) => (
+            {/* Static book covers display (Images should not link to purchase pages) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+              {guidebooks.map((book) => (
                 <div
-                  key={idx}
-                  className="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-200"
+                  key={book.series}
+                  className="bg-white rounded-xl p-3 border border-stone-200/90 shadow-2xs flex flex-col items-center select-none"
                 >
-                  <div>
-                    {/* Top Tag & Class */}
-                    <div className="flex items-center justify-between mb-3">
-                      <span
-                        className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded border ${item.tagColor}`}
-                      >
-                        {item.badge}
-                      </span>
-                      <span className="text-[10px] font-bold text-slate-500">
-                        {item.classes}
-                      </span>
-                    </div>
-
-                    {/* Book Mockup Stage (Static without link) */}
-                    <div className="h-44 sm:h-48 flex items-center justify-center p-2 mb-3 bg-stone-50 rounded-xl">
-                      <img
-                        src={item.cover}
-                        alt={item.title}
-                        className="max-h-full w-auto object-contain drop-shadow-md rounded"
-                      />
-                    </div>
-
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
-                      {item.title}
-                    </h4>
+                  <div className="relative aspect-[3/4] w-full max-w-[140px] flex items-center justify-center p-1 bg-stone-50 rounded-lg border border-stone-200/70 mb-2">
+                    <img
+                      src={book.cover}
+                      alt={`${book.series} Guidebook`}
+                      className="max-h-full max-w-full object-contain"
+                    />
                   </div>
-
-                  <p className="text-[11px] text-slate-500 leading-relaxed mt-2 pt-2 border-t border-stone-100">
-                    {item.description}
-                  </p>
+                  <div className="text-center w-full">
+                    <span className="font-serif font-bold text-xs sm:text-sm text-slate-900 block truncate">
+                      {book.series}
+                    </span>
+                    <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded border mt-1 ${book.badgeColor}`}>
+                      {book.classes}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
-
-            <p className="text-xs text-center text-slate-500 pt-2">
-              At Belesu, we believe language learning goes beyond memorising words or completing exercises.
-              By combining academic support with accessible learning resources, we aim to help students develop
-              their Kannada skills step by step and build a lasting connection with the language.
-            </p>
           </div>
 
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════════
-          5. BHASYA BELESU (H2) & MATRU BHASYA TECHNIQUE
+          4. H2: Bhasya Belesu & H3s: Listening, Speaking, Reading
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-14 sm:py-20 bg-white border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="py-8 sm:py-10 bg-white border-b border-stone-200">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
           
-          {/* Header */}
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs font-bold uppercase tracking-wider">
-              <Layers className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Matru Bhasya Technique</span>
-            </div>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+          <div className="max-w-3xl space-y-1.5">
+            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
               Bhasya Belesu
             </h2>
-
-            <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-              Bhasya Belesu is another concept within the Belesu initiative, based on the Matru Bhasya
-              technique. It focuses on helping children engage with Kannada through familiar, real-life
-              activities and a gradual approach to language learning.
+            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+              Bhasya Belesu is based on the Matru Bhasya technique, using familiar, real-life activities to support a gradual and practical approach to learning Kannada.
             </p>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              We believe that language develops through meaningful engagement, not only through textbooks.
-              Children need opportunities to hear a language, use it in conversation and gradually become
-              comfortable reading it. Bhasya Belesu is designed around three important elements of language learning:
+            <p className="text-xs sm:text-sm text-slate-500 font-medium pt-1">
+              The approach focuses on three key areas:
             </p>
           </div>
 
-          {/* 3 Core Interactive Elements / Pillars (H3) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            
-            {/* Pillar 1: Listening */}
-            <div className="bg-stone-50/90 rounded-3xl p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4 group">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center group-hover:scale-105 transition-transform shadow-2xs">
-                  <Headphones className="w-6 h-6" />
+          {/* 3 Key Areas Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+            {bhasyaAreas.map((area) => {
+              const Icon = area.icon;
+              return (
+                <div
+                  key={area.title}
+                  className="bg-stone-50/70 rounded-xl p-4 sm:p-5 border border-stone-200/90 hover:border-amber-400 hover:shadow-xs transition-all duration-200 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className={`w-9 h-9 rounded-lg border flex items-center justify-center mb-2.5 ${area.iconBg}`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <h3 className="text-sm sm:text-base font-serif font-bold text-slate-900 mb-1.5">
+                      {area.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                      {area.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-700">
-                    Step 1 · Auditory Immersion
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900 mt-0.5">
-                    Listening
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Develop familiarity with Kannada by listening to the language in meaningful and everyday contexts.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-stone-200/80 text-[11px] font-bold text-slate-500">
-                Natural phonetics & tone recognition
-              </div>
-            </div>
-
-            {/* Pillar 2: Speaking */}
-            <div className="bg-stone-50/90 rounded-3xl p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4 group">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-800 flex items-center justify-center group-hover:scale-105 transition-transform shadow-2xs">
-                  <MessageSquare className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-rose-700">
-                    Step 2 · Conversational Expression
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900 mt-0.5">
-                    Speaking
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Encourage children to practise expressing themselves in Kannada and build confidence through communication.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-stone-200/80 text-[11px] font-bold text-slate-500">
-                Fear-free daily verbal practice
-              </div>
-            </div>
-
-            {/* Pillar 3: Reading */}
-            <div className="bg-stone-50/90 rounded-3xl p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4 group">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center group-hover:scale-105 transition-transform shadow-2xs">
-                  <BookOpen className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700">
-                    Step 3 · Literacy & Comprehension
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900 mt-0.5">
-                    Reading
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Help children develop their ability to recognise, read and understand Kannada words and text as they progress in their learning.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-stone-200/80 text-[11px] font-bold text-slate-500">
-                Script decoding & word association
-              </div>
-            </div>
-
-          </div>
-
-          <div className="text-center max-w-2xl mx-auto pt-2">
-            <p className="text-xs sm:text-sm text-slate-600 font-medium italic">
-              “Together, these elements reflect Belesu’s broader belief that language learning should
-              connect academic understanding with real-life communication.”
-            </p>
+              );
+            })}
           </div>
 
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════════
-          6. KANNADA MATHADI, KANNADA BELESI & DUAL CTAS (H2)
+          5. H2: Explore Belesu (CTAs)
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-16 sm:py-24 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-slate-950 relative overflow-hidden">
-        {/* Decorative circle glows */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
+      <section className="py-8 sm:py-10 bg-gradient-to-b from-stone-50/50 via-amber-50/20 to-white">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-xs border border-white/30 text-white text-xs font-bold uppercase tracking-wider">
-            <span>Our Living Cultural Manifesto</span>
-          </div>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-white tracking-tight leading-tight max-w-3xl mx-auto">
-            Kannada Mathadi, Kannada Belesi
-          </h2>
-
-          <div className="max-w-3xl mx-auto space-y-4 text-white/90 text-sm sm:text-base leading-relaxed">
-            <p>
-              For us, “Kannada Mathadi, Kannada Belesi” is more than a tagline. It expresses the purpose behind
-              Belesu: encouraging people to learn Kannada, use it in their daily lives and help the language grow
-              through every new generation.
-            </p>
-            <p>
-              We believe that when children are given the right support early in life, they can build a more confident
-              and meaningful relationship with Kannada. By supporting students, parents and educators, Belesu hopes
-              to contribute to a future where more people can learn, understand and communicate in Kannada with confidence.
+          <div className="max-w-2xl mx-auto space-y-1.5">
+            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
+              Explore Belesu
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              Discover our Kannada academic guidebooks and find learning resources suitable for your child&apos;s class.
             </p>
           </div>
 
-          {/* Dual Action CTAs matching about content.md verbatim */}
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
+          {/* Primary & Secondary CTAs */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/books"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-950 hover:bg-slate-900 text-white font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition active:scale-98 uppercase tracking-wider cursor-pointer"
             >
-              <BookOpen className="w-4 h-4 text-amber-400" />
+              <BookOpen className="w-4 h-4" />
               <span>Explore Our Kannada Guidebooks</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
             <Link
               href="/contact"
-              className="w-full sm:w-auto px-7 py-4 rounded-xl bg-white hover:bg-stone-100 text-slate-950 border border-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-xl bg-white hover:bg-stone-100 text-slate-900 border border-stone-300 font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 uppercase tracking-wider cursor-pointer"
             >
-              <Mail className="w-4 h-4 text-amber-600" />
+              <PhoneCall className="w-3.5 h-3.5 text-amber-600" />
               <span>Contact Belesu</span>
             </Link>
           </div>
 
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          7. CORPORATE CREDIBILITY & REGISTERED OFFICE STRIP
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 bg-slate-950 text-white border-t border-slate-800">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
-            <div className="lg:col-span-8 space-y-3">
-              <div className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-amber-400 shrink-0" />
-                <h3 className="font-extrabold text-sm sm:text-base text-amber-400">
-                  CKELP TECHNOLOGIES PRIVATE LIMITED
-                </h3>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
-              </p>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                <strong>Registered Office:</strong> Deshpande Startups, Next to International Airport, Gokul Road Hubballi - 580030 Karnataka
-              </p>
-            </div>
-
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:justify-end gap-3">
-              <Link
-                href="/books"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider transition"
-              >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Full Book Catalog</span>
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider border border-slate-700 transition"
-              >
-                <Phone className="w-3.5 h-3.5 text-amber-400" />
-                <span>Get in Touch</span>
-              </Link>
-            </div>
-
-          </div>
         </div>
       </section>
 

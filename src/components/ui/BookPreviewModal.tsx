@@ -181,7 +181,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
       {/* Modal Card */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] border border-stone-200 overscroll-contain"
+        className="relative w-full max-w-6xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[96vh] sm:max-h-[95vh] border border-stone-200 overscroll-contain"
       >
         
         {/* ── Top Bar: Title & Category Tabs ── */}
@@ -226,7 +226,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
             <button
               type="button"
               onClick={onClose}
-              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-stone-200/80 transition cursor-pointer"
+              className="p-2.5 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-stone-200/80 transition cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
               aria-label="Close Preview"
             >
               <X className="w-5 h-5" />
@@ -450,7 +450,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
             </div>
 
             {/* Bottom Pricing & Add to Cart Action */}
-            <div className="pt-4 border-t border-stone-200 space-y-3">
+            <div className="pt-4 border-t border-stone-200 space-y-3 pb-safe">
               <div className="flex items-baseline justify-between">
                 <div>
                   <div className="text-2xl font-black text-slate-900">
@@ -470,7 +470,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer uppercase tracking-wider"
+                className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[48px]"
               >
                 <ShoppingBag className="w-4 h-4" />
                 <span>Add to Cart</span>

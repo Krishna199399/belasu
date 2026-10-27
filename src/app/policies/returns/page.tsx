@@ -64,7 +64,7 @@ export default function ReturnsPolicyPage() {
       content: (
         <div className="space-y-3">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-            If you wish to return or exchange a Book, please contact our customer service team on <strong>9902383451</strong> within the return period to initiate the return process. You may be required to provide proof of purchase and reason for return. Our Customer service team will guide you on return procedure.
+            If you wish to return or exchange a Book, please contact our customer service team on <strong>9606636804</strong> within the return period to initiate the return process. You may be required to provide proof of purchase and reason for return. Our Customer service team will guide you on return procedure.
           </p>
           <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-200 flex items-center justify-between gap-4 flex-wrap">
             <div className="text-xs text-blue-950 space-y-0.5">
@@ -72,11 +72,11 @@ export default function ReturnsPolicyPage() {
               <span className="text-blue-800">Call or message our dedicated team directly.</span>
             </div>
             <a
-              href="tel:+919902383451"
+              href="tel:+919606636804"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-xs"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>Call 9902383451</span>
+              <span>Call 9606636804</span>
             </a>
           </div>
         </div>
@@ -246,11 +246,11 @@ export default function ReturnsPolicyPage() {
               <span>kannada@belesu.in</span>
             </a>
             <a
-              href="tel:+919902383451"
+              href="tel:+919606636804"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-amber-300 text-amber-900 hover:text-amber-700 hover:border-amber-400 transition shadow-xs"
             >
               <Phone className="w-4 h-4 text-amber-600" />
-              <span>9902383451</span>
+              <span>9606636804</span>
             </a>
           </div>
         </section>
@@ -278,6 +278,9 @@ export default function ReturnsPolicyPage() {
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                <strong>Operations Office:</strong> VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Registered Office:</strong> Deshpande Startups, Next to International Airport, Gokul Road Hubballi - 580030 Karnataka

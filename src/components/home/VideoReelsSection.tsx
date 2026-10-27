@@ -28,34 +28,37 @@ export const VideoReelsSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-14 lg:py-16 bg-white text-slate-900 overflow-hidden border-b border-stone-200">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 sm:py-10 lg:py-12 bg-white text-slate-900 overflow-hidden border-b border-stone-200">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header matching Belesu - Contents.md verbatim */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-8 sm:mb-10">
-          <div className="max-w-2xl space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-100 border border-rose-300 text-rose-700 text-xs font-bold uppercase tracking-wider shadow-xs">
-              <Video className="w-3.5 h-3.5 text-rose-600" /> Watch In Action
+        {/* Header matching Belesu - Contents.md verbatim (Compact) */}
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-5 sm:mb-6">
+          <div className="max-w-2xl space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-rose-100 border border-rose-300 text-rose-800 text-[11px] font-bold uppercase tracking-wider shadow-2xs">
+              <Video className="w-3 h-3 text-rose-600" />
+              <span>Watch In Action</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-              See How Belesu Guidebooks Support Kannada Learning
+
+            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+              Explore Belesu Videos
             </h2>
-            <p className="text-base text-slate-700 leading-relaxed font-normal">
-              Explore videos that introduce Belesu’s learning approach, demonstrate the guidebooks,
-              and share experiences from families.
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              See our guidebooks and learning resources in action.
             </p>
           </div>
 
           <Link
             href="/videos"
-            className="inline-flex items-center gap-2 py-3.5 px-6 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md transition shrink-0 uppercase tracking-wider"
+            className="inline-flex items-center gap-1.5 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-xs transition shrink-0 uppercase tracking-wider"
           >
-            Explore Belesu Videos <ArrowRight className="w-4 h-4" />
+            <span>Watch Videos</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* Video Cards Grid with exact H3 headings */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Video Cards Grid with exact H3 headings (Compact) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
           {VIDEO_REELS.map((reel, idx) => {
             const meta = videoDetails[idx] || {
               title: reel.title,
@@ -65,7 +68,7 @@ export const VideoReelsSection: React.FC = () => {
             return (
               <div
                 key={reel.id}
-                className="bg-stone-50/70 rounded-2xl border border-stone-200/90 overflow-hidden group hover:border-amber-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                className="bg-stone-50/70 rounded-xl sm:rounded-2xl border border-stone-200/90 overflow-hidden group hover:border-amber-400 hover:shadow-md transition-all duration-200 flex flex-col justify-between"
               >
                 {/* Video Player */}
                 <div className="relative aspect-video bg-slate-900 flex items-center justify-center overflow-hidden">
@@ -78,18 +81,18 @@ export const VideoReelsSection: React.FC = () => {
                 </div>
 
                 {/* Video Details */}
-                <div className="p-6">
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-md">
+                <div className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100/90 border border-amber-300 px-2 py-0.5 rounded">
                       {meta.tag}
                     </span>
-                    <span className="text-xs text-slate-500 font-medium">{reel.duration}</span>
+                    <span className="text-[10px] text-slate-500 font-medium">{reel.duration}</span>
                   </div>
 
-                  <h3 className="font-serif font-bold text-slate-900 text-base leading-snug mb-2 group-hover:text-amber-700 transition">
+                  <h3 className="font-serif font-bold text-slate-900 text-sm sm:text-base leading-snug mb-1.5 group-hover:text-amber-800 transition">
                     {meta.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
                     {meta.description}
                   </p>
                 </div>

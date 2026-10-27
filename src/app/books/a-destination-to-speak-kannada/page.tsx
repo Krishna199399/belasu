@@ -599,6 +599,9 @@ export default function DestinationToSpeakKannadaPage() {
                 <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
               </p>
               <p className="text-xs text-slate-300 leading-relaxed">
+                <strong>Operations Office:</strong> VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum
+              </p>
+              <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Registered Office:</strong> Deshpande Startups, Next to International Airport, Gokul Road Hubballi - 580030 Karnataka
               </p>
             </div>

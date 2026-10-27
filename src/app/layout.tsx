@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Outfit, Inter } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
@@ -8,6 +8,13 @@ import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/layout/CartDrawer';
 import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { Toaster } from 'react-hot-toast';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#ffffff',
+};
 
 const outfit = Outfit({
   subsets: ['latin'],

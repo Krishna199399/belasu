@@ -57,17 +57,17 @@ export default function ContactPage() {
                 Connect directly with our support team on WhatsApp for instant assistance regarding book recommendations and order tracking.
               </p>
               <a
-                href="https://wa.me/919902383451?text=Hello%20Belesu,%20I%20have%20an%20inquiry."
+                href="https://wa.me/919606636804?text=Hello%20Belesu,%20I%20have%20an%20inquiry."
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 py-3 px-5 rounded-xl bg-white text-emerald-900 font-bold text-xs shadow-md hover:bg-emerald-50 transition"
+                className="inline-flex items-center gap-2 py-3 px-5 rounded-xl bg-white text-emerald-900 font-bold text-xs shadow-md hover:bg-emerald-50 transition min-h-[44px] cursor-pointer active:scale-98"
               >
-                <MessageCircle className="w-4 h-4 text-emerald-600" /> WhatsApp Us (+91 99023 83451)
+                <MessageCircle className="w-4 h-4 text-emerald-600" /> WhatsApp Us (+91 96066 36804)
               </a>
             </div>
 
             {/* Address & Contact Cards */}
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
               <h3 className="font-bold text-slate-900 text-lg">Contact Information</h3>
               
               <div className="space-y-4 text-xs sm:text-sm text-slate-700">
@@ -81,6 +81,16 @@ export default function ContactPage() {
                   </div>
                 </div>
 
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <strong className="block font-bold text-slate-900">Operations Office:</strong>
+                    <span>VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum</span>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
                     <Phone className="w-4 h-4" />
@@ -88,8 +98,7 @@ export default function ContactPage() {
                   <div>
                     <strong className="block font-bold text-slate-900">Phone Support:</strong>
                     <div className="flex flex-col gap-0.5">
-                      <a href="tel:+919606636804" className="hover:text-amber-600 font-semibold text-slate-900">+91 96066 36804</a>
-                      <a href="tel:+919902383451" className="hover:text-amber-600 text-xs text-slate-500">+91 99023 83451</a>
+                      <a href="tel:+919606636804" className="hover:text-amber-600 font-semibold text-slate-900 py-0.5 inline-block min-h-[32px]">+91 96066 36804</a>
                     </div>
                   </div>
                 </div>
@@ -100,7 +109,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <strong className="block font-bold text-slate-900">Email Inquiry:</strong>
-                    <a href="mailto:kannada@belesu.in" className="hover:text-amber-600 font-semibold">kannada@belesu.in</a>
+                    <a href="mailto:kannada@belesu.in" className="hover:text-amber-600 font-semibold py-0.5 inline-block min-h-[32px]">kannada@belesu.in</a>
                   </div>
                 </div>
 
@@ -120,9 +129,9 @@ export default function ContactPage() {
 
           {/* Right Contact Form */}
           <div className="lg:col-span-7">
-            <div className="bg-white p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+            <div className="bg-white p-6 sm:p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm space-y-6">
               <div>
-                <h3 className="text-2xl font-black text-slate-900">Send Us a Message</h3>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">Send Us a Message</h3>
                 <p className="text-xs text-slate-600 mt-1">
                   Fill out the form below and our academic advisor will reach out to you within 24 hours.
                 </p>
@@ -145,7 +154,7 @@ export default function ContactPage() {
                       placeholder="e.g. Roopa Sanjiv"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                      className="w-full p-3.5 min-h-[48px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                     />
                   </div>
 
@@ -157,7 +166,7 @@ export default function ContactPage() {
                       placeholder="e.g. name@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                      className="w-full p-3.5 min-h-[48px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 </div>
@@ -168,10 +177,10 @@ export default function ContactPage() {
                     <input
                       type="tel"
                       required
-                      placeholder="+91 99023 83451"
+                      placeholder="+91 96066 36804"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                      className="w-full p-3.5 min-h-[48px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                     />
                   </div>
 
@@ -180,7 +189,7 @@ export default function ContactPage() {
                     <select
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                      className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                      className="w-full p-3.5 min-h-[48px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                     >
                       <option value="Book Inquiry">Book Inquiry</option>
                       <option value="Order Tracking">Order Tracking</option>
@@ -198,13 +207,13 @@ export default function ContactPage() {
                     placeholder="Tell us about the class or book you are looking for..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full p-3.5 text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 text-sm transition"
+                  className="w-full min-h-[48px] py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 text-sm transition cursor-pointer active:scale-98"
                 >
                   <Send className="w-4 h-4" /> Send Message
                 </button>

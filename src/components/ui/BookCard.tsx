@@ -25,9 +25,9 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
         </Badge>
       </div>
 
-      <div className="p-6 pb-3">
+      <div className="p-4 sm:p-6 pb-3">
         {/* Book Cover Container */}
-        <div className="relative w-full h-56 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3 mb-4 group-hover:bg-amber-50/40 transition-colors overflow-hidden">
+        <div className="relative w-full h-48 sm:h-56 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3 mb-3.5 sm:mb-4 group-hover:bg-amber-50/40 transition-colors overflow-hidden">
           <img
             src={book.coverImage}
             alt={book.title}
@@ -67,9 +67,9 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
       </div>
 
       {/* Pricing & Add to Cart Footer */}
-      <div className="p-6 pt-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
+      <div className="p-4 sm:p-6 pt-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
         <div>
-          <span className="text-lg font-black text-slate-900 block leading-tight">
+          <span className="text-base sm:text-lg font-black text-slate-900 block leading-tight">
             {formatPrice(book.price)}
           </span>
           {book.stockQuantity <= 5 && book.stockQuantity > 0 && (
@@ -82,8 +82,10 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
         <div className="flex items-center gap-1.5">
           <IconButton
             variant="default"
+            size="md"
             onClick={() => onPreview(book)}
             title="Preview Book Pages"
+            className="min-w-[40px] min-h-[40px]"
           >
             <BookOpen className="w-4 h-4" />
           </IconButton>
@@ -92,7 +94,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
               variant="outline"
               size="sm"
               disabled
-              className="opacity-60 cursor-not-allowed text-rose-600 border-rose-200"
+              className="opacity-60 cursor-not-allowed text-rose-600 border-rose-200 min-h-[40px]"
             >
               Sold Out
             </Button>
@@ -101,6 +103,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
               variant="primary"
               size="sm"
               onClick={() => addToCart(book, 'physical')}
+              className="min-h-[40px] px-4 font-bold text-xs"
             >
               Add
             </Button>

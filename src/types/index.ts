@@ -26,6 +26,7 @@ export interface BookProduct {
   tableOfContents: string[];
   coverImage: string;
   karnatakaTextbookCover?: string;
+  karnatakaTextbookPart2Cover?: string;
   samplePages: SamplePage[];
   inStock: boolean;
   stockQuantity: number;

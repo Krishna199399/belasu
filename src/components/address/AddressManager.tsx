@@ -135,7 +135,7 @@ export default function AddressManager({
         </h3>
         <button
           onClick={handleAddNew}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+          className="min-h-[44px] flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-semibold active:scale-98 cursor-pointer shadow-sm"
         >
           <Plus className="w-4 h-4" />
           Add New Address
@@ -147,7 +147,7 @@ export default function AddressManager({
           <p className="text-gray-500 mb-4">No addresses saved yet</p>
           <button
             onClick={handleAddNew}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+            className="min-h-[44px] inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-semibold active:scale-98 cursor-pointer shadow-sm"
           >
             <Plus className="w-5 h-5" />
             Add Your First Address

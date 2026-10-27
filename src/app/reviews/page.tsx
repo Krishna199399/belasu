@@ -110,7 +110,7 @@ export default function ReviewsPage() {
 
           {/* Review Submission Form (Right 5 cols) */}
           <div className="lg:col-span-5">
-            <div className="bg-white p-8 rounded-2xl border border-amber-200 shadow-xl sticky top-28 space-y-6">
+            <div className="bg-white p-5 sm:p-8 rounded-2xl border border-amber-200 shadow-xl lg:sticky lg:top-28 space-y-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Your Feedback is Important</h3>
                 <p className="text-xs text-slate-500 mt-1">
@@ -134,7 +134,7 @@ export default function ReviewsPage() {
                     placeholder="e.g. Irin Gladia"
                     value={formData.parentName}
                     onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full p-3.5 min-h-[44px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -145,7 +145,7 @@ export default function ReviewsPage() {
                     placeholder="e.g. Bengaluru, Karnataka"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full p-3.5 min-h-[44px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -154,7 +154,7 @@ export default function ReviewsPage() {
                   <select
                     value={formData.childGrade}
                     onChange={(e) => setFormData({ ...formData, childGrade: e.target.value })}
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full p-3.5 min-h-[44px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                   >
                     <option value="Class 1 Parent">Class 1 Parent</option>
                     <option value="Class 2 Parent">Class 2 Parent</option>
@@ -166,13 +166,14 @@ export default function ReviewsPage() {
 
                 <div>
                   <label className="block mb-1">Star Rating</label>
-                  <div className="flex items-center gap-2 py-1">
+                  <div className="flex items-center gap-1 sm:gap-2 py-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         type="button"
                         onClick={() => setFormData({ ...formData, rating: star })}
-                        className="p-1 hover:scale-125 transition-transform"
+                        className="min-w-[40px] min-h-[40px] flex items-center justify-center p-1 rounded-lg hover:bg-amber-50 cursor-pointer active:scale-110 transition-transform"
+                        aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                       >
                         <Star
                           className={`w-6 h-6 ${
@@ -194,7 +195,7 @@ export default function ReviewsPage() {
                     placeholder="Describe how Belesu guidebooks helped your child with homework or exams..."
                     value={formData.reviewText}
                     onChange={(e) => setFormData({ ...formData, reviewText: e.target.value })}
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full p-3.5 text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -204,16 +205,16 @@ export default function ReviewsPage() {
                     id="isHuman"
                     checked={formData.isHuman}
                     onChange={(e) => setFormData({ ...formData, isHuman: e.target.checked })}
-                    className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500"
+                    className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 cursor-pointer"
                   />
-                  <label htmlFor="isHuman" className="text-slate-600 font-medium">
+                  <label htmlFor="isHuman" className="text-slate-600 font-medium cursor-pointer">
                     Check this box to confirm you are human.
                   </label>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition"
+                  className="w-full min-h-[48px] py-3.5 px-4 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition cursor-pointer active:scale-98"
                 >
                   <Send className="w-4 h-4" /> Submit Feedback
                 </button>

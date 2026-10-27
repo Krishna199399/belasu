@@ -89,10 +89,10 @@ export default function LibraryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 text-slate-900">
+    <div className="min-h-screen bg-stone-50 text-slate-900 pb-20 sm:pb-12">
       {/* Header Banner */}
       <div className="bg-white border-b border-stone-200/80 shadow-xs">
-        <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-8">
+        <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6 sm:py-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1.5">
@@ -103,13 +103,13 @@ export default function LibraryPage() {
               <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">
                 My Library
               </h1>
-              <p className="text-slate-600 text-sm mt-1">
+              <p className="text-slate-600 text-xs sm:text-sm mt-1">
                 Welcome back, <span className="text-amber-700 font-bold">{user?.name}</span> · {ownedBooks.length} book{ownedBooks.length !== 1 ? 's' : ''} owned
               </p>
             </div>
             <Link
               href="/digital"
-              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm px-5 py-2.5 rounded-xl shadow-xs transition"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm px-5 py-3 min-h-[44px] rounded-xl shadow-xs transition active:scale-98 cursor-pointer"
             >
               Browse More Books <ArrowRight className="w-4 h-4" />
             </Link>
@@ -118,21 +118,21 @@ export default function LibraryPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-10">
+      <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6 sm:py-10">
         {ownedBooks.length === 0 ? (
           /* Empty state - Matching warm Belesu aesthetic */
-          <div className="text-center py-20 px-6 max-w-md mx-auto bg-white border border-stone-200/80 rounded-3xl shadow-xs space-y-4 my-6">
+          <div className="text-center py-16 sm:py-20 px-6 max-w-md mx-auto bg-white border border-stone-200/80 rounded-3xl shadow-xs space-y-4 my-4 sm:my-6">
             <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200/60 flex items-center justify-center mx-auto text-3xl shadow-xs">
               📚
             </div>
             <h2 className="text-xl font-bold text-slate-900 tracking-tight">No Books Yet</h2>
-            <p className="text-slate-600 text-sm leading-relaxed">
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
               Purchase digital books for Classes 6–10 to start reading in our secure web reader.
             </p>
             <div className="pt-2">
               <Link
                 href="/digital"
-                className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-3 rounded-xl text-sm shadow-xs transition"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-3 min-h-[44px] rounded-xl text-sm shadow-xs transition active:scale-98 cursor-pointer"
               >
                 <BookOpen className="w-4 h-4" /> Browse Digital Books
               </Link>
@@ -140,7 +140,7 @@ export default function LibraryPage() {
           </div>
         ) : (
           /* Owned Books Grid */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {ownedBooks.map((book) => {
               const lastPage = progressMap[book.id] || 1;
               const progressPct = Math.round((lastPage / book.totalPages) * 100);
@@ -168,12 +168,12 @@ export default function LibraryPage() {
                   </div>
 
                   {/* Info */}
-                  <div className="p-5 flex flex-col flex-1 justify-between gap-4">
+                  <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-4">
                     <div>
                       <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block mb-1">
                         {book.subject} · Class {book.gradeClass}
                       </span>
-                      <h3 className="text-base font-bold text-slate-900 leading-snug line-clamp-2">
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug line-clamp-2">
                         {book.title}
                       </h3>
                     </div>
@@ -192,7 +192,7 @@ export default function LibraryPage() {
 
                       <Link
                         href={`/reader/${book.slug}`}
-                        className="w-full inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-sm shadow-xs transition"
+                        className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm shadow-xs transition active:scale-98 cursor-pointer"
                       >
                         <BookOpen className="w-4 h-4" />
                         {lastPage > 1 ? `Continue Reading (p.${lastPage})` : 'Start Reading'}

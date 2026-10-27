@@ -29,7 +29,7 @@ export default function FAQsPage() {
     },
     {
       question: 'Can I order books in bulk for a school or learning center?',
-      answer: 'Yes, we offer bulk academic discounts for schools and educational institutions. Please contact our support team at +91 99023 83451 or email kannada@belesu.in for custom quotes.'
+      answer: 'Yes, we offer bulk academic discounts for schools and educational institutions. Please contact our support team at +91 96066 36804 or email kannada@belesu.in for custom quotes.'
     }
   ];
 
@@ -61,7 +61,7 @@ export default function FAQsPage() {
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full p-6 text-left font-bold text-slate-900 text-base flex items-center justify-between gap-4 hover:text-amber-600 transition"
+                  className="w-full p-4 sm:p-6 min-h-[56px] text-left font-bold text-slate-900 text-sm sm:text-base flex items-center justify-between gap-4 hover:text-amber-600 transition cursor-pointer active:bg-slate-50"
                 >
                   <span className="flex items-center gap-3">
                     <HelpCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
@@ -75,7 +75,7 @@ export default function FAQsPage() {
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-6 pt-2 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/50">
+                  <div className="px-4 sm:px-6 pb-6 pt-2 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/50">
                     {faq.answer}
                   </div>
                 )}
@@ -85,18 +85,18 @@ export default function FAQsPage() {
         </div>
 
         {/* WhatsApp Help CTA */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center space-y-4">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 sm:p-8 text-center space-y-4">
           <h3 className="text-xl font-bold text-emerald-900">Still have questions?</h3>
           <p className="text-xs text-emerald-700 max-w-md mx-auto">
             Our support team is available on WhatsApp to help you choose the right guidebook for your child.
           </p>
           <a
-            href="https://wa.me/919902383451?text=Hello%20Belesu,%20I%20have%20a%20question."
+            href="https://wa.me/919606636804?text=Hello%20Belesu,%20I%20have%20a%20question."
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 min-h-[44px] rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition cursor-pointer active:scale-98"
           >
-            <MessageCircle className="w-4 h-4" /> Chat on WhatsApp (+91 99023 83451)
+            <MessageCircle className="w-4 h-4" /> Chat on WhatsApp (+91 96066 36804)
           </a>
         </div>
 

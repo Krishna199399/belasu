@@ -307,30 +307,30 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="py-12 md:py-20 bg-slate-50 min-h-screen">
+    <div className="py-8 sm:py-12 md:py-20 bg-slate-50 min-h-screen pb-28 lg:pb-12">
       <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-5">
         
         {/* Header */}
-        <div className="mb-10">
-          <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-amber-600 mb-2 transition">
+        <div className="mb-6 sm:mb-10">
+          <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-amber-600 mb-2 transition min-h-[40px] py-1">
             <ArrowLeft className="w-4 h-4" /> Back to Cart
           </Link>
-          <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2">
-            <Lock className="w-7 h-7 text-amber-600" /> Secure Checkout
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2">
+            <Lock className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" /> Secure Checkout
           </h1>
-          <p className="text-sm text-gray-600 mt-2">Logged in as {user.phone}</p>
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">Logged in as {user.phone}</p>
         </div>
 
         <form onSubmit={handlePlaceOrder}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
             
             {/* Left: Address & Payment (8 cols) */}
-            <div className="lg:col-span-8 space-y-8">
+            <div className="lg:col-span-8 space-y-6 sm:space-y-8">
               
               {/* Address Selection (only for physical books) */}
               {needsShipping() && (
-                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
-                  <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <div className="bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-5 sm:space-y-6">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
                     <Package className="w-5 h-5 text-amber-600" /> Delivery Address
                   </h3>
                   
@@ -344,12 +344,12 @@ export default function CheckoutPage() {
 
               {/* Digital Books Info (if only digital) */}
               {hasDigitalBooks() && !hasPhysicalBooks() && (
-                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
-                  <div className="flex items-start gap-4">
-                    <BookOpen className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 sm:p-6">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="font-bold text-blue-900 mb-2">Digital Purchase</h4>
-                      <p className="text-sm text-blue-800">
+                      <h4 className="font-bold text-blue-900 text-sm sm:text-base mb-1.5">Digital Purchase</h4>
+                      <p className="text-xs sm:text-sm text-blue-800 leading-relaxed">
                         Your digital books will be instantly available in your Library after payment completion.
                         No shipping required!
                       </p>
@@ -359,12 +359,12 @@ export default function CheckoutPage() {
               )}
 
               {/* Payment Method */}
-              <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
-                <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+              <div className="bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-5 sm:space-y-6">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-amber-600" /> Payment Method
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {[
                     { id: 'Razorpay', label: 'Online Payment', desc: 'UPI, Card, Net Banking, Wallets', icon: '💳' },
                     { id: 'COD', label: 'Cash on Delivery', desc: hasPhysicalBooks() ? 'Pay upon delivery' : 'Not available for digital', disabled: !hasPhysicalBooks(), icon: '💵' },
@@ -374,9 +374,9 @@ export default function CheckoutPage() {
                       type="button"
                       onClick={() => !method.disabled && setPaymentMethod(method.id as any)}
                       disabled={method.disabled}
-                      className={`p-5 rounded-2xl border text-left transition ${
+                      className={`min-h-[56px] p-4 sm:p-5 rounded-2xl border text-left transition cursor-pointer active:scale-98 ${
                         paymentMethod === method.id
-                          ? 'border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20'
+                          ? 'border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20 shadow-xs'
                           : method.disabled
                           ? 'border-slate-200 bg-slate-100 opacity-50 cursor-not-allowed'
                           : 'border-slate-200 hover:border-slate-300 bg-slate-50'
@@ -384,12 +384,12 @@ export default function CheckoutPage() {
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">{method.icon}</span>
-                        <div className="flex-1">
-                          <span className="font-bold text-sm text-slate-900 block">{method.label}</span>
-                          <span className="text-xs text-slate-600">{method.desc}</span>
+                        <div className="flex-1 min-w-0">
+                          <span className="font-bold text-xs sm:text-sm text-slate-900 block">{method.label}</span>
+                          <span className="text-[11px] sm:text-xs text-slate-600 block truncate">{method.desc}</span>
                         </div>
                         {paymentMethod === method.id && (
-                          <CheckCircle2 className="w-5 h-5 text-amber-600" />
+                          <CheckCircle2 className="w-5 h-5 text-amber-600 shrink-0" />
                         )}
                       </div>
                     </button>
@@ -397,7 +397,7 @@ export default function CheckoutPage() {
                 </div>
 
                 {paymentMethod === 'Razorpay' && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-left">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5 sm:p-4 text-left">
                     <div className="flex items-start gap-3">
                       <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                       <div>
@@ -417,8 +417,8 @@ export default function CheckoutPage() {
 
             {/* Right: Order Summary (4 cols) */}
             <div className="lg:col-span-4">
-              <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm sticky top-28 space-y-6">
-                <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">
+              <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200 shadow-sm sticky top-28 space-y-6">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">
                   Order Summary
                 </h3>
 
@@ -480,7 +480,7 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={isProcessing || paymentLoading || (needsShipping() && !selectedAddress)}
-                  className="w-full py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 text-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full min-h-[48px] py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 text-sm transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-98"
                 >
                   {isProcessing || paymentLoading ? (
                     <>
@@ -501,6 +501,30 @@ export default function CheckoutPage() {
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Mobile Sticky Bottom Pay Bar */}
+            <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-3 pb-safe z-40 shadow-xl flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-lg sm:text-xl font-black text-amber-600 leading-tight">
+                  {formatPrice(grandTotal)}
+                </div>
+                <div className="text-[10px] sm:text-[11px] font-bold text-slate-500 truncate">
+                  {paymentMethod === 'Razorpay' ? 'Razorpay Secure' : 'Cash on Delivery'}
+                </div>
+              </div>
+              <button
+                type="submit"
+                disabled={isProcessing || paymentLoading || (needsShipping() && !selectedAddress)}
+                className="min-h-[44px] px-5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 transition cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+              >
+                {isProcessing || paymentLoading ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ShieldCheck className="w-4 h-4" />
+                )}
+                <span>{paymentMethod === 'Razorpay' ? 'Pay Now' : 'Place Order'}</span>
+              </button>
             </div>
 
           </div>

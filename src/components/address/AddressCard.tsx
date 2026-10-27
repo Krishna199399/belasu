@@ -56,14 +56,14 @@ export default function AddressCard({
         </div>
         
         {!selectable && (
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             {!address.isDefault && onSetDefault && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onSetDefault(address.id);
                 }}
-                className="text-gray-400 hover:text-amber-600 transition-colors"
+                className="min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer active:scale-95"
                 title="Set as default"
               >
                 <Star className="w-4 h-4" />
@@ -75,7 +75,7 @@ export default function AddressCard({
                   e.stopPropagation();
                   onEdit(address);
                 }}
-                className="text-gray-400 hover:text-blue-600 transition-colors"
+                className="min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer active:scale-95"
                 title="Edit address"
               >
                 <Edit className="w-4 h-4" />
@@ -87,7 +87,7 @@ export default function AddressCard({
                   e.stopPropagation();
                   onDelete(address.id);
                 }}
-                className="text-gray-400 hover:text-red-600 transition-colors"
+                className="min-w-[36px] min-h-[36px] flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer active:scale-95"
                 title="Delete address"
               >
                 <Trash2 className="w-4 h-4" />
