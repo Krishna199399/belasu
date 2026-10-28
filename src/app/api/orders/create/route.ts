@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import { createAdminClient } from '@/lib/supabase';
-import { EnhancedCartItem } from '@/types';
 import { deductStockOnOrder } from '@/lib/inventory';
 import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
 
@@ -23,12 +22,30 @@ export async function POST(request: NextRequest) {
       items, 
       shippingAddressId, 
       paymentMethod = 'Credit Card/Debit Card/NetBanking',
-      shippingFee = 45 
+      paymentId,
+      razorpayOrderId,
+      shippingFee = 45,
+      customerEmail,
+      customerPhone,
+      customerName,
     }: { 
-      items: any[]; // Simplified cart item format from checkout
+      items: Array<{
+        id: string;
+        sku?: string;
+        title: string;
+        price: number;
+        quantity: number;
+        productType: string;
+        slug?: string;
+      }>;
       shippingAddressId?: string;
       paymentMethod?: string;
+      paymentId?: string;
+      razorpayOrderId?: string;
       shippingFee?: number;
+      customerEmail?: string;
+      customerPhone?: string;
+      customerName?: string;
     } = body;
 
     const supabase = createAdminClient();
@@ -56,7 +73,7 @@ export async function POST(request: NextRequest) {
     // Get user info for billing
     const { data: user } = await supabase
       .from('users')
-      .select('name, phone, purchased_books')
+      .select('name, phone, email, purchased_books')
       .eq('id', authUser.userId)
       .single();
 
@@ -65,6 +82,13 @@ export async function POST(request: NextRequest) {
         { success: false, error: 'User not found' },
         { status: 404 }
       );
+    }
+
+    if (customerEmail && !user.email) {
+      await supabase
+        .from('users')
+        .update({ email: customerEmail.trim() })
+        .eq('id', authUser.userId);
     }
 
     // Get shipping address if provided
@@ -88,16 +112,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Use shipping address for billing, or create basic billing info
-    const billingInfo = shippingAddress || {
-      first_name: user.name?.split(' ')[0] || 'Customer',
-      last_name: user.name?.split(' ').slice(1).join(' ') || '',
-      address1: 'Not Provided',
-      address2: '',
-      city: 'Not Provided',
-      state: 'Not Provided',
-      postcode: '000000',
-      phone: user.phone,
-      email: '',
+    const billingInfo = shippingAddress ? {
+      first_name: shippingAddress.first_name,
+      last_name: shippingAddress.last_name,
+      address1: shippingAddress.address1,
+      address2: shippingAddress.address2 || null,
+      city: shippingAddress.city,
+      state: shippingAddress.state,
+      postcode: shippingAddress.postcode,
+      phone: shippingAddress.phone,
+      email: shippingAddress.email || customerEmail || user.email || '',
+    } : {
+      first_name: customerName?.trim().split(/\s+/)[0] || user.name?.trim().split(/\s+/)[0] || 'Customer',
+      last_name: customerName?.trim().split(/\s+/).slice(1).join(' ') || user.name?.trim().split(/\s+/).slice(1).join(' ') || '',
+      address1: 'Digital Instant Delivery (Web Reader)',
+      address2: null,
+      city: 'Online',
+      state: 'Karnataka',
+      postcode: '560001',
+      phone: customerPhone || user.phone,
+      email: customerEmail || user.email || '',
     };
 
     // Calculate amounts
@@ -145,6 +179,8 @@ export async function POST(request: NextRequest) {
         // Payment information
         payment_method: paymentMethod,
         payment_status: 'Paid',
+        razorpay_order_id: razorpayOrderId || null,
+        razorpay_payment_id: paymentId || null,
         
         // Amounts
         order_subtotal_amount: subtotal,
@@ -269,14 +305,14 @@ export async function POST(request: NextRequest) {
       .eq('order_id', order.id);
 
     // Dispatch non-blocking WhatsApp order confirmation
-    const customerPhone = user.phone || billingInfo.phone;
-    if (customerPhone) {
+    const targetPhone = customerPhone || user.phone || billingInfo.phone;
+    if (targetPhone) {
       sendWhatsAppOrderConfirmation({
-        phone: customerPhone,
+        phone: targetPhone,
         name: user.name || billingInfo.first_name || 'Customer',
         orderNumber: order.order_number,
         totalAmount: order.order_total_amount,
-        itemsSummary: items.map((i: any) => i.title).slice(0, 3).join(', '),
+        itemsSummary: items.map((i) => i.title).slice(0, 3).join(', '),
         isDigital: hasDigital && !hasPhysical,
       }).catch((err) => {
         console.error('[orders/create] WhatsApp confirmation dispatch error:', err);
@@ -313,10 +349,11 @@ export async function POST(request: NextRequest) {
       message: 'Order placed successfully',
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Create order error:', error);
+    const msg = error instanceof Error ? error.message : 'Failed to process order';
     return NextResponse.json(
-      { success: false, error: 'Failed to process order', details: error.message || String(error) },
+      { success: false, error: 'Failed to process order', details: msg },
       { status: 500 }
     );
   }

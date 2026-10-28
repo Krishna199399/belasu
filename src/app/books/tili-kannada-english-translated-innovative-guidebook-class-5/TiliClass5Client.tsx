@@ -83,7 +83,7 @@ export default function TiliClass5Client() {
     },
     {
       q: '6. What is the price, and how long does delivery take?',
-      a: 'The guidebook costs ₹295 and is listed as in stock. Free shipping is available, with an estimated delivery time of 3–5 business days.',
+      a: 'The guidebook costs ₹295 and is listed as in stock, with an estimated delivery time of 3–5 business days.',
     },
   ];
 
@@ -108,7 +108,7 @@ export default function TiliClass5Client() {
               </span>
             </div>
             <span className="hidden sm:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-              In Stock · Free Shipping
+              In Stock
             </span>
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function TiliClass5Client() {
                 </span>
 
                 <span className="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                  🚚 Free Shipping
+                  🚚 Fast Delivery (3-5 Days)
                 </span>
               </div>
 

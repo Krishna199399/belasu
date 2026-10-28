@@ -152,20 +152,37 @@ export default function LibraryPage() {
                   className="bg-white rounded-2xl border border-stone-200/80 hover:border-amber-400 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group"
                 >
                   {/* Cover */}
-                  <div className={`relative h-44 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-slate-900 text-xs font-black px-2.5 py-1 rounded-full shadow-xs uppercase tracking-wider z-10">
+                  <Link
+                    href={`/reader/${book.slug}`}
+                    className="relative h-60 bg-gradient-to-b from-stone-100 to-stone-200/60 flex items-center justify-center p-3 border-b border-stone-100 overflow-hidden block cursor-pointer"
+                  >
+                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-slate-900 text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider z-10 border border-stone-200">
                       Class {book.gradeClass}
                     </div>
-                    <div className="text-center text-white p-4 drop-shadow-sm">
-                      <div className="text-4xl mb-1">{subjectEmoji[book.subject] || '📖'}</div>
-                      <div className="text-xs font-bold uppercase tracking-wider opacity-90">{book.subject}</div>
-                    </div>
-                    {progressPct > 0 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/20">
-                        <div className="h-full bg-amber-400 transition-all" style={{ width: `${progressPct}%` }} />
+
+                    {book.coverImage ? (
+                      <div className="relative h-full aspect-[3/4] shadow-md rounded-lg overflow-hidden bg-white border border-stone-200 group-hover:scale-103 transition-transform duration-300">
+                        <img
+                          src={book.coverImage}
+                          alt={book.title}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ) : (
+                      <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center rounded-lg`}>
+                        <div className="text-center text-white p-4 drop-shadow-sm">
+                          <div className="text-4xl mb-1">{subjectEmoji[book.subject] || '📖'}</div>
+                          <div className="text-xs font-bold uppercase tracking-wider opacity-90">{book.subject}</div>
+                        </div>
                       </div>
                     )}
-                  </div>
+
+                    {progressPct > 0 && (
+                      <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/15">
+                        <div className="h-full bg-amber-500 transition-all" style={{ width: `${progressPct}%` }} />
+                      </div>
+                    )}
+                  </Link>
 
                   {/* Info */}
                   <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-4">

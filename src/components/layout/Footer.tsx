@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,23 +12,405 @@ import {
   MessageCircle,
   BookOpen,
   Laptop,
+  ChevronDown,
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const pathname = usePathname();
+  const [openSection, setOpenSection] = useState<string | null>(null);
+
   if (pathname?.startsWith('/admin') || pathname?.startsWith('/reader')) {
     return null;
   }
 
   const currentYear = new Date().getFullYear();
 
+  const toggleSection = (id: string) => {
+    setOpenSection((prev) => (prev === id ? null : id));
+  };
+
   return (
     <footer className="bg-gradient-to-b from-stone-50 via-amber-50/20 to-stone-100 border-t border-amber-200/70 text-slate-700 font-sans relative overflow-hidden">
       {/* Main Footer Container */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-16 pb-10 sm:pb-12">
         
-        {/* 5-Column Responsive Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pb-12 border-b border-amber-200/60">
+        {/* ── SEAMLESS HAIRLINE MOBILE FOOTER (< md) ── */}
+        <div className="md:hidden space-y-6 pb-6 border-b border-amber-200/60">
+          
+          {/* Brand & Cultural Identity */}
+          <div className="space-y-3">
+            <Link href="/" className="inline-flex">
+              <img
+                src="/Belesu-logo1.png"
+                alt="Belesu Logo"
+                className="h-10 object-contain"
+              />
+            </Link>
+
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
+              Empowering students and parents across Karnataka with English-translated Kannada guidebooks, bilingual workbooks, and high-speed digital readers for stress-free exam success.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-2 pt-0.5 text-[11px]">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-100/70 border border-amber-200/80 text-amber-900 font-bold">
+                <span>🌱</span>
+                <span>ಕನ್ನಡ ಮಾತಾಡಿ, ಕನ್ನಡ ಬೆಳೆಸಿ</span>
+              </div>
+              <span className="text-slate-500">
+                An initiative by <strong className="text-slate-800">Ckelp Technologies</strong>
+              </span>
+            </div>
+          </div>
+
+          {/* Seamless Hairline Dividers List (Oswaal / Khan Academy Style) */}
+          <div className="border-t border-stone-200/90 divide-y divide-stone-200/80">
+            
+            {/* Section 1: Savi & Kali Guidebooks */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleSection('guidebooks')}
+                className="w-full py-3.5 flex items-center justify-between text-left cursor-pointer transition group"
+              >
+                <div className="flex items-center gap-2.5">
+                  <BookOpen className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span className="text-xs font-bold text-slate-900 tracking-wide">
+                    Savi & Kali Guidebooks (Classes 1–4)
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-amber-900 bg-amber-100/80 border border-amber-200/90 px-2 py-0.5 rounded">
+                    8 Books
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 group-hover:text-slate-900 ${
+                      openSection === 'guidebooks' ? 'rotate-180 text-amber-600' : ''
+                    }`}
+                  />
+                </div>
+              </button>
+
+              {openSection === 'guidebooks' && (
+                <div className="pl-6 pr-1 pb-4 pt-1 space-y-3.5 text-xs animate-in fade-in duration-150">
+                  {/* Savi Kannada Classes */}
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 block mb-1.5">
+                      Savi Kannada (1–4)
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <Link
+                        href="/books/savi-kannada-class-1"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 1 · Savi
+                      </Link>
+                      <Link
+                        href="/books/savi-kannada-class-2"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 2 · Savi
+                      </Link>
+                      <Link
+                        href="/books/savi-kannada-class-3"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 3 · Savi
+                      </Link>
+                      <Link
+                        href="/books/savi-kannada-class-4"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 4 · Savi
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Kali Kannada Classes */}
+                  <div className="pt-2 border-t border-stone-200/50">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 block mb-1.5">
+                      Kali Kannada (1–4)
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <Link
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-1"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 1 · Kali
+                      </Link>
+                      <Link
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-2"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 2 · Kali
+                      </Link>
+                      <Link
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-3"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 3 · Kali
+                      </Link>
+                      <Link
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-4"
+                        className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
+                      >
+                        Class 4 · Kali
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Direct Catalog Link */}
+                  <div className="pt-1">
+                    <Link
+                      href="/books"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 hover:text-amber-950 underline underline-offset-2"
+                    >
+                      <span>Browse All 11 Guidebooks</span>
+                      <span>→</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Section 2: Class 5 & Digital Platform */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleSection('digital')}
+                className="w-full py-3.5 flex items-center justify-between text-left cursor-pointer transition group"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Laptop className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <span className="text-xs font-bold text-slate-900 tracking-wide">
+                    Class 5 & Digital Platform
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded uppercase">
+                    Live
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 group-hover:text-slate-900 ${
+                      openSection === 'digital' ? 'rotate-180 text-indigo-600' : ''
+                    }`}
+                  />
+                </div>
+              </button>
+
+              {openSection === 'digital' && (
+                <div className="pl-6 pr-1 pb-4 pt-1 space-y-2 text-xs animate-in fade-in duration-150">
+                  <ul className="space-y-2 text-slate-600">
+                    <li>
+                      <Link href="/books/siri-kannada-english-translated-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
+                        Class 5 · Siri Kannada
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
+                        Class 5 · Tili Kannada
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/books/a-destination-to-speak-kannada" className="hover:text-amber-800 hover:underline transition">
+                        A Destination to Speak Kannada (Spoken Guide)
+                      </Link>
+                    </li>
+                    <li className="pt-1 border-t border-stone-200/50">
+                      <Link
+                        href="/digital/kannada-class-6-guide"
+                        className="text-indigo-700 font-bold hover:underline flex items-center gap-1.5"
+                      >
+                        <span>Class 6 Digital Guide</span>
+                        <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded uppercase">Live</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/digital" className="hover:text-indigo-800 hover:underline transition">
+                        Digital Readers Hub
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/reader/kannada-class-6-guide?preview=true" className="hover:text-indigo-800 hover:underline transition">
+                        Free 5-Page Preview
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Section 3: Company, Reviews & Policies */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleSection('company')}
+                className="w-full py-3.5 flex items-center justify-between text-left cursor-pointer transition group"
+              >
+                <div className="flex items-center gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-slate-700 shrink-0" />
+                  <span className="text-xs font-bold text-slate-900 tracking-wide">
+                    About, Reviews & Policies
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-400 transition-transform duration-200 group-hover:text-slate-900 ${
+                    openSection === 'company' ? 'rotate-180 text-slate-900' : ''
+                  }`}
+                />
+              </button>
+
+              {openSection === 'company' && (
+                <div className="pl-6 pr-1 pb-4 pt-1 space-y-3.5 text-xs animate-in fade-in duration-150">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 block mb-1.5">
+                      Explore Belesu
+                    </span>
+                    <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-slate-600">
+                      <Link href="/about" className="hover:text-amber-800 hover:underline transition">About Us</Link>
+                      <Link href="/team" className="hover:text-amber-800 hover:underline transition">Academic Team</Link>
+                      <Link href="/videos" className="hover:text-amber-800 hover:underline transition">Video Demos</Link>
+                      <Link href="/reviews" className="hover:text-amber-800 hover:underline transition">Parent Reviews</Link>
+                      <Link href="/faqs" className="hover:text-amber-800 hover:underline transition">FAQs & Help</Link>
+                      <Link href="/contact" className="hover:text-amber-800 hover:underline transition">Contact Us</Link>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-stone-200/50">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800 block mb-1.5">
+                      Customer Policies
+                    </span>
+                    <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-slate-600">
+                      <Link href="/policies/returns" className="hover:text-amber-800 hover:underline transition">Returns & Refunds</Link>
+                      <Link href="/policies/shipping" className="hover:text-amber-800 hover:underline transition">Shipping Policy</Link>
+                      <Link href="/policies/terms" className="hover:text-amber-800 hover:underline transition">Terms of Service</Link>
+                      <Link href="/policies/privacy" className="hover:text-amber-800 hover:underline transition">Privacy Policy</Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Section 4: Offices & Addresses */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleSection('offices')}
+                className="w-full py-3.5 flex items-center justify-between text-left cursor-pointer transition group"
+              >
+                <div className="flex items-center gap-2.5">
+                  <MapPin className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span className="text-xs font-bold text-slate-900 tracking-wide">
+                    Registered & Operational Offices
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-400 transition-transform duration-200 group-hover:text-slate-900 ${
+                    openSection === 'offices' ? 'rotate-180 text-amber-600' : ''
+                  }`}
+                />
+              </button>
+
+              {openSection === 'offices' && (
+                <div className="pl-6 pr-1 pb-4 pt-1 space-y-2 text-xs text-slate-600 animate-in fade-in duration-150">
+                  <div className="space-y-0.5">
+                    <strong className="text-slate-800 block">Bangalore Registered Office:</strong>
+                    <p className="text-[11px] leading-relaxed">#152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125</p>
+                  </div>
+                  <div className="space-y-0.5 pt-1.5 border-t border-stone-200/50">
+                    <strong className="text-slate-800 block">Operations & Logistics:</strong>
+                    <p className="text-[11px] leading-relaxed">VRIF, Visvesvaraya Technological University (VTU) campus, Belgaum - 590018</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* Integrated Direct Contact Strip (Clean, No Clunky Buttons) */}
+          <div className="pt-1 flex flex-col gap-2 text-xs text-slate-600 border-t border-stone-200/60">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-slate-800">Direct Customer Support:</span>
+              <a
+                href="https://wa.me/919606636804?text=Hello%20Belesu%20Team,%20I%20would%20like%20to%20know%20more%20about%20your%20English-translated%20Kannada%20guidebooks."
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 font-bold text-emerald-700 hover:text-emerald-800 hover:underline"
+              >
+                <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                <span>Chat on WhatsApp</span>
+              </a>
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-slate-500">
+              <div className="flex items-center gap-1.5">
+                <Phone className="w-3 h-3 text-amber-600" />
+                <a href="tel:+919606636804" className="font-bold text-slate-800 hover:underline">+91 9606636804</a>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Mail className="w-3 h-3 text-amber-600" />
+                <a href="mailto:kannada@belesu.in" className="font-bold text-slate-800 hover:underline">kannada@belesu.in</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Socials Strip */}
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-xs font-semibold text-slate-700">Follow Belesu:</span>
+            <div className="flex items-center gap-2">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noreferrer"
+                className="w-7 h-7 rounded-md bg-white border border-stone-200 hover:border-amber-400 hover:text-amber-600 text-slate-500 flex items-center justify-center transition shadow-2xs"
+                aria-label="Facebook"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+              </a>
+
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noreferrer"
+                className="w-7 h-7 rounded-md bg-white border border-stone-200 hover:border-amber-400 hover:text-amber-600 text-slate-500 flex items-center justify-center transition shadow-2xs"
+                aria-label="Instagram"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                </svg>
+              </a>
+
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noreferrer"
+                className="w-7 h-7 rounded-md bg-white border border-stone-200 hover:border-amber-400 hover:text-amber-600 text-slate-500 flex items-center justify-center transition shadow-2xs"
+                aria-label="Twitter"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+
+              <a
+                href="https://wa.me/919606636804"
+                target="_blank"
+                rel="noreferrer"
+                className="w-7 h-7 rounded-md bg-white border border-stone-200 hover:border-emerald-400 hover:text-emerald-600 text-slate-500 flex items-center justify-center transition shadow-2xs"
+                aria-label="WhatsApp"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.157 4.228 4.228-1.157z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* ── DESKTOP 5-COLUMN RESPONSIVE GRID (≥ md) ── */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pb-12 border-b border-amber-200/60">
           
           {/* ── Column 1: Brand & Academic Mission (3.5 Cols) ── */}
           <div className="lg:col-span-3 space-y-4">
@@ -297,7 +679,7 @@ export const Footer: React.FC = () => {
                 <Mail className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                 <span>Email: <a href="mailto:kannada@belesu.in" className="font-bold text-slate-900 hover:text-amber-600">kannada@belesu.in</a></span>
               </div>
-              
+
               {/* Offices */}
               <div className="space-y-1.5 pt-1 border-t border-stone-200/60 text-[11px] text-slate-500">
                 <div className="text-[11px] font-bold text-slate-800 tracking-tight pb-0.5">
@@ -377,29 +759,29 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* ── Sub-Footer Copyright & Payment Logos ── */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-sans">
-          <p className="text-center md:text-left">
+        <div className="pt-6 sm:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-sans">
+          <p className="text-center md:text-left text-[11px] sm:text-xs">
             Designed and Developed by <strong className="text-slate-700 font-semibold">Korvion Media</strong>. © <strong className="text-slate-800">Belesu {currentYear}</strong>. All rights reserved.
           </p>
 
           {/* Payment Method Badges */}
           <div className="flex items-center gap-1.5 flex-wrap justify-center">
-            <span className="px-2.5 py-1 bg-white text-slate-800 rounded-md text-[10px] font-black uppercase tracking-wider border border-stone-200 shadow-2xs">
+            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
               UPI
             </span>
-            <span className="px-2.5 py-1 bg-white text-slate-800 rounded-md text-[10px] font-black uppercase tracking-wider border border-stone-200 shadow-2xs">
+            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
               RuPay
             </span>
-            <span className="px-2.5 py-1 bg-white text-slate-800 rounded-md text-[10px] font-black uppercase tracking-wider border border-stone-200 shadow-2xs">
+            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
               Visa
             </span>
-            <span className="px-2.5 py-1 bg-white text-slate-800 rounded-md text-[10px] font-black uppercase tracking-wider border border-stone-200 shadow-2xs">
+            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
               MasterCard
             </span>
-            <span className="px-2.5 py-1 bg-white text-slate-800 rounded-md text-[10px] font-black uppercase tracking-wider border border-stone-200 shadow-2xs">
+            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
               NetBanking
             </span>
-            <span className="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-md text-[10px] font-bold uppercase tracking-wider border border-emerald-200 shadow-2xs flex items-center gap-1">
+            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded text-[10px] font-semibold border border-emerald-200 flex items-center gap-1">
               <ShieldCheck className="w-3 h-3 text-emerald-600" /> Razorpay Secured
             </span>
           </div>

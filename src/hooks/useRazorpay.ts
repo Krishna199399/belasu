@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 
 interface UseRazorpayOptions {
   onSuccess?: (response: RazorpayResponse) => void;
-  onFailure?: (error: any) => void;
+  onFailure?: (error: unknown) => void;
 }
 
 export function useRazorpay({ onSuccess, onFailure }: UseRazorpayOptions = {}) {
@@ -18,10 +18,16 @@ export function useRazorpay({ onSuccess, onFailure }: UseRazorpayOptions = {}) {
     amount,
     description,
     notes = {},
+    prefill,
   }: {
     amount: number;
     description: string;
-    notes?: Record<string, any>;
+    notes?: Record<string, unknown>;
+    prefill?: {
+      name?: string;
+      email?: string;
+      contact?: string;
+    };
   }) => {
     if (!user) {
       toast.error('Please login to continue');
@@ -63,33 +69,34 @@ export function useRazorpay({ onSuccess, onFailure }: UseRazorpayOptions = {}) {
         name: 'Belesu',
         description,
         order_id: data.order.id,
-        handler: async (response: RazorpayResponse) => {
+        handler: async (paymentResponse: RazorpayResponse) => {
           try {
             // Verify payment on server
             const verifyResponse = await fetch('/api/payment/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(response),
+              body: JSON.stringify(paymentResponse),
             });
 
             const verifyData = await verifyResponse.json();
 
             if (verifyData.success) {
               toast.success('Payment successful!');
-              onSuccess?.(response);
+              onSuccess?.(paymentResponse);
             } else {
               throw new Error('Payment verification failed');
             }
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error('Payment verification error:', error);
-            toast.error(error.message || 'Payment verification failed');
+            const msg = error instanceof Error ? error.message : 'Payment verification failed';
+            toast.error(msg);
             onFailure?.(error);
           }
         },
         prefill: {
-          name: user.name,
-          email: user.email || '',
-          contact: user.phone,
+          name: prefill?.name ?? user.name,
+          email: prefill?.email ?? user.email ?? '',
+          contact: prefill?.contact ?? user.phone,
         },
         notes,
         theme: {
@@ -104,12 +111,14 @@ export function useRazorpay({ onSuccess, onFailure }: UseRazorpayOptions = {}) {
       };
 
       // Open Razorpay checkout
-      const razorpay = new (window as any).Razorpay(options);
+      const razorpayConstructor = (window as unknown as { Razorpay: new (opts: RazorpayOptions) => { open: () => void } }).Razorpay;
+      const razorpay = new razorpayConstructor(options);
       razorpay.open();
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Payment initiation error:', error);
-      toast.error(error.message || 'Failed to initiate payment');
+      const msg = error instanceof Error ? error.message : 'Failed to initiate payment';
+      toast.error(msg);
       onFailure?.(error);
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
 import { PARENT_REVIEWS } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
@@ -15,16 +16,11 @@ import {
   ArrowRight,
   Eye,
   Laptop,
-  Smartphone,
-  Tablet,
   Sparkles,
-  HelpCircle,
   Building2,
   Phone,
   Languages,
-  FileText,
   Scroll,
-  Layers,
   ShoppingCart,
   ZoomIn,
   Star,
@@ -84,10 +80,17 @@ export default function DigitalClass6Page() {
   // Reviews for continuous infinite marquee
   const marqueeReviews = [...PARENT_REVIEWS, ...PARENT_REVIEWS];
 
+  const router = useRouter();
+
   const handleAddToCart = () => {
     addToCart(book, 'digital', 1);
     toast.success(`Added ${book.title} to cart!`);
     openCart();
+  };
+
+  const handleBuyNow = () => {
+    addToCart(book, 'digital', 1);
+    router.push('/checkout');
   };
 
   const keyBenefits = [
@@ -218,7 +221,7 @@ export default function DigitalClass6Page() {
 
               {/* Intro text */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                Understand Class 6 Kannada lessons through English translations, solved textbook exercises and chapter summaries. Access your guidebook online through Belesu's digital reader.
+                Understand Class 6 Kannada lessons through English translations, solved textbook exercises and chapter summaries. Access your guidebook online through Belesu&apos;s digital reader.
               </p>
 
               {/* CTAs */}
@@ -233,19 +236,27 @@ export default function DigitalClass6Page() {
                   </Link>
                 ) : (
                   <>
-                    <Link
-                      href="/digital/kannada-class-6-guide/purchase"
+                    <button
+                      type="button"
+                      onClick={handleBuyNow}
                       className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all transform active:scale-[0.99] shadow-lg shadow-amber-500/25 cursor-pointer"
                     >
                       <ShoppingCart className="w-5 h-5 text-slate-950" />
                       <span>Buy & Read for ₹199</span>
-                    </Link>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-base font-bold bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 transition cursor-pointer"
+                    >
+                      <span>Add to Cart</span>
+                    </button>
                     <Link
                       href="/reader/kannada-class-6-guide?preview=true"
-                      className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base font-bold bg-white hover:bg-stone-50 text-slate-800 border-2 border-stone-300 transition cursor-pointer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-base font-bold bg-white hover:bg-stone-50 text-slate-800 border-2 border-stone-300 transition cursor-pointer"
                     >
                       <Eye className="w-5 h-5 text-amber-600" />
-                      <span>Preview 5 Free Pages</span>
+                      <span>Preview Free Pages</span>
                     </Link>
                   </>
                 )}
@@ -445,7 +456,7 @@ export default function DigitalClass6Page() {
           
           <div className="text-center space-y-3">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-slate-900 tracking-tight">
-              What's Included in the Digital Guidebook?
+              What&apos;s Included in the Digital Guidebook?
             </h2>
           </div>
 
@@ -584,19 +595,27 @@ export default function DigitalClass6Page() {
               </Link>
             ) : (
               <>
-                <Link
-                  href="/digital/kannada-class-6-guide/purchase"
+                <button
+                  type="button"
+                  onClick={handleBuyNow}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-base sm:text-lg font-black bg-slate-950 hover:bg-slate-900 text-white transition-all transform active:scale-95 shadow-xl cursor-pointer"
                 >
                   <ShoppingCart className="w-5 h-5 text-amber-400" />
                   <span>Buy & Read for ₹199</span>
-                </Link>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base sm:text-lg font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition cursor-pointer shadow-md"
+                >
+                  <span>Add to Cart</span>
+                </button>
                 <Link
                   href="/reader/kannada-class-6-guide?preview=true"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base sm:text-lg font-bold bg-white/90 hover:bg-white text-slate-950 border border-slate-900/10 transition cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base sm:text-lg font-bold bg-white/90 hover:bg-white text-slate-950 border border-slate-900/10 transition cursor-pointer"
                 >
                   <Eye className="w-5 h-5 text-amber-700" />
-                  <span>Preview 5 Free Pages</span>
+                  <span>Preview Free Pages</span>
                 </Link>
               </>
             )}
@@ -704,7 +723,7 @@ export default function DigitalClass6Page() {
             <>
               <Link
                 href="/reader/kannada-class-6-guide?preview=true"
-                className="min-h-[44px] min-w-[44px] px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                className="min-h-[44px] min-w-[40px] px-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1 transition"
                 aria-label="Preview free pages"
               >
                 <BookOpen className="w-4 h-4 text-amber-600" />
@@ -713,10 +732,18 @@ export default function DigitalClass6Page() {
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="min-h-[44px] px-4 sm:px-5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 transition cursor-pointer active:scale-95"
+                className="min-h-[44px] px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold text-xs flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
               >
-                <ShoppingCart className="w-4 h-4" />
-                <span>Add to Cart</span>
+                <ShoppingCart className="w-3.5 h-3.5" />
+                <span>Add</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                className="min-h-[44px] px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
+              >
+                <span>Buy Now</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </>
           )}

@@ -19,7 +19,7 @@ export function MobileBookStickyBar({ book, onAddToCart, onPreview }: MobileBook
           {formatPrice(book.price)}
         </div>
         <div className="text-[10px] sm:text-[11px] font-bold text-emerald-700 truncate">
-          In Stock · Free Shipping
+          In Stock
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">

@@ -15,7 +15,7 @@ export function mapDbRowToBook(row: any): DigitalBook {
     gradeClass: Number(row.grade_class),
     price: Number(row.price),
     originalPrice: row.original_price ? Number(row.original_price) : undefined,
-    coverImage: row.cover_image || '/digital-covers/kn-6.webp',
+    coverImage: row.cover_image || '/digital/class-6-siri/cover.jpeg',
     totalPages: Number(row.total_pages) || 50,
     isFreePreviewPages: row.is_free_preview_pages !== undefined ? Number(row.is_free_preview_pages) : 5,
     description: row.description || '',

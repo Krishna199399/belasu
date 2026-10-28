@@ -1,15 +1,16 @@
 'use client';
 
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getDigitalBookBySlug } from '@/data/digitalBooksData';
 import { DigitalBook } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
-import { Lock, BookOpen, ShieldCheck, ArrowRight, CheckCircle2, ShoppingCart } from 'lucide-react';
+import { BookOpen, ShieldCheck, ArrowRight, CheckCircle2, ShoppingCart } from 'lucide-react';
 
 export default function DigitalBookDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const router = useRouter();
   const { slug } = use(params);
   const [book, setBook] = useState<DigitalBook | undefined>(() => getDigitalBookBySlug(slug));
   const [loading, setLoading] = useState(!book);
@@ -51,6 +52,11 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
     addToCart(book, 'digital', 1);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
+  };
+
+  const handleBuyNow = () => {
+    addToCart(book, 'digital', 1);
+    router.push('/checkout');
   };
 
   const subjectEmoji: Record<string, string> = {
@@ -206,19 +212,26 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
+                  <button
+                    onClick={handleBuyNow}
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition text-xs sm:text-sm shadow-md shadow-amber-500/20 cursor-pointer active:scale-98"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Buy & Read for ₹{book.price}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={handleAddToCart}
-                    className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl transition text-xs sm:text-sm shadow-md shadow-amber-500/20 cursor-pointer active:scale-98"
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 font-bold py-3 rounded-xl transition text-xs sm:text-sm cursor-pointer active:scale-98"
                     disabled={addedToCart}
                   >
                     <ShoppingCart className="w-4 h-4" />
                     {addedToCart ? 'Added to Cart!' : 'Add to Cart'}
-                    {!addedToCart && <ArrowRight className="w-4 h-4" />}
                   </button>
                   <Link
                     href={`/reader/${book.slug}?preview=true`}
-                    className="w-full min-h-[44px] flex items-center justify-center gap-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 rounded-xl transition text-xs sm:text-sm"
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-xl transition text-xs sm:text-sm"
                   >
                     <BookOpen className="w-4 h-4 text-amber-600" />
                     Preview {book.isFreePreviewPages} Free Pages
@@ -280,19 +293,28 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
             <>
               <Link
                 href={`/reader/${book.slug}?preview=true`}
-                className="min-h-[44px] min-w-[44px] px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                className="min-h-[44px] min-w-[40px] px-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1 transition"
                 aria-label="Preview sample pages"
               >
                 <BookOpen className="w-4 h-4 text-amber-600" />
                 <span className="hidden xs:inline">Preview</span>
               </Link>
               <button
+                type="button"
                 onClick={handleAddToCart}
                 disabled={addedToCart}
-                className="min-h-[44px] px-4 sm:px-5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 transition cursor-pointer active:scale-95"
+                className="min-h-[44px] px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold text-xs flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
               >
-                <ShoppingCart className="w-4 h-4" />
-                <span>{addedToCart ? 'Added!' : 'Add to Cart'}</span>
+                <ShoppingCart className="w-3.5 h-3.5" />
+                <span>{addedToCart ? 'Added!' : 'Add'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                className="min-h-[44px] px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
+              >
+                <span>Buy Now</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </>
           )}

@@ -154,7 +154,7 @@ export default function DestinationToSpeakKannadaPage() {
     },
     {
       q: 'What is the price of A Destination to Speak Kannada?',
-      a: 'The physical book costs ₹295, with free shipping and an estimated delivery time of 3–5 business days.',
+      a: 'The physical book costs ₹295, with an estimated delivery time of 3–5 business days.',
     },
   ];
 
@@ -204,7 +204,7 @@ export default function DestinationToSpeakKannadaPage() {
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  Physical Book • Free Shipping
+                  Physical Book • In Stock
                 </span>
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700">
                   SKU: DSK
@@ -233,7 +233,7 @@ export default function DestinationToSpeakKannadaPage() {
                 <div className="h-4 w-px bg-stone-200 hidden sm:block"></div>
                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
                   <Truck className="w-4 h-4 text-amber-600" />
-                  <span>Physical book • Free shipping • Estimated delivery: 3–5 business days</span>
+                  <span>Physical book • Estimated delivery: 3–5 business days</span>
                 </div>
               </div>
 
@@ -491,7 +491,7 @@ export default function DestinationToSpeakKannadaPage() {
           
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950 text-white text-xs font-bold uppercase tracking-wider">
             <Truck className="w-4 h-4 text-amber-400" />
-            Free Shipping Included
+            Fast Doorstep Delivery
           </div>
 
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-950 tracking-tight max-w-3xl mx-auto leading-tight">
@@ -521,7 +521,7 @@ export default function DestinationToSpeakKannadaPage() {
           </p>
 
           <p className="text-xs font-semibold text-slate-800">
-            Free shipping • Estimated delivery: 3–5 business days.
+            Estimated delivery: 3–5 business days across Karnataka.
           </p>
 
         </div>

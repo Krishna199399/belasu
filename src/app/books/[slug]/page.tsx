@@ -96,7 +96,7 @@ export default function BookDetailPage() {
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 py-2 border-y border-slate-100">
                 <span className="text-2xl sm:text-3xl font-black text-amber-600">{formatPrice(book.price)}</span>
                 <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-                  In Stock & Free Shipping
+                  In Stock
                 </span>
               </div>
 
@@ -184,7 +184,7 @@ export default function BookDetailPage() {
             {formatPrice(book.price)}
           </div>
           <div className="text-[10px] sm:text-[11px] font-bold text-emerald-700 truncate">
-            In Stock · Free Shipping
+            In Stock
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">

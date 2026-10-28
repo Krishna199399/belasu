@@ -2,15 +2,13 @@
 
 import React from 'react';
 import { useCart } from '@/context/CartContext';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, Truck } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
-  const freeShippingThreshold = 500;
-  const isFreeShipping = subtotal >= freeShippingThreshold || !needsShipping();
-  const shippingFee = (needsShipping() && !isFreeShipping) ? 45 : 0;
+  const shippingFee = needsShipping() ? 45 : 0;
   const grandTotal = subtotal + shippingFee;
 
   return (
@@ -130,8 +128,8 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping Fee</span>
-                    <span className="font-bold text-emerald-600">
-                      {isFreeShipping ? 'FREE' : formatPrice(shippingFee)}
+                    <span className="font-bold text-slate-900">
+                      {shippingFee > 0 ? formatPrice(shippingFee) : '₹0'}
                     </span>
                   </div>
                   <div className="flex justify-between text-base sm:text-lg font-black text-slate-900 pt-3 border-t border-slate-100">
@@ -164,7 +162,7 @@ export default function CartPage() {
               {formatPrice(grandTotal)}
             </div>
             <div className="text-[10px] sm:text-[11px] font-bold text-slate-500 truncate">
-              {isFreeShipping ? 'Free Shipping Included' : `+ ${formatPrice(shippingFee)} Shipping`}
+              {shippingFee > 0 ? `+ ${formatPrice(shippingFee)} Shipping` : 'Instant Digital Delivery'}
             </div>
           </div>
           <Link

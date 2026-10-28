@@ -12,45 +12,91 @@ export const CartDrawer: React.FC = () => {
   const { cart, isOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
   const shippingFee = needsShipping() ? 45 : 0;
 
-  // Prevent background website scrolling when cart drawer is open
+  // Prevent background website scrolling when cart drawer is open (Bulletproof mobile iOS/Android + desktop)
   React.useEffect(() => {
     if (!isOpen) return;
 
-    const originalOverflow = document.body.style.overflow;
-    const originalPaddingRight = document.body.style.paddingRight;
+    // Capture current scroll offset
+    const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+    const originalBodyPosition = document.body.style.position;
+    const originalBodyTop = document.body.style.top;
+    const originalBodyLeft = document.body.style.left;
+    const originalBodyRight = document.body.style.right;
+    const originalBodyWidth = document.body.style.width;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalBodyPaddingRight = document.body.style.paddingRight;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalHtmlOverscroll = document.documentElement.style.overscrollBehavior;
+
+    // Compensate for scrollbar disappearing on desktop to avoid layout shift
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
+
+    // Freeze body in place at the current viewport position
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.overscrollBehavior = 'none';
 
     return () => {
-      document.body.style.overflow = originalOverflow;
-      document.body.style.paddingRight = originalPaddingRight;
+      // Revert styles
+      document.body.style.position = originalBodyPosition;
+      document.body.style.top = originalBodyTop;
+      document.body.style.left = originalBodyLeft;
+      document.body.style.right = originalBodyRight;
+      document.body.style.width = originalBodyWidth;
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.paddingRight = originalBodyPaddingRight;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.documentElement.style.overscrollBehavior = originalHtmlOverscroll;
+
+      // Restore previous scroll position seamlessly
+      window.scrollTo(0, scrollY);
     };
   }, [isOpen]);
 
   if (!isOpen || pathname?.startsWith('/admin')) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden overscroll-contain">
+    <div
+      className="fixed inset-0 z-50 overflow-hidden overscroll-none select-none"
+      style={{ overscrollBehavior: 'none' }}
+      onTouchMove={(e) => {
+        if (e.target === e.currentTarget) {
+          e.preventDefault();
+        }
+      }}
+    >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
+        className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in select-none"
         onClick={closeCart}
+        onTouchMove={(e) => e.preventDefault()}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex sm:pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+        <div
+          className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between overscroll-contain"
+          style={{ overscrollBehavior: 'contain' }}
+        >
           {/* Header */}
-          <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+          <div
+            className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50 shrink-0 select-none touch-none"
+            onTouchMove={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-amber-600" />
               <h3 className="font-bold text-slate-900 text-base sm:text-lg">Your Cart ({totalItems})</h3>
             </div>
             <button
               onClick={closeCart}
-              className="p-2.5 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="p-2.5 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
               aria-label="Close cart"
             >
               <X className="w-5 h-5" />
@@ -58,9 +104,15 @@ export const CartDrawer: React.FC = () => {
           </div>
 
           {/* Cart Item List */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          <div
+            className="flex-1 overflow-y-auto p-5 space-y-4 overscroll-contain"
+            style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}
+          >
             {cart.length === 0 ? (
-              <div className="text-center py-12 flex flex-col items-center">
+              <div
+                className="text-center py-12 flex flex-col items-center justify-center my-auto select-none"
+                onTouchMove={(e) => e.stopPropagation()}
+              >
                 <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mb-3">
                   <ShoppingBag className="w-8 h-8" />
                 </div>
@@ -70,7 +122,7 @@ export const CartDrawer: React.FC = () => {
                 </p>
                 <button
                   onClick={closeCart}
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 transition"
+                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 transition cursor-pointer min-h-[44px]"
                 >
                   Explore Books Catalog
                 </button>
@@ -97,7 +149,7 @@ export const CartDrawer: React.FC = () => {
                         </h4>
                         <button
                           onClick={() => removeFromCart(product.id)}
-                          className="text-slate-400 hover:text-rose-600 transition"
+                          className="text-slate-400 hover:text-rose-600 transition cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -117,14 +169,14 @@ export const CartDrawer: React.FC = () => {
                         <div className="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden">
                           <button
                             onClick={() => updateQuantity(product.id, quantity - 1)}
-                            className="p-1 hover:bg-slate-100 text-slate-600 transition"
+                            className="p-1 hover:bg-slate-100 text-slate-600 transition cursor-pointer"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
                           <span className="px-2.5 text-xs font-semibold text-slate-900">{quantity}</span>
                           <button
                             onClick={() => updateQuantity(product.id, quantity + 1)}
-                            className="p-1 hover:bg-slate-100 text-slate-600 transition"
+                            className="p-1 hover:bg-slate-100 text-slate-600 transition cursor-pointer"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -146,7 +198,10 @@ export const CartDrawer: React.FC = () => {
 
           {/* Footer Subtotal & Checkout */}
           {cart.length > 0 && (
-            <div className="p-4 sm:p-5 pb-safe border-t border-slate-200 bg-white space-y-4">
+            <div
+              className="p-4 sm:p-5 pb-safe border-t border-slate-200 bg-white space-y-4 shrink-0 select-none"
+              onTouchMove={(e) => e.stopPropagation()}
+            >
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-slate-600">
                   <span>Subtotal</span>
@@ -154,7 +209,7 @@ export const CartDrawer: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Shipping</span>
-                  <span className="font-semibold text-slate-900">{shippingFee === 0 ? 'FREE' : '₹45'}</span>
+                  <span className="font-semibold text-slate-900">{shippingFee === 0 ? '₹0' : '₹45'}</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-100">
                   <span>Total</span>
