@@ -197,12 +197,10 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
 
             {/* Institutional Accreditations */}
             <div className="pt-2 flex items-center gap-3 text-xs text-slate-500 border-t border-amber-200/60">
-              <span className="font-semibold text-slate-700">Ckelp Technologies</span>
-              <span>•</span>
-              <span>Incubated at <strong className="text-slate-800">Deshpande Startups</strong></span>
+              <span className="font-semibold text-slate-700">Ckelp Technologies Private Limited</span>
               <span>•</span>
               <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Verified
+                <CheckCircle2 className="w-3.5 h-3.5" /> Verified Platform
               </span>
             </div>
 
@@ -256,7 +254,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                         </label>
                         <input
                           type="text"
-                          placeholder="e.g. Ramesh Kumar"
+                          placeholder="Enter student or parent name"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           className="w-full bg-stone-50 hover:bg-stone-50/80 focus:bg-white border border-stone-200 focus:border-amber-500 text-slate-900 text-sm px-4 py-3 rounded-xl focus:outline-none transition shadow-2xs"

@@ -193,7 +193,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
                 {book.title}
               </h3>
               <p className="text-[11px] text-slate-500 font-medium truncate">
-                Class {book.gradeClass} · {book.series} Kannada State Board Companion
+                Class {book.gradeClass} · {book.series} Kannada School Textbook Companion
               </p>
             </div>
           </div>
@@ -431,7 +431,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
                 </div>
                 <div className="flex items-start gap-2 text-slate-800">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>100% aligned to Karnataka State Board</span>
+                  <span>Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 

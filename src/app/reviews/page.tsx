@@ -131,7 +131,7 @@ export default function ReviewsPage() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Irin Gladia"
+                    placeholder="Enter your name"
                     value={formData.parentName}
                     onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
                     className="w-full p-3.5 min-h-[44px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
@@ -142,7 +142,7 @@ export default function ReviewsPage() {
                   <label className="block mb-1">City / Location</label>
                   <input
                     type="text"
-                    placeholder="e.g. Bengaluru, Karnataka"
+                    placeholder="Enter your city / location"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     className="w-full p-3.5 min-h-[44px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"

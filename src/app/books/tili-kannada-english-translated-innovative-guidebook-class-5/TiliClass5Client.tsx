@@ -60,29 +60,6 @@ export default function TiliClass5Client() {
     'Practise textbook-based questions with a question bank and model scoring guidance.',
   ];
 
-  const tableOfContents = [
-    {
-      label: 'Lesson 1',
-      title: 'Lesson 1: Kannada Sahitya Charitre (History of Literature)',
-      description: 'Focuses on the history of Kannada literature, providing additional support for understanding the literary topics covered in the lesson.',
-    },
-    {
-      label: 'Lesson 2',
-      title: 'Lesson 2: Parisara Samrakshane (Environmental Conservation)',
-      description: 'Covers environmental conservation, with English-language learning support to help students understand the topic and review its key ideas.',
-    },
-    {
-      label: 'Lesson 3',
-      title: 'Lesson 3: Advanced Grammar Masterclass',
-      description: 'Covers grammar concepts, including Alankara, Samasa and Tatsama-Tadbhava, giving students additional material for grammar revision.',
-    },
-    {
-      label: 'Lesson 4',
-      title: 'Lesson 4: Comprehensive Answer Key',
-      description: 'Provides answer-key support so students can review textbook-based questions and compare their responses with the answers in the guidebook.',
-    },
-  ];
-
   const faqs = [
     {
       q: '1. What is the Tili Kannada Class 5 guidebook?',
@@ -175,17 +152,17 @@ export default function TiliClass5Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 5 Tili Kannada Textbook"
+                    alt="Karnataka School Textbook Class 5 Tili Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      100% State Syllabus Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 5 Tili Kannada textbook.
@@ -229,7 +206,7 @@ export default function TiliClass5Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                The Tili Kannada Class 5 English-translated guidebook helps students understand Kannada lessons, expand their vocabulary and strengthen their grammar skills. With English translations, chapter summaries and question-and-answer support, it provides additional resources for lesson revision and school assessment preparation.
+                An English-translated Kannada guidebook for Class 5 students.
               </p>
 
               {/* Key Benefits */}
@@ -276,72 +253,10 @@ export default function TiliClass5Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> 100% State Syllabus Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Tili Kannada Class 5 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Tili Kannada Class 5 Table of Contents
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                  The guidebook covers Kannada literary history, environmental conservation, advanced grammar and answer-key support to help students understand lessons and revise important concepts.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      {unit.label}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 5 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 5 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Tili Kannada Class 5 guidebook provides additional learning support through English translations, chapter summaries, grammar explanations and question practice. These resources help students understand lesson content, develop vocabulary and revise important concepts. Parents can also refer to the explanations and summaries when supporting their children with Kannada studies at home.
-                  </p>
-                  <p>
-                    The guidebook is designed to complement the prescribed Karnataka State Board Kannada textbook and classroom teaching, not replace them.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

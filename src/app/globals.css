@@ -19,11 +19,15 @@
     --brand-cream: #faf8f5;
   }
 
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   body {
     background-color: var(--brand-cream);
     color: var(--brand-dark);
     font-family: var(--font-body);
-    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -52,7 +56,6 @@
 }
 .touch-scroll {
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
 }
 
 /* Glassmorphism Styles */
@@ -214,7 +217,6 @@
 
 .touch-scroll {
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
 }
 
 /* Prevent iOS Safari auto-zoom on form inputs */

@@ -78,29 +78,6 @@ export default function KaliClass1Client() {
     'Structured practice for early Kannada development',
   ];
 
-  const tableOfContents = [
-    {
-      label: 'Module 1',
-      title: 'Module 1: Aksharamale Basics',
-      description: 'Introduces the Kannada alphabet to help beginners recognise and become familiar with Kannada letters.',
-    },
-    {
-      label: 'Module 2',
-      title: 'Module 2: Simple 2-Letter Words',
-      description: 'Helps children begin connecting Kannada letters and learning simple words.',
-    },
-    {
-      label: 'Module 3',
-      title: 'Module 3: Colours & Numbers in Kannada',
-      description: 'Introduces familiar colours and numbers in Kannada to build foundational vocabulary.',
-    },
-    {
-      label: 'Module 4',
-      title: 'Module 4: Exercise Workbook',
-      description: 'Provides practice activities to help children revisit and reinforce the concepts covered in the guidebook.',
-    },
-  ];
-
   const faqs = [
     {
       q: '1. What is the Kali Kannada Class 1 English-translated guidebook?',
@@ -193,17 +170,17 @@ export default function KaliClass1Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 1 Kali Kannada Textbook"
+                    alt="Karnataka School Textbook Class 1 Kali Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      Karnataka State Board Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 1 Kali Kannada textbook.
@@ -247,7 +224,7 @@ export default function KaliClass1Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                The Kali Kannada Class 1 English-translated guidebook is designed for children beginning their Kannada learning journey. With foundational pronunciation guidance, Kannada script practice and simple everyday vocabulary, it helps young learners become familiar with Kannada while giving parents additional support during home study.
+                An English-translated Kannada guidebook for Class 1 students.
               </p>
 
               {/* Key Benefits */}
@@ -294,69 +271,10 @@ export default function KaliClass1Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> Karnataka State Board Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Kali Kannada Class 1 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Kali Kannada Class 1 Table of Contents
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      {unit.label}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 1 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 1 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Kali Kannada Class 1 guidebook introduces foundational Kannada through alphabet practice, pronunciation guidance, English transliteration and simple vocabulary. Its visual learning layouts and English notes also help parents support children during home study.
-                  </p>
-                  <p>
-                    It is a supplementary resource designed to complement the prescribed Karnataka State Board Kannada textbook and classroom teaching, not replace them.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

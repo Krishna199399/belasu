@@ -87,7 +87,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <strong className="block font-bold text-slate-900">Operations Office:</strong>
-                    <span>VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum</span>
+                    <span>VRIF, Visvesvaraya Technological University (VTU) campus, Belgaum - 590018</span>
                   </div>
                 </div>
 
@@ -151,7 +151,7 @@ export default function ContactPage() {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Roopa Sanjiv"
+                      placeholder="Enter your full name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full p-3.5 min-h-[48px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
@@ -163,7 +163,7 @@ export default function ContactPage() {
                     <input
                       type="email"
                       required
-                      placeholder="e.g. name@example.com"
+                      placeholder="Enter your email address"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full p-3.5 min-h-[48px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"
@@ -177,7 +177,7 @@ export default function ContactPage() {
                     <input
                       type="tel"
                       required
-                      placeholder="+91 96066 36804"
+                      placeholder="Enter 10-digit mobile number"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full p-3.5 min-h-[48px] text-base sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-amber-500"

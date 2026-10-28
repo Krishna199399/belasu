@@ -155,7 +155,7 @@ function ProfileContent() {
         {/* Tabs */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="border-b border-gray-200">
-            <nav className="flex flex-nowrap overflow-x-auto touch-scroll -mb-px px-2 sm:px-0">
+            <nav className="flex flex-nowrap overflow-x-auto overflow-y-hidden -mb-px px-2 sm:px-0">
               {[
                 { id: 'orders', label: 'Order History', icon: Package },
                 { id: 'addresses', label: 'Addresses', icon: MapPin },

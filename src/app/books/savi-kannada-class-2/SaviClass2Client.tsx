@@ -75,25 +75,6 @@ export default function SaviClass2Client() {
     'Structured support for independent learning',
   ];
 
-  const tableOfContents = [
-    {
-      title: 'Chapter 1: Nanna Deha (My Body & Health)',
-      description: 'Covers the human body and health as part of the Class 2 Kannada learning content.',
-    },
-    {
-      title: 'Chapter 2: Kaadu Pranigalu (Wild Animals)',
-      description: 'Introduces wild animals through the Class 2 Kannada learning content.',
-    },
-    {
-      title: 'Chapter 3: Gunintagalu Master Guide',
-      description: "Provides guidance on Gunintagalu, a key concept highlighted in the guidebook's grammar support.",
-    },
-    {
-      title: 'Chapter 4: Class 2 Exercise Answer Key',
-      description: 'Provides exercise answer support aligned with the State Syllabus to help students review their Kannada work.',
-    },
-  ];
-
   const faqs = [
     {
       q: 'What is the Savi Kannada Class 2 English-translated guidebook?',
@@ -186,17 +167,17 @@ export default function SaviClass2Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 2 Savi Kannada Textbook"
+                    alt="Karnataka School Textbook Class 2 Savi Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      Karnataka State Board Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 2 Savi Kannada textbook.
@@ -240,7 +221,7 @@ export default function SaviClass2Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                An English-translated Kannada guidebook for Class 2 students, designed to make Kannada stories, poems and grammar easier to understand while supporting vocabulary development, pronunciation and textbook exercise practice.
+                An English-translated Kannada guidebook for Class 2 students.
               </p>
 
               {/* Key Benefits */}
@@ -287,75 +268,10 @@ export default function SaviClass2Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> Karnataka State Board Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Savi Kannada Class 2 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Savi Kannada Class 2 Table of Contents
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                  Explore the topics covered in the guidebook to understand the academic learning areas included.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      Topic {idx + 1}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 2 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 2 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Savi Kannada Class 2 guidebook supplements the prescribed Karnataka State Board Kannada textbook with English explanations, grammar guidance and exercise solutions. It helps students understand poems, prose, vocabulary and concepts such as Gunintagalu and Ottakshara while revising lessons and preparing for assessments.
-                  </p>
-                  <p>
-                    It is particularly useful for students who are more comfortable learning in English. Parents can also refer to the guidebook to follow their child&apos;s Kannada lessons and provide support with homework and revision at home.
-                  </p>
-                  <p>
-                    The guidebook complements classroom teaching and does not replace the prescribed textbook.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

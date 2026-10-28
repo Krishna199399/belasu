@@ -39,7 +39,7 @@ export default function SaviClass1Client() {
       title: 'Savi Kannada Class 2',
       slug: 'savi-kannada-class-2',
       gradeClass: 2,
-      price: 250,
+      price: 260,
       coverImage: '/covers/savi-2.png',
     },
     {
@@ -75,25 +75,6 @@ export default function SaviClass1Client() {
     'Support for Kannada learning and exam preparation',
     'Structured support for independent learning',
     'Pronunciation guidance for young learners',
-  ];
-
-  const tableOfContents = [
-    {
-      title: 'Kannada Alphabets and Vowels',
-      description: 'Introduction to Kannada vowels and foundational letter recognition.',
-    },
-    {
-      title: 'Consonants and Pronunciation',
-      description: 'Support for recognising Kannada consonants and learning their pronunciation.',
-    },
-    {
-      title: 'Simple Words and Daily Greetings',
-      description: 'An introduction to simple Kannada words and everyday expressions.',
-    },
-    {
-      title: 'Textbook Exercises and Worksheets',
-      description: 'Practice through the relevant textbook exercises and worksheets included in the guidebook.',
-    },
   ];
 
   const faqs = [
@@ -188,17 +169,17 @@ export default function SaviClass1Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 1 Savi Kannada Textbook"
+                    alt="Karnataka School Textbook Class 1 Savi Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      Karnataka State Board Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 1 Savi Kannada textbook.
@@ -242,7 +223,7 @@ export default function SaviClass1Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                An English-translated Kannada guidebook for Class 1 students, designed to build foundational Kannada vocabulary, support pronunciation and help young learners understand simple words and sentences.
+                An English-translated Kannada guidebook for Class 1 students.
               </p>
 
               {/* Key Benefits */}
@@ -289,72 +270,10 @@ export default function SaviClass1Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> Karnataka State Board Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Savi Kannada Class 1 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Savi Kannada Class 1 Table of Contents
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                  Explore the topics covered in the guidebook to understand the academic learning support it offers.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      Topic {idx + 1}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 1 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 1 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Savi Kannada Class 1 guidebook is designed to supplement the prescribed Karnataka State Board Kannada textbook. English translations, vocabulary support and pronunciation guidance help students understand lesson content, revise academic topics and prepare for assessments.
-                  </p>
-                  <p>
-                    It is particularly useful for students who are more comfortable learning in English and for parents who want to support their children&apos;s Kannada homework and revision at home. The guidebook complements classroom teaching and does not replace the prescribed textbook.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

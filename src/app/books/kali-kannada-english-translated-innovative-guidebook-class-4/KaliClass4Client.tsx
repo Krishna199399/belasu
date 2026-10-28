@@ -78,29 +78,6 @@ export default function KaliClass4Client() {
     'Revise lessons independently with additional learning support.',
   ];
 
-  const tableOfContents = [
-    {
-      label: 'Chapter 1',
-      title: 'Chapter 1: Karnataka Heritage & Landmarks',
-      description: "Covers Karnataka's heritage and landmarks, providing additional support for understanding the topics included in the Kannada lessons.",
-    },
-    {
-      label: 'Chapter 2',
-      title: 'Chapter 2: Great Poets & Writers',
-      description: 'Focuses on notable poets and writers featured in the lessons, helping students review the relevant content.',
-    },
-    {
-      label: 'Chapter 3',
-      title: 'Chapter 3: Grammar Essentials',
-      description: 'Introduces grammar concepts, including the basics of Sandhi and Samasa, to support students in learning and revising Kannada grammar.',
-    },
-    {
-      label: 'Chapter 4',
-      title: 'Chapter 4: Question & Answer Solutions',
-      description: 'Includes question-and-answer material to help students review lesson content and practise answering textbook-related questions.',
-    },
-  ];
-
   const faqs = [
     {
       q: '1. What is the Kali Kannada Class 4 guidebook?',
@@ -193,17 +170,17 @@ export default function KaliClass4Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 4 Kali Kannada Textbook"
+                    alt="Karnataka School Textbook Class 4 Kali Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      100% State Syllabus Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 4 Kali Kannada textbook.
@@ -247,7 +224,7 @@ export default function KaliClass4Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                The Kali Kannada Class 4 English-translated guidebook provides academic support through English explanations, textbook question-and-answer support and grammar practice. It helps students understand Kannada lessons, revise important concepts and practise independently, while giving parents additional support during home study.
+                An English-translated Kannada guidebook for Class 4 students.
               </p>
 
               {/* Key Benefits */}
@@ -294,72 +271,10 @@ export default function KaliClass4Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> 100% State Syllabus Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Kali Kannada Class 4 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Kali Kannada Class 4 Table of Contents
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                  The guidebook covers Karnataka&apos;s heritage, notable poets and writers, Kannada grammar and textbook-related questions.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      {unit.label}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 4 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 4 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Kali Kannada Class 4 guidebook provides additional support through English translations, grammar explanations, textbook questions and answers, and revision worksheets. These resources help students understand Kannada lessons, practise grammar and prepare for examinations, while giving parents additional support during home study.
-                  </p>
-                  <p>
-                    It is designed to complement the prescribed Karnataka State Board Kannada textbook and classroom teaching, not replace them.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

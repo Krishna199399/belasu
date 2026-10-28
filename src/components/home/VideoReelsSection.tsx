@@ -50,7 +50,7 @@ export const VideoReelsSection: React.FC = () => {
 
           <Link
             href="/videos"
-            className="inline-flex items-center gap-1.5 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-xs transition shrink-0 uppercase tracking-wider"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-xs transition shrink-0 uppercase tracking-wider min-h-[44px]"
           >
             <span>Watch Videos</span>
             <ArrowRight className="w-3.5 h-3.5" />

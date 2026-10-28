@@ -239,7 +239,7 @@ export const QuickLookBookSection: React.FC = () => {
             (Sleek ~220px Height: Fits comfortably in screen!)
         ══════════════════════════════════════════════════════════════════════ */}
         <div className="mb-5">
-          <div className="flex items-center justify-start lg:justify-center gap-3 overflow-x-auto pb-3 pt-1 px-1 scrollbar-thin scrollbar-thumb-stone-300 touch-scroll overscroll-x-contain">
+          <div className="flex items-center justify-start lg:justify-center gap-3 overflow-x-auto overflow-y-hidden pb-3 pt-1 px-1 scrollbar-thin scrollbar-thumb-stone-300 overscroll-x-auto overscroll-y-auto">
             {galleryItems.map((item) => (
               <div
                 key={item.id}
@@ -250,7 +250,8 @@ export const QuickLookBookSection: React.FC = () => {
                   <img
                     src={item.imageUrl}
                     alt={item.title}
-                    className="max-h-full max-w-full object-contain"
+                    className="max-h-full max-w-full object-contain pointer-events-none select-none"
+                    draggable={false}
                   />
                 </div>
 

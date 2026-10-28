@@ -143,7 +143,7 @@ export const ParentFeedbackSection: React.FC = () => {
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> Trusted by Non-Kannadiga Families Across Karnataka
           </span>
           <span className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> Karnataka State Board Aligned (Classes 1–10)
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> Karnataka School Textbook Aligned (Classes 1–10)
           </span>
         </div>
       </div>

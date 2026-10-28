@@ -78,29 +78,6 @@ export default function SaviClass4Client() {
     'Additional support for Kannada exam preparation',
   ];
 
-  const tableOfContents = [
-    {
-      label: 'Unit 1',
-      title: 'Unit 1: Veerabaale Kitturu Chennamma',
-      description: 'Understand the lesson through English translations and explanations.',
-    },
-    {
-      label: 'Unit 2',
-      title: 'Unit 2: Hasiru (Greenery & Nature Poem)',
-      description: 'Explore the poem about greenery and nature with English learning support.',
-    },
-    {
-      label: 'Unit 3',
-      title: 'Unit 3: Sandhigalu & Vibhakti Pratyayagalu',
-      description: 'Study the grammar topics Sandhigalu and Vibhakti Pratyayagalu included in the guidebook.',
-    },
-    {
-      label: 'Unit 4',
-      title: 'Unit 4: Question & Answer Bank',
-      description: 'Practise textbook questions and revise lessons for examination preparation.',
-    },
-  ];
-
   const faqs = [
     {
       q: '1. What is the Savi Kannada Class 4 English-translated guidebook?',
@@ -112,7 +89,7 @@ export default function SaviClass4Client() {
     },
     {
       q: '3. Does the guidebook cover Kannada grammar?',
-      a: 'Yes. Its listed features include Ottakshara guidance, and the table of contents includes Sandhigalu and Vibhakti Pratyayagalu.',
+      a: 'Yes. Its listed features include Ottakshara guidance, Sandhigalu and Vibhakti Pratyayagalu.',
     },
     {
       q: '4. Is this guidebook suitable for English-medium students?',
@@ -193,17 +170,17 @@ export default function SaviClass4Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 4 Savi Kannada Textbook"
+                    alt="Karnataka School Textbook Class 4 Savi Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      Karnataka State Board Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 4 Savi Kannada textbook.
@@ -247,7 +224,7 @@ export default function SaviClass4Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                The Savi Kannada Class 4 English-translated guidebook provides academic support to help students understand Kannada prose, poetry and grammar through English explanations and structured exercise support. It helps children practise written Kannada, prepare for examinations and gives parents additional support when assisting with learning at home.
+                An English-translated Kannada guidebook for Class 4 students.
               </p>
 
               {/* Key Benefits */}
@@ -294,69 +271,10 @@ export default function SaviClass4Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> Karnataka State Board Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Savi Kannada Class 4 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Savi Kannada Class 4 Table of Contents
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      {unit.label}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 4 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 4 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The guidebook supports Class 4 Kannada learning through English translations, Ottakshara explanations, a bilingual glossary and textbook exercise answers. It helps students understand lessons, practise grammar and prepare for exams, while giving parents additional support during home study.
-                  </p>
-                  <p>
-                    It complements the prescribed Karnataka State Board textbook and classroom teaching rather than replacing them.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

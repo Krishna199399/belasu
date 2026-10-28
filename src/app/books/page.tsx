@@ -11,7 +11,6 @@ import { BookCard } from '@/components/ui/BookCard';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
 import { BookProduct } from '@/types';
 import {
-  Search,
   BookOpen,
   Sparkles,
   Laptop,
@@ -34,10 +33,8 @@ function BooksContent() {
   const seriesParam = searchParams.get('series');
   const gradeParam = searchParams.get('grade');
 
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedSeries, setSelectedSeries] = useState<SeriesFilter>('All');
   const [selectedGrade, setSelectedGrade] = useState<GradeFilter>('All');
-  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
   const [previewBook, setPreviewBook] = useState<BookProduct | null>(null);
   const [booksList, setBooksList] = useState<BookProduct[]>(BOOKS_DATA);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -113,41 +110,24 @@ function BooksContent() {
   const filteredPhysicalBooks = useMemo(() => {
     if (selectedSeries === 'Digital') return [];
 
-    let result = booksList.filter((book) => {
-      const matchesSearch =
-        book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        book.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return booksList.filter((book) => {
       const matchesSeries = selectedSeries === 'All' || book.series === selectedSeries;
       const matchesGrade = selectedGrade === 'All' || book.gradeClass === selectedGrade;
-      return matchesSearch && matchesSeries && matchesGrade;
+      return matchesSeries && matchesGrade;
     });
-
-    if (sortBy === 'price-asc') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-desc') {
-      result.sort((a, b) => b.price - a.price);
-    }
-
-    return result;
-  }, [booksList, searchQuery, selectedSeries, selectedGrade, sortBy]);
+  }, [booksList, selectedSeries, selectedGrade]);
 
   // Digital Class 6 Book matching
   const showDigitalClass6 = useMemo(() => {
     if (selectedGrade !== 'All' && selectedGrade !== 6) return false;
     if (selectedSeries !== 'All' && selectedSeries !== 'Digital' && selectedSeries !== 'Siri') return false;
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      const d = DIGITAL_BOOKS_DATA[0];
-      return d.title.toLowerCase().includes(q) || d.description.toLowerCase().includes(q);
-    }
     return true;
-  }, [selectedGrade, selectedSeries, searchQuery]);
+  }, [selectedGrade, selectedSeries]);
 
   const totalFilteredCount = filteredPhysicalBooks.length + (showDigitalClass6 ? 1 : 0);
   const digitalBookClass6 = DIGITAL_BOOKS_DATA[0];
 
-  const isAnyFilterActive = selectedSeries !== 'All' || selectedGrade !== 'All' || searchQuery !== '';
+  const isAnyFilterActive = selectedSeries !== 'All' || selectedGrade !== 'All';
 
   const handleGradeSelect = (grade: GradeFilter) => {
     setSelectedGrade(grade);
@@ -166,7 +146,6 @@ function BooksContent() {
   const resetAllFilters = () => {
     setSelectedSeries('All');
     setSelectedGrade('All');
-    setSearchQuery('');
     if (!isMobileFilterOpen) {
       scrollToCatalogTop();
     }
@@ -273,7 +252,7 @@ function BooksContent() {
 
             {/* Quick Active Filter Dismiss Chips */}
             {isAnyFilterActive && (
-              <div className="flex items-center gap-1.5 overflow-x-auto touch-scroll pt-1 pb-0.5">
+              <div className="flex items-center gap-1.5 overflow-x-auto overflow-y-hidden pt-1 pb-0.5">
                 {selectedSeries !== 'All' && (
                   <button
                     onClick={() => handleSeriesSelect('All')}
@@ -292,15 +271,7 @@ function BooksContent() {
                     <X className="w-3 h-3" />
                   </button>
                 )}
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold bg-stone-200 text-slate-800 border border-stone-300 px-2.5 py-1 rounded-full shrink-0 cursor-pointer"
-                  >
-                    <span className="max-w-[120px] truncate">&ldquo;{searchQuery}&rdquo;</span>
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
+
               </div>
             )}
           </div>
@@ -345,28 +316,6 @@ function BooksContent() {
                   <span className="text-[11px] font-semibold text-slate-500 normal-case">
                     {totalFilteredCount} shown
                   </span>
-                </div>
-
-                {/* Search Bar */}
-                <div className="space-y-1.5">
-                  <div className="relative">
-                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      placeholder="Search guidebooks..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-8 pr-7 py-2 bg-white rounded-xl text-xs font-medium border border-stone-300 focus:outline-none focus:border-amber-500 shadow-2xs transition"
-                    />
-                    {searchQuery && (
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
                 </div>
 
                 {/* Series Filter List */}
@@ -445,22 +394,7 @@ function BooksContent() {
                   </div>
                 </div>
 
-                {/* Sort Option */}
-                <div className="space-y-1.5 border-t border-stone-200/80 pt-4">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">
-                    Sort
-                  </span>
 
-                  <select
-                    value={sortBy}
-                    onChange={(e: any) => setSortBy(e.target.value)}
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-amber-500 shadow-2xs cursor-pointer"
-                  >
-                    <option value="default">Default Sorting</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                  </select>
-                </div>
 
               </div>
             </aside>
@@ -496,33 +430,8 @@ function BooksContent() {
 
                   {/* Drawer Scrollable Body */}
                   <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5 touch-scroll">
-                    {/* Search Bar */}
-                    <div className="space-y-1.5">
-                      <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">
-                        Search Books
-                      </label>
-                      <div className="relative">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                        <input
-                          type="text"
-                          placeholder="Search guidebooks..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full pl-9 pr-8 py-2.5 bg-stone-50 rounded-xl text-xs font-medium border border-stone-300 focus:outline-none focus:border-amber-500 shadow-2xs"
-                        />
-                        {searchQuery && (
-                          <button
-                            onClick={() => setSearchQuery('')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
                     {/* Series Filter List */}
-                    <div className="space-y-2 border-t border-stone-100 pt-3">
+                    <div className="space-y-2">
                       <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">
                         Series
                       </span>
@@ -593,21 +502,7 @@ function BooksContent() {
                       </div>
                     </div>
 
-                    {/* Sort Option */}
-                    <div className="space-y-1.5 border-t border-stone-100 pt-3">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">
-                        Sort
-                      </span>
-                      <select
-                        value={sortBy}
-                        onChange={(e: any) => setSortBy(e.target.value)}
-                        className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-amber-500 shadow-2xs cursor-pointer min-h-[44px]"
-                      >
-                        <option value="default">Default Sorting</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                      </select>
-                    </div>
+
                   </div>
 
                   {/* Drawer Footer Actions */}

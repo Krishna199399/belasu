@@ -353,7 +353,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
           <div className="hidden sm:block text-slate-300">•</div>
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>100% Aligned with Karnataka State Board</span>
+            <span>Karnataka School Textbook Aligned</span>
           </div>
           <div className="hidden sm:block text-slate-300">•</div>
           <div className="flex items-center gap-1.5">

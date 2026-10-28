@@ -91,7 +91,7 @@ export function AuthModal({ onClose, redirectAfter }: AuthModalProps) {
                   <label className="text-xs font-bold text-slate-400 mb-1 block">Your Name (optional)</label>
                   <input
                     type="text"
-                    placeholder="e.g. Ravi Kumar"
+                    placeholder="Enter your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full bg-slate-800 border border-slate-700 text-white text-base sm:text-sm px-4 py-3 min-h-[48px] rounded-xl focus:outline-none focus:border-amber-500 placeholder-slate-500 transition"

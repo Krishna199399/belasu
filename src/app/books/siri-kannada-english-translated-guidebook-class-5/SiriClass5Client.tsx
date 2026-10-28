@@ -60,29 +60,6 @@ export default function SiriClass5Client() {
     'Prepare for assessments using model question papers.',
   ];
 
-  const tableOfContents = [
-    {
-      label: 'Unit 1',
-      title: 'Unit 1: Sirivanta Kannada Literature',
-      description: 'Covers Kannada literature included in the Class 5 syllabus, helping students review lesson content with additional learning support.',
-    },
-    {
-      label: 'Unit 2',
-      title: 'Unit 2: Famous Stories of Tenali Rama & Birbal',
-      description: 'Covers stories associated with Tenali Rama and Birbal, helping students understand and revise the relevant lesson content.',
-    },
-    {
-      label: 'Unit 3',
-      title: 'Unit 3: Formal & Informal Letter Writing',
-      description: 'Provides writing support for formal and informal letters, helping students practise different formats in Kannada with English-language guidance.',
-    },
-    {
-      label: 'Unit 4',
-      title: 'Unit 4: Solved Model Test Papers',
-      description: 'Includes solved model test papers to help students practise answering questions and revise topics before assessments.',
-    },
-  ];
-
   const faqs = [
     {
       q: '1. What is the Siri Kannada Class 5 guidebook?',
@@ -175,17 +152,17 @@ export default function SiriClass5Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 5 Siri Kannada Textbook"
+                    alt="Karnataka School Textbook Class 5 Siri Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      100% State Syllabus Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 5 Siri Kannada textbook.
@@ -229,7 +206,7 @@ export default function SiriClass5Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                The Siri Kannada Class 5 English-translated guidebook helps students understand Kannada literature through clear English explanations and structured academic support. Covering syllabus-based lessons, essay writing, letter writing and grammar, it provides additional resources for classroom learning, home revision and exam preparation.
+                An English-translated Kannada guidebook for Class 5 students.
               </p>
 
               {/* Key Benefits */}
@@ -276,72 +253,10 @@ export default function SiriClass5Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> 100% State Syllabus Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Siri Kannada Class 5 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Siri Kannada Class 5 Table of Contents
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                  The guidebook covers Kannada literature, popular stories, letter-writing formats and model test papers to support lesson revision and writing practice.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      {unit.label}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 5 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 5 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Siri Kannada Class 5 guidebook provides additional support through English explanations, literature summaries, grammar guidance, writing templates and model question papers. These resources help students understand lessons, practise essay and letter writing, and prepare for assessments. Parents can also use the explanations and writing guidance to support learning at home.
-                  </p>
-                  <p>
-                    It is designed to complement the prescribed Karnataka State Board Kannada textbook and classroom teaching, not replace them.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

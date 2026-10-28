@@ -139,7 +139,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       bgImg: '/background5.png',
       headline: 'Savi Kannada Class 2',
       subtitle: 'Innovative Book For Academic Help • Kannada to English Translation • Easy to learn Kannada and Write Exam',
-      description: 'Gunintagalu master guide and full exercise answer keys aligned with Karnataka State Board.'
+      description: 'Gunintagalu master guide and full exercise answer keys aligned with Karnataka School Textbooks.'
     }
   ];
 
@@ -232,7 +232,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               </span>
               <span className="inline-flex items-center gap-1.5 bg-white/90 border border-amber-200/90 text-amber-900 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-lg shadow-2xs">
                 <BookOpen className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                Kannada-to-English Translation
+                Kannada to English Translations for School Academic Textbooks - Savi, Siri, Kali and Tili
               </span>
               <span className="inline-flex items-center gap-1.5 bg-white/90 border border-amber-200/90 text-amber-900 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-lg shadow-2xs">
                 🎯 Easy Kannada Learning & Exam Preparation

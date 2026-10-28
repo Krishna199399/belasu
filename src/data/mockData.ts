@@ -34,7 +34,7 @@ export const BOOKS_DATA: BookProduct[] = [
         imageUrl: '/previews/Savi Kannada class 1/Index.jpeg',
         category: 'Index',
         kannadaText: 'ವಿಷಯ ಸೂಚಿ - ಪಠ್ಯಕ್ರಮ ವಿವರ (Table of Contents)',
-        englishTranslation: 'Complete lesson list matching Karnataka State Board Class 1 textbook.'
+        englishTranslation: 'Complete lesson list matching Karnataka School Textbook Class 1.'
       },
       {
         pageNumber: 2,
@@ -91,7 +91,7 @@ export const BOOKS_DATA: BookProduct[] = [
         imageUrl: '/previews/Savi Kannada class 2/index.jpeg',
         category: 'Index',
         kannadaText: 'ವಿಷಯ ಸೂಚಿ (Table of Contents)',
-        englishTranslation: 'Full Karnataka State Board Class 2 Savi Kannada syllabus overview.'
+        englishTranslation: 'Full Karnataka School Textbook Class 2 Savi Kannada syllabus overview.'
       },
       {
         pageNumber: 2,
@@ -127,7 +127,7 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Must Have',
     description: 'Class 3 Savi Kannada study aid engineered to eliminate language anxiety. Includes exact chapter-wise English translations, vocabulary keys, and step-by-step solved question banks.',
     features: [
-      'Full Class 3 Karnataka State Board textbook solution',
+      'Full Class 3 Karnataka School textbook solution',
       'Kannada sentence structure simplified in English',
       'Vocabulary bank with 500+ key academic words',
       'Self-assessment practice test papers'
@@ -148,7 +148,7 @@ export const BOOKS_DATA: BookProduct[] = [
         imageUrl: '/previews/Savi Kannada class 3/Index.jpeg',
         category: 'Index',
         kannadaText: 'ಪಠ್ಯಕ್ರಮ ಸೂಚಿ (Curriculum Index)',
-        englishTranslation: 'Complete unit breakdown aligned to the State Board Class 3 syllabus.'
+        englishTranslation: 'Complete unit breakdown aligned to the Karnataka School Textbook Class 3 syllabus.'
       },
       {
         pageNumber: 2,
@@ -205,7 +205,7 @@ export const BOOKS_DATA: BookProduct[] = [
         imageUrl: '/previews/Savi Kannada class 4/Index.jpeg',
         category: 'Index',
         kannadaText: 'ವಿಷಯಾನುಕ್ರಮಣಿಕೆ (Comprehensive Index)',
-        englishTranslation: 'Class 4 State Board chapters, prose, poetry, and grammar mapping.'
+        englishTranslation: 'Class 4 Karnataka School Textbook chapters, prose, poetry, and grammar mapping.'
       },
       {
         pageNumber: 2,

@@ -51,7 +51,6 @@ export const Footer: React.FC = () => {
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
                 An initiative by <strong className="text-slate-800">Ckelp Technologies Private Limited</strong>.
-                <br />Incubated at <strong className="text-slate-800">Deshpande Startups</strong>.
               </p>
             </div>
           </div>
@@ -299,8 +298,11 @@ export const Footer: React.FC = () => {
                 <span>Email: <a href="mailto:kannada@belesu.in" className="font-bold text-slate-900 hover:text-amber-600">kannada@belesu.in</a></span>
               </div>
               
-              {/* All 3 Offices */}
+              {/* Offices */}
               <div className="space-y-1.5 pt-1 border-t border-stone-200/60 text-[11px] text-slate-500">
+                <div className="text-[11px] font-bold text-slate-800 tracking-tight pb-0.5">
+                  Belesu Offices: CKelp Technologies Pvt Ltd
+                </div>
                 <div className="flex items-start gap-2">
                   <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
                   <span>
@@ -310,13 +312,7 @@ export const Footer: React.FC = () => {
                 <div className="flex items-start gap-2">
                   <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-slate-700">Operations:</strong> VRIF, Viswesariya Tecnology Univercity (VTU) campus, Belgaum
-                  </span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
-                  <span>
-                    <strong className="text-slate-700">Registered:</strong> Deshpande Startups, Gokul Road, Hubballi - 580030
+                    <strong className="text-slate-700">Operations:</strong> VRIF, Visvesvaraya Technological University (VTU) campus, Belgaum - 590018
                   </span>
                 </div>
               </div>
@@ -383,7 +379,7 @@ export const Footer: React.FC = () => {
         {/* ── Sub-Footer Copyright & Payment Logos ── */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-sans">
           <p className="text-center md:text-left">
-            Designed and Developed by Krishna. © <strong className="text-slate-800">Belesu {currentYear}</strong>. All rights reserved.
+            Designed and Developed by <strong className="text-slate-700 font-semibold">Korvion Media</strong>. © <strong className="text-slate-800">Belesu {currentYear}</strong>. All rights reserved.
           </p>
 
           {/* Payment Method Badges */}

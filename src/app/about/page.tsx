@@ -60,21 +60,21 @@ export default function AboutPage() {
     {
       title: 'Listening',
       description:
-        'Helping children become familiar with Kannada words, sounds, and spoken language.',
+        'Helping Non-Kannadigas become familiar with Kannada words, sounds, and spoken language.',
       icon: Headphones,
       iconBg: 'bg-amber-500/10 text-amber-700 border-amber-500/20',
     },
     {
       title: 'Speaking',
       description:
-        'Encouraging children to use Kannada and build confidence in everyday conversations.',
+        'Encouraging Non-Kannadigas to use Kannada and build confidence in everyday conversations.',
       icon: MessageSquare,
       iconBg: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
     },
     {
       title: 'Reading',
       description:
-        'Helping children recognise written Kannada and develop their reading skills.',
+        'Helping Non-Kannadigas recognise written Kannada and develop their reading skills.',
       icon: BookOpen,
       iconBg: 'bg-indigo-500/10 text-indigo-700 border-indigo-500/20',
     },

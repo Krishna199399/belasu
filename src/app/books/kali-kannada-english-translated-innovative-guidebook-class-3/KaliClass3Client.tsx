@@ -78,29 +78,6 @@ export default function KaliClass3Client() {
     'Revise lessons independently with additional learning support.',
   ];
 
-  const tableOfContents = [
-    {
-      label: 'Unit 1',
-      title: 'Unit 1: Environment & Science Lessons',
-      description: 'Covers environment and science-related lessons with additional English-language support.',
-    },
-    {
-      label: 'Unit 2',
-      title: 'Unit 2: Historical Figures of Karnataka',
-      description: 'Focuses on historical figures from Karnataka included in the Kannada lessons.',
-    },
-    {
-      label: 'Unit 3',
-      title: 'Unit 3: Advanced Ottakshara Guide',
-      description: 'Provides additional support for understanding and practising Kannada compound letters.',
-    },
-    {
-      label: 'Unit 4',
-      title: 'Unit 4: Exam Solved Questions',
-      description: 'Includes solved exam-related questions to support lesson revision and question practice.',
-    },
-  ];
-
   const faqs = [
     {
       q: '1. What is the Kali Kannada Class 3 guidebook?',
@@ -193,17 +170,17 @@ export default function KaliClass3Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 3 Kali Kannada Textbook"
+                    alt="Karnataka School Textbook Class 3 Kali Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      100% State Syllabus Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 3 Kali Kannada textbook.
@@ -247,7 +224,7 @@ export default function KaliClass3Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                The Kali Kannada Class 3 English-translated guidebook helps students understand Kannada prose and poetry, build vocabulary and strengthen grammar skills. With English meanings, pronunciation support and practice test papers, it supports classroom learning and exam preparation.
+                An English-translated Kannada guidebook for Class 3 students.
               </p>
 
               {/* Key Benefits */}
@@ -294,72 +271,10 @@ export default function KaliClass3Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> 100% State Syllabus Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Kali Kannada Class 3 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Kali Kannada Class 3 Table of Contents
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                  The guidebook covers environmental and science topics, Karnataka&apos;s historical figures, Kannada grammar and exam-related questions.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      {unit.label}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {unit.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 3 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 3 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Kali Kannada Class 3 guidebook provides additional support through English translations, vocabulary explanations, grammar concepts and mock test papers. These resources help students understand Kannada lessons, practise grammar and prepare for assessments, while giving parents additional support during home study.
-                  </p>
-                  <p>
-                    It is designed to complement the prescribed Karnataka State Board Kannada textbook and classroom teaching, not replace them.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

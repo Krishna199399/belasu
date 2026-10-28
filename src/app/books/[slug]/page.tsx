@@ -70,12 +70,12 @@ export default function BookDetailPage() {
                 <div className="w-full mt-4 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center gap-3">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt={`Karnataka Board Class ${book.gradeClass} Textbook`}
+                    alt={`Karnataka School Textbook Class ${book.gradeClass}`}
                     className="w-12 h-16 object-contain rounded border border-amber-300/80 shadow-2xs shrink-0"
                   />
                   <div className="text-left">
                     <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
-                      Karnataka State Board Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-700 leading-tight block">
                       English-translated companion for the official Class {book.gradeClass} {book.series} textbook.
@@ -100,8 +100,8 @@ export default function BookDetailPage() {
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                {book.description}
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                {book.gradeClass ? `An English-translated Kannada guidebook for Class ${book.gradeClass} students.` : book.description}
               </p>
 
               {/* Stock Warning Banner if Low or Out */}
@@ -158,30 +158,17 @@ export default function BookDetailPage() {
           </div>
         </div>
 
-        {/* Table of Contents & Features */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16">
-          <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        {/* Key Features & Highlights */}
+        <div className="mb-12 sm:mb-16">
+          <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4 max-w-4xl">
             <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-amber-600" /> Key Features & Highlights
             </h3>
-            <ul className="space-y-3 text-xs sm:text-sm text-slate-600">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-600">
               {book.features.map((feat, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 flex-shrink-0" />
                   <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-amber-600" /> Table of Contents Overview
-            </h3>
-            <ul className="space-y-3 text-xs sm:text-sm text-slate-600">
-              {book.tableOfContents.map((chap, idx) => (
-                <li key={idx} className="p-3 bg-slate-50 rounded-xl border border-slate-100 font-medium text-xs sm:text-sm">
-                  {chap}
                 </li>
               ))}
             </ul>

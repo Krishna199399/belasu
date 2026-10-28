@@ -55,33 +55,37 @@ export const ComparisonSection: React.FC = () => {
         </div>
 
         {/* Comparison Table / Grid */}
-        <div className="bg-slate-800/90 rounded-3xl border border-slate-700 overflow-hidden shadow-2xl">
-          <div className="grid grid-cols-12 bg-slate-950 p-4 sm:p-6 text-xs sm:text-sm font-bold uppercase tracking-wider border-b border-slate-800 text-slate-400">
-            <div className="col-span-4">Feature / Need</div>
-            <div className="col-span-4 text-rose-400">Traditional Methods</div>
-            <div className="col-span-4 text-emerald-400 flex items-center gap-1">
-              Belesu Books <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            </div>
-          </div>
-
-          <div className="divide-y divide-slate-800">
-            {comparisons.map((item, idx) => (
-              <div key={idx} className="grid grid-cols-12 p-4 sm:p-6 items-center text-xs sm:text-sm gap-2">
-                <div className="col-span-4 font-bold text-white leading-tight">
-                  {item.feature}
-                </div>
-
-                <div className="col-span-4 text-slate-400 flex items-start gap-2 pr-2">
-                  <XCircle className="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" />
-                  <span>{item.alternative}</span>
-                </div>
-
-                <div className="col-span-4 text-emerald-300 font-semibold flex items-start gap-2 bg-emerald-950/40 p-3 rounded-xl border border-emerald-800/40">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                  <span>{item.belesu}</span>
+        <div className="bg-slate-800/90 rounded-2xl sm:rounded-3xl border border-slate-700 overflow-hidden shadow-2xl">
+          <div className="overflow-x-auto overflow-y-hidden">
+            <div className="min-w-[560px] md:min-w-0">
+              <div className="grid grid-cols-12 bg-slate-950 p-4 sm:p-6 text-xs sm:text-sm font-bold uppercase tracking-wider border-b border-slate-800 text-slate-400">
+                <div className="col-span-4">Feature / Need</div>
+                <div className="col-span-4 text-rose-400">Traditional Methods</div>
+                <div className="col-span-4 text-emerald-400 flex items-center gap-1">
+                  Belesu Books <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 </div>
               </div>
-            ))}
+
+              <div className="divide-y divide-slate-800">
+                {comparisons.map((item, idx) => (
+                  <div key={idx} className="grid grid-cols-12 p-4 sm:p-6 items-center text-xs sm:text-sm gap-2">
+                    <div className="col-span-4 font-bold text-white leading-tight">
+                      {item.feature}
+                    </div>
+
+                    <div className="col-span-4 text-slate-400 flex items-start gap-2 pr-2">
+                      <XCircle className="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" />
+                      <span>{item.alternative}</span>
+                    </div>
+
+                    <div className="col-span-4 text-emerald-300 font-semibold flex items-start gap-2 bg-emerald-950/40 p-3 rounded-xl border border-emerald-800/40">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <span>{item.belesu}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

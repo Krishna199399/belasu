@@ -78,25 +78,6 @@ export default function SaviClass3Client() {
     'Self-assessment practice test papers',
   ];
 
-  const tableOfContents = [
-    {
-      label: 'Lesson 1',
-      title: 'Kannada Naadu (Karnataka Land & Culture)',
-    },
-    {
-      label: 'Lesson 2',
-      title: 'Parisara Kurihtu (Environment & Nature)',
-    },
-    {
-      label: 'Lesson 3',
-      title: 'Grammar: Naamapada (Nouns) and Kriyapada (Verbs)',
-    },
-    {
-      label: 'Lesson 4',
-      title: 'Model Examination Papers',
-    },
-  ];
-
   const faqs = [
     {
       q: '1. What is the Savi Kannada Class 3 guidebook?',
@@ -189,17 +170,17 @@ export default function SaviClass3Client() {
                 </button>
               </div>
 
-              {/* Karnataka State Board Aligned Badge Strip */}
+              {/* Karnataka School Textbook Aligned Badge Strip */}
               {book.karnatakaTextbookCover && (
                 <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
                   <img
                     src={book.karnatakaTextbookCover}
-                    alt="Karnataka State Board Class 3 Savi Kannada Textbook"
+                    alt="Karnataka School Textbook Class 3 Savi Kannada"
                     className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
                   />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      Karnataka State Board Aligned
+                      Karnataka School Textbook Aligned
                     </span>
                     <span className="text-xs font-semibold text-slate-800 leading-snug block">
                       English-translated companion engineered specifically for the official Class 3 Savi Kannada textbook.
@@ -243,7 +224,7 @@ export default function SaviClass3Client() {
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                The Savi Kannada Class 3 English-translated guidebook helps students approach Kannada lessons with greater confidence. With chapter-wise English translations, vocabulary support covering <strong>500+ academic words</strong>, and step-by-step solved questions, it helps children understand textbook content and practise Kannada while giving parents additional support during home study.
+                An English-translated Kannada guidebook for Class 3 students.
               </p>
 
               {/* Key Benefits */}
@@ -290,69 +271,10 @@ export default function SaviClass3Client() {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Curriculum:</strong> Karnataka State Board Aligned</span>
+                  <span><strong>Curriculum:</strong> Karnataka School Textbook Aligned</span>
                 </div>
               </div>
 
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════════
-          2 & 3. Split Left/Right: Table of Contents & Academic Support
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-stone-50/70 border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            
-            {/* Left Column: H2: Savi Kannada Class 3 Table of Contents */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Savi Kannada Class 3 Table of Contents
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tableOfContents.map((unit, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2 hover:border-amber-400 hover:shadow-sm transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 inline-block">
-                      {unit.label}
-                    </span>
-                    <h3 className="text-sm font-serif font-bold text-slate-900 leading-snug">
-                      {unit.title}
-                    </h3>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: H2: Academic Support for Class 3 Kannada */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                  Academic Support for Class 3 Kannada
-                </h2>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-4">
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  <p>
-                    The Savi Kannada Class 3 guidebook provides additional support for students following the prescribed Karnataka State Board Kannada textbook. Chapter-wise English translations, vocabulary explanations and simplified sentence explanations help students understand lessons and practise Kannada more confidently.
-                  </p>
-                  <p>
-                    Solved questions and practice papers support revision and exam preparation. The guidebook can be particularly useful for students who are more comfortable learning through English and for parents helping their children study at home.
-                  </p>
-                  <p>
-                    It is designed to complement classroom teaching and the prescribed textbook, not replace them.
-                  </p>
-                </div>
-              </div>
             </div>
 
           </div>

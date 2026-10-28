@@ -361,7 +361,7 @@ export default function DigitalClient() {
 
           {/* Comparison Table */}
           <div className="max-w-4xl mx-auto overflow-hidden rounded-2xl bg-white border border-stone-200 shadow-xs">
-            <div className="overflow-x-auto touch-scroll overscroll-x-contain">
+            <div className="overflow-x-auto overflow-y-hidden">
               <table className="w-full text-left border-collapse min-w-[540px]">
                 <thead>
                   <tr className="bg-stone-100 text-slate-900 text-xs uppercase tracking-wider border-b border-stone-200">
