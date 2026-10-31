@@ -50,7 +50,7 @@ export const HomeBottomCtaSection: React.FC = () => {
 
               {/* Subtitle matching home page.md */}
               <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
-                Choose a guidebook based on your child's class and learning needs.
+                Choose a guidebook based on your child&apos;s class and learning needs.
               </p>
 
               {/* Parent Reassurance Checklist */}

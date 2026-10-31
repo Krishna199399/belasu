@@ -5,19 +5,27 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { ShoppingCart, Menu, X, ChevronDown, BookOpen, Library, LogOut, User, Laptop, Package, MapPin, Shield } from 'lucide-react';
+import { ShoppingCart, Menu, X, ChevronDown, BookOpen, Library, LogOut, User, Laptop, Package, Shield } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { AnnouncementBar } from './AnnouncementBar';
 
 export const Navbar: React.FC = () => {
   const rawPathname = usePathname();
-  const [pathname, setPathname] = useState('');
+  const pathname = rawPathname || '';
   const { toggleCart, totalItems, subtotal } = useCart();
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobilePurchaseOpen, setMobilePurchaseOpen] = useState(false);
   const [purchaseDropdownOpen, setPurchaseDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(rawPathname);
   const purchaseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  if (rawPathname !== prevPathname) {
+    setPrevPathname(rawPathname);
+    setMobileMenuOpen(false);
+    setPurchaseDropdownOpen(false);
+  }
 
   const handlePurchaseMouseEnter = () => {
     if (purchaseTimeoutRef.current) {
@@ -37,9 +45,6 @@ export const Navbar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (rawPathname) setPathname(rawPathname);
-    setMobileMenuOpen(false);
-    setPurchaseDropdownOpen(false);
     if (purchaseTimeoutRef.current) {
       clearTimeout(purchaseTimeoutRef.current);
     }
@@ -112,7 +117,7 @@ export const Navbar: React.FC = () => {
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Team', href: '/team' },
-    { label: 'Purchase Books', href: '/books', isDropdown: true },
+    { label: 'Purchase Academy Books', href: '/books', isDropdown: true },
     { label: 'Videos', href: '/videos' },
     { label: 'Reviews', href: '/reviews' },
     { label: 'Contact', href: '/contact' },
@@ -120,6 +125,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-stone-200 shadow-sm">
+      <AnnouncementBar />
       <div className="max-w-[1400px] mx-auto px-3 sm:px-5 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
 

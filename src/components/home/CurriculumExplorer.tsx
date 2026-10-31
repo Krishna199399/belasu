@@ -226,19 +226,6 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                         className="max-h-full w-auto object-contain rounded-md shadow-md hover:brightness-105 transition-all"
                       />
                     </Link>
-
-                    {/* Quick Preview Icon Button (if onPreview is provided) */}
-                    {onPreview && (
-                      <button
-                        type="button"
-                        onClick={() => onPreview(activeBook)}
-                        className="absolute bottom-1 right-1 p-2 rounded-lg bg-white/95 hover:bg-slate-900 text-slate-800 hover:text-white border border-stone-200 shadow-xs backdrop-blur-xs transition-all duration-200 cursor-pointer group/prev min-w-[38px] min-h-[38px] flex items-center justify-center"
-                        title={`Preview sample pages of ${activeBook.title}`}
-                        aria-label={`Preview sample pages of ${activeBook.title}`}
-                      >
-                        <Eye className="w-4 h-4 text-amber-600 group-hover/prev:text-amber-400" />
-                      </button>
-                    )}
                   </div>
 
                   {/* Interactive Class Edition Selector Pills */}
@@ -313,26 +300,41 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                       </span>
                     </div>
 
-                    {/* Action Buttons: Primary Link + Direct Add to Cart */}
-                    <div className="grid grid-cols-12 gap-1.5">
-                      <Link
-                        href={`/books/${activeBook.slug}`}
-                        title={`${series.ctaText} - ${activeBook.title}`}
-                        className={`col-span-9 py-2.5 px-3 rounded-xl font-bold text-xs ${series.theme.btnBg} ${series.theme.btnHover} ${series.theme.btnText} shadow-2xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[44px]`}
-                      >
-                        <span>{series.ctaText}</span>
-                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                      </Link>
+                    {/* Action Buttons: Preview Sample Pages + Primary Link + Direct Add to Cart */}
+                    <div className="space-y-2">
+                      {onPreview && (
+                        <button
+                          type="button"
+                          onClick={() => onPreview(activeBook)}
+                          className="w-full py-2.5 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300/80 font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-98 cursor-pointer min-h-[40px] shadow-2xs group/preview"
+                          title={`Preview sample pages of ${activeBook.title}`}
+                          aria-label={`Preview sample pages of ${activeBook.title}`}
+                        >
+                          <Eye className="w-3.5 h-3.5 text-amber-700 group-hover/preview:scale-110 transition-transform shrink-0" />
+                          <span>Preview Sample Pages</span>
+                        </button>
+                      )}
 
-                      <button
-                        type="button"
-                        onClick={() => handleAddToCart(activeBook)}
-                        title={`Add ${activeBook.title} to cart`}
-                        aria-label={`Add ${activeBook.title} to cart`}
-                        className="col-span-3 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-900 border border-stone-200 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-2xs min-h-[44px]"
-                      >
-                        <ShoppingBag className="w-4 h-4 text-slate-800" />
-                      </button>
+                      <div className="grid grid-cols-12 gap-1.5">
+                        <Link
+                          href={`/books/${activeBook.slug}`}
+                          title={`${series.ctaText} - ${activeBook.title}`}
+                          className={`col-span-9 py-2.5 px-3 rounded-xl font-bold text-xs ${series.theme.btnBg} ${series.theme.btnHover} ${series.theme.btnText} shadow-2xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[44px]`}
+                        >
+                          <span>{series.ctaText}</span>
+                          <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() => handleAddToCart(activeBook)}
+                          title={`Add ${activeBook.title} to cart`}
+                          aria-label={`Add ${activeBook.title} to cart`}
+                          className="col-span-3 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-900 border border-stone-200 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-2xs min-h-[44px]"
+                        >
+                          <ShoppingBag className="w-4 h-4 text-slate-800" />
+                        </button>
+                      </div>
                     </div>
 
                   </div>

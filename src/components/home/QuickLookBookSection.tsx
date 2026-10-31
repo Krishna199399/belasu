@@ -21,9 +21,9 @@ export const QuickLookBookSection: React.FC = () => {
   // Curriculum track: Savi & Siri (1st Language) vs Kali & Tili (2nd Language)
   const [selectedTrack, setSelectedTrack] = useState<CurriculumTrack>('SaviSiri');
 
-  // Selected series and class (default: Savi Class 4)
+  // Selected series and class (default: Savi Class 1)
   const [selectedSeries, setSelectedSeries] = useState<BookSeries>('Savi');
-  const [selectedClass, setSelectedClass] = useState<number>(4);
+  const [selectedClass, setSelectedClass] = useState<number>(1);
 
   // Active book lookup
   const activeBook = useMemo(() => {
@@ -31,7 +31,7 @@ export const QuickLookBookSection: React.FC = () => {
       (b) => b.series === selectedSeries && b.gradeClass === selectedClass
     );
     if (found) return found;
-    return BOOKS_DATA.find((b) => b.series === selectedSeries) || BOOKS_DATA[3]; // Savi 4 default
+    return BOOKS_DATA.find((b) => b.series === selectedSeries) || BOOKS_DATA[0]; // Savi 1 default
   }, [selectedSeries, selectedClass]);
 
   // Handle Track Switch

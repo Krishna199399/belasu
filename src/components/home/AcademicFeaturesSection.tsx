@@ -21,7 +21,7 @@ const supportItems: LearningSupportItem[] = [
     icon: BookCheck,
   },
   {
-    title: 'Learning at Home',
+    title: 'Learning Like a Teacher',
     description: "Help parents support their children's Kannada studies.",
     icon: HeartHandshake,
   },
