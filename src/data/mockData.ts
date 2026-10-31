@@ -13,10 +13,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Bestseller',
     description: 'First Grade English-translated Savi Kannada guide designed specifically to build strong foundational Kannada vocabulary, alphabet pronunciation, and simple sentence formation for Class 1 students.',
     features: [
-      'Line-by-line English translation for every Kannada lesson',
-      'Word-by-word Kannada to English dictionary at chapter ends',
-      'Pronunciation guide in English script (Transliteration)',
-      'Colorful visual diagrams & solved textbook exercises'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Lesson 1: Alphabets & Vowels (ಅ - ಅಃ)',
@@ -70,10 +71,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Popular',
     description: 'Comprehensive Class 2 Savi Kannada guidebook breaking down complex stories, poems, and grammar into easily digestible English translations for non-Kannadiga parents and young learners.',
     features: [
-      'Complete English breakdown of Class 2 poems & prose',
-      'Clear grammar explanations (Gunintagalu & Ottakshara)',
-      'Doubt-solving exercise solutions aligned with State Syllabus',
-      'Interactive picture-word association pages'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Chapter 1: Nanna Deha (My Body & Health)',
@@ -127,10 +129,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Must Have',
     description: 'Class 3 Savi Kannada study aid engineered to eliminate language anxiety. Includes exact chapter-wise English translations, vocabulary keys, and step-by-step solved question banks.',
     features: [
-      'Full Class 3 Karnataka School textbook solution',
-      'Kannada sentence structure simplified in English',
-      'Vocabulary bank with 500+ key academic words',
-      'Self-assessment practice test papers'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Lesson 1: Kannada Naadu (Karnataka Land & Culture)',
@@ -184,10 +187,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Top Seller',
     description: 'Empowering Class 4 students to excel in written and oral Kannada exams. Features in-depth paragraph translations, detailed question-answer keys, and contextual grammar rules.',
     features: [
-      'Complete English rendering of prose & poetry lessons',
-      'Comprehensive Ottakshara (Compound letters) tutorial',
-      'Step-by-step answers for all textbook exercise questions',
-      'Bilingual glossary for easy parent verification'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Unit 1: Veerabaale Kitturu Chennamma',
@@ -241,10 +245,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'New Edition',
     description: 'Designed specifically for beginner learners under the Kali Kannada curriculum. Bridges phonetics, basic script practice, and simple everyday conversations.',
     features: [
-      'Foundational phonetic pronunciation guide',
-      'Dual script (Kannada + English transliteration)',
-      'Visual flashcard style lesson layouts',
-      'Parent assistance notes in English'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Module 1: Aksharamale Basics',
@@ -297,10 +302,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Recommended',
     description: 'Step-by-step English translation guidebook for Class 2 Kali Kannada curriculum, easing homework stress for non-native speaking families.',
     features: [
-      'Sentence translation with grammar breakdown',
-      'Interactive exercises with solved answer keys',
-      'Pronunciation key for every new vocabulary word',
-      'Visual story summaries'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Part 1: Story Lessons & Moral Tales',
@@ -354,10 +360,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Popular',
     description: 'Advanced Kali Kannada Class 3 guide helping students master reading comprehension, dictation, and exam readiness with ease.',
     features: [
-      'Comprehensive prose & poem translation',
-      'Key word meanings & synonyms in English',
-      'Grammar concepts: Tenses & Gender',
-      'Practice mock test papers'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Unit 1: Environment & Science Lessons',
@@ -410,10 +417,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Essential',
     description: 'Complete academic companion for Class 4 Kali Kannada textbook. Eliminates the need for expensive home tutors by empowering parents to teach at home.',
     features: [
-      'Word-by-word parallel text in English',
-      'Comprehensive question & answer repository',
-      'Grammar section covering Sandhi and Samasa basics',
-      'Revision worksheets for mid-term & final exams'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Chapter 1: Karnataka Heritage & Landmarks',
@@ -467,10 +475,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Top Rated',
     description: 'Class 5 Siri Kannada comprehensive guidebook bridging middle school Kannada literature with clear English explanations, essay writing aids, and grammar rules.',
     features: [
-      'Complete Siri Kannada Class 5 syllabus solutions',
-      'Essay writing & letter writing templates in Kannada & English',
-      'Detailed poem summary & annotation guide',
-      'Model question papers for board standard prep'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Unit 1: Sirivanta Kannada Literature',
@@ -524,10 +533,11 @@ export const BOOKS_DATA: BookProduct[] = [
     badge: 'Bestseller',
     description: 'High-level Class 5 Tili Kannada guidebook designed to build deep reading comprehension, vocabulary mastery, and high exam performance for 5th graders.',
     features: [
-      'Full Tili Kannada Class 5 textbook English translation',
-      'Advanced grammar guide: Alankara, Samasa, Tatsama-Tadbhava',
-      'Chapter summaries & key thematic points',
-      'Full question bank with model scoring guide'
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
     ],
     tableOfContents: [
       'Lesson 1: Kannada Sahitya Charitre (History of Literature)',
@@ -591,7 +601,7 @@ export const BOOKS_DATA: BookProduct[] = [
       'Part 3: Travel, Transport, Shopping & Local Services',
       'Part 4: Language Basics, Tenses & Everyday Vocabulary'
     ],
-    coverImage: '/covers/savi-1.png',
+    coverImage: '/covers/a-destination-to-speak-kannada.png',
     samplePages: [],
     inStock: true,
     stockQuantity: 50,

@@ -68,11 +68,11 @@ export default function SaviClass2Client() {
   };
 
   const keyBenefits = [
-    'English translations for Class 2 poems and prose',
-    'Clear explanations of Gunintagalu and Ottakshara',
-    'Exercise solutions aligned with the State Syllabus',
-    'Interactive picture-word association pages',
-    'Structured support for independent learning',
+    'Kannada to English conversation for Pronunciation',
+    'Kannada text meaningfully translated to English',
+    'Covers all Exercises with Answers',
+    'Synopsis in English for Lessons',
+    'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.',
   ];
 
   const faqs = [
@@ -227,7 +227,7 @@ export default function SaviClass2Client() {
               {/* Key Benefits */}
               <div className="bg-stone-50 rounded-2xl p-5 border border-stone-200/90 space-y-3">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Key Benefits:
+                  What This Guidebook Provides:
                 </h2>
                 <ul className="space-y-2">
                   {keyBenefits.map((benefit, idx) => (

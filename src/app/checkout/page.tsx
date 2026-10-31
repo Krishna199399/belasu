@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Address } from '@/types';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
 import { ShieldCheck, CreditCard, CheckCircle2, ArrowLeft, Lock, Package, BookOpen, LogIn, Loader, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 import AddressManager from '@/components/address/AddressManager';
@@ -41,7 +41,7 @@ export default function CheckoutPage() {
     if (!digitalName && user.name) setDigitalName(user.name);
   }
 
-  const shippingFee = needsShipping() ? 45 : 0;
+  const shippingFee = needsShipping() ? SHIPPING_FEE : 0;
   const grandTotal = subtotal + shippingFee;
 
   const physicalItems = getPhysicalItems();

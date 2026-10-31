@@ -76,8 +76,8 @@ export default function ContactPage() {
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div>
-                    <strong className="block font-bold text-slate-900">Publisher Address:</strong>
-                    <span>Belesu Academic Initiatives, Bengaluru, Karnataka, India</span>
+                    <strong className="block font-bold text-slate-900">Office Address:</strong>
+                    <span>#152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125</span>
                   </div>
                 </div>
 

@@ -3,12 +3,12 @@
 import React from 'react';
 import { useCart } from '@/context/CartContext';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
-  const shippingFee = needsShipping() ? 45 : 0;
+  const shippingFee = needsShipping() ? SHIPPING_FEE : 0;
   const grandTotal = subtotal + shippingFee;
 
   return (

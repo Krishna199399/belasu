@@ -53,11 +53,11 @@ export default function TiliClass5Client() {
   };
 
   const keyBenefits = [
-    'Understand Class 5 Tili Kannada lessons through English translations.',
-    'Build Kannada vocabulary and improve reading comprehension.',
-    'Revise grammar concepts, including Alankara, Samasa and Tatsama-Tadbhava.',
-    'Review chapter summaries and important themes from lessons.',
-    'Practise textbook-based questions with a question bank and model scoring guidance.',
+    'Kannada to English conversation for Pronunciation',
+    'Kannada text meaningfully translated to English',
+    'Covers all Exercises with Answers',
+    'Synopsis in English for Lessons',
+    'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.',
   ];
 
   const faqs = [
@@ -212,7 +212,7 @@ export default function TiliClass5Client() {
               {/* Key Benefits */}
               <div className="bg-stone-50 rounded-2xl p-5 border border-stone-200/90 space-y-3">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Key Benefits:
+                  What This Guidebook Provides:
                 </h2>
                 <ul className="space-y-2">
                   {keyBenefits.map((benefit, idx) => (

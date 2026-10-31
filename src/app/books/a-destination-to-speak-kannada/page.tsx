@@ -279,33 +279,25 @@ export default function DestinationToSpeakKannadaPage() {
                 <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/20 to-orange-400/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500"></div>
 
                 {/* Cover Presentation Box */}
-                <div className="relative rounded-2xl bg-white p-6 shadow-2xl border border-stone-200 space-y-4">
-                  <div className="aspect-[3/4] rounded-xl bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 flex flex-col justify-between p-6 text-white shadow-md relative overflow-hidden">
-                    <div className="flex items-center justify-between z-10">
-                      <span className="bg-white/95 text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider">
-                        Spoken Kannada
-                      </span>
-                      <span className="bg-black/30 backdrop-blur text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                        23 Chapters
-                      </span>
-                    </div>
-
-                    <div className="text-center py-6 z-10">
-                      <div className="text-5xl mb-3">🗣️</div>
-                      <h3 className="text-2xl font-black tracking-tight leading-tight">
-                        A Destination to Speak Kannada
-                      </h3>
-                      <p className="text-xs text-amber-100 font-medium mt-2">
-                        Pictorial Spoken Kannada for Beginners
-                      </p>
-                    </div>
-
-                    <div className="bg-black/40 backdrop-blur rounded-xl p-2.5 text-center text-xs text-amber-200 font-semibold z-10">
-                      Everyday Conversations • Useful Vocabulary
-                    </div>
+                <div className="relative rounded-2xl bg-white p-4 sm:p-6 shadow-2xl border border-stone-200 flex flex-col items-center">
+                  <div className="w-full flex items-center justify-between mb-3 px-1">
+                    <span className="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
+                      Spoken Kannada
+                    </span>
+                    <span className="bg-stone-100 text-slate-700 border border-stone-200 text-xs font-bold px-2.5 py-1 rounded-full">
+                      23 Chapters
+                    </span>
                   </div>
 
-                  <div className="pt-2 flex items-center justify-between text-xs text-slate-600 font-semibold">
+                  <div className="w-full aspect-[3/4] flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl overflow-hidden rounded-xl bg-amber-50/40">
+                    <img
+                      src="/covers/a-destination-to-speak-kannada.png"
+                      alt="A Destination to Speak Kannada - Book Cover"
+                      className="w-full h-full max-h-[460px] object-contain rounded-xl"
+                    />
+                  </div>
+
+                  <div className="w-full pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-xs text-slate-600 font-semibold px-1">
                     <span>Illustrated Practical Guide</span>
                     <span className="text-amber-700 font-bold">Price: ₹295</span>
                   </div>

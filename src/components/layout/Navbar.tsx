@@ -16,15 +16,19 @@ export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobilePurchaseOpen, setMobilePurchaseOpen] = useState(false);
+  const [mobileSpokenOpen, setMobileSpokenOpen] = useState(false);
   const [purchaseDropdownOpen, setPurchaseDropdownOpen] = useState(false);
+  const [spokenDropdownOpen, setSpokenDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [prevPathname, setPrevPathname] = useState(rawPathname);
   const purchaseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const spokenTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   if (rawPathname !== prevPathname) {
     setPrevPathname(rawPathname);
     setMobileMenuOpen(false);
     setPurchaseDropdownOpen(false);
+    setSpokenDropdownOpen(false);
   }
 
   const handlePurchaseMouseEnter = () => {
@@ -44,9 +48,29 @@ export const Navbar: React.FC = () => {
     }, 200);
   };
 
+  const handleSpokenMouseEnter = () => {
+    if (spokenTimeoutRef.current) {
+      clearTimeout(spokenTimeoutRef.current);
+      spokenTimeoutRef.current = null;
+    }
+    setSpokenDropdownOpen(true);
+  };
+
+  const handleSpokenMouseLeave = () => {
+    if (spokenTimeoutRef.current) {
+      clearTimeout(spokenTimeoutRef.current);
+    }
+    spokenTimeoutRef.current = setTimeout(() => {
+      setSpokenDropdownOpen(false);
+    }, 200);
+  };
+
   useEffect(() => {
     if (purchaseTimeoutRef.current) {
       clearTimeout(purchaseTimeoutRef.current);
+    }
+    if (spokenTimeoutRef.current) {
+      clearTimeout(spokenTimeoutRef.current);
     }
   }, [rawPathname]);
 
@@ -55,6 +79,9 @@ export const Navbar: React.FC = () => {
     return () => {
       if (purchaseTimeoutRef.current) {
         clearTimeout(purchaseTimeoutRef.current);
+      }
+      if (spokenTimeoutRef.current) {
+        clearTimeout(spokenTimeoutRef.current);
       }
     };
   }, []);
@@ -75,9 +102,13 @@ export const Navbar: React.FC = () => {
       if (e.key === 'Escape') {
         setMobileMenuOpen(false);
         setPurchaseDropdownOpen(false);
+        setSpokenDropdownOpen(false);
         setUserDropdownOpen(false);
         if (purchaseTimeoutRef.current) {
           clearTimeout(purchaseTimeoutRef.current);
+        }
+        if (spokenTimeoutRef.current) {
+          clearTimeout(spokenTimeoutRef.current);
         }
       }
     };
@@ -113,11 +144,26 @@ export const Navbar: React.FC = () => {
     { label: 'A Destination to Speak Kannada', href: '/books/a-destination-to-speak-kannada' },
   ];
 
-  const navLinks = [
+  interface NavLinkItem {
+    label: string;
+    href: string;
+    isAcademicDropdown?: boolean;
+    isSpokenDropdown?: boolean;
+    isHighlight?: boolean;
+    isDigital?: boolean;
+  }
+
+  const navLinks: NavLinkItem[] = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Team', href: '/team' },
-    { label: 'Purchase Academy Books', href: '/books', isDropdown: true },
+    { label: 'Purchase Academic Books', href: '/books', isAcademicDropdown: true },
+    {
+      label: 'Destination to Speak Kannada',
+      href: '/books/a-destination-to-speak-kannada',
+      isSpokenDropdown: true,
+      isHighlight: true,
+    },
     { label: 'Videos', href: '/videos' },
     { label: 'Reviews', href: '/reviews' },
     { label: 'Contact', href: '/contact' },
@@ -125,7 +171,6 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-stone-200 shadow-sm">
-      <AnnouncementBar />
       <div className="max-w-[1400px] mx-auto px-3 sm:px-5 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
 
@@ -139,11 +184,11 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden xl:flex items-center gap-1 text-sm font-bold tracking-wide text-slate-700">
+          <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1 text-xs 2xl:text-sm font-bold tracking-wide text-slate-700">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
 
-              if (link.isDropdown) {
+              if (link.isAcademicDropdown) {
                 return (
                   <div
                     key={link.label}
@@ -169,40 +214,21 @@ export const Navbar: React.FC = () => {
                         <div className="w-[780px] bg-white rounded-2xl shadow-2xl border border-stone-200 py-5">
                         <div className="grid grid-cols-3 gap-6 px-6">
                           
-                          {/* Column 1: Savi Series & Spoken Kannada */}
-                          <div className="space-y-4">
-                            <div>
-                              <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
-                                <span className="text-base">📘</span>
-                                <div>
-                                  <div className="text-xs font-black uppercase tracking-wider text-slate-800">
-                                    Savi Kannada
-                                  </div>
-                                  <div className="text-[11px] text-slate-500 font-medium">
-                                    Classes 1–4 · State 1st Language
-                                  </div>
+                          {/* Column 1: Savi Series */}
+                          <div>
+                            <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
+                              <span className="text-base">📘</span>
+                              <div>
+                                <div className="text-xs font-black uppercase tracking-wider text-slate-800">
+                                  Savi Kannada
+                                </div>
+                                <div className="text-[11px] text-slate-500 font-medium">
+                                  Classes 1–4 · State 1st Language
                                 </div>
                               </div>
-                              <div className="space-y-1">
-                                {saviBooks.map((book) => (
-                                  <Link
-                                    key={book.href}
-                                    href={book.href}
-                                    onClick={() => setPurchaseDropdownOpen(false)}
-                                    className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-800 rounded-lg transition group"
-                                  >
-                                    <span>{book.label}</span>
-                                    <span className="text-slate-300 group-hover:text-amber-600 transition">→</span>
-                                  </Link>
-                                ))}
-                              </div>
                             </div>
-
-                            <div className="pt-2 border-t border-stone-100">
-                              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 px-2.5 mb-1">
-                                Spoken Kannada
-                              </div>
-                              {spokenBooks.map((book) => (
+                            <div className="space-y-1">
+                              {saviBooks.map((book) => (
                                 <Link
                                   key={book.href}
                                   href={book.href}
@@ -216,38 +242,47 @@ export const Navbar: React.FC = () => {
                             </div>
                           </div>
 
-                          {/* Column 2: Kali Series & Class 5 */}
-                          <div className="space-y-4">
-                            <div>
-                              <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
-                                <span className="text-base">📙</span>
-                                <div>
-                                  <div className="text-xs font-black uppercase tracking-wider text-slate-800">
-                                    Kali Kannada
-                                  </div>
-                                  <div className="text-[11px] text-slate-500 font-medium">
-                                    Classes 1–4 · Innovative Guide
-                                  </div>
+                          {/* Column 2: Kali Series */}
+                          <div>
+                            <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
+                              <span className="text-base">📙</span>
+                              <div>
+                                <div className="text-xs font-black uppercase tracking-wider text-slate-800">
+                                  Kali Kannada
+                                </div>
+                                <div className="text-[11px] text-slate-500 font-medium">
+                                  Classes 1–4 · Innovative Guide
                                 </div>
                               </div>
-                              <div className="space-y-1">
-                                {kaliBooks.map((book) => (
-                                  <Link
-                                    key={book.href}
-                                    href={book.href}
-                                    onClick={() => setPurchaseDropdownOpen(false)}
-                                    className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-800 rounded-lg transition group"
-                                  >
-                                    <span>{book.label}</span>
-                                    <span className="text-slate-300 group-hover:text-amber-600 transition">→</span>
-                                  </Link>
-                                ))}
-                              </div>
                             </div>
+                            <div className="space-y-1">
+                              {kaliBooks.map((book) => (
+                                <Link
+                                  key={book.href}
+                                  href={book.href}
+                                  onClick={() => setPurchaseDropdownOpen(false)}
+                                  className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-800 rounded-lg transition group"
+                                >
+                                  <span>{book.label}</span>
+                                  <span className="text-slate-300 group-hover:text-amber-600 transition">→</span>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
 
-                            <div className="pt-2 border-t border-stone-100">
-                              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 px-2.5 mb-1">
-                                Class 5 Series
+                          {/* Column 3: Class 5 Series & Digital Books */}
+                          <div className="space-y-3">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
+                                <span className="text-base">📗</span>
+                                <div>
+                                  <div className="text-xs font-black uppercase tracking-wider text-slate-800">
+                                    Class 5 Series
+                                  </div>
+                                  <div className="text-[11px] text-slate-500 font-medium">
+                                    Classes 5 · Siri &amp; Tili Kannada
+                                  </div>
+                                </div>
                               </div>
                               <div className="space-y-1">
                                 {class5Books.map((book) => (
@@ -263,11 +298,8 @@ export const Navbar: React.FC = () => {
                                 ))}
                               </div>
                             </div>
-                          </div>
 
-                          {/* Column 3: Digital Books */}
-                          <div className="space-y-4">
-                            <div>
+                            <div className="pt-1">
                               <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
                                 <span className="text-base">💻</span>
                                 <div>
@@ -279,11 +311,11 @@ export const Navbar: React.FC = () => {
                                   </div>
                                 </div>
                               </div>
-                              <div className="space-y-1.5">
+                              <div className="space-y-1">
                                 <Link
                                   href="/digital/kannada-class-6-guide"
                                   onClick={() => setPurchaseDropdownOpen(false)}
-                                  className="flex items-center justify-between px-2.5 py-2 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group border border-transparent hover:border-indigo-100"
+                                  className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group border border-transparent hover:border-indigo-100"
                                 >
                                   <div>
                                     <span className="font-bold text-slate-900 block">Class 6 Digital Guidebook</span>
@@ -297,7 +329,7 @@ export const Navbar: React.FC = () => {
                                 <Link
                                   href="/digital"
                                   onClick={() => setPurchaseDropdownOpen(false)}
-                                  className="flex items-center justify-between px-2.5 py-2 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group"
+                                  className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group"
                                 >
                                   <div>
                                     <span className="block">Classes 7–10 Digital</span>
@@ -308,23 +340,6 @@ export const Navbar: React.FC = () => {
                                   </span>
                                 </Link>
                               </div>
-                            </div>
-
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-50/70 to-amber-50/50 border border-indigo-100/80 space-y-1.5">
-                              <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block">
-                                Digital Learning Platform
-                              </span>
-                              <p className="text-[11px] text-slate-600 leading-snug">
-                                Read online with English translations and lifetime access.
-                              </p>
-                              <Link
-                                href="/digital"
-                                onClick={() => setPurchaseDropdownOpen(false)}
-                                className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 hover:text-indigo-900 pt-0.5"
-                              >
-                                <span>Explore Digital Hub</span>
-                                <span>→</span>
-                              </Link>
                             </div>
                           </div>
 
@@ -337,15 +352,8 @@ export const Navbar: React.FC = () => {
                             onClick={() => setPurchaseDropdownOpen(false)}
                             className="flex items-center gap-1.5 font-black text-amber-700 hover:text-amber-800 transition py-1"
                           >
-                            <span>Browse All Books Catalog (11 Books)</span>
+                            <span>Browse All Books Catalog (10 Books)</span>
                             <span>→</span>
-                          </Link>
-                          <Link
-                            href="/digital"
-                            onClick={() => setPurchaseDropdownOpen(false)}
-                            className="font-bold text-indigo-700 hover:text-indigo-800 transition py-1"
-                          >
-                            <span>Digital Reader Platform →</span>
                           </Link>
                         </div>
                       </div>
@@ -355,34 +363,74 @@ export const Navbar: React.FC = () => {
                 );
               }
 
-              if ((link as { isHighlight?: boolean }).isHighlight) {
+              if (link.isSpokenDropdown) {
                 return (
-                  <Link
+                  <div
                     key={link.label}
-                    href={link.href}
-                    className={`flex items-center gap-1 px-4 py-3 rounded-lg font-extrabold text-amber-600 hover:text-amber-700 hover:bg-amber-50 transition ${
-                      isActive ? 'bg-amber-50' : ''
-                    }`}
+                    className="relative"
+                    onMouseEnter={handleSpokenMouseEnter}
+                    onMouseLeave={handleSpokenMouseLeave}
                   >
-                    {link.label}
-                    <span className="text-[8px] bg-amber-500 text-white font-black px-1 py-0.5 rounded-full leading-none">
-                      NEW
-                    </span>
-                  </Link>
+                    <Link
+                      href={link.href}
+                      className={`flex items-center gap-1.5 px-2.5 2xl:px-3 py-2 rounded-lg font-bold text-slate-800 hover:text-[#b5834e] hover:bg-amber-50 transition whitespace-nowrap ${
+                        isActive || spokenDropdownOpen ? 'text-[#b5834e] bg-amber-50' : ''
+                      }`}
+                    >
+                      <span>{link.label}</span>
+                      <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded-full leading-none shadow-2xs">
+                        NEW
+                      </span>
+                      <ChevronDown
+                        className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${
+                          spokenDropdownOpen ? 'rotate-180 text-[#b5834e]' : ''
+                        }`}
+                      />
+                    </Link>
+
+                    {spokenDropdownOpen && (
+                      <div
+                        className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                        onMouseEnter={handleSpokenMouseEnter}
+                        onMouseLeave={handleSpokenMouseLeave}
+                      >
+                        <div className="w-[320px] bg-white rounded-2xl shadow-2xl border border-stone-200 p-4">
+                          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 px-1">
+                            Spoken Kannada
+                          </div>
+                          <Link
+                            href="/books/a-destination-to-speak-kannada"
+                            onClick={() => setSpokenDropdownOpen(false)}
+                            className="flex items-center justify-between p-2.5 rounded-xl text-sm font-bold text-slate-800 hover:bg-amber-50 hover:text-amber-800 transition group"
+                          >
+                            <span className="leading-snug pr-2">A Destination to Speak Kannada</span>
+                            <span className="flex items-center gap-1.5 shrink-0">
+                              <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-full leading-none">
+                                NEW
+                              </span>
+                              <span className="text-slate-400 group-hover:text-amber-700 group-hover:translate-x-0.5 transition">
+                                →
+                              </span>
+                            </span>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 );
               }
 
-              if ((link as { isDigital?: boolean }).isDigital) {
+              if (link.isDigital) {
                 return (
                   <Link
                     key={link.label}
                     href={link.href}
-                    className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg font-extrabold transition hover:bg-indigo-50 hover:text-indigo-700 ${
+                    className={`flex items-center gap-1.5 px-2.5 2xl:px-3 py-2.5 rounded-lg font-extrabold transition hover:bg-indigo-50 hover:text-indigo-700 whitespace-nowrap ${
                       isActive ? 'text-indigo-700 bg-indigo-50' : 'text-indigo-600'
                     }`}
                   >
                     <Laptop className="w-3.5 h-3.5" />
-                    {link.label}
+                    <span>{link.label}</span>
                     <span className="text-[8px] bg-indigo-500 text-white font-black px-1 py-0.5 rounded-full leading-none">NEW</span>
                   </Link>
                 );
@@ -392,7 +440,7 @@ export const Navbar: React.FC = () => {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className={`px-3 py-2.5 rounded-lg transition hover:bg-amber-50 hover:text-[#b5834e] ${
+                  className={`px-2.5 2xl:px-3 py-2.5 rounded-lg transition hover:bg-amber-50 hover:text-[#b5834e] whitespace-nowrap ${
                     isActive ? 'text-[#b5834e] bg-amber-50' : ''
                   }`}
                 >
@@ -495,6 +543,9 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
+      {/* Rolling Announcement Bar — Positioned Below Menu */}
+      <AnnouncementBar />
+
       {/* Mobile Off-Canvas Drawer */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[100] xl:hidden overflow-hidden overscroll-contain">
@@ -534,7 +585,7 @@ export const Navbar: React.FC = () => {
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
 
-                if (link.isDropdown) {
+                if (link.isAcademicDropdown) {
                   return (
                     <div key={link.label} className="rounded-xl border border-stone-200 overflow-hidden bg-stone-50/50">
                       <button
@@ -669,9 +720,57 @@ export const Navbar: React.FC = () => {
                               onClick={() => setMobileMenuOpen(false)}
                               className="flex items-center justify-center py-2.5 text-xs font-black text-amber-700 hover:bg-amber-50 rounded-lg transition"
                             >
-                              Browse All Catalog (11 Books) →
+                              Browse All Books Catalog (10 Books) →
                             </Link>
                           </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                if (link.isSpokenDropdown) {
+                  return (
+                    <div key={link.label} className="rounded-xl border border-stone-200 overflow-hidden bg-stone-50/50">
+                      <button
+                        onClick={() => setMobileSpokenOpen((prev) => !prev)}
+                        className="w-full flex items-center justify-between px-3.5 py-3 text-left font-bold text-sm text-slate-800 hover:bg-amber-50/70 transition min-h-[44px]"
+                        aria-expanded={mobileSpokenOpen}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className="text-base">🗣️</span>
+                          <span>{link.label}</span>
+                          <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded-full leading-none">
+                            NEW
+                          </span>
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                            mobileSpokenOpen ? 'rotate-180 text-amber-700' : ''
+                          }`}
+                        />
+                      </button>
+
+                      {mobileSpokenOpen && (
+                        <div className="px-3 pb-3 pt-2 space-y-1 border-t border-stone-200 bg-white">
+                          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 px-2 pt-1 mb-1">
+                            Spoken Kannada
+                          </div>
+                          <Link
+                            href="/books/a-destination-to-speak-kannada"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center justify-between p-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-800 hover:bg-amber-50 hover:text-amber-800 transition group"
+                          >
+                            <span className="leading-snug pr-2">A Destination to Speak Kannada</span>
+                            <span className="flex items-center gap-1.5 shrink-0">
+                              <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-full leading-none">
+                                NEW
+                              </span>
+                              <span className="text-slate-400 group-hover:text-amber-700 transition">
+                                →
+                              </span>
+                            </span>
+                          </Link>
                         </div>
                       )}
                     </div>
@@ -689,7 +788,14 @@ export const Navbar: React.FC = () => {
                         : 'text-slate-700 hover:bg-stone-100 hover:text-slate-900'
                     }`}
                   >
-                    <span>{link.label}</span>
+                    <span className="flex items-center gap-2">
+                      <span>{link.label}</span>
+                      {link.isHighlight && (
+                        <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded-full leading-none">
+                          NEW
+                        </span>
+                      )}
+                    </span>
                   </Link>
                 );
               })}

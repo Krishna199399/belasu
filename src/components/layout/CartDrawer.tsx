@@ -4,13 +4,13 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
 import Link from 'next/link';
 
 export const CartDrawer: React.FC = () => {
   const pathname = usePathname();
   const { cart, isOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
-  const shippingFee = needsShipping() ? 45 : 0;
+  const shippingFee = needsShipping() ? SHIPPING_FEE : 0;
 
   // Prevent background website scrolling when cart drawer is open (Bulletproof mobile iOS/Android + desktop)
   React.useEffect(() => {
@@ -209,7 +209,7 @@ export const CartDrawer: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Shipping</span>
-                  <span className="font-semibold text-slate-900">{shippingFee === 0 ? '₹0' : '₹45'}</span>
+                  <span className="font-semibold text-slate-900">{shippingFee === 0 ? '₹0' : formatPrice(shippingFee)}</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-100">
                   <span>Total</span>

@@ -1,16 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useSyncExternalStore } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, X, ArrowRight } from 'lucide-react';
+import { X, ArrowRight, Sparkles } from 'lucide-react';
 
 interface AnnouncementItem {
   id: string;
   badge: string;
   badgeColor: string;
   icon: string;
-  mobileHeadline: string;
-  desktopHeadline: string;
+  headline: string;
   ctaText: string;
   href: string;
 }
@@ -21,8 +20,7 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
     badge: 'Digital E-Reader',
     badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
     icon: '💻',
-    mobileHeadline: 'Class 6 Kannada Digital Guidebook is Now Live!',
-    desktopHeadline: 'New Launch: Class 6 Kannada English-Translated Digital Guidebook is Now Available!',
+    headline: 'New Launch: Class 6 Kannada English-Translated Digital Guidebook is Now Available!',
     ctaText: 'Read Online',
     href: '/digital/kannada-class-6-guide',
   },
@@ -31,8 +29,7 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
     badge: 'New Release',
     badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
     icon: '🗣️',
-    mobileHeadline: 'New Book: "A Destination to Speak Kannada" Available',
-    desktopHeadline: 'New Book: "A Destination to Speak Kannada" — Master Everyday Spoken Kannada with Ease',
+    headline: 'New Book: "A Destination to Speak Kannada" — Master Everyday Spoken Kannada with Ease',
     ctaText: 'Order Book',
     href: '/books/a-destination-to-speak-kannada',
   },
@@ -41,8 +38,7 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
     badge: 'Campus Office',
     badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
     icon: '🏛️',
-    mobileHeadline: 'Visit Us: VTU Campus, Belgaum',
-    desktopHeadline: 'Visit Our Operations Office: VRIF, Visvesvaraya Technological University (VTU) Campus, Belgaum',
+    headline: 'Visit Our Operations Office: VRIF, Visvesvaraya Technological University (VTU) Campus, Belgaum',
     ctaText: 'Get Directions',
     href: '/contact',
   },
@@ -51,11 +47,7 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
 const subscribeNoop = () => () => {};
 
 export const AnnouncementBar: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [isManualDismissed, setIsManualDismissed] = useState(false);
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSessionDismissed = useSyncExternalStore(
     subscribeNoop,
@@ -71,29 +63,6 @@ export const AnnouncementBar: React.FC = () => {
 
   const isDismissed = isManualDismissed || isSessionDismissed;
 
-  // Auto-rotation every 4.5 seconds
-  useEffect(() => {
-    if (isDismissed || isPaused) return;
-
-    timerRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
-    }, 4500);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isDismissed, isPaused]);
-
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentIndex((prev) => (prev - 1 + ANNOUNCEMENTS.length) % ANNOUNCEMENTS.length);
-  };
-
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
-  };
-
   const handleDismiss = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsManualDismissed(true);
@@ -104,119 +73,86 @@ export const AnnouncementBar: React.FC = () => {
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsPaused(true);
-    setTouchStartX(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    setIsPaused(false);
-    if (touchStartX === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = touchStartX - touchEndX;
-    if (diff > 40) {
-      setCurrentIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
-    } else if (diff < -40) {
-      setCurrentIndex((prev) => (prev - 1 + ANNOUNCEMENTS.length) % ANNOUNCEMENTS.length);
-    }
-    setTouchStartX(null);
-  };
-
   if (isDismissed) {
     return null;
   }
 
-  const current = ANNOUNCEMENTS[currentIndex];
+  // Render announcement list with decorative diamond separators
+  const renderTrackItems = (keyPrefix: string) => (
+    <div className="flex items-center space-x-6 sm:space-x-8 pr-6 sm:pr-8 shrink-0">
+      {ANNOUNCEMENTS.map((item) => (
+        <React.Fragment key={`${keyPrefix}-${item.id}`}>
+          <Link
+            href={item.href}
+            className="group/item inline-flex items-center gap-2 sm:gap-2.5 text-xs text-slate-200 hover:text-white transition whitespace-nowrap"
+          >
+            {/* Category Badge */}
+            <span
+              className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${item.badgeColor}`}
+            >
+              <span>{item.icon}</span>
+              <span>{item.badge}</span>
+            </span>
+
+            {/* Headline */}
+            <span className="font-medium text-slate-200 group-hover/item:text-amber-200 transition">
+              {item.headline}
+            </span>
+
+            {/* Direct CTA */}
+            <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-amber-400 group-hover/item:text-amber-300 underline underline-offset-2 ml-1">
+              <span>{item.ctaText}</span>
+              <ArrowRight className="w-3 h-3 group-hover/item:translate-x-0.5 transition-transform" />
+            </span>
+          </Link>
+
+          {/* Decorative Rolling Separator */}
+          <span className="text-amber-500/50 text-[10px] select-none" aria-hidden="true">
+            ◆
+          </span>
+        </React.Fragment>
+      ))}
+    </div>
+  );
 
   return (
     <aside
       aria-label="Website Announcements"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      className="relative z-50 w-full bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-slate-100 border-b border-amber-500/25 select-none transition-all duration-300"
+      className="relative z-40 w-full bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-slate-100 border-t border-slate-800 border-b border-amber-500/30 select-none overflow-hidden pause-hover flex items-center h-9 sm:h-10 shadow-xs"
     >
-      <div className="max-w-[1440px] mx-auto px-2 sm:px-4 py-1.5 sm:py-2 flex items-center justify-between gap-1 sm:gap-3 text-xs">
-        
-        {/* Left: Previous Nav Arrow (Desktop & Tablet) */}
+      {/* Left Static Indicator Badge */}
+      <div className="shrink-0 z-20 h-full flex items-center pl-2 sm:pl-3.5 pr-2 bg-gradient-to-r from-slate-950 via-slate-950 to-transparent">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-xs whitespace-nowrap">
+          <Sparkles className="w-3 h-3 text-slate-950 animate-pulse" />
+          <span className="hidden xs:inline">Updates</span>
+        </div>
+      </div>
+
+      {/* Edge Gradient Mask for Smooth Fade-In on Left */}
+      <div className="absolute left-16 sm:left-24 top-0 bottom-0 w-8 sm:w-12 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
+
+      {/* Rolling Marquee Tape Container */}
+      <div className="flex-1 overflow-hidden flex items-center min-w-0">
+        <div className="animate-rolling-ticker flex items-center">
+          {renderTrackItems('track-1')}
+          {renderTrackItems('track-2')}
+        </div>
+      </div>
+
+      {/* Edge Gradient Mask for Smooth Fade-Out on Right */}
+      <div className="absolute right-9 sm:right-11 top-0 bottom-0 w-8 sm:w-12 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
+
+      {/* Right Dismiss Button */}
+      <div className="shrink-0 z-20 h-full flex items-center pr-2 sm:pr-3 pl-2 bg-gradient-to-l from-slate-950 via-slate-950 to-transparent">
         <button
           type="button"
-          onClick={handlePrev}
-          className="hidden sm:inline-flex p-1 rounded-md text-slate-400 hover:text-amber-300 hover:bg-white/10 transition cursor-pointer"
-          aria-label="Previous announcement"
+          onClick={handleDismiss}
+          className="p-1 rounded-md text-slate-400 hover:text-slate-100 hover:bg-white/10 transition cursor-pointer"
+          aria-label="Dismiss announcement bar"
+          title="Dismiss announcement"
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <X className="w-3.5 h-3.5" />
         </button>
-
-        {/* Center Content: Animated Announcement Details */}
-        <div className="flex-1 flex items-center justify-center min-w-0 px-1 overflow-hidden">
-          <Link
-            key={current.id}
-            href={current.href}
-            className="group/ann inline-flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full text-center hover:opacity-95 transition"
-          >
-            {/* Pulsing Badge */}
-            <span
-              className={`shrink-0 inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${current.badgeColor}`}
-            >
-              <span>{current.icon}</span>
-              <span className="hidden xs:inline">{current.badge}</span>
-            </span>
-
-            {/* Headline */}
-            <span className="text-[11.5px] sm:text-[12.5px] font-medium text-slate-200 group-hover/ann:text-white transition truncate">
-              <span className="sm:hidden">{current.mobileHeadline}</span>
-              <span className="hidden sm:inline">{current.desktopHeadline}</span>
-            </span>
-
-            {/* Direct CTA Link with Moving Arrow */}
-            <span className="shrink-0 inline-flex items-center gap-1 text-[11px] sm:text-[12px] font-bold text-amber-400 group-hover/ann:text-amber-300 underline underline-offset-2 transition ml-0.5">
-              <span>{current.ctaText}</span>
-              <ArrowRight className="w-3 h-3 group-hover/ann:translate-x-0.5 transition-transform" />
-            </span>
-          </Link>
-        </div>
-
-        {/* Right Section: Indicators & Controls */}
-        <div className="shrink-0 flex items-center gap-1 sm:gap-1.5">
-          {/* Slide Indicator Dots (Hidden on narrow mobile) */}
-          <div className="hidden md:flex items-center gap-1 mr-1">
-            {ANNOUNCEMENTS.map((a, idx) => (
-              <button
-                key={`dot-${a.id}`}
-                type="button"
-                onClick={() => setCurrentIndex(idx)}
-                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  currentIndex === idx ? 'w-4 bg-amber-400' : 'w-1.5 bg-slate-600 hover:bg-slate-400'
-                }`}
-                aria-label={`Go to announcement ${idx + 1}`}
-              />
-            ))}
-          </div>
-
-          {/* Next Nav Arrow */}
-          <button
-            type="button"
-            onClick={handleNext}
-            className="hidden sm:inline-flex p-1 rounded-md text-slate-400 hover:text-amber-300 hover:bg-white/10 transition cursor-pointer"
-            aria-label="Next announcement"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-
-          {/* Dismiss (Close) Button */}
-          <button
-            type="button"
-            onClick={handleDismiss}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-100 hover:bg-white/10 transition cursor-pointer ml-0.5"
-            aria-label="Dismiss announcement bar"
-            title="Dismiss announcement"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
       </div>
     </aside>
   );

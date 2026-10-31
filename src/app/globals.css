@@ -263,14 +263,23 @@
   will-change: transform;
 }
 
+.animate-rolling-ticker {
+  display: flex;
+  width: max-content;
+  animation: marqueeLeft 32s linear infinite;
+  will-change: transform;
+}
+
 .pause-hover:hover .animate-marquee-left,
-.pause-hover:hover .animate-marquee-right {
+.pause-hover:hover .animate-marquee-right,
+.pause-hover:hover .animate-rolling-ticker {
   animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-left,
-  .animate-marquee-right {
+  .animate-marquee-right,
+  .animate-rolling-ticker {
     animation-duration: 120s;
   }
 }

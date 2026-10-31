@@ -71,11 +71,11 @@ export default function KaliClass2Client() {
   };
 
   const keyBenefits = [
-    'English translations with sentence-level grammar explanations',
-    'Interactive exercises with solved answer keys',
-    'Pronunciation guidance for new vocabulary',
-    'Visual summaries of Kannada stories',
-    'Additional support for homework and revision',
+    'Kannada to English conversation for Pronunciation',
+    'Kannada text meaningfully translated to English',
+    'Covers all Exercises with Answers',
+    'Synopsis in English for Lessons',
+    'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.',
   ];
 
   const faqs = [
@@ -226,7 +226,7 @@ export default function KaliClass2Client() {
               {/* Key Benefits */}
               <div className="bg-stone-50 rounded-2xl p-5 border border-stone-200/90 space-y-3">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Key Benefits:
+                  What This Guidebook Provides:
                 </h2>
                 <ul className="space-y-2">
                   {keyBenefits.map((benefit, idx) => (

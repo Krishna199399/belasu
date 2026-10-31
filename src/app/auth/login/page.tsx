@@ -10,14 +10,11 @@ import {
   ArrowRight,
   ArrowLeft,
   User as UserIcon,
-  BookOpen,
-  Sparkles,
   Lock,
   MessageCircle,
   RotateCw,
   AlertCircle,
-  CheckCircle2,
-  Laptop
+  CheckCircle2
 } from 'lucide-react';
 
 type Step = 'phone' | 'otp';
@@ -68,6 +65,10 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   if (user) return null;
 
   const handleSendOtp = async (isResend = false) => {
+    if (!name.trim()) {
+      setError('Please enter parent name');
+      return;
+    }
     if (!/^\d{10}$/.test(phone)) {
       setError('Please enter a valid 10-digit mobile number');
       return;
@@ -75,7 +76,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     setError('');
     setIsLoading(true);
 
-    const result = await sendOtp(phone, name);
+    const result = await sendOtp(phone, name.trim());
     setIsLoading(false);
 
     if (result.success) {
@@ -119,96 +120,20 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
         className="pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 bg-orange-200/30 rounded-full blur-3xl"
       />
 
-      <div className="relative w-full max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
-          {/* ── Left Column: Belesu Brand & Learning Portal Showcase ── */}
-          <div className="lg:col-span-6 space-y-6">
-            
-            {/* Mission Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-200/90 text-amber-900 font-bold text-xs shadow-2xs">
-              <span>🌱</span>
-              <span>ಕನ್ನಡ ಮಾತಾಡಿ, ಕನ್ನಡ ಬೆಳೆಸಿ</span>
-            </div>
+      <div className="relative w-full max-w-md mx-auto">
+        {/* Belesu Brand Logo Header */}
+        <div className="text-center mb-6">
+          <Link href="/" className="inline-block transition hover:opacity-90">
+            <img
+              src="/Belesu-logo1.png"
+              alt="Belesu Logo"
+              className="h-12 sm:h-14 mx-auto object-contain"
+            />
+          </Link>
+        </div>
 
-            {/* Main Headline */}
-            <div className="space-y-3">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.15]">
-                Welcome to Belesu{' '}
-                <span className="bg-gradient-to-r from-amber-600 via-amber-700 to-orange-600 bg-clip-text text-transparent">
-                  Learning Portal
-                </span>
-              </h1>
-              <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
-                Log in to access your English-translated Kannada academic guidebooks, interactive digital readers, and personalized reading progress.
-              </p>
-            </div>
-
-            {/* Feature Highlights Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-              <div className="p-3.5 rounded-2xl bg-white/80 border border-amber-100 shadow-xs flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
-                  <Laptop className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-xs font-bold text-slate-900">Instant Digital Library</h2>
-                  <p className="text-[11px] text-slate-500 leading-normal">
-                    Read Class 1–6 guidebooks on any smartphone, tablet, or PC.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/80 border border-amber-100 shadow-xs flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                  <Lock className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-xs font-bold text-slate-900">100% Password-Free</h2>
-                  <p className="text-[11px] text-slate-500 leading-normal">
-                    Fast, secure login via one-time WhatsApp & SMS verification code.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/80 border border-amber-100 shadow-xs flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-700 flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-xs font-bold text-slate-900">Bilingual Support</h2>
-                  <p className="text-[11px] text-slate-500 leading-normal">
-                    English translations, phonetic pronunciation, and full exercise answers.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-white/80 border border-amber-100 shadow-xs flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-700 flex items-center justify-center shrink-0 mt-0.5">
-                  <BookOpen className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-xs font-bold text-slate-900">Reading Progress</h2>
-                  <p className="text-[11px] text-slate-500 leading-normal">
-                    Auto-saved bookmarks and page markers sync across all your devices.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Institutional Accreditations */}
-            <div className="pt-2 flex items-center gap-3 text-xs text-slate-500 border-t border-amber-200/60">
-              <span className="font-semibold text-slate-700">Ckelp Technologies Private Limited</span>
-              <span>•</span>
-              <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Verified Platform
-              </span>
-            </div>
-
-          </div>
-
-          {/* ── Right Column: Interactive Sign In Card ── */}
-          <div className="lg:col-span-6 w-full max-w-md mx-auto">
-            <div className="bg-white/95 backdrop-blur-xl border border-amber-200/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-amber-900/10 transition-all">
+        {/* Interactive Sign In Card */}
+        <div className="bg-white/95 backdrop-blur-xl border border-amber-200/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-amber-900/10 transition-all">
               
               {/* Card Header */}
               <div className="text-center space-y-2.5 pb-6 border-b border-stone-100">
@@ -246,17 +171,24 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                   <>
                     <div className="space-y-3.5">
                       
-                      {/* Optional Name Input */}
+                      {/* Mandatory Parent Name Input */}
                       <div className="space-y-1.5">
                         <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                           <UserIcon className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Student or Parent Name <span className="text-slate-400 font-normal">(Optional)</span></span>
+                          <span>
+                            Parent Name <span className="text-red-500 font-bold">*</span>
+                          </span>
                         </label>
                         <input
                           type="text"
-                          placeholder="Enter student or parent name"
+                          required
+                          placeholder="Enter parent name"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            if (error) setError('');
+                          }}
+                          onKeyDown={(e) => e.key === 'Enter' && handleSendOtp()}
                           className="w-full bg-stone-50 hover:bg-stone-50/80 focus:bg-white border border-stone-200 focus:border-amber-500 text-slate-900 text-sm px-4 py-3 rounded-xl focus:outline-none transition shadow-2xs"
                         />
                       </div>
@@ -463,12 +395,8 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                   </a>
                 </div>
               </div>
-
             </div>
           </div>
-
         </div>
-      </div>
-    </div>
   );
 }

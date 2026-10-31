@@ -162,7 +162,7 @@ export default function BookDetailPage() {
         <div className="mb-12 sm:mb-16">
           <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4 max-w-4xl">
             <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-amber-600" /> Key Features & Highlights
+              <CheckCircle2 className="w-5 h-5 text-amber-600" /> What This Guidebook Provides:
             </h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-600">
               {book.features.map((feat, idx) => (

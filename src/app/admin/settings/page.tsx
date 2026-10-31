@@ -6,6 +6,7 @@ import {
   Truck,
   CheckCircle2,
 } from 'lucide-react';
+import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
 
 export default function AdminSettingsPage() {
   return (
@@ -38,7 +39,7 @@ export default function AdminSettingsPage() {
               Standard Courier Rate
             </span>
             <span className="text-xl font-black text-slate-900 block">
-              ₹45 per order
+              {formatPrice(SHIPPING_FEE)} per order
             </span>
             <span className="text-xs text-slate-500">Applied automatically at checkout for hard copy books</span>
           </div>

@@ -22,7 +22,6 @@ import {
   Eye,
   SlidersHorizontal,
   X,
-  Filter,
 } from 'lucide-react';
 
 type SeriesFilter = 'All' | 'Savi' | 'Kali' | 'Siri' | 'Tili' | 'Digital';
@@ -33,8 +32,28 @@ function BooksContent() {
   const seriesParam = searchParams.get('series');
   const gradeParam = searchParams.get('grade');
 
-  const [selectedSeries, setSelectedSeries] = useState<SeriesFilter>('All');
-  const [selectedGrade, setSelectedGrade] = useState<GradeFilter>('All');
+  const initialSeries: SeriesFilter = useMemo(() => {
+    if (!seriesParam) return 'All';
+    if (['Savi', 'Kali', 'Siri', 'Tili'].includes(seriesParam)) {
+      return seriesParam as SeriesFilter;
+    }
+    if (seriesParam.toLowerCase() === 'digital') {
+      return 'Digital';
+    }
+    return 'All';
+  }, [seriesParam]);
+
+  const initialGrade: GradeFilter = useMemo(() => {
+    if (!gradeParam) return 'All';
+    const parsed = parseInt(gradeParam, 10);
+    if ([1, 2, 3, 4, 5, 6].includes(parsed)) {
+      return parsed as GradeFilter;
+    }
+    return 'All';
+  }, [gradeParam]);
+
+  const [selectedSeries, setSelectedSeries] = useState<SeriesFilter>(initialSeries);
+  const [selectedGrade, setSelectedGrade] = useState<GradeFilter>(initialGrade);
   const [previewBook, setPreviewBook] = useState<BookProduct | null>(null);
   const [booksList, setBooksList] = useState<BookProduct[]>(BOOKS_DATA);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -74,19 +93,6 @@ function BooksContent() {
   };
 
   useEffect(() => {
-    if (seriesParam) {
-      if (['Savi', 'Kali', 'Siri', 'Tili'].includes(seriesParam)) {
-        setSelectedSeries(seriesParam as SeriesFilter);
-      } else if (seriesParam.toLowerCase() === 'digital') {
-        setSelectedSeries('Digital');
-      }
-    }
-    if (gradeParam) {
-      const parsedGrade = parseInt(gradeParam, 10);
-      if ([1, 2, 3, 4, 5, 6].includes(parsedGrade)) {
-        setSelectedGrade(parsedGrade as GradeFilter);
-      }
-    }
     if (seriesParam || gradeParam) {
       setTimeout(() => {
         scrollToCatalogTop();
@@ -94,28 +100,35 @@ function BooksContent() {
     }
   }, [seriesParam, gradeParam]);
 
+  // Filter out non-academic/spoken books (e.g. Class 0 A Destination to Speak Kannada) from Purchase Books catalog
+  const academicBooksList = useMemo(() => {
+    return booksList.filter(
+      (b) => b.series !== 'Spoken' && b.slug !== 'a-destination-to-speak-kannada' && b.gradeClass > 0
+    );
+  }, [booksList]);
+
   // Product series counts
   const seriesCounts = useMemo(() => {
     return {
-      all: booksList.length + 1,
-      savi: booksList.filter((b) => b.series === 'Savi').length,
-      kali: booksList.filter((b) => b.series === 'Kali').length,
-      siri: booksList.filter((b) => b.series === 'Siri').length,
-      tili: booksList.filter((b) => b.series === 'Tili').length,
+      all: academicBooksList.length + 1,
+      savi: academicBooksList.filter((b) => b.series === 'Savi').length,
+      kali: academicBooksList.filter((b) => b.series === 'Kali').length,
+      siri: academicBooksList.filter((b) => b.series === 'Siri').length,
+      tili: academicBooksList.filter((b) => b.series === 'Tili').length,
       digital: 1,
     };
-  }, [booksList]);
+  }, [academicBooksList]);
 
   // Filtered physical books
   const filteredPhysicalBooks = useMemo(() => {
     if (selectedSeries === 'Digital') return [];
 
-    return booksList.filter((book) => {
+    return academicBooksList.filter((book) => {
       const matchesSeries = selectedSeries === 'All' || book.series === selectedSeries;
       const matchesGrade = selectedGrade === 'All' || book.gradeClass === selectedGrade;
       return matchesSeries && matchesGrade;
     });
-  }, [booksList, selectedSeries, selectedGrade]);
+  }, [academicBooksList, selectedSeries, selectedGrade]);
 
   // Digital Class 6 Book matching
   const showDigitalClass6 = useMemo(() => {

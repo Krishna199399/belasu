@@ -232,8 +232,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = () => {
             <div className="flex-1 flex flex-col items-center group/govt min-w-0 max-w-[125px] xs:max-w-[145px] sm:max-w-[240px] lg:max-w-[290px]">
               <div className="mb-1 sm:mb-1.5 inline-flex items-center gap-0.5 sm:gap-1 bg-emerald-50 border border-emerald-300 text-emerald-900 font-extrabold px-1.5 sm:px-2.5 py-0.5 rounded-full text-[8.5px] sm:text-[11px] shadow-2xs whitespace-nowrap">
                 <span>🏛️</span>
-                <span className="hidden xs:inline">School Textbook</span>
-                <span className="xs:hidden">Textbook</span>
+                <span>Kannada Textbook</span>
               </div>
               <div className="relative w-full aspect-[3/4] flex items-center justify-center group-hover/govt:-translate-y-1.5 transition-all duration-300">
                 <img

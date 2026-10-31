@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth';
 import { createAdminClient } from '@/lib/supabase';
 import { deductStockOnOrder } from '@/lib/inventory';
 import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
+import { SHIPPING_FEE } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
       paymentMethod = 'Credit Card/Debit Card/NetBanking',
       paymentId,
       razorpayOrderId,
-      shippingFee = 45,
+      shippingFee = SHIPPING_FEE,
       customerEmail,
       customerPhone,
       customerName,

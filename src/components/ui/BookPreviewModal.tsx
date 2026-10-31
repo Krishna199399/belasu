@@ -452,18 +452,21 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
                 <div className="font-bold text-amber-950 uppercase tracking-wider text-[10px]">
                   What This Guidebook Provides:
                 </div>
-                <div className="flex items-start gap-2 text-slate-800">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Line-by-line parallel English translations</span>
-                </div>
-                <div className="flex items-start gap-2 text-slate-800">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Full textbook exercises with solved model answers</span>
-                </div>
-                <div className="flex items-start gap-2 text-slate-800">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Karnataka School Textbook Aligned</span>
-                </div>
+                {(book.features && book.features.length > 0
+                  ? book.features
+                  : [
+                      'Kannada to English conversation for Pronunciation',
+                      'Kannada text meaningfully translated to English',
+                      'Covers all Exercises with Answers',
+                      'Synopsis in English for Lessons',
+                      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.',
+                    ]
+                ).map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-2 text-slate-800 leading-snug">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </div>
+                ))}
               </div>
 
               {/* Current Preview Explanation */}
