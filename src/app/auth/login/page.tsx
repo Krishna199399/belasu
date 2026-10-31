@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
@@ -120,20 +121,40 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
         className="pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 bg-orange-200/30 rounded-full blur-3xl"
       />
 
-      <div className="relative w-full max-w-md mx-auto">
-        {/* Belesu Brand Logo Header */}
-        <div className="text-center mb-6">
-          <Link href="/" className="inline-block transition hover:opacity-90">
-            <img
-              src="/Belesu-logo1.png"
-              alt="Belesu Logo"
-              className="h-12 sm:h-14 mx-auto object-contain"
-            />
-          </Link>
-        </div>
+      <div className="relative w-full max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          {/* Left Column: Matching Belesu Visual Comparison Banner */}
+          <div className="order-2 lg:order-1 lg:col-span-7 flex flex-col items-center">
+            <div className="w-full max-w-lg lg:max-w-none bg-white rounded-3xl p-3 sm:p-4 border border-amber-200/80 shadow-2xl shadow-amber-900/10 overflow-hidden group">
+              <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-stone-100">
+                <Image
+                  src="/login-banner.jpg"
+                  alt="Your Child Studies: Kannada Text Book Class 1 to 6 - Belesu Kannada Guide Book Comparison"
+                  width={1024}
+                  height={1024}
+                  priority
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                />
+              </div>
+            </div>
+          </div>
 
-        {/* Interactive Sign In Card */}
-        <div className="bg-white/95 backdrop-blur-xl border border-amber-200/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-amber-900/10 transition-all">
+          {/* Right Column: Sign In Card */}
+          <div className="order-1 lg:order-2 lg:col-span-5 w-full max-w-md mx-auto">
+            {/* Belesu Brand Logo Header */}
+            <div className="text-center mb-6">
+              <Link href="/" className="inline-block transition hover:opacity-90">
+                <img
+                  src="/Belesu-logo1.png"
+                  alt="Belesu Logo"
+                  className="h-12 sm:h-14 mx-auto object-contain"
+                />
+              </Link>
+            </div>
+
+            {/* Interactive Sign In Card */}
+            <div className="bg-white/95 backdrop-blur-xl border border-amber-200/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-amber-900/10 transition-all">
               
               {/* Card Header */}
               <div className="text-center space-y-2.5 pb-6 border-b border-stone-100">
@@ -398,5 +419,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
             </div>
           </div>
         </div>
+      </div>
+    </div>
   );
 }

@@ -23,17 +23,20 @@ import {
   Briefcase,
   Heart,
   GraduationCap,
-  MapPin,
   ShoppingBag as CartIcon,
   Navigation,
+  Eye,
 } from 'lucide-react';
 import Link from 'next/link';
 import { BookProduct } from '@/types';
 import toast from 'react-hot-toast';
+import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
 
 export default function DestinationToSpeakKannadaPage() {
   const { addToCart, openCart } = useCart();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewPageIndex, setPreviewPageIndex] = useState(0);
 
   // Find book in BOOKS_DATA or fallback
   const book: BookProduct =
@@ -191,9 +194,57 @@ export default function DestinationToSpeakKannadaPage() {
       ══════════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 via-white to-stone-50 py-10 lg:py-16 border-b border-stone-200">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             
-            {/* Left: Book Details & CTAs */}
+            {/* Book Visual Presentation / Showcase (First on mobile, Left col on desktop) */}
+            <div className="lg:col-span-5 flex flex-col items-center w-full">
+              <div className="relative group w-full max-w-[340px] sm:max-w-[380px]">
+                
+                {/* Glow Backdrop */}
+                <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/20 to-orange-400/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500"></div>
+
+                {/* Cover Presentation Box */}
+                <div className="relative rounded-2xl bg-white p-3.5 sm:p-6 shadow-2xl border border-stone-200 flex flex-col items-center">
+                  <div className="w-full flex items-center justify-between mb-3 px-1">
+                    <span className="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
+                      Spoken Kannada
+                    </span>
+                    <span className="bg-stone-100 text-slate-700 border border-stone-200 text-xs font-bold px-2.5 py-1 rounded-full">
+                      23 Chapters
+                    </span>
+                  </div>
+
+                  <div className="w-full aspect-[3/4] flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl overflow-hidden rounded-xl bg-amber-50/40">
+                    <img
+                      src="/covers/a-destination-to-speak-kannada.png"
+                      alt="A Destination to Speak Kannada - Book Cover"
+                      className="w-full h-full max-h-[460px] object-contain rounded-xl"
+                    />
+                  </div>
+
+                  <div className="w-full pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-xs text-slate-600 font-semibold px-1">
+                    <span>Illustrated Practical Guide</span>
+                    <span className="text-amber-700 font-bold">Price: ₹295</span>
+                  </div>
+
+                  {/* Secondary CTA: Preview Inside */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPreviewPageIndex(0);
+                      setIsPreviewOpen(true);
+                    }}
+                    className="w-full min-h-[44px] mt-3 py-3 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold text-xs border border-amber-300 shadow-xs flex items-center justify-center gap-2 transition cursor-pointer active:scale-98"
+                  >
+                    <Eye className="w-4 h-4 text-amber-600" />
+                    <span>Preview Inside (3 Sample Pages)</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Book Details & CTAs */}
             <div className="lg:col-span-7 space-y-6">
               
               {/* Badges */}
@@ -222,7 +273,7 @@ export default function DestinationToSpeakKannadaPage() {
               </div>
 
               {/* Price & Delivery Card */}
-              <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-sm inline-flex flex-wrap items-baseline gap-4">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-stone-200 shadow-sm flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl sm:text-4xl font-black text-slate-900">₹295</span>
                   <span className="text-base text-slate-400 line-through">₹350</span>
@@ -232,7 +283,7 @@ export default function DestinationToSpeakKannadaPage() {
                 </div>
                 <div className="h-4 w-px bg-stone-200 hidden sm:block"></div>
                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                  <Truck className="w-4 h-4 text-amber-600" />
+                  <Truck className="w-4 h-4 text-amber-600 shrink-0" />
                   <span>Physical book • Estimated delivery: 3–5 business days</span>
                 </div>
               </div>
@@ -251,10 +302,22 @@ export default function DestinationToSpeakKannadaPage() {
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button
                   onClick={handleBuyNow}
-                  className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-base font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all transform active:scale-[0.99] shadow-lg shadow-amber-500/25 cursor-pointer"
+                  className="flex-1 min-h-[48px] inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-xl text-base font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all transform active:scale-[0.99] shadow-lg shadow-amber-500/25 cursor-pointer"
                 >
                   <ShoppingBag className="w-5 h-5 text-slate-950" />
                   <span>Buy Now for ₹295</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewPageIndex(0);
+                    setIsPreviewOpen(true);
+                  }}
+                  className="min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 rounded-xl text-base font-bold bg-white hover:bg-stone-50 text-slate-800 border border-stone-300 hover:border-amber-400 transition-all cursor-pointer shadow-xs active:scale-[0.99]"
+                >
+                  <Eye className="w-5 h-5 text-amber-600" />
+                  <span>Preview Inside (3 Pages)</span>
                 </button>
               </div>
 
@@ -269,41 +332,6 @@ export default function DestinationToSpeakKannadaPage() {
                 </span>
               </div>
 
-            </div>
-
-            {/* Right: Book Visual Presentation */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              <div className="relative group w-full max-w-[360px]">
-                
-                {/* Glow Backdrop */}
-                <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/20 to-orange-400/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500"></div>
-
-                {/* Cover Presentation Box */}
-                <div className="relative rounded-2xl bg-white p-4 sm:p-6 shadow-2xl border border-stone-200 flex flex-col items-center">
-                  <div className="w-full flex items-center justify-between mb-3 px-1">
-                    <span className="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
-                      Spoken Kannada
-                    </span>
-                    <span className="bg-stone-100 text-slate-700 border border-stone-200 text-xs font-bold px-2.5 py-1 rounded-full">
-                      23 Chapters
-                    </span>
-                  </div>
-
-                  <div className="w-full aspect-[3/4] flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl overflow-hidden rounded-xl bg-amber-50/40">
-                    <img
-                      src="/covers/a-destination-to-speak-kannada.png"
-                      alt="A Destination to Speak Kannada - Book Cover"
-                      className="w-full h-full max-h-[460px] object-contain rounded-xl"
-                    />
-                  </div>
-
-                  <div className="w-full pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-xs text-slate-600 font-semibold px-1">
-                    <span>Illustrated Practical Guide</span>
-                    <span className="text-amber-700 font-bold">Price: ₹295</span>
-                  </div>
-                </div>
-
-              </div>
             </div>
 
           </div>
@@ -435,7 +463,97 @@ export default function DestinationToSpeakKannadaPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════════
-          5. WHO CAN BENEFIT FROM THIS BOOK? (H2 & 6 PERSONAS)
+          5. SAMPLE PAGES PREVIEW (PEEK INSIDE THE BOOK)
+      ══════════════════════════════════════════════════════════════════════════ */}
+      <section className="py-14 sm:py-20 bg-white border-b border-stone-200">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center space-y-4 mb-12 sm:mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-800 border border-amber-300">
+              <Eye className="w-3.5 h-3.5 text-amber-600" />
+              Verified Sample Pages
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+              Peek Inside &ldquo;A Destination to Speak Kannada&rdquo;
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+              Explore authentic excerpts from the guidebook showing conversational scenarios, English translations, phonetic pronunciations, and Kannada script. Click any page to open the interactive reader.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {book.samplePages?.map((page, idx) => (
+              <div
+                key={page.pageNumber}
+                onClick={() => {
+                  setPreviewPageIndex(idx);
+                  setIsPreviewOpen(true);
+                }}
+                className="group bg-stone-50/70 hover:bg-white rounded-2xl p-4 border border-stone-200 hover:border-amber-400 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-full shadow-2xs">
+                      Page {page.pageNumber}
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1 group-hover:text-amber-700 transition">
+                      <Eye className="w-3.5 h-3.5 text-amber-600" /> Click to Expand
+                    </span>
+                  </div>
+
+                  <div className="aspect-[3/4] rounded-xl overflow-hidden bg-white border border-stone-200 mb-4 relative shadow-xs flex items-center justify-center p-1">
+                    <img
+                      src={page.imageUrl}
+                      alt={page.title}
+                      className="w-full h-full object-contain group-hover:scale-103 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-colors flex items-center justify-center rounded-xl">
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 text-white font-bold text-xs px-3.5 py-2 rounded-full backdrop-blur-xs flex items-center gap-1.5 shadow-xl">
+                        <Eye className="w-3.5 h-3.5 text-amber-400" /> Read Full Page
+                      </span>
+                    </div>
+                  </div>
+
+                  <h3 className="font-bold text-slate-900 text-sm mb-1.5 group-hover:text-amber-700 transition">
+                    {page.title}
+                  </h3>
+                  {page.kannadaText && (
+                    <p className="text-xs text-slate-700 font-medium mb-1">
+                      {page.kannadaText}
+                    </p>
+                  )}
+                  {page.englishTranslation && (
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      {page.englishTranslation}
+                    </p>
+                  )}
+                </div>
+
+                <div className="pt-3 mt-3 border-t border-stone-200/60 flex items-center justify-between text-xs font-bold text-amber-700">
+                  <span>Open in Fullscreen Reader</span>
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setPreviewPageIndex(0);
+                setIsPreviewOpen(true);
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer active:scale-98"
+            >
+              <Eye className="w-4 h-4 text-slate-950" />
+              <span>Launch Interactive 3-Page Preview</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════════
+          6. WHO CAN BENEFIT FROM THIS BOOK? (H2 & 6 PERSONAS)
       ══════════════════════════════════════════════════════════════════════════ */}
       <section className="py-14 sm:py-20 bg-white">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -615,6 +733,15 @@ export default function DestinationToSpeakKannadaPage() {
           </div>
         </div>
       </section>
+
+      {/* Interactive Sample Pages Preview Modal */}
+      {isPreviewOpen && book && (
+        <BookPreviewModal
+          book={book}
+          initialPageIndex={previewPageIndex}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
 
     </div>
   );

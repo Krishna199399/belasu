@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
       // Keep timestamp fallback
     }
 
-    const orderAmount = Number(amount) || Number(book.price) || 199;
+    const orderAmount = Number(amount) || Number(book.price) || 295;
 
     // 5. Insert into orders table (matching public.orders schema)
     const { data: order, error: orderErr } = await supabase

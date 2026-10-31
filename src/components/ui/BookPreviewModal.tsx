@@ -25,11 +25,16 @@ import toast from 'react-hot-toast';
 interface BookPreviewModalProps {
   book: BookProduct | null;
   onClose: () => void;
+  initialPageIndex?: number;
 }
 
-export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClose }) => {
+export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
+  book,
+  onClose,
+  initialPageIndex = 0,
+}) => {
   const { addToCart, openCart } = useCart();
-  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [currentPageIndex, setCurrentPageIndex] = useState(initialPageIndex);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [prevBookId, setPrevBookId] = useState<string | number | undefined>(book?.id);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -60,7 +65,7 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({ book, onClos
   // Reset state during render when book changes
   if (book && book.id !== prevBookId) {
     setPrevBookId(book.id);
-    setCurrentPageIndex(0);
+    setCurrentPageIndex(initialPageIndex);
     setZoomLevel(1);
   }
 

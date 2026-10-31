@@ -18,7 +18,7 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
   {
     id: 'digital-class-6',
     badge: 'Digital E-Reader',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-300',
     icon: '💻',
     headline: 'New Launch: Class 6 Kannada English-Translated Digital Guidebook is Now Available!',
     ctaText: 'Read Online',
@@ -27,7 +27,7 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
   {
     id: 'spoken-kannada-book',
     badge: 'New Release',
-    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    badgeColor: 'bg-amber-50 text-amber-900 border-amber-300',
     icon: '🗣️',
     headline: 'New Book: "A Destination to Speak Kannada" — Master Everyday Spoken Kannada with Ease',
     ctaText: 'Order Book',
@@ -36,7 +36,7 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
   {
     id: 'vtu-belgaum-office',
     badge: 'Campus Office',
-    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+    badgeColor: 'bg-sky-50 text-sky-800 border-sky-300',
     icon: '🏛️',
     headline: 'Visit Our Operations Office: VRIF, Visvesvaraya Technological University (VTU) Campus, Belgaum',
     ctaText: 'Get Directions',
@@ -84,7 +84,7 @@ export const AnnouncementBar: React.FC = () => {
         <React.Fragment key={`${keyPrefix}-${item.id}`}>
           <Link
             href={item.href}
-            className="group/item inline-flex items-center gap-2 sm:gap-2.5 text-xs text-slate-200 hover:text-white transition whitespace-nowrap"
+            className="group/item inline-flex items-center gap-2 sm:gap-2.5 text-xs text-slate-900 hover:text-black transition whitespace-nowrap"
           >
             {/* Category Badge */}
             <span
@@ -95,19 +95,19 @@ export const AnnouncementBar: React.FC = () => {
             </span>
 
             {/* Headline */}
-            <span className="font-medium text-slate-200 group-hover/item:text-amber-200 transition">
+            <span className="font-semibold text-slate-900 group-hover/item:text-amber-700 transition">
               {item.headline}
             </span>
 
             {/* Direct CTA */}
-            <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-amber-400 group-hover/item:text-amber-300 underline underline-offset-2 ml-1">
+            <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-amber-700 group-hover/item:text-amber-800 underline underline-offset-2 ml-1">
               <span>{item.ctaText}</span>
               <ArrowRight className="w-3 h-3 group-hover/item:translate-x-0.5 transition-transform" />
             </span>
           </Link>
 
           {/* Decorative Rolling Separator */}
-          <span className="text-amber-500/50 text-[10px] select-none" aria-hidden="true">
+          <span className="text-amber-500 text-[10px] select-none" aria-hidden="true">
             ◆
           </span>
         </React.Fragment>
@@ -118,18 +118,18 @@ export const AnnouncementBar: React.FC = () => {
   return (
     <aside
       aria-label="Website Announcements"
-      className="relative z-40 w-full bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-slate-100 border-t border-slate-800 border-b border-amber-500/30 select-none overflow-hidden pause-hover flex items-center h-9 sm:h-10 shadow-xs"
+      className="relative z-40 w-full bg-white text-slate-900 border-t border-b border-stone-200 select-none overflow-hidden pause-hover flex items-center h-9 sm:h-10 shadow-2xs"
     >
       {/* Left Static Indicator Badge */}
-      <div className="shrink-0 z-20 h-full flex items-center pl-2 sm:pl-3.5 pr-2 bg-gradient-to-r from-slate-950 via-slate-950 to-transparent">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-xs whitespace-nowrap">
+      <div className="shrink-0 z-20 h-full flex items-center pl-2 sm:pl-3.5 pr-2 bg-gradient-to-r from-white via-white to-transparent">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-2xs whitespace-nowrap">
           <Sparkles className="w-3 h-3 text-slate-950 animate-pulse" />
-          <span className="hidden xs:inline">Updates</span>
+          <span className="hidden sm:inline">Updates</span>
         </div>
       </div>
 
       {/* Edge Gradient Mask for Smooth Fade-In on Left */}
-      <div className="absolute left-16 sm:left-24 top-0 bottom-0 w-8 sm:w-12 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-10 sm:left-24 top-0 bottom-0 w-6 sm:w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
 
       {/* Rolling Marquee Tape Container */}
       <div className="flex-1 overflow-hidden flex items-center min-w-0">
@@ -140,14 +140,14 @@ export const AnnouncementBar: React.FC = () => {
       </div>
 
       {/* Edge Gradient Mask for Smooth Fade-Out on Right */}
-      <div className="absolute right-9 sm:right-11 top-0 bottom-0 w-8 sm:w-12 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-9 sm:right-11 top-0 bottom-0 w-6 sm:w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
       {/* Right Dismiss Button */}
-      <div className="shrink-0 z-20 h-full flex items-center pr-2 sm:pr-3 pl-2 bg-gradient-to-l from-slate-950 via-slate-950 to-transparent">
+      <div className="shrink-0 z-20 h-full flex items-center pr-2 sm:pr-3 pl-1.5 bg-gradient-to-l from-white via-white to-transparent">
         <button
           type="button"
           onClick={handleDismiss}
-          className="p-1 rounded-md text-slate-400 hover:text-slate-100 hover:bg-white/10 transition cursor-pointer"
+          className="p-1.5 min-w-[32px] min-h-[32px] rounded-md text-slate-500 hover:text-slate-900 hover:bg-stone-100 transition cursor-pointer flex items-center justify-center"
           aria-label="Dismiss announcement bar"
           title="Dismiss announcement"
         >

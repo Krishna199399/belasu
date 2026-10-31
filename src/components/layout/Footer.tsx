@@ -199,42 +199,48 @@ export const Footer: React.FC = () => {
 
               {openSection === 'digital' && (
                 <div className="pl-6 pr-1 pb-4 pt-1 space-y-2 text-xs animate-in fade-in duration-150">
-                  <ul className="space-y-2 text-slate-600">
-                    <li>
-                      <Link href="/books/siri-kannada-english-translated-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
-                        Class 5 · Siri Kannada
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
-                        Class 5 · Tili Kannada
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/books/a-destination-to-speak-kannada" className="hover:text-amber-800 hover:underline transition">
-                        A Destination to Speak Kannada (Spoken Guide)
-                      </Link>
-                    </li>
-                    <li className="pt-1 border-t border-stone-200/50">
-                      <Link
-                        href="/digital/kannada-class-6-guide"
-                        className="text-indigo-700 font-bold hover:underline flex items-center gap-1.5"
-                      >
-                        <span>Class 6 Digital Guide</span>
-                        <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded uppercase">Live</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/digital" className="hover:text-indigo-800 hover:underline transition">
-                        Digital Readers Hub
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/reader/kannada-class-6-guide?preview=true" className="hover:text-indigo-800 hover:underline transition">
-                        Free 5-Page Preview
-                      </Link>
-                    </li>
-                  </ul>
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 block">Class 5 Series</span>
+                    <ul className="space-y-1.5 text-slate-600">
+                      <li>
+                        <Link href="/books/siri-kannada-english-translated-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
+                          Class 5 · Siri Kannada
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
+                          Class 5 · Tili Kannada
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="pt-1.5 border-t border-stone-200/50 space-y-1">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">Spoken Kannada</span>
+                    <ul className="space-y-1.5 text-slate-600">
+                      <li>
+                        <Link href="/books/a-destination-to-speak-kannada" className="hover:text-amber-800 hover:underline transition flex items-center gap-1.5">
+                          <span>A Destination to Speak Kannada</span>
+                          <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.2 rounded-full uppercase">New</span>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="pt-1.5 border-t border-stone-200/50 space-y-1">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block">Digital Platform</span>
+                    <ul className="space-y-1.5 text-slate-600">
+                      <li>
+                        <Link
+                          href="/digital/kannada-class-6-guide"
+                          className="text-indigo-700 font-bold hover:underline flex items-center gap-1.5"
+                        >
+                          <span>Class 6 Digital Guide</span>
+                          <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded uppercase">Live</span>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               )}
             </div>
@@ -511,7 +517,7 @@ export const Footer: React.FC = () => {
             <div className="space-y-3 text-xs font-medium text-slate-600">
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-slate-800 block mb-1">
-                  Class 5 & Spoken
+                  Class 5 Series
                 </span>
                 <ul className="space-y-1.5">
                   <li>
@@ -524,9 +530,21 @@ export const Footer: React.FC = () => {
                       Class 5 · Tili Kannada
                     </Link>
                   </li>
+                </ul>
+              </div>
+
+              <div className="pt-1.5 border-t border-stone-200/60">
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block mb-1">
+                  Spoken Kannada
+                </span>
+                <ul className="space-y-1.5">
                   <li>
-                    <Link href="/books/a-destination-to-speak-kannada" className="hover:text-amber-700 hover:underline transition">
-                      A Destination to Speak Kannada
+                    <Link
+                      href="/books/a-destination-to-speak-kannada"
+                      className="hover:text-amber-700 hover:underline transition flex items-center gap-1.5"
+                    >
+                      <span>A Destination to Speak Kannada</span>
+                      <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.2 rounded-full uppercase">New</span>
                     </Link>
                   </li>
                 </ul>
@@ -544,16 +562,6 @@ export const Footer: React.FC = () => {
                     >
                       <span>Class 6 Digital Guide</span>
                       <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded-full uppercase">Live</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/digital" className="hover:text-indigo-700 hover:underline transition">
-                      Digital Readers Hub
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/reader/kannada-class-6-guide?preview=true" className="hover:text-indigo-700 hover:underline transition">
-                      Free 5-Page Preview
                     </Link>
                   </li>
                   <li className="pt-1">

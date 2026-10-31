@@ -9,7 +9,7 @@ export const DIGITAL_BOOKS_DATA: DigitalBook[] = [
     subject: 'Kannada',
     gradeClass: 6,
     sku: 'SD6-KN',
-    price: 199,
+    price: 295,
     originalPrice: 349,
     badge: 'Bestseller',
     coverImage: '/digital/class-6-siri/cover.jpeg',

@@ -195,7 +195,7 @@ export default function DigitalClient() {
                   </div>
                   <div className="p-3 bg-white rounded-xl border border-stone-200">
                     <strong className="block text-slate-900 font-bold">Price:</strong>
-                    <span>₹199</span>
+                    <span>₹295</span>
                   </div>
                   <div className="col-span-2 p-3 bg-white rounded-xl border border-stone-200">
                     <strong className="block text-slate-900 font-bold">Access:</strong>

@@ -602,7 +602,32 @@ export const BOOKS_DATA: BookProduct[] = [
       'Part 4: Language Basics, Tenses & Everyday Vocabulary'
     ],
     coverImage: '/covers/a-destination-to-speak-kannada.png',
-    samplePages: [],
+    samplePages: [
+      {
+        pageNumber: 1,
+        title: 'Table of Contents & Curriculum Index',
+        imageUrl: '/previews/A Destination to Speak Kannada/Index.jpg',
+        category: 'Index',
+        kannadaText: 'ಪರಿವಿಡಿ - 23 ಅಧ್ಯಾಯಗಳ ವಿವರ (Table of Contents)',
+        englishTranslation: 'Complete syllabus covering everyday conversations, vocabulary, and grammar.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Chapter 1: Begin your Introduction with Kannada',
+        imageUrl: '/previews/A Destination to Speak Kannada/Chapter-1.jpg',
+        category: 'Poem',
+        kannadaText: 'ಅಧ್ಯಾಯ 1: ಕನ್ನಡದಲ್ಲಿ ನಿಮ್ಮ ಪರಿಚಯ ಪ್ರಾರಂಭಿಸಿ (Introduction with Kannada)',
+        englishTranslation: 'Conversational greetings, English transliteration, phonetic guide, and Kannada script.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Chapter 8: Pride to Ride with Kannada Riders',
+        imageUrl: '/previews/A Destination to Speak Kannada/Chapter-8.png',
+        category: 'Exercises',
+        kannadaText: 'ಅಧ್ಯಾಯ 8: ಆಟೋ ಚಾಲಕರೊಂದಿಗೆ ಸಂಭಾಷಣೆ (Ride with Auto Driver)',
+        englishTranslation: 'Real-world dialogues with auto drivers, fare negotiation, and everyday travel Kannada.'
+      }
+    ],
     inStock: true,
     stockQuantity: 50,
     rating: 4.95,

@@ -4,7 +4,7 @@ import React from 'react';
 export const metadata: Metadata = {
   title: 'Class 6 Kannada Digital Guidebook in English | Belesu',
   description:
-    'Buy the Belesu Class 6 Kannada digital guidebook with English translations, solved exercises and chapter summaries. Get lifetime access for ₹199.',
+    'Buy the Belesu Class 6 Kannada digital guidebook with English translations, solved exercises and chapter summaries. Get lifetime access for ₹295.',
   keywords: [
     'Class 6 Kannada Digital Guidebook',
     'Class 6 Kannada guide',

@@ -223,7 +223,7 @@ export const Navbar: React.FC = () => {
                                   Savi Kannada
                                 </div>
                                 <div className="text-[11px] text-slate-500 font-medium">
-                                  Classes 1–4 · State 1st Language
+                                  Classes 1–4
                                 </div>
                               </div>
                             </div>
@@ -251,7 +251,7 @@ export const Navbar: React.FC = () => {
                                   Kali Kannada
                                 </div>
                                 <div className="text-[11px] text-slate-500 font-medium">
-                                  Classes 1–4 · Innovative Guide
+                                  Classes 1–4
                                 </div>
                               </div>
                             </div>

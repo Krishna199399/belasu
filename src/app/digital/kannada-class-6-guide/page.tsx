@@ -140,7 +140,7 @@ export default function DigitalClass6Page() {
     },
     {
       q: '3. How much does the digital guidebook cost?',
-      a: 'The guidebook costs ₹199, payable once for lifetime digital access.',
+      a: 'The guidebook costs ₹295, payable once for lifetime digital access.',
     },
     {
       q: '4. Can I read the guidebook on my phone?',
@@ -173,117 +173,17 @@ export default function DigitalClass6Page() {
       ══════════════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 via-white to-stone-50 py-10 lg:py-16 border-b border-stone-200">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             
-            {/* Left: Book Details & CTAs */}
-            <div className="lg:col-span-7 space-y-6">
-              
-              {/* Badges */}
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-900 border border-amber-300">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  Karnataka State Board Edition
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  Instant Web Access
-                </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700">
-                  SKU: SD6-KN
-                </span>
-              </div>
-
-              {/* Main Heading H1 */}
-              <div className="space-y-2">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
-                  Class 6 Kannada Digital Guidebook with English Translation
-                </h1>
-                <p className="text-sm sm:text-base font-semibold text-amber-800">
-                  ₹199 | One-Time Payment | Lifetime Digital Access
-                </p>
-              </div>
-
-              {/* Price & Offer Card */}
-              <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-sm inline-flex flex-wrap items-baseline gap-4">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-black text-slate-900">₹199</span>
-                  <span className="text-base text-slate-400 line-through">₹349</span>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                    Save ₹150
-                  </span>
-                </div>
-                <div className="h-4 w-px bg-stone-200 hidden sm:block"></div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                  <Lock className="w-4 h-4 text-amber-600" />
-                  <span>One-time payment • Lifetime digital access • No subscription</span>
-                </div>
-              </div>
-
-              {/* Intro text */}
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                Understand Class 6 Kannada lessons through English translations, solved textbook exercises and chapter summaries. Access your guidebook online through Belesu&apos;s digital reader.
-              </p>
-
-              {/* CTAs */}
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                {isOwned ? (
-                  <Link
-                    href="/reader/kannada-class-6-guide"
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-lg"
-                  >
-                    <BookOpen className="w-5 h-5" />
-                    <span>Open in Web Reader</span>
-                  </Link>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleBuyNow}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all transform active:scale-[0.99] shadow-lg shadow-amber-500/25 cursor-pointer"
-                    >
-                      <ShoppingCart className="w-5 h-5 text-slate-950" />
-                      <span>Buy & Read for ₹199</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleAddToCart}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-base font-bold bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 transition cursor-pointer"
-                    >
-                      <span>Add to Cart</span>
-                    </button>
-                    <Link
-                      href="/reader/kannada-class-6-guide?preview=true"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-base font-bold bg-white hover:bg-stone-50 text-slate-800 border-2 border-stone-300 transition cursor-pointer"
-                    >
-                      <Eye className="w-5 h-5 text-amber-600" />
-                      <span>Preview Free Pages</span>
-                    </Link>
-                  </>
-                )}
-              </div>
-
-              {/* Trust Badges */}
-              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-500 font-medium">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> 100% Secure Web Reader
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <Laptop className="w-4 h-4 text-amber-600" /> Compatible with Phones, Tablets & PC
-                </span>
-              </div>
-
-            </div>
-
-            {/* Right: Book Showcase with Authentic Cover & Sample Scans */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              <div className="relative group w-full max-w-[360px]">
+            {/* Book Showcase with Authentic Cover & Sample Scans (First on mobile, Left col on desktop) */}
+            <div className="lg:col-span-5 flex flex-col items-center w-full">
+              <div className="relative group w-full max-w-[340px] sm:max-w-[380px]">
                 
                 {/* Glow Backdrop */}
                 <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/20 to-orange-400/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500"></div>
 
                 {/* Digital Showcase Card */}
-                <div className="relative rounded-2xl bg-white p-4 sm:p-5 shadow-2xl border border-stone-200 space-y-3">
+                <div className="relative rounded-2xl bg-white p-3.5 sm:p-5 shadow-2xl border border-stone-200 space-y-3 w-full">
                   
                   {/* Stage Image */}
                   <div 
@@ -321,7 +221,7 @@ export default function DigitalClass6Page() {
                   </div>
 
                   {/* Interactive 4-tab dock */}
-                  <div className="grid grid-cols-4 gap-1.5 bg-stone-100/90 p-1 rounded-xl border border-stone-200/80">
+                  <div className="grid grid-cols-4 gap-1 sm:gap-1.5 bg-stone-100/90 p-1 rounded-xl border border-stone-200/80">
                     {PREVIEW_TABS.map((tab) => {
                       const isActive = activePreview.id === tab.id;
                       return (
@@ -329,14 +229,14 @@ export default function DigitalClass6Page() {
                           key={tab.id}
                           type="button"
                           onClick={() => setActivePreview(tab)}
-                          className={`px-1.5 py-1 rounded-lg text-center transition-all cursor-pointer ${
+                          className={`px-1 sm:px-1.5 py-1 rounded-lg text-center transition-all cursor-pointer ${
                             isActive
                               ? 'bg-slate-900 text-white shadow-xs font-bold'
                               : 'text-slate-600 hover:text-slate-950 hover:bg-stone-200/60'
                           }`}
                         >
-                          <div className="text-[11px] leading-tight font-bold">{tab.label}</div>
-                          <div className="text-[9px] text-amber-500 leading-none mt-0.5">{tab.sublabel}</div>
+                          <div className="text-[10px] sm:text-[11px] leading-tight font-bold">{tab.label}</div>
+                          <div className="text-[8px] sm:text-[9px] text-amber-500 leading-none mt-0.5">{tab.sublabel}</div>
                         </button>
                       );
                     })}
@@ -356,6 +256,106 @@ export default function DigitalClass6Page() {
                 </div>
 
               </div>
+            </div>
+
+            {/* Book Details & CTAs (Second on mobile, Right col on desktop) */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* Badges */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-900 border border-amber-300">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  Karnataka State Board Edition
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  Instant Web Access
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700">
+                  SKU: SD6-KN
+                </span>
+              </div>
+
+              {/* Main Heading H1 */}
+              <div className="space-y-2">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                  Class 6 Kannada Digital Guidebook with English Translation
+                </h1>
+                <p className="text-sm sm:text-base font-semibold text-amber-800">
+                  ₹295 | One-Time Payment | Lifetime Digital Access
+                </p>
+              </div>
+
+              {/* Price & Offer Card */}
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-stone-200 shadow-sm flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black text-slate-900">₹295</span>
+                  <span className="text-base text-slate-400 line-through">₹349</span>
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    Save ₹54
+                  </span>
+                </div>
+                <div className="h-4 w-px bg-stone-200 hidden sm:block"></div>
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                  <Lock className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>One-time payment • Lifetime digital access • No subscription</span>
+                </div>
+              </div>
+
+              {/* Intro text */}
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
+                Understand Class 6 Kannada lessons through English translations, solved textbook exercises and chapter summaries. Access your guidebook online through Belesu&apos;s digital reader.
+              </p>
+
+              {/* CTAs */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                {isOwned ? (
+                  <Link
+                    href="/reader/kannada-class-6-guide"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-lg"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    <span>Open in Web Reader</span>
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleBuyNow}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all transform active:scale-[0.99] shadow-lg shadow-amber-500/25 cursor-pointer"
+                    >
+                      <ShoppingCart className="w-5 h-5 text-slate-950" />
+                      <span>Buy & Read for ₹295</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-base font-bold bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 transition cursor-pointer"
+                    >
+                      <span>Add to Cart</span>
+                    </button>
+                    <Link
+                      href="/reader/kannada-class-6-guide?preview=true"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-base font-bold bg-white hover:bg-stone-50 text-slate-800 border-2 border-stone-300 transition cursor-pointer"
+                    >
+                      <Eye className="w-5 h-5 text-amber-600" />
+                      <span>Preview Free Pages</span>
+                    </Link>
+                  </>
+                )}
+              </div>
+
+              {/* Trust Badges */}
+              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-500 font-medium">
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> 100% Secure Web Reader
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Laptop className="w-4 h-4 text-amber-600" /> Compatible with Phones, Tablets & PC
+                </span>
+              </div>
+
             </div>
 
           </div>
@@ -581,7 +581,7 @@ export default function DigitalClass6Page() {
           </p>
 
           <div className="p-3 bg-slate-950/10 rounded-2xl max-w-xs mx-auto">
-            <span className="text-2xl sm:text-3xl font-black text-slate-950 block">Price: ₹199</span>
+            <span className="text-2xl sm:text-3xl font-black text-slate-950 block">Price: ₹295</span>
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -601,7 +601,7 @@ export default function DigitalClass6Page() {
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-base sm:text-lg font-black bg-slate-950 hover:bg-slate-900 text-white transition-all transform active:scale-95 shadow-xl cursor-pointer"
                 >
                   <ShoppingCart className="w-5 h-5 text-amber-400" />
-                  <span>Buy & Read for ₹199</span>
+                  <span>Buy & Read for ₹295</span>
                 </button>
                 <button
                   type="button"
@@ -701,20 +701,20 @@ export default function DigitalClass6Page() {
       )}
 
       {/* Mobile Sticky Bottom Purchase Bar */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-stone-200 px-4 py-3 pb-safe z-40 shadow-xl flex items-center justify-between gap-3">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-stone-200 px-3 sm:px-4 py-2.5 sm:py-3 pb-safe z-40 shadow-xl flex items-center justify-between gap-2 sm:gap-3">
         <div className="min-w-0">
-          <div className="text-lg sm:text-xl font-black text-slate-900 leading-tight">
-            ₹199
+          <div className="text-base sm:text-xl font-black text-slate-900 leading-tight">
+            ₹295
           </div>
           <div className="text-[10px] sm:text-[11px] font-bold text-amber-700 truncate">
-            {isOwned ? 'In Your Library' : 'Lifetime Digital Access'}
+            {isOwned ? 'In Your Library' : 'Lifetime Access'}
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {isOwned ? (
             <Link
               href="/reader/kannada-class-6-guide"
-              className="min-h-[44px] px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition"
+              className="min-h-[44px] px-4 sm:px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition"
             >
               <BookOpen className="w-4 h-4" />
               <span>Read Now</span>
@@ -723,16 +723,16 @@ export default function DigitalClass6Page() {
             <>
               <Link
                 href="/reader/kannada-class-6-guide?preview=true"
-                className="min-h-[44px] min-w-[40px] px-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1 transition"
+                className="min-h-[44px] min-w-[38px] px-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1 transition"
                 aria-label="Preview free pages"
               >
                 <BookOpen className="w-4 h-4 text-amber-600" />
-                <span className="hidden xs:inline">Preview</span>
+                <span className="hidden sm:inline">Preview</span>
               </Link>
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="min-h-[44px] px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold text-xs flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
+                className="min-h-[44px] px-2.5 sm:px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold text-xs flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
               >
                 <ShoppingCart className="w-3.5 h-3.5" />
                 <span>Add</span>
@@ -740,7 +740,7 @@ export default function DigitalClass6Page() {
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="min-h-[44px] px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
+                className="min-h-[44px] px-3 sm:px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
               >
                 <span>Buy Now</span>
                 <ArrowRight className="w-3.5 h-3.5" />
