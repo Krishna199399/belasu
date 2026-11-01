@@ -17,7 +17,6 @@ export default function CheckoutPage() {
   const { cart, subtotal, clearCart, hasPhysicalBooks, hasDigitalBooks, getPhysicalItems, getDigitalItems, needsShipping } = useCart();
   const { user, isLoading: authLoading, refreshUser } = useAuth();
   
-  const [paymentMethod, setPaymentMethod] = useState<'Razorpay' | 'COD'>('Razorpay');
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
@@ -89,7 +88,7 @@ export default function CheckoutPage() {
           slug: item.product.slug,
         })),
         shippingAddressId: currentAddress?.id,
-        paymentMethod: paymentMethod === 'Razorpay' ? 'Razorpay - Online Payment' : 'Cash on Delivery',
+        paymentMethod: 'Razorpay - Online Payment',
         paymentId,
         razorpayOrderId,
         shippingFee,
@@ -164,26 +163,21 @@ export default function CheckoutPage() {
     setIsProcessing(true);
 
     try {
-      if (paymentMethod === 'Razorpay') {
-        // Initiate Razorpay payment
-        await initiatePayment({
-          amount: grandTotal,
-          description: `Order for ${cart.length} item(s)`,
-          notes: {
-            items: cart.length,
-            hasPhysical: hasPhysicalBooks(),
-            hasDigital: hasDigitalBooks(),
-          },
-          prefill: {
-            name: (currentAddress ? `${currentAddress.firstName} ${currentAddress.lastName}`.trim() : digitalName.trim()) || user?.name || '',
-            email: currentAddress?.email || digitalEmail.trim() || user?.email || '',
-            contact: currentAddress?.phone || digitalPhone.trim() || user?.phone || '',
-          },
-        });
-      } else {
-        // COD order - create directly
-        await createOrder();
-      }
+      // Initiate Razorpay online payment
+      await initiatePayment({
+        amount: grandTotal,
+        description: `Order for ${cart.length} item(s)`,
+        notes: {
+          items: cart.length,
+          hasPhysical: hasPhysicalBooks(),
+          hasDigital: hasDigitalBooks(),
+        },
+        prefill: {
+          name: (currentAddress ? `${currentAddress.firstName} ${currentAddress.lastName}`.trim() : digitalName.trim()) || user?.name || '',
+          email: currentAddress?.email || digitalEmail.trim() || user?.email || '',
+          contact: currentAddress?.phone || digitalPhone.trim() || user?.phone || '',
+        },
+      });
     } catch (error) {
       console.error('Order placement error:', error);
       alert('Failed to place order. Please try again.');
@@ -277,7 +271,7 @@ export default function CheckoutPage() {
             </div>
             <div className="flex justify-between">
               <span>Payment:</span>
-              <span className="font-bold text-amber-700">{paymentMethod}</span>
+              <span className="font-bold text-amber-700">Online (Razorpay)</span>
             </div>
             <div className="flex justify-between">
               <span>Total Amount:</span>
@@ -484,53 +478,32 @@ export default function CheckoutPage() {
                   <CreditCard className="w-5 h-5 text-amber-600" /> Payment Method
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  {[
-                    { id: 'Razorpay', label: 'Online Payment', desc: 'UPI, Card, Net Banking, Wallets', icon: '💳' },
-                    { id: 'COD', label: 'Cash on Delivery', desc: hasPhysicalBooks() ? 'Pay upon delivery' : 'Not available for digital', disabled: !hasPhysicalBooks(), icon: '💵' },
-                  ].map((method) => (
-                    <button
-                      key={method.id}
-                      type="button"
-                      onClick={() => !method.disabled && setPaymentMethod(method.id as 'Razorpay' | 'COD')}
-                      disabled={method.disabled}
-                      className={`min-h-[56px] p-4 sm:p-5 rounded-2xl border text-left transition cursor-pointer active:scale-98 ${
-                        paymentMethod === method.id
-                          ? 'border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20 shadow-xs'
-                          : method.disabled
-                          ? 'border-slate-200 bg-slate-100 opacity-50 cursor-not-allowed'
-                          : 'border-slate-200 hover:border-slate-300 bg-slate-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">{method.icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <span className="font-bold text-xs sm:text-sm text-slate-900 block">{method.label}</span>
-                          <span className="text-[11px] sm:text-xs text-slate-600 block truncate">{method.desc}</span>
-                        </div>
-                        {paymentMethod === method.id && (
-                          <CheckCircle2 className="w-5 h-5 text-amber-600 shrink-0" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                {paymentMethod === 'Razorpay' && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5 sm:p-4 text-left">
-                    <div className="flex items-start gap-3">
-                      <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-xs font-bold text-blue-900 mb-1">
-                          🔒 Secure Payment via Razorpay
-                        </p>
-                        <p className="text-xs text-blue-700 leading-relaxed">
-                          Your payment information is encrypted and secure. We support UPI, Credit/Debit Cards, Net Banking, and digital wallets.
-                        </p>
+                <div className="p-4 sm:p-5 rounded-2xl border border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20 shadow-xs">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">💳</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="font-bold text-xs sm:text-sm text-slate-900 block">Online Payment</span>
+                        <span className="text-[11px] sm:text-xs text-slate-600 block">UPI (Google Pay, PhonePe, Paytm), Cards, Net Banking, Wallets</span>
                       </div>
                     </div>
+                    <CheckCircle2 className="w-5 h-5 text-amber-600 shrink-0" />
                   </div>
-                )}
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5 sm:p-4 text-left">
+                  <div className="flex items-start gap-3">
+                    <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-bold text-blue-900 mb-1">
+                        🔒 Secure Payment via Razorpay
+                      </p>
+                      <p className="text-xs text-blue-700 leading-relaxed">
+                        Your payment information is encrypted and secure. We support UPI, Credit/Debit Cards, Net Banking, and digital wallets.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
             </div>
@@ -692,12 +665,12 @@ export default function CheckoutPage() {
                   {isProcessing || paymentLoading ? (
                     <>
                       <Loader className="w-5 h-5 animate-spin" /> 
-                      {paymentMethod === 'Razorpay' ? 'Opening Payment Gateway...' : 'Processing...'}
+                      Opening Payment Gateway...
                     </>
                   ) : (
                     <>
                       <ShieldCheck className="w-5 h-5" /> 
-                      {paymentMethod === 'Razorpay' ? 'Pay Now' : 'Place Order'} ({formatPrice(grandTotal)})
+                      Pay Now ({formatPrice(grandTotal)})
                     </>
                   )}
                 </button>
@@ -717,7 +690,7 @@ export default function CheckoutPage() {
                   {formatPrice(grandTotal)}
                 </div>
                 <div className="text-[10px] sm:text-[11px] font-bold text-slate-500 truncate">
-                  {paymentMethod === 'Razorpay' ? 'Razorpay Secure' : 'Cash on Delivery'}
+                  Razorpay Secure
                 </div>
               </div>
               <button
@@ -730,7 +703,7 @@ export default function CheckoutPage() {
                 ) : (
                   <ShieldCheck className="w-4 h-4" />
                 )}
-                <span>{paymentMethod === 'Razorpay' ? 'Pay Now' : 'Place Order'}</span>
+                <span>Pay Now</span>
               </button>
             </div>
 

@@ -25,7 +25,7 @@ export default function FAQsPage() {
     },
     {
       question: 'What payment methods do you accept?',
-      answer: 'We accept all major UPI apps (Google Pay, PhonePe, Paytm), Credit/Debit Cards, Net Banking, and Cash on Delivery (COD).'
+      answer: 'We accept all major UPI apps (Google Pay, PhonePe, Paytm), Credit/Debit Cards, Net Banking, and digital wallets through our 100% secure Razorpay gateway.'
     },
     {
       question: 'Can I order books in bulk for a school or learning center?',

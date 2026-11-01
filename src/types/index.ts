@@ -78,7 +78,7 @@ export interface OrderDetails {
   city: string;
   state: string;
   pincode: string;
-  paymentMethod: 'UPI' | 'Card' | 'COD';
+  paymentMethod: 'Razorpay' | 'UPI' | 'Card' | string;
   items: CartItem[];
   subtotal: number;
   shippingFee: number;
