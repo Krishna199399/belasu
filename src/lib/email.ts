@@ -255,6 +255,44 @@ function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNotice = 
 }
 
 /**
+ * Resolves the admin notification recipient emails.
+ * Supports comma-separated strings in ADMIN_NOTIFICATION_EMAIL.
+ * Guarantees that orderforbelesu@gmail.com and rosemeary45@gmail.com are included
+ * so alerts always reach both administrative addresses even if VPS env variables vary.
+ */
+export function getAdminRecipients(): string[] {
+  const envVal = process.env.ADMIN_NOTIFICATION_EMAIL;
+  const emails: string[] = [];
+
+  if (envVal && envVal.trim()) {
+    envVal.split(',').forEach((e) => {
+      const trimmed = e.trim().toLowerCase();
+      if (trimmed && !emails.includes(trimmed)) {
+        emails.push(trimmed);
+      }
+    });
+  }
+
+  // Always ensure both client and store management addresses are included
+  const defaultRecipients = ['orderforbelesu@gmail.com', 'rosemeary45@gmail.com'];
+  for (const def of defaultRecipients) {
+    if (!emails.includes(def)) {
+      emails.push(def);
+    }
+  }
+
+  // Include SMTP_USER if configured
+  if (process.env.SMTP_USER) {
+    const smtpUser = process.env.SMTP_USER.trim().toLowerCase();
+    if (smtpUser && !emails.includes(smtpUser)) {
+      emails.push(smtpUser);
+    }
+  }
+
+  return emails;
+}
+
+/**
  * Sends an email notification to the store administrator / client on every new order.
  * Safe & non-blocking: Never throws, logs warnings if SMTP is unconfigured.
  */
@@ -271,9 +309,9 @@ export async function sendAdminOrderNotification(
       return { success: false, error: 'SMTP credentials not configured in .env.local' };
     }
 
-    const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER;
-    if (!adminEmail) {
-      console.warn(`[email] No ADMIN_NOTIFICATION_EMAIL specified.`);
+    const recipients = getAdminRecipients();
+    if (recipients.length === 0) {
+      console.warn(`[email] No admin notification recipients configured.`);
       return { success: false, error: 'No recipient email configured' };
     }
 
@@ -282,14 +320,19 @@ export async function sendAdminOrderNotification(
 
     const html = buildOrderNotificationHtml(payload, true);
 
+    console.log(`[email] Dispatching admin notification for order #${payload.orderNumber} to:`, recipients);
+
     const info = await transporter.sendMail({
       from: senderEmail,
-      to: adminEmail,
+      to: recipients,
       subject,
       html,
     });
 
-    console.log(`[email] Admin notification sent successfully for order #${payload.orderNumber}. MessageId: ${info.messageId}`);
+    console.log(
+      `[email] Admin notification sent successfully for order #${payload.orderNumber}. ` +
+      `MessageId: ${info.messageId}, Accepted: ${JSON.stringify(info.accepted)}, Rejected: ${JSON.stringify(info.rejected)}`
+    );
     return { success: true, messageId: info.messageId };
   } catch (error: unknown) {
     const errorMsg = error instanceof Error ? error.message : String(error);
