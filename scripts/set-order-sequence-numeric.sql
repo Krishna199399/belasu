@@ -17,3 +17,4 @@ ALTER SEQUENCE public.order_number_seq RESTART WITH 23401;
 
 -- 3. Verify next number
 SELECT public.generate_order_number();
+
