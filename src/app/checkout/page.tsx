@@ -18,8 +18,7 @@ export default function CheckoutPage() {
   const { user, isLoading: authLoading, refreshUser } = useAuth();
   
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-  const [orderPlaced, setOrderPlaced] = useState(false);
-  const [orderId, setOrderId] = useState('');
+  const [isNavigatingToSuccess, setIsNavigatingToSuccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [verifiedBook, setVerifiedBook] = useState(false);
@@ -67,12 +66,12 @@ export default function CheckoutPage() {
     },
   });
 
-  // Redirect if cart is empty
+  // Redirect if cart is empty (unless routing to dedicated order success page)
   useEffect(() => {
-    if (!authLoading && cart.length === 0) {
+    if (!authLoading && cart.length === 0 && !isNavigatingToSuccess) {
       router.push('/cart');
     }
-  }, [cart.length, authLoading, router]);
+  }, [cart.length, authLoading, router, isNavigatingToSuccess]);
 
   // Create order after payment success
   const createOrder = async (paymentId?: string, razorpayOrderId?: string) => {
@@ -105,12 +104,13 @@ export default function CheckoutPage() {
 
       const data = await response.json();
 
-      if (data.success) {
-        setOrderId(data.order.orderNumber);
-        setOrderPlaced(true);
+      if (data.success && data.order?.orderNumber) {
+        setIsNavigatingToSuccess(true);
         clearCart();
         // Refresh user data to get updated purchased_books
         await refreshUser();
+        // Route immediately to dedicated Thank You / Order Success page
+        router.replace(`/order-success/${encodeURIComponent(data.order.orderNumber)}`);
       } else {
         throw new Error(data.error || 'Failed to create order');
       }
@@ -244,106 +244,6 @@ export default function CheckoutPage() {
           >
             ← Back to Cart
           </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (orderPlaced) {
-    return (
-      <div className="py-20 bg-slate-50 min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-emerald-200 shadow-2xl text-center space-y-6 animate-in zoom-in-95 duration-300">
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-12 h-12" />
-          </div>
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Order Confirmed
-            </span>
-            <h2 className="text-2xl font-black text-slate-900 mt-3">Thank You for Your Order!</h2>
-            <p className="text-xs text-slate-600 mt-1">Order ID: <strong className="text-slate-900 font-mono">{orderId}</strong></p>
-          </div>
-
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left text-xs space-y-2 text-slate-700">
-            <div className="flex justify-between">
-              <span>Customer:</span>
-              <span className="font-bold">{user?.phone}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Payment:</span>
-              <span className="font-bold text-amber-700">Online (Razorpay)</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Total Amount:</span>
-              <span className="font-bold text-emerald-700">{formatPrice(grandTotal)}</span>
-            </div>
-            {hasPhysicalBooks() && (
-              <div className="pt-2 border-t text-[11px] text-slate-500">
-                📦 Hard copy books will be dispatched within 24 hours to your selected address.
-              </div>
-            )}
-          </div>
-
-          {/* Digital Books Section with Reader Links */}
-          {hasDigitalBooks() && digitalItems.length > 0 && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-5 text-left">
-              <div className="flex items-center gap-2 mb-3">
-                <BookOpen className="w-5 h-5 text-blue-600" />
-                <h3 className="font-bold text-blue-900">Your Digital Books Are Ready!</h3>
-              </div>
-              <p className="text-xs text-blue-700 mb-4">
-                Start reading instantly. Your books are now in your library with lifetime access.
-              </p>
-              <div className="space-y-2">
-                {digitalItems.map((item) => (
-                  <Link
-                    key={item.product.id}
-                    href={`/reader/${item.product.slug}`}
-                    className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-200 hover:border-blue-400 hover:shadow-md transition group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded flex items-center justify-center flex-shrink-0">
-                        <BookOpen className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-slate-900 line-clamp-1">
-                          {item.product.title}
-                        </p>
-                        <p className="text-[10px] text-slate-500">
-                          {'subject' in item.product ? item.product.subject : 'Digital Book'}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 text-blue-600 group-hover:text-blue-700">
-                      <span className="text-xs font-semibold">Open Reader</span>
-                      <ArrowLeft className="w-4 h-4 rotate-180" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              <Link
-                href="/library"
-                className="block text-center mt-4 text-xs text-blue-700 hover:text-blue-900 font-semibold transition"
-              >
-                View All in Library →
-              </Link>
-            </div>
-          )}
-
-          <div className="flex gap-3">
-            <Link
-              href="/library"
-              className="flex-1 py-3 px-4 rounded-xl font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition text-xs text-center"
-            >
-              View Library
-            </Link>
-            <Link
-              href="/"
-              className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition text-xs shadow-md text-center"
-            >
-              Continue Shopping
-            </Link>
-          </div>
         </div>
       </div>
     );
