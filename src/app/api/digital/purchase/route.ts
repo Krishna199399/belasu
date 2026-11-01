@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
     const billingEmail = defaultAddr?.email || finalEmail || null;
 
     // Generate valid order number using DB sequence or fallback
-    let orderNumber = `BLS-${Date.now()}`;
+    let orderNumber = `${Date.now()}`;
     try {
       const { data: orderNumData } = await supabase.rpc('generate_order_number');
       if (orderNumData) {
