@@ -1,10 +1,11 @@
 'use client';
 
-import { use, useEffect, useState, useRef } from 'react';
+import { use, useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { loadMsg91OtpScript } from '@/lib/msg91';
 import {
   Phone,
   ShieldCheck,
@@ -22,7 +23,7 @@ type Step = 'phone' | 'otp';
 
 export default function LoginPage({ searchParams }: { searchParams: Promise<{ redirect?: string }> }) {
   const { redirect: redirectTo } = use(searchParams);
-  const { sendOtp, verifyOtp, user } = useAuth();
+  const { sendOtp, verifyOtp, loginWithMsg91Token, user } = useAuth();
   const router = useRouter();
 
   const [step, setStep] = useState<Step>('phone');
@@ -33,6 +34,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   const [error, setError] = useState('');
   const [devMessage, setDevMessage] = useState('');
   const [resendCountdown, setResendCountdown] = useState(0);
+  const [otpMethod, setOtpMethod] = useState<'msg91' | 'fallback'>('msg91');
 
   const otpInputRef = useRef<HTMLInputElement>(null);
 
@@ -42,6 +44,29 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
       router.replace(redirectTo || '/library');
     }
   }, [user, redirectTo, router]);
+
+  // Pre-load MSG91 OTP Widget Script
+  useEffect(() => {
+    loadMsg91OtpScript(
+      async (data: unknown) => {
+        const resData = data as Record<string, unknown>;
+        const accessToken = (resData?.['access-token'] || resData?.message || resData?.token || data) as string;
+        if (accessToken && typeof accessToken === 'string') {
+          setIsLoading(true);
+          const result = await loginWithMsg91Token(phone, accessToken, name.trim());
+          setIsLoading(false);
+          if (result.success) {
+            router.replace(redirectTo || '/library');
+          } else {
+            setError(result.error || 'Login verification failed. Please try again.');
+          }
+        }
+      },
+      (err: unknown) => {
+        console.warn('[MSG91] Widget script notification:', err);
+      }
+    );
+  }, [phone, name, loginWithMsg91Token, redirectTo, router]);
 
   // Handle Resend countdown timer
   useEffect(() => {
@@ -63,20 +88,8 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     }
   }, [step]);
 
-  if (user) return null;
-
-  const handleSendOtp = async (isResend = false) => {
-    if (!name.trim()) {
-      setError('Please enter parent name');
-      return;
-    }
-    if (!/^\d{10}$/.test(phone)) {
-      setError('Please enter a valid 10-digit mobile number');
-      return;
-    }
-    setError('');
-    setIsLoading(true);
-
+  const fallbackSendOtp = useCallback(async () => {
+    setOtpMethod('fallback');
     const result = await sendOtp(phone, name.trim());
     setIsLoading(false);
 
@@ -89,17 +102,117 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     } else {
       setError(result.error || 'Failed to send verification code. Please try again.');
     }
-  };
+  }, [phone, name, sendOtp]);
 
-  const handleVerifyOtp = async () => {
-    if (otp.length !== 6) {
-      setError('Please enter the 6-digit OTP code');
+  if (user) return null;
+
+  const handleSendOtp = async () => {
+    if (!name.trim()) {
+      setError('Please enter parent name');
+      return;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      setError('Please enter a valid 10-digit mobile number');
       return;
     }
     setError('');
     setIsLoading(true);
 
-    const result = await verifyOtp(phone, otp, name);
+    const fullPhone = `91${phone}`;
+
+    // Try MSG91 OTP Widget first
+    if (typeof window.sendOtp === 'function') {
+      try {
+        window.sendOtp(
+          fullPhone,
+          (res: unknown) => {
+            console.log('[MSG91] OTP sent successfully:', res);
+            setIsLoading(false);
+            setStep('otp');
+            setResendCountdown(30);
+            setOtpMethod('msg91');
+          },
+          (err: unknown) => {
+            const errorObj = err as { message?: string; data?: { message?: string } };
+            const errMsg =
+              errorObj?.data?.message ||
+              errorObj?.message ||
+              'Failed to send OTP via MSG91 SMS. Switching to fallback...';
+            console.warn('[MSG91] sendOtp error:', errMsg);
+            fallbackSendOtp();
+          }
+        );
+        return;
+      } catch (e) {
+        console.warn('[MSG91] Exception in sendOtp, falling back:', e);
+      }
+    }
+
+    fallbackSendOtp();
+  };
+
+  const handleResendOtp = () => {
+    if (otpMethod === 'msg91' && typeof window.retryOtp === 'function') {
+      setIsLoading(true);
+      window.retryOtp(
+        '11',
+        () => {
+          setIsLoading(false);
+          setResendCountdown(30);
+        },
+        () => {
+          handleSendOtp();
+        }
+      );
+    } else {
+      handleSendOtp();
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length < 4 || otp.length > 6) {
+      setError('Please enter the verification code');
+      return;
+    }
+    setError('');
+    setIsLoading(true);
+
+    if (otpMethod === 'msg91' && typeof window.verifyOtp === 'function') {
+      try {
+        window.verifyOtp(
+          otp,
+          async (res: unknown) => {
+            console.log('[MSG91] verifyOtp success response:', res);
+            const resData = res as Record<string, unknown>;
+            const accessToken = (resData?.['access-token'] || resData?.message || resData?.token || res) as string;
+
+            const result = await loginWithMsg91Token(phone, accessToken, name.trim());
+            setIsLoading(false);
+
+            if (result.success) {
+              router.replace(redirectTo || '/library');
+            } else {
+              setError(result.error || 'Authentication failed. Please try again.');
+            }
+          },
+          (err: unknown) => {
+            setIsLoading(false);
+            const errorObj = err as { message?: string; data?: { message?: string } };
+            const errMsg =
+              errorObj?.data?.message ||
+              errorObj?.message ||
+              'Incorrect verification code. Please check and try again.';
+            setError(errMsg);
+          }
+        );
+        return;
+      } catch (e) {
+        console.warn('[MSG91] Exception in verifyOtp, trying fallback:', e);
+      }
+    }
+
+    // Fallback / Dev mode verification
+    const result = await verifyOtp(phone, otp, name.trim());
     setIsLoading(false);
 
     if (result.success) {
@@ -221,7 +334,9 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                             <Phone className="w-3.5 h-3.5 text-amber-600" />
                             <span>Mobile Phone Number</span>
                           </span>
-                          <span className="text-[11px] text-slate-400 font-medium">WhatsApp / SMS</span>
+                          <span className="text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70">
+                            SMS OTP
+                          </span>
                         </label>
 
                         <div className="flex rounded-xl shadow-2xs overflow-hidden border border-stone-200 focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/20 transition">
@@ -259,7 +374,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
 
                     {/* Send OTP Primary CTA */}
                     <button
-                      onClick={() => handleSendOtp(false)}
+                      onClick={() => handleSendOtp()}
                       disabled={isLoading || phone.length !== 10}
                       className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-3.5 px-6 rounded-xl shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 active:scale-[0.99] transition cursor-pointer text-sm"
                     >
@@ -298,10 +413,10 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                       </div>
                     )}
 
-                    {/* 6-Digit OTP Input */}
+                    {/* 4 to 6-Digit OTP Input */}
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-                        <span>Enter 6-Digit Code</span>
+                        <span>Enter Verification Code</span>
                         <button
                           type="button"
                           onClick={() => {
@@ -340,7 +455,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                     {/* Verify Primary CTA */}
                     <button
                       onClick={handleVerifyOtp}
-                      disabled={isLoading || otp.length !== 6}
+                      disabled={isLoading || otp.length < 4}
                       className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-3.5 px-6 rounded-xl shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 active:scale-[0.99] transition cursor-pointer text-sm"
                     >
                       {isLoading ? (
@@ -365,12 +480,12 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                       ) : (
                         <button
                           type="button"
-                          onClick={() => handleSendOtp(true)}
+                          onClick={() => handleResendOtp()}
                           disabled={isLoading}
                           className="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
                         >
                           <RotateCw className="w-3.5 h-3.5" />
-                          <span>Resend OTP via WhatsApp</span>
+                          <span>Resend SMS OTP</span>
                         </button>
                       )}
 

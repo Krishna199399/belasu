@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth';
 import { createAdminClient } from '@/lib/supabase';
 import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
 import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
+import { sendAdminOrderNotification, sendCustomerOrderReceipt } from '@/lib/email';
 import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
@@ -255,6 +256,65 @@ export async function POST(request: NextRequest) {
       });
     } catch (waErr) {
       console.warn('Non-fatal WhatsApp delivery notice error:', waErr);
+    }
+
+    // 9. Send Email order notification to Client / Admin
+    sendAdminOrderNotification({
+      orderNumber: order.order_number,
+      orderDate: order.order_date,
+      customerName: finalName || firstName || 'Student',
+      customerPhone: finalPhone,
+      customerEmail: finalEmail || billingEmail,
+      items: [
+        {
+          title: book.title,
+          quantity: 1,
+          price: orderAmount,
+          productType: 'digital',
+          sku: book.sku || `SD${book.grade_class || book.gradeClass || 6}-KN`,
+        },
+      ],
+      subtotal: orderAmount,
+      shippingFee: 0,
+      totalAmount: orderAmount,
+      paymentMethod: 'Razorpay - Online Payment',
+      paymentId: razorpay_payment_id || undefined,
+      razorpayOrderId: razorpay_order_id || undefined,
+      shippingAddress: null,
+      isDigitalOnly: true,
+    }).catch((emailErr) => {
+      console.warn('[digital/purchase] Non-fatal admin email delivery error:', emailErr);
+    });
+
+    // Also send receipt to customer if customer email is available
+    const recipientCustomerEmail = finalEmail || billingEmail;
+    if (recipientCustomerEmail) {
+      sendCustomerOrderReceipt({
+        orderNumber: order.order_number,
+        orderDate: order.order_date,
+        customerName: finalName || firstName || 'Student',
+        customerPhone: finalPhone,
+        customerEmail: recipientCustomerEmail,
+        items: [
+          {
+            title: book.title,
+            quantity: 1,
+            price: orderAmount,
+            productType: 'digital',
+            sku: book.sku || `SD${book.grade_class || book.gradeClass || 6}-KN`,
+          },
+        ],
+        subtotal: orderAmount,
+        shippingFee: 0,
+        totalAmount: orderAmount,
+        paymentMethod: 'Razorpay - Online Payment',
+        paymentId: razorpay_payment_id || undefined,
+        razorpayOrderId: razorpay_order_id || undefined,
+        shippingAddress: null,
+        isDigitalOnly: true,
+      }).catch((receiptErr) => {
+        console.warn('[digital/purchase] Non-fatal customer email receipt error:', receiptErr);
+      });
     }
 
     return Response.json({

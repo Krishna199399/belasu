@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth';
 import { createAdminClient } from '@/lib/supabase';
 import { deductStockOnOrder } from '@/lib/inventory';
 import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
+import { sendAdminOrderNotification, sendCustomerOrderReceipt } from '@/lib/email';
 import { SHIPPING_FEE } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {
@@ -317,6 +318,73 @@ export async function POST(request: NextRequest) {
         isDigital: hasDigital && !hasPhysical,
       }).catch((err) => {
         console.error('[orders/create] WhatsApp confirmation dispatch error:', err);
+      });
+    }
+
+    // Dispatch non-blocking Email order notification to Client / Admin
+    sendAdminOrderNotification({
+      orderNumber: order.order_number,
+      orderDate: order.order_date,
+      customerName: user.name || customerName || billingInfo.first_name || 'Customer',
+      customerPhone: targetPhone,
+      customerEmail: customerEmail || user.email || billingInfo.email,
+      items: items.map((i) => ({
+        title: i.title,
+        quantity: i.quantity,
+        price: i.price,
+        productType: i.productType,
+        sku: i.sku,
+      })),
+      subtotal: order.order_subtotal_amount,
+      shippingFee: order.order_shipping_amount,
+      totalAmount: order.order_total_amount,
+      paymentMethod,
+      paymentId,
+      razorpayOrderId,
+      shippingAddress: shippingAddress ? {
+        address1: shippingAddress.address_line1,
+        address2: shippingAddress.address_line2,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        postcode: shippingAddress.postal_code,
+      } : null,
+      isDigitalOnly: hasDigital && !hasPhysical,
+    }).catch((err) => {
+      console.error('[orders/create] Admin email notification dispatch error:', err);
+    });
+
+    // Also send receipt to customer if customer email is provided
+    const buyerEmail = customerEmail || user.email || billingInfo.email;
+    if (buyerEmail) {
+      sendCustomerOrderReceipt({
+        orderNumber: order.order_number,
+        orderDate: order.order_date,
+        customerName: user.name || customerName || billingInfo.first_name || 'Customer',
+        customerPhone: targetPhone,
+        customerEmail: buyerEmail,
+        items: items.map((i) => ({
+          title: i.title,
+          quantity: i.quantity,
+          price: i.price,
+          productType: i.productType,
+          sku: i.sku,
+        })),
+        subtotal: order.order_subtotal_amount,
+        shippingFee: order.order_shipping_amount,
+        totalAmount: order.order_total_amount,
+        paymentMethod,
+        paymentId,
+        razorpayOrderId,
+        shippingAddress: shippingAddress ? {
+          address1: shippingAddress.address_line1,
+          address2: shippingAddress.address_line2,
+          city: shippingAddress.city,
+          state: shippingAddress.state,
+          postcode: shippingAddress.postal_code,
+        } : null,
+        isDigitalOnly: hasDigital && !hasPhysical,
+      }).catch((err) => {
+        console.error('[orders/create] Customer email receipt dispatch error:', err);
       });
     }
 

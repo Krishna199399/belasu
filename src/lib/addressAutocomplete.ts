@@ -151,6 +151,24 @@ async function fetchFromNominatim(query: string, signal?: AbortSignal): Promise<
 }
 
 /**
+ * Fetch locality suggestions via Mappls (MapmyIndia) API
+ */
+async function fetchFromMappls(query: string, signal?: AbortSignal): Promise<LocalitySuggestion[]> {
+  try {
+    const res = await fetch(`/api/addresses/autocomplete?q=${encodeURIComponent(query)}`, { signal });
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (data.success && Array.isArray(data.suggestions)) {
+      return data.suggestions;
+    }
+    return [];
+  } catch (err: unknown) {
+    if (err instanceof Error && err.name === 'AbortError') return [];
+    return [];
+  }
+}
+
+/**
  * Main query function with caching and timeout
  */
 export async function searchLocalities(
@@ -166,10 +184,15 @@ export async function searchLocalities(
   }
 
   try {
-    // Try Photon first
-    let results = await fetchFromPhoton(trimmed, signal);
+    // 1. Try Mappls (MapmyIndia) first for official doorstep Indian addresses
+    let results = await fetchFromMappls(trimmed, signal);
 
-    // If Photon produced no results, fall back to Nominatim
+    // 2. If Mappls produced no results, try Photon
+    if (results.length === 0) {
+      results = await fetchFromPhoton(trimmed, signal);
+    }
+
+    // 3. Fallback to Nominatim
     if (results.length === 0) {
       results = await fetchFromNominatim(trimmed, signal);
     }

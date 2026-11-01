@@ -9,6 +9,7 @@ interface AuthContextValue {
   isLoading: boolean;
   sendOtp: (phone: string, name?: string) => Promise<{ success: boolean; message?: string; error?: string }>;
   verifyOtp: (phone: string, otp: string, name?: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithMsg91Token: (phone: string, accessToken: string, name?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   
@@ -45,8 +46,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refreshUser();
-  }, [refreshUser]);
+    let isMounted = true;
+    const fetchInitialUser = async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) setUser(data.user);
+        } else {
+          if (isMounted) setUser(null);
+        }
+      } catch {
+        if (isMounted) setUser(null);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    fetchInitialUser();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const sendOtp = useCallback(async (phone: string, name?: string) => {
     const res = await fetch('/api/auth/send-otp', {
@@ -69,6 +91,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.success(`Welcome back, ${data.user.name}! 🎉`);
     }
     return data;
+  }, []);
+
+  const loginWithMsg91Token = useCallback(async (phone: string, accessToken: string, name?: string) => {
+    try {
+      const res = await fetch('/api/auth/msg91-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, accessToken, name }),
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        setUser(data.user);
+        toast.success(`Welcome back, ${data.user.name}! 🎉`);
+      }
+      return data;
+    } catch (err) {
+      console.error('MSG91 login error:', err);
+      return { success: false, error: 'Network error during login' };
+    }
   }, []);
 
   const logout = useCallback(async () => {
@@ -215,6 +256,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading, 
       sendOtp, 
       verifyOtp, 
+      loginWithMsg91Token,
       logout, 
       refreshUser,
       addAddress,
