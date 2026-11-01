@@ -67,7 +67,6 @@ export default function AddressForm({
     postcode: address?.postcode || '',
     phone: address?.phone || '',
     email: address?.email || '',
-    label: address?.label || '',
   }));
 
   const [prevAddressId, setPrevAddressId] = useState(address?.id);
@@ -84,7 +83,6 @@ export default function AddressForm({
       postcode: address?.postcode || '',
       phone: address?.phone || '',
       email: address?.email || '',
-      label: address?.label || '',
     });
   }
 
@@ -131,16 +129,18 @@ export default function AddressForm({
 
     if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
     if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-    if (!formData.address1.trim()) newErrors.address1 = 'Address is required';
+    if (!formData.address1.trim()) newErrors.address1 = 'Address line 1 (locality/colony) is required';
+    if (!formData.address2.trim()) newErrors.address2 = 'Flat / House / Apartment / Landmark is required';
     if (!formData.city.trim()) newErrors.city = 'City is required';
     if (!formData.state.trim()) newErrors.state = 'State is required';
     if (!formData.postcode.trim()) newErrors.postcode = 'Postcode is required';
-    else if (!/^\d{6}$/.test(formData.postcode)) newErrors.postcode = 'Invalid postcode (6 digits)';
+    else if (!/^\d{6}$/.test(formData.postcode.trim())) newErrors.postcode = 'Invalid postcode (must be 6 digits)';
     if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
     else if (!/^\d{10}$/.test(formData.phone.replace(/\s/g, '')))
-      newErrors.phone = 'Invalid phone number (10 digits)';
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      newErrors.email = 'Invalid email address';
+      newErrors.phone = 'Invalid phone number (must be 10 digits)';
+    if (!formData.email.trim()) newErrors.email = 'Email address is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()))
+      newErrors.email = 'Please enter a valid email address';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -459,17 +459,20 @@ export default function AddressForm({
       {/* Address Line 2 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Address Line 2 (Flat / House / Apartment / Landmark)
+          Address Line 2 (Flat / House / Apartment / Landmark) <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
           name="address2"
           value={formData.address2}
           onChange={handleInputChange}
-          placeholder="Flat / Door / House No., Apartment, Landmark (optional)"
-          className="w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          placeholder="Flat / Door / House No., Apartment, Landmark"
+          className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+            errors.address2 ? 'border-red-500' : 'border-gray-300'
+          }`}
           disabled={isSubmitting}
         />
+        {errors.address2 && <p className="text-red-500 text-xs mt-1">{errors.address2}</p>}
       </div>
 
       {/* City, State, Postcode Grid */}
@@ -569,13 +572,15 @@ export default function AddressForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email <span className="text-red-500">*</span>
+          </label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            placeholder="your@email.com (optional)"
+            placeholder="your@email.com"
             className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.email ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -583,20 +588,6 @@ export default function AddressForm({
           />
           {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
         </div>
-      </div>
-
-      {/* Label */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Label (Optional)</label>
-        <input
-          type="text"
-          name="label"
-          value={formData.label}
-          onChange={handleInputChange}
-          placeholder="Home, Office, Parents, etc."
-          className="w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-          disabled={isSubmitting}
-        />
       </div>
 
       {/* Action Buttons */}

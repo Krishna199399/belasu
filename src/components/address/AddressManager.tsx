@@ -66,13 +66,13 @@ export default function AddressManager({
           firstName: addressData.firstName!,
           lastName: addressData.lastName!,
           address1: addressData.address1!,
-          address2: addressData.address2 || '',
+          address2: addressData.address2!,
           city: addressData.city!,
           state: addressData.state!,
           postcode: addressData.postcode!,
           phone: addressData.phone!,
-          email: addressData.email || '',
-          label: addressData.label || '',
+          email: addressData.email!,
+          label: '',
           isDefault: false,
         };
         await addAddress(completeAddressData);

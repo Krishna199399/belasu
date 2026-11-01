@@ -28,6 +28,13 @@ export interface OrderEmailPayload {
     state?: string;
     postcode?: string;
   } | null;
+  billingAddress?: {
+    address1?: string;
+    address2?: string;
+    city?: string;
+    state?: string;
+    postcode?: string;
+  } | null;
   isDigitalOnly?: boolean;
 }
 
@@ -62,7 +69,7 @@ function getTransporter() {
  * Builds the HTML content for the order notification email
  * Styled to match the classic WooCommerce "New Order" notification email
  */
-function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNotice = true): string {
+export function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNotice = true): string {
   const dateObj = payload.orderDate ? new Date(payload.orderDate) : new Date();
   const dateStr = dateObj.toLocaleDateString('en-US', {
     month: 'long',
@@ -88,14 +95,25 @@ function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNotice = 
     )
     .join('');
 
-  const addr = payload.shippingAddress;
-  const addressLines = addr
+  const shipAddr = payload.shippingAddress;
+  const shippingLines = shipAddr
     ? [
-        addr.address1,
-        addr.address2,
-        addr.city,
-        addr.state,
-        addr.postcode,
+        shipAddr.address1,
+        shipAddr.address2,
+        shipAddr.city,
+        shipAddr.state,
+        shipAddr.postcode,
+      ].filter(Boolean)
+    : [];
+
+  const billAddr = payload.billingAddress || payload.shippingAddress;
+  const billingLines = billAddr
+    ? [
+        billAddr.address1,
+        billAddr.address2,
+        billAddr.city,
+        billAddr.state,
+        billAddr.postcode,
       ].filter(Boolean)
     : [];
 
@@ -112,15 +130,16 @@ function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNotice = 
     : `
       <div style="line-height: 160%;">
         <strong>${payload.customerName}</strong><br/>
-        ${addressLines.join('<br/>')}<br/>
-        ${payload.customerPhone ? `<a href="tel:${payload.customerPhone}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerPhone}</a>` : ''}
+        ${shippingLines.length > 0 ? `${shippingLines.join('<br/>')}<br/>` : ''}
+        ${payload.customerPhone ? `<a href="tel:${payload.customerPhone}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerPhone}</a><br/>` : ''}
+        ${payload.customerEmail ? `<a href="mailto:${payload.customerEmail}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerEmail}</a>` : ''}
       </div>
     `;
 
   const billingAddressHtml = `
     <div style="line-height: 160%;">
       <strong>${payload.customerName}</strong><br/>
-      ${addressLines.length > 0 ? `${addressLines.join('<br/>')}<br/>` : ''}
+      ${billingLines.length > 0 ? `${billingLines.join('<br/>')}<br/>` : ''}
       ${payload.customerPhone ? `<a href="tel:${payload.customerPhone}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerPhone}</a><br/>` : ''}
       ${payload.customerEmail ? `<a href="mailto:${payload.customerEmail}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerEmail}</a>` : ''}
     </div>

@@ -17,14 +17,49 @@ export async function POST(request: NextRequest) {
     const addressData = await request.json();
 
     // Validate required fields
-    const requiredFields = ['firstName', 'lastName', 'address1', 'city', 'state', 'postcode', 'phone'];
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'address1',
+      'address2',
+      'city',
+      'state',
+      'postcode',
+      'phone',
+      'email',
+    ];
     for (const field of requiredFields) {
-      if (!addressData[field]) {
+      if (!addressData[field] || !String(addressData[field]).trim()) {
         return NextResponse.json(
           { success: false, error: `${field} is required` },
           { status: 400 }
         );
       }
+    }
+
+    // Format validation
+    const cleanPin = String(addressData.postcode).trim();
+    if (!/^\d{6}$/.test(cleanPin)) {
+      return NextResponse.json(
+        { success: false, error: 'Postcode must be exactly 6 digits' },
+        { status: 400 }
+      );
+    }
+
+    const cleanPhone = String(addressData.phone).replace(/\s/g, '');
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      return NextResponse.json(
+        { success: false, error: 'Phone number must be exactly 10 digits' },
+        { status: 400 }
+      );
+    }
+
+    const cleanEmail = String(addressData.email).trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      return NextResponse.json(
+        { success: false, error: 'Please enter a valid email address' },
+        { status: 400 }
+      );
     }
 
     const supabase = createAdminClient();
