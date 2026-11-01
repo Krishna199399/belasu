@@ -1,35 +1,40 @@
 import { DigitalBook } from '@/types';
 
-export const DIGITAL_BOOKS_DATA: DigitalBook[] = [
-  // ── CLASS 6 ──────────────────────────────────────────────────────────────
-  {
-    id: 'dbook-6-kn-01',
-    slug: 'kannada-class-6-guide',
-    title: 'Kannada Class 6 — Complete English-Translated Digital Guidebook',
-    subject: 'Kannada',
-    gradeClass: 6,
-    sku: 'SD6-KN',
-    price: 295,
-    originalPrice: 349,
-    badge: 'Bestseller',
-    coverImage: '/digital/class-6-siri/cover.jpeg',
-    totalPages: 180,
-    isFreePreviewPages: 5,
-    rating: 4.8,
-    reviewCount: 142,
-    author: 'Belesu Academic Team',
-    language: 'Kannada with English Translations',
-    description:
-      'Understand Class 6 Kannada lessons through English translations, solved textbook exercises and chapter summaries. Access your guidebook online through Belesu\'s digital reader.',
-    features: [
-      'Line-by-line English translations',
-      'Kannada prose, poems and grammar',
-      'Solved textbook exercises and model answers',
-      'Chapter summaries in Kannada and English',
-    ],
-    tableOfContents: [],
-  },
-];
+/**
+ * Temporary hold flag while Class 6 PDF is being prepared (~1 week).
+ * Set to FALSE when PDF is uploaded to restore immediately.
+ */
+export const HIDE_DIGITAL_CLASS_6 = true;
+
+export const CLASS_6_DIGITAL_BOOK: DigitalBook = {
+  id: 'dbook-6-kn-01',
+  slug: 'kannada-class-6-guide',
+  title: 'Kannada Class 6 — Complete English-Translated Digital Guidebook',
+  subject: 'Kannada',
+  gradeClass: 6,
+  sku: 'SD6-KN',
+  price: 295,
+  originalPrice: 349,
+  badge: 'Bestseller',
+  coverImage: '/digital/class-6-siri/cover.jpeg',
+  totalPages: 180,
+  isFreePreviewPages: 5,
+  rating: 4.8,
+  reviewCount: 142,
+  author: 'Belesu Academic Team',
+  language: 'Kannada with English Translations',
+  description:
+    'Understand Class 6 Kannada lessons through English translations, solved textbook exercises and chapter summaries. Access your guidebook online through Belesu\'s digital reader.',
+  features: [
+    'Line-by-line English translations',
+    'Kannada prose, poems and grammar',
+    'Solved textbook exercises and model answers',
+    'Chapter summaries in Kannada and English',
+  ],
+  tableOfContents: [],
+};
+
+export const DIGITAL_BOOKS_DATA: DigitalBook[] = [CLASS_6_DIGITAL_BOOK];
 
 // Preserved for upcoming launch as new books are completed
 export const UPCOMING_DIGITAL_BOOKS_DATA: DigitalBook[] = [

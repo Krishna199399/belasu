@@ -6,7 +6,7 @@ import React, { useState, useMemo, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { BOOKS_DATA } from '@/data/mockData';
-import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
+import { DIGITAL_BOOKS_DATA, HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 import { BookCard } from '@/components/ui/BookCard';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
 import { BookProduct } from '@/types';
@@ -110,12 +110,12 @@ function BooksContent() {
   // Product series counts
   const seriesCounts = useMemo(() => {
     return {
-      all: academicBooksList.length + 1,
+      all: academicBooksList.length + (HIDE_DIGITAL_CLASS_6 ? 0 : 1),
       savi: academicBooksList.filter((b) => b.series === 'Savi').length,
       kali: academicBooksList.filter((b) => b.series === 'Kali').length,
       siri: academicBooksList.filter((b) => b.series === 'Siri').length,
       tili: academicBooksList.filter((b) => b.series === 'Tili').length,
-      digital: 1,
+      digital: HIDE_DIGITAL_CLASS_6 ? 0 : 1,
     };
   }, [academicBooksList]);
 
@@ -130,8 +130,9 @@ function BooksContent() {
     });
   }, [academicBooksList, selectedSeries, selectedGrade]);
 
-  // Digital Class 6 Book matching
+  // Digital Class 6 Book matching (Hidden while PDF is prepared)
   const showDigitalClass6 = useMemo(() => {
+    if (HIDE_DIGITAL_CLASS_6) return false;
     if (selectedGrade !== 'All' && selectedGrade !== 6) return false;
     if (selectedSeries !== 'All' && selectedSeries !== 'Digital' && selectedSeries !== 'Siri') return false;
     return true;
@@ -164,6 +165,31 @@ function BooksContent() {
     }
   };
 
+  const seriesFilterOptions = useMemo(() => {
+    const list = [
+      { id: 'All', label: 'All Books', count: seriesCounts.all },
+      { id: 'Savi', label: 'Savi Kannada', count: seriesCounts.savi },
+      { id: 'Kali', label: 'Kali Kannada', count: seriesCounts.kali },
+      { id: 'Siri', label: 'Siri Kannada', count: seriesCounts.siri },
+      { id: 'Tili', label: 'Tili Kannada', count: seriesCounts.tili },
+      { id: 'Digital', label: 'Digital Books', count: seriesCounts.digital },
+    ];
+    return HIDE_DIGITAL_CLASS_6 ? list.filter((s) => s.id !== 'Digital') : list;
+  }, [seriesCounts]);
+
+  const gradeFilterOptions = useMemo(() => {
+    const list = [
+      { id: 'All', label: 'All Classes' },
+      { id: 1, label: 'Class 1' },
+      { id: 2, label: 'Class 2' },
+      { id: 3, label: 'Class 3' },
+      { id: 4, label: 'Class 4' },
+      { id: 5, label: 'Class 5' },
+      { id: 6, label: 'Class 6' },
+    ];
+    return HIDE_DIGITAL_CLASS_6 ? list.filter((g) => g.id !== 6) : list;
+  }, []);
+
   const faqs = [
     {
       q: 'Where can I buy Kannada guidebooks online?',
@@ -171,7 +197,9 @@ function BooksContent() {
     },
     {
       q: 'Which classes are covered by Belesu guidebooks?',
-      a: 'Printed Savi Kannada and Kali Kannada guidebooks are available for Classes 1–4, while Siri Kannada and Tili Kannada cover Class 5. The Siri Kannada digital guidebook is available for Class 6.',
+      a: HIDE_DIGITAL_CLASS_6
+        ? 'Printed Savi Kannada and Kali Kannada guidebooks are available for Classes 1–4, while Siri Kannada and Tili Kannada cover Class 5.'
+        : 'Printed Savi Kannada and Kali Kannada guidebooks are available for Classes 1–4, while Siri Kannada and Tili Kannada cover Class 5. The Siri Kannada digital guidebook is available for Class 6.',
     },
     {
       q: 'Do Belesu guidebooks include English translations?',
@@ -217,7 +245,9 @@ function BooksContent() {
           </h1>
 
           <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal max-w-2xl mx-auto pt-1">
-            Explore printed Kannada guidebooks for Classes 1–5 and the available Siri Kannada digital guidebook for Class 6. Belesu’s English-translated learning resources help students understand Kannada lessons and learn with confidence.
+            {HIDE_DIGITAL_CLASS_6
+              ? 'Explore printed Kannada guidebooks for Classes 1–5. Belesu’s English-translated learning resources help students understand Kannada lessons and learn with confidence.'
+              : 'Explore printed Kannada guidebooks for Classes 1–5 and the available Siri Kannada digital guidebook for Class 6. Belesu’s English-translated learning resources help students understand Kannada lessons and learn with confidence.'}
           </p>
 
         </div>
@@ -338,14 +368,7 @@ function BooksContent() {
                   </span>
                   
                   <div className="space-y-1">
-                    {[
-                      { id: 'All', label: 'All Books', count: seriesCounts.all },
-                      { id: 'Savi', label: 'Savi Kannada', count: seriesCounts.savi },
-                      { id: 'Kali', label: 'Kali Kannada', count: seriesCounts.kali },
-                      { id: 'Siri', label: 'Siri Kannada', count: seriesCounts.siri },
-                      { id: 'Tili', label: 'Tili Kannada', count: seriesCounts.tili },
-                      { id: 'Digital', label: 'Digital Books', count: seriesCounts.digital },
-                    ].map((s) => {
+                    {seriesFilterOptions.map((s) => {
                       const isSelected = selectedSeries === s.id;
                       return (
                         <button
@@ -380,15 +403,7 @@ function BooksContent() {
                   </span>
 
                   <div className="grid grid-cols-2 gap-1.5">
-                    {[
-                      { id: 'All', label: 'All Classes' },
-                      { id: 1, label: 'Class 1' },
-                      { id: 2, label: 'Class 2' },
-                      { id: 3, label: 'Class 3' },
-                      { id: 4, label: 'Class 4' },
-                      { id: 5, label: 'Class 5' },
-                      { id: 6, label: 'Class 6' },
-                    ].map((g) => {
+                    {gradeFilterOptions.map((g) => {
                       const isSelected = selectedGrade === g.id;
                       return (
                         <button
@@ -449,14 +464,7 @@ function BooksContent() {
                         Series
                       </span>
                       <div className="space-y-1">
-                        {[
-                          { id: 'All', label: 'All Books', count: seriesCounts.all },
-                          { id: 'Savi', label: 'Savi Kannada', count: seriesCounts.savi },
-                          { id: 'Kali', label: 'Kali Kannada', count: seriesCounts.kali },
-                          { id: 'Siri', label: 'Siri Kannada', count: seriesCounts.siri },
-                          { id: 'Tili', label: 'Tili Kannada', count: seriesCounts.tili },
-                          { id: 'Digital', label: 'Digital Books', count: seriesCounts.digital },
-                        ].map((s) => {
+                        {seriesFilterOptions.map((s) => {
                           const isSelected = selectedSeries === s.id;
                           return (
                             <button
@@ -488,15 +496,7 @@ function BooksContent() {
                         Class
                       </span>
                       <div className="grid grid-cols-2 gap-1.5">
-                        {[
-                          { id: 'All', label: 'All Classes' },
-                          { id: 1, label: 'Class 1' },
-                          { id: 2, label: 'Class 2' },
-                          { id: 3, label: 'Class 3' },
-                          { id: 4, label: 'Class 4' },
-                          { id: 5, label: 'Class 5' },
-                          { id: 6, label: 'Class 6' },
-                        ].map((g) => {
+                        {gradeFilterOptions.map((g) => {
                           const isSelected = selectedGrade === g.id;
                           return (
                             <button
@@ -811,72 +811,74 @@ function BooksContent() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════════
-          4. H2: Digital Kannada Guidebooks
+          4. H2: Digital Kannada Guidebooks (Temporarily hidden until Class 6 PDF release next week)
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-10 sm:py-12 bg-white border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
-          
-          <div className="space-y-1.5 max-w-3xl">
-            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
-              Digital Kannada Guidebooks
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-              Explore Belesu’s available digital guidebook for Class 6.
-            </p>
-          </div>
-
-          <div className="rounded-3xl bg-gradient-to-br from-emerald-500/10 via-amber-50/20 to-white border border-emerald-200/90 p-6 sm:p-8 lg:p-10 shadow-md">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
-              
-              <div className="md:col-span-8 space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider">
-                  <Laptop className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>Class 6 Digital Edition</span>
-                </div>
-
-                <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900 tracking-tight">
-                  Siri Kannada Digital Guidebook | Class 6
-                </h3>
-
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  Explore the digital edition, review the available learning content, and check the preview, price, and access details.
-                </p>
-
-                {/* CTAs */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                  <Link
-                    href={`/digital/${digitalBookClass6.slug}`}
-                    className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition active:scale-95 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer min-h-[44px]"
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    <span>Explore Digital Guidebook</span>
-                  </Link>
-
-                  <Link
-                    href="/reader/kannada-class-6-guide?preview=true"
-                    className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-white hover:bg-stone-100 text-slate-900 border border-stone-300 font-bold text-xs sm:text-sm shadow-2xs transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
-                  >
-                    <Eye className="w-4 h-4 text-amber-600" />
-                    <span>View Free Preview</span>
-                  </Link>
-                </div>
-              </div>
-
-              <div className="md:col-span-4 flex justify-center">
-                <div className="relative w-full max-w-[200px] aspect-[3/4] rounded-2xl overflow-hidden border border-emerald-200 shadow-md bg-stone-50 flex items-center justify-center p-2">
-                  <img
-                    src="/digital/class-6-siri/cover.jpeg"
-                    alt="Siri Kannada Digital Guidebook Class 6"
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </div>
-              </div>
-
+      {!HIDE_DIGITAL_CLASS_6 && (
+        <section className="py-10 sm:py-12 bg-white border-b border-stone-200">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+            
+            <div className="space-y-1.5 max-w-3xl">
+              <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
+                Digital Kannada Guidebooks
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                Explore Belesu’s available digital guidebook for Class 6.
+              </p>
             </div>
-          </div>
 
-        </div>
-      </section>
+            <div className="rounded-3xl bg-gradient-to-br from-emerald-500/10 via-amber-50/20 to-white border border-emerald-200/90 p-6 sm:p-8 lg:p-10 shadow-md">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
+                
+                <div className="md:col-span-8 space-y-4">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider">
+                    <Laptop className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>Class 6 Digital Edition</span>
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900 tracking-tight">
+                    Siri Kannada Digital Guidebook | Class 6
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                    Explore the digital edition, review the available learning content, and check the preview, price, and access details.
+                  </p>
+
+                  {/* CTAs */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                    <Link
+                      href={`/digital/${digitalBookClass6.slug}`}
+                      className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition active:scale-95 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer min-h-[44px]"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      <span>Explore Digital Guidebook</span>
+                    </Link>
+
+                    <Link
+                      href="/reader/kannada-class-6-guide?preview=true"
+                      className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-white hover:bg-stone-100 text-slate-900 border border-stone-300 font-bold text-xs sm:text-sm shadow-2xs transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
+                    >
+                      <Eye className="w-4 h-4 text-amber-600" />
+                      <span>View Free Preview</span>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="md:col-span-4 flex justify-center">
+                  <div className="relative w-full max-w-[200px] aspect-[3/4] rounded-2xl overflow-hidden border border-emerald-200 shadow-md bg-stone-50 flex items-center justify-center p-2">
+                    <img
+                      src="/digital/class-6-siri/cover.jpeg"
+                      alt="Siri Kannada Digital Guidebook Class 6"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </section>
+      )}
 
       {/* ══════════════════════════════════════════════════════════════════════════
           5. H2: Frequently Asked Questions

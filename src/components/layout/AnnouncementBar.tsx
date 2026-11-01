@@ -3,6 +3,7 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { X, ArrowRight, Sparkles } from 'lucide-react';
+import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 
 interface AnnouncementItem {
   id: string;
@@ -14,7 +15,7 @@ interface AnnouncementItem {
   href: string;
 }
 
-const ANNOUNCEMENTS: AnnouncementItem[] = [
+const ALL_ANNOUNCEMENTS: AnnouncementItem[] = [
   {
     id: 'elevate-startup-award',
     badge: 'Govt Award',
@@ -52,6 +53,11 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [
     href: '/digital/kannada-class-6-guide',
   },
 ];
+
+// Temporarily filter out Class 6 digital announcement while PDF is prepared
+const ANNOUNCEMENTS: AnnouncementItem[] = HIDE_DIGITAL_CLASS_6
+  ? ALL_ANNOUNCEMENTS.filter((a) => a.id !== 'digital-class-6')
+  : ALL_ANNOUNCEMENTS;
 
 const subscribeNoop = () => () => {};
 

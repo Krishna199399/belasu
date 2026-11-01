@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { PARENT_REVIEWS } from '@/data/mockData';
+import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 import {
   BookOpen,
   Lock,
@@ -132,103 +133,132 @@ export default function DigitalClient() {
       {/* ══════════════════════════════════════════════════════════════════════════
           2. H2: Available Digital Guidebook
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 sm:py-16 bg-white border-b border-stone-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          
-          <div className="max-w-3xl mx-auto text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-              Available Digital Guidebook
-            </h2>
+      {HIDE_DIGITAL_CLASS_6 ? (
+        <section className="py-12 sm:py-16 bg-stone-50 border-b border-stone-200">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto text-center space-y-4 bg-white p-8 sm:p-12 rounded-3xl border border-stone-200 shadow-sm">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>Digital Platform Release in Progress</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900">
+                Digital Guidebooks Coming Soon
+              </h2>
+              <p className="text-sm text-slate-600 leading-relaxed max-w-xl mx-auto">
+                Our digital reader guidebooks for Classes 6 to 10 are undergoing final preparation and quality formatting. They will be available on the web reader next week.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/books"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-sm cursor-pointer"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Explore Printed Academic Guidebooks (Classes 1–5)</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
           </div>
+        </section>
+      ) : (
+        <section className="py-12 sm:py-16 bg-white border-b border-stone-200">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            
+            <div className="max-w-3xl mx-auto text-center space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+                Available Digital Guidebook
+              </h2>
+            </div>
 
-          {/* Spotlight Book Card */}
-          <div className="max-w-4xl mx-auto rounded-3xl bg-stone-50/70 border border-stone-200 shadow-md overflow-hidden hover:border-amber-400 transition-all duration-300">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 sm:p-10 items-center">
-              
-              {/* Left Column: Visual Cover */}
-              <div className="md:col-span-5 flex justify-center">
-                <div className="relative group w-full max-w-[280px]">
-                  <div className="aspect-[3/4] rounded-2xl bg-white border border-stone-200 shadow-md overflow-hidden p-2 flex items-center justify-center relative">
-                    <img
-                      src="/digital/class-6-siri/cover.jpeg"
-                      alt="Kannada Class 6 Digital Guidebook"
-                      className="w-full h-full object-contain rounded-xl transition-transform duration-200 group-hover:scale-102"
-                    />
-                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-                      <span className="bg-slate-950/85 backdrop-blur-xs text-amber-400 font-black text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider border border-amber-400/30">
-                        Class 6
-                      </span>
-                      <span className="bg-slate-950/85 backdrop-blur-xs text-white text-xs font-semibold px-2.5 py-0.5 rounded-full border border-white/20">
-                        180 Pages
-                      </span>
+            {/* Spotlight Book Card */}
+            <div className="max-w-4xl mx-auto rounded-3xl bg-stone-50/70 border border-stone-200 shadow-md overflow-hidden hover:border-amber-400 transition-all duration-300">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 sm:p-10 items-center">
+                
+                {/* Left Column: Visual Cover */}
+                <div className="md:col-span-5 flex justify-center">
+                  <div className="relative group w-full max-w-[280px]">
+                    <div className="aspect-[3/4] rounded-2xl bg-white border border-stone-200 shadow-md overflow-hidden p-2 flex items-center justify-center relative">
+                      <img
+                        src="/digital/class-6-siri/cover.jpeg"
+                        alt="Kannada Class 6 Digital Guidebook"
+                        className="w-full h-full object-contain rounded-xl transition-transform duration-200 group-hover:scale-102"
+                      />
+                      <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                        <span className="bg-slate-950/85 backdrop-blur-xs text-amber-400 font-black text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider border border-amber-400/30">
+                          Class 6
+                        </span>
+                        <span className="bg-slate-950/85 backdrop-blur-xs text-white text-xs font-semibold px-2.5 py-0.5 rounded-full border border-white/20">
+                          180 Pages
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Right Column: Details & CTAs */}
+                <div className="md:col-span-7 space-y-5">
+                  
+                  <div className="space-y-2">
+                    <h3 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+                      Kannada Class 6 Digital Guidebook
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                      An English-translated Kannada guidebook that helps Class 6 students understand lessons, review chapter summaries and practise textbook questions.
+                    </p>
+                  </div>
+
+                  {/* Specs List */}
+                  <div className="grid grid-cols-2 gap-3 py-2 text-xs text-slate-700">
+                    <div className="p-3 bg-white rounded-xl border border-stone-200">
+                      <strong className="block text-slate-900 font-bold">Class:</strong>
+                      <span>6</span>
+                    </div>
+                    <div className="p-3 bg-white rounded-xl border border-stone-200">
+                      <strong className="block text-slate-900 font-bold">Subject:</strong>
+                      <span>Kannada</span>
+                    </div>
+                    <div className="p-3 bg-white rounded-xl border border-stone-200">
+                      <strong className="block text-slate-900 font-bold">Length:</strong>
+                      <span>180 pages</span>
+                    </div>
+                    <div className="p-3 bg-white rounded-xl border border-stone-200">
+                      <strong className="block text-slate-900 font-bold">Price:</strong>
+                      <span>₹295</span>
+                    </div>
+                    <div className="col-span-2 p-3 bg-white rounded-xl border border-stone-200">
+                      <strong className="block text-slate-900 font-bold">Access:</strong>
+                      <span>Lifetime digital access with a one-time purchase</span>
+                    </div>
+                  </div>
+
+                  {/* CTAs */}
+                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                    <Link
+                      href="/digital/kannada-class-6-guide"
+                      className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-md shadow-amber-500/20 cursor-pointer active:scale-98"
+                    >
+                      <BookOpen className="w-4 h-4 text-slate-950" />
+                      <span>View Class 6 Guidebook</span>
+                    </Link>
+
+                    <Link
+                      href="/reader/kannada-class-6-guide?preview=true"
+                      className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer active:scale-98"
+                    >
+                      <Eye className="w-4 h-4 text-amber-600" />
+                      <span>Preview 5 Free Pages</span>
+                    </Link>
+                  </div>
+
+                </div>
+
               </div>
-
-              {/* Right Column: Details & CTAs */}
-              <div className="md:col-span-7 space-y-5">
-                
-                <div className="space-y-2">
-                  <h3 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                    Kannada Class 6 Digital Guidebook
-                  </h3>
-
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                    An English-translated Kannada guidebook that helps Class 6 students understand lessons, review chapter summaries and practise textbook questions.
-                  </p>
-                </div>
-
-                {/* Specs List */}
-                <div className="grid grid-cols-2 gap-3 py-2 text-xs text-slate-700">
-                  <div className="p-3 bg-white rounded-xl border border-stone-200">
-                    <strong className="block text-slate-900 font-bold">Class:</strong>
-                    <span>6</span>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-stone-200">
-                    <strong className="block text-slate-900 font-bold">Subject:</strong>
-                    <span>Kannada</span>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-stone-200">
-                    <strong className="block text-slate-900 font-bold">Length:</strong>
-                    <span>180 pages</span>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-stone-200">
-                    <strong className="block text-slate-900 font-bold">Price:</strong>
-                    <span>₹295</span>
-                  </div>
-                  <div className="col-span-2 p-3 bg-white rounded-xl border border-stone-200">
-                    <strong className="block text-slate-900 font-bold">Access:</strong>
-                    <span>Lifetime digital access with a one-time purchase</span>
-                  </div>
-                </div>
-
-                {/* CTAs */}
-                <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                  <Link
-                    href="/digital/kannada-class-6-guide"
-                    className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-md shadow-amber-500/20 cursor-pointer active:scale-98"
-                  >
-                    <BookOpen className="w-4 h-4 text-slate-950" />
-                    <span>View Class 6 Guidebook</span>
-                  </Link>
-
-                  <Link
-                    href="/reader/kannada-class-6-guide?preview=true"
-                    className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer active:scale-98"
-                  >
-                    <Eye className="w-4 h-4 text-amber-600" />
-                    <span>Preview 5 Free Pages</span>
-                  </Link>
-                </div>
-
-              </div>
-
             </div>
-          </div>
 
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* ══════════════════════════════════════════════════════════════════════════
           3. H2: Reviews from Students and Parents

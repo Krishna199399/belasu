@@ -14,6 +14,7 @@ import {
   Laptop,
   ChevronDown,
 } from 'lucide-react';
+import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 
 export const Footer: React.FC = () => {
   const pathname = usePathname();
@@ -227,20 +228,22 @@ export const Footer: React.FC = () => {
                     </ul>
                   </div>
 
-                  <div className="pt-1.5 border-t border-stone-200/50 space-y-1">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block">Digital Platform</span>
-                    <ul className="space-y-1.5 text-slate-600">
-                      <li>
-                        <Link
-                          href="/digital/kannada-class-6-guide"
-                          className="text-indigo-700 font-bold hover:underline flex items-center gap-1.5"
-                        >
-                          <span>Class 6 Digital Guide</span>
-                          <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded uppercase">Live</span>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
+                  {!HIDE_DIGITAL_CLASS_6 && (
+                    <div className="pt-1.5 border-t border-stone-200/50 space-y-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block">Digital Platform</span>
+                      <ul className="space-y-1.5 text-slate-600">
+                        <li>
+                          <Link
+                            href="/digital/kannada-class-6-guide"
+                            className="text-indigo-700 font-bold hover:underline flex items-center gap-1.5"
+                          >
+                            <span>Class 6 Digital Guide</span>
+                            <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded uppercase">Live</span>
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -550,28 +553,41 @@ export const Footer: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="pt-1.5 border-t border-stone-200/60">
-                <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block mb-1">
-                  Digital Platform
-                </span>
-                <ul className="space-y-1.5">
-                  <li>
-                    <Link
-                      href="/digital/kannada-class-6-guide"
-                      className="hover:text-indigo-700 transition flex items-center gap-1 text-indigo-700 font-bold"
-                    >
-                      <span>Class 6 Digital Guide</span>
-                      <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded-full uppercase">Live</span>
-                    </Link>
-                  </li>
-                  <li className="pt-1">
-                    <Link href="/books" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
-                      <span>Browse All 11 Books</span>
-                      <span>→</span>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+              {!HIDE_DIGITAL_CLASS_6 ? (
+                <div className="pt-1.5 border-t border-stone-200/60">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 block mb-1">
+                    Digital Platform
+                  </span>
+                  <ul className="space-y-1.5">
+                    <li>
+                      <Link
+                        href="/digital/kannada-class-6-guide"
+                        className="hover:text-indigo-700 transition flex items-center gap-1 text-indigo-700 font-bold"
+                      >
+                        <span>Class 6 Digital Guide</span>
+                        <span className="text-[9px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded-full uppercase">Live</span>
+                      </Link>
+                    </li>
+                    <li className="pt-1">
+                      <Link href="/books" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
+                        <span>Browse All 11 Books</span>
+                        <span>→</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="pt-1.5 border-t border-stone-200/60">
+                  <ul className="space-y-1.5">
+                    <li>
+                      <Link href="/books" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
+                        <span>Browse All Books (10 Books)</span>
+                        <span>→</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
 

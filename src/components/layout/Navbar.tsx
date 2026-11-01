@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ShoppingCart, Menu, X, ChevronDown, BookOpen, Library, LogOut, User, Laptop, Package, Shield } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { AnnouncementBar } from './AnnouncementBar';
+import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 
 export const Navbar: React.FC = () => {
   const rawPathname = usePathname();
@@ -299,48 +300,51 @@ export const Navbar: React.FC = () => {
                               </div>
                             </div>
 
-                            <div className="pt-1">
-                              <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
-                                <span className="text-base">💻</span>
-                                <div>
-                                  <div className="text-xs font-black uppercase tracking-wider text-indigo-700">
-                                    Digital Books
-                                  </div>
-                                  <div className="text-[11px] text-indigo-600 font-medium">
-                                    Classes 6–10 · Web Reader
+                            {/* Digital Books (Temporarily hidden until Class 6 PDF release next week) */}
+                            {!HIDE_DIGITAL_CLASS_6 && (
+                              <div className="pt-1">
+                                <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
+                                  <span className="text-base">💻</span>
+                                  <div>
+                                    <div className="text-xs font-black uppercase tracking-wider text-indigo-700">
+                                      Digital Books
+                                    </div>
+                                    <div className="text-[11px] text-indigo-600 font-medium">
+                                      Classes 6–10 · Web Reader
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div className="space-y-1">
-                                <Link
-                                  href="/digital/kannada-class-6-guide"
-                                  onClick={() => setPurchaseDropdownOpen(false)}
-                                  className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group border border-transparent hover:border-indigo-100"
-                                >
-                                  <div>
-                                    <span className="font-bold text-slate-900 block">Class 6 Digital Guidebook</span>
-                                    <span className="text-[10px] text-slate-500">Official Web Edition</span>
-                                  </div>
-                                  <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
-                                    Available
-                                  </span>
-                                </Link>
+                                <div className="space-y-1">
+                                  <Link
+                                    href="/digital/kannada-class-6-guide"
+                                    onClick={() => setPurchaseDropdownOpen(false)}
+                                    className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group border border-transparent hover:border-indigo-100"
+                                  >
+                                    <div>
+                                      <span className="font-bold text-slate-900 block">Class 6 Digital Guidebook</span>
+                                      <span className="text-[10px] text-slate-500">Official Web Edition</span>
+                                    </div>
+                                    <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
+                                      Available
+                                    </span>
+                                  </Link>
 
-                                <Link
-                                  href="/digital"
-                                  onClick={() => setPurchaseDropdownOpen(false)}
-                                  className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group"
-                                >
-                                  <div>
-                                    <span className="block">Classes 7–10 Digital</span>
-                                    <span className="text-[10px] text-slate-400">Curriculum Roadmap</span>
-                                  </div>
-                                  <span className="text-[9px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.5 rounded">
-                                    Coming Soon
-                                  </span>
-                                </Link>
+                                  <Link
+                                    href="/digital"
+                                    onClick={() => setPurchaseDropdownOpen(false)}
+                                    className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group"
+                                  >
+                                    <div>
+                                      <span className="block">Classes 7–10 Digital</span>
+                                      <span className="text-[10px] text-slate-400">Curriculum Roadmap</span>
+                                    </div>
+                                    <span className="text-[9px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.5 rounded">
+                                      Coming Soon
+                                    </span>
+                                  </Link>
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
 
                         </div>
@@ -687,31 +691,33 @@ export const Navbar: React.FC = () => {
                             </div>
                           </div>
 
-                          {/* Digital Books */}
-                          <div className="pt-1 border-t border-stone-100">
-                            <div className="flex items-center gap-1.5 px-2 py-1 text-xs font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 rounded-md mb-1.5">
-                              <span>💻</span>
-                              <span>Digital Books (Classes 6–10)</span>
+                          {/* Digital Books (Temporarily hidden until Class 6 PDF release next week) */}
+                          {!HIDE_DIGITAL_CLASS_6 && (
+                            <div className="pt-1 border-t border-stone-100">
+                              <div className="flex items-center gap-1.5 px-2 py-1 text-xs font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 rounded-md mb-1.5">
+                                <span>💻</span>
+                                <span>Digital Books (Classes 6–10)</span>
+                              </div>
+                              <div className="space-y-1 pl-1">
+                                <Link
+                                  href="/digital/kannada-class-6-guide"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                  className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold text-indigo-900 bg-indigo-50/70 hover:bg-indigo-100 transition min-h-[40px]"
+                                >
+                                  <span>Class 6 Digital Guidebook</span>
+                                  <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-black">Available</span>
+                                </Link>
+                                <Link
+                                  href="/digital"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                  className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-bold text-indigo-700 hover:bg-indigo-50 transition min-h-[40px]"
+                                >
+                                  <span>Browse Digital Platform</span>
+                                  <span className="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded-full font-black">NEW</span>
+                                </Link>
+                              </div>
                             </div>
-                            <div className="space-y-1 pl-1">
-                              <Link
-                                href="/digital/kannada-class-6-guide"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold text-indigo-900 bg-indigo-50/70 hover:bg-indigo-100 transition min-h-[40px]"
-                              >
-                                <span>Class 6 Digital Guidebook</span>
-                                <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-black">Available</span>
-                              </Link>
-                              <Link
-                                href="/digital"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-bold text-indigo-700 hover:bg-indigo-50 transition min-h-[40px]"
-                              >
-                                <span>Browse Digital Platform</span>
-                                <span className="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded-full font-black">NEW</span>
-                              </Link>
-                            </div>
-                          </div>
+                          )}
 
                           {/* All Books Link */}
                           <div className="pt-2 border-t border-stone-100">

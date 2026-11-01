@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import { createAdminClient } from '@/lib/supabase';
-import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
+import { DIGITAL_BOOKS_DATA, HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
 import { sendAdminOrderNotification, sendCustomerOrderReceipt } from '@/lib/email';
 import crypto from 'crypto';
@@ -39,6 +39,13 @@ export async function POST(request: NextRequest) {
 
     if (!bookId) {
       return Response.json({ success: false, error: 'Book ID is required' }, { status: 400 });
+    }
+
+    if (HIDE_DIGITAL_CLASS_6 && (bookId === 'dbook-6-kn-01' || bookId === 'kannada-class-6-guide')) {
+      return Response.json(
+        { success: false, error: 'Digital edition currently undergoing final release preparation. Sales open next week.' },
+        { status: 400 }
+      );
     }
 
     if (!razorpay_payment_id || !razorpay_order_id) {

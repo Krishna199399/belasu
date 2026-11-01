@@ -12,6 +12,7 @@ import { VideoReelsSection } from '@/components/home/VideoReelsSection';
 import { HomeBottomCtaSection } from '@/components/home/HomeBottomCtaSection';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
 import { BookProduct } from '@/types';
+import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 
 export default function HomePage() {
   const [previewBook, setPreviewBook] = useState<BookProduct | null>(null);
@@ -27,8 +28,8 @@ export default function HomePage() {
       {/* 3. H2: Support for Learning Kannada */}
       <AcademicFeaturesSection />
 
-      {/* 4. H2: Explore Digital Kannada Guidebooks */}
-      <DigitalGuidebooksSection />
+      {/* 4. H2: Explore Digital Kannada Guidebooks (Temporarily hidden until Class 6 PDF release next week) */}
+      {!HIDE_DIGITAL_CLASS_6 && <DigitalGuidebooksSection />}
 
       {/* 5. H2: A Quick Look Inside Our Books */}
       <QuickLookBookSection />

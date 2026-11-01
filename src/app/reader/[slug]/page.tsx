@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth';
 import { getLiveDigitalBookBySlug } from '@/lib/digital';
 import { SecureBookReader } from '@/components/reader/SecureBookReader';
 import { createAdminClient } from '@/lib/supabase';
+import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -17,6 +18,10 @@ export default async function ReaderPage({
   const { slug } = await params;
   const { preview } = await searchParams;
   const isPreviewMode = preview === 'true';
+
+  if (HIDE_DIGITAL_CLASS_6 && (slug === 'kannada-class-6-guide' || slug === 'dbook-6-kn-01')) {
+    redirect('/digital');
+  }
 
   // Live database check first — any admin edits/creations/deletions take effect immediately
   const book = await getLiveDigitalBookBySlug(slug);

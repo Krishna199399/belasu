@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
+import { DIGITAL_BOOKS_DATA, HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 import { PARENT_REVIEWS } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
@@ -151,6 +151,61 @@ export default function DigitalClass6Page() {
       a: 'No. The guidebook is provided through the Belesu online reader and is not available as a downloadable PDF.',
     },
   ];
+
+  if (HIDE_DIGITAL_CLASS_6) {
+    return (
+      <div className="min-h-screen bg-stone-50 text-slate-900">
+        {/* Breadcrumb */}
+        <div className="bg-white border-b border-stone-200 py-3">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+              <Link href="/" className="hover:text-amber-600 transition">Home</Link>
+              <span>/</span>
+              <Link href="/books" className="hover:text-amber-600 transition">Books</Link>
+              <span>/</span>
+              <span className="text-slate-900 font-bold" aria-current="page">Class 6 Kannada Digital Guide</span>
+            </nav>
+          </div>
+        </div>
+
+        {/* Notice Card */}
+        <section className="py-16 sm:py-24">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center space-y-6">
+            <div className="w-16 h-16 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center mx-auto text-amber-700 shadow-sm">
+              <Sparkles className="w-8 h-8 text-amber-600" />
+            </div>
+
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-100/90 text-amber-950 border border-amber-300">
+                <span>Release in Progress · Coming Next Week</span>
+              </div>
+              <h1 className="text-2xl sm:text-4xl font-serif font-black text-slate-900">
+                Class 6 Digital Guidebook Coming Soon
+              </h1>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-lg mx-auto">
+                We are currently finalizing the digital PDF formatting and quality verification for the Class 6 Kannada Digital Edition. Purchases and web reader access will go live next week.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm max-w-md mx-auto text-xs text-slate-600">
+              💡 Looking for academic guidebooks right away? Explore our printed Kannada guidebooks with English translations for <strong>Classes 1 to 5</strong>.
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/books"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold text-slate-950 bg-amber-500 hover:bg-amber-600 transition shadow-sm flex items-center justify-center gap-2 text-sm cursor-pointer"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Browse Printed Academic Books (Classes 1–5)</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-slate-900 pb-24 lg:pb-0">
