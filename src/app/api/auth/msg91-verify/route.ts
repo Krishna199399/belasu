@@ -63,22 +63,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upsert user in Supabase
+    // Find or create user in Supabase (preserving existing names for returning/migrated customers)
     const supabase = createAdminClient();
-    const displayName = (name && name.trim()) || `User_${cleanPhone.slice(-4)}`;
-
-    const { data: user, error: userErr } = await supabase
+    const { data: existingUser } = await supabase
       .from('users')
-      .upsert({ phone: cleanPhone, name: displayName }, { onConflict: 'phone' })
-      .select()
-      .single();
+      .select('*')
+      .eq('phone', cleanPhone)
+      .maybeSingle();
 
-    if (userErr || !user) {
-      console.error('[MSG91 Verify] User upsert error:', userErr);
-      return Response.json(
-        { success: false, error: 'Failed to create or retrieve user account.' },
-        { status: 500 }
-      );
+    let user = existingUser;
+
+    if (!user) {
+      const displayName = (name && name.trim()) || `User_${cleanPhone.slice(-4)}`;
+      const { data: newUser, error: createErr } = await supabase
+        .from('users')
+        .insert({ phone: cleanPhone, name: displayName })
+        .select()
+        .single();
+
+      if (createErr || !newUser) {
+        console.error('[MSG91 Verify] User insert error:', createErr);
+        return Response.json(
+          { success: false, error: 'Failed to create user account.' },
+          { status: 500 }
+        );
+      }
+      user = newUser;
+    } else {
+      // If user has a placeholder name and explicitly passed a name, update it
+      if (name && name.trim() && (!user.name || user.name.startsWith('User_'))) {
+        const { data: updatedUser } = await supabase
+          .from('users')
+          .update({ name: name.trim() })
+          .eq('id', user.id)
+          .select()
+          .single();
+        if (updatedUser) {
+          user = updatedUser;
+        }
+      }
     }
 
     const userData = user as unknown as Record<string, unknown>;
