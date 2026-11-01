@@ -38,3 +38,4 @@ CREATE TABLE IF NOT EXISTS public.old_website_orders_archive (
 CREATE INDEX IF NOT EXISTS idx_archive_order_num ON public.old_website_orders_archive(order_number);
 CREATE INDEX IF NOT EXISTS idx_archive_clean_phone ON public.old_website_orders_archive(clean_phone);
 CREATE INDEX IF NOT EXISTS idx_archive_sku ON public.old_website_orders_archive(sku);
+
