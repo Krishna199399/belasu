@@ -16,31 +16,40 @@ interface AnnouncementItem {
 
 const ANNOUNCEMENTS: AnnouncementItem[] = [
   {
-    id: 'digital-class-6',
-    badge: 'Digital E-Reader',
+    id: 'elevate-startup-award',
+    badge: 'Govt Award',
     badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-300',
-    icon: '💻',
-    headline: 'New Launch: Class 6 Kannada English-Translated Digital Guidebook is Now Available!',
-    ctaText: 'Read Online',
-    href: '/digital/kannada-class-6-guide',
+    icon: '🏆',
+    headline: 'Belesu Won Elevate Startup Program from Government of Karnataka for Contribution to Kannada Culture & Academics',
+    ctaText: 'About Us',
+    href: '/about',
   },
   {
-    id: 'spoken-kannada-book',
-    badge: 'New Release',
+    id: 'vtu-new-office',
+    badge: 'New Office',
+    badgeColor: 'bg-sky-50 text-sky-800 border-sky-300',
+    icon: '🏛️',
+    headline: 'Belesu Inaugurated New Office at Visveswariya Technological University (VTU), Belagavi',
+    ctaText: 'Visit Us',
+    href: '/contact',
+  },
+  {
+    id: 'spoken-kannada-launch',
+    badge: 'Book Launch',
     badgeColor: 'bg-amber-50 text-amber-900 border-amber-300',
-    icon: '🗣️',
-    headline: 'New Book: "A Destination to Speak Kannada" — Master Everyday Spoken Kannada with Ease',
+    icon: '✨',
+    headline: 'Launch of "A Destination to Speak Kannada" Book with MP Shri Tejasvi Surya',
     ctaText: 'Order Book',
     href: '/books/a-destination-to-speak-kannada',
   },
   {
-    id: 'vtu-belgaum-office',
-    badge: 'Campus Office',
-    badgeColor: 'bg-sky-50 text-sky-800 border-sky-300',
-    icon: '🏛️',
-    headline: 'Visit Our Operations Office: VRIF, Visvesvaraya Technological University (VTU) Campus, Belgaum',
-    ctaText: 'Get Directions',
-    href: '/contact',
+    id: 'digital-class-6',
+    badge: 'Digital E-Reader',
+    badgeColor: 'bg-purple-50 text-purple-800 border-purple-300',
+    icon: '💻',
+    headline: 'Class 6 Kannada English-Translated Digital Guidebook is Now Live on Web Reader',
+    ctaText: 'Read Online',
+    href: '/digital/kannada-class-6-guide',
   },
 ];
 
@@ -53,7 +62,7 @@ export const AnnouncementBar: React.FC = () => {
     subscribeNoop,
     () => {
       try {
-        return sessionStorage.getItem('belesu_announcement_dismissed_v1') === 'true';
+        return sessionStorage.getItem('belesu_announcement_dismissed_v2') === 'true';
       } catch {
         return false;
       }
@@ -67,7 +76,7 @@ export const AnnouncementBar: React.FC = () => {
     e.stopPropagation();
     setIsManualDismissed(true);
     try {
-      sessionStorage.setItem('belesu_announcement_dismissed_v1', 'true');
+      sessionStorage.setItem('belesu_announcement_dismissed_v2', 'true');
     } catch {
       // ignore storage errors
     }
