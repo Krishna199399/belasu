@@ -9,7 +9,6 @@ import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
 import { ShieldCheck, CreditCard, CheckCircle2, ArrowLeft, Lock, Package, BookOpen, LogIn, Loader, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 import AddressManager from '@/components/address/AddressManager';
-import { AuthModal } from '@/components/auth/AuthModal';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import toast from 'react-hot-toast';
 
@@ -22,11 +21,17 @@ export default function CheckoutPage() {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [verifiedBook, setVerifiedBook] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Redirect to single unified login page if user is not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/auth/login?redirect=/checkout');
+    }
+  }, [user, authLoading, router]);
 
   // Digital access contact fields
   const [digitalEmail, setDigitalEmail] = useState(() => user?.email || '');
@@ -123,7 +128,7 @@ export default function CheckoutPage() {
     e.preventDefault();
     
     if (!user) {
-      setShowAuthModal(true);
+      router.push('/auth/login?redirect=/checkout');
       return;
     }
 
@@ -205,50 +210,47 @@ export default function CheckoutPage() {
     );
   }
 
-  // Login required
+  // Login required fallback view
   if (!user) {
     return (
       <div className="py-20 bg-slate-50 min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-gray-200 shadow-xl text-center space-y-6">
-          <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto">
-            <Lock className="w-12 h-12" />
+        <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-slate-200 shadow-xl text-center space-y-6">
+          <div className="w-20 h-20 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto">
+            <Lock className="w-10 h-10" />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-slate-900 mt-3">Login Required</h2>
+            <h2 className="text-2xl font-black text-slate-900 mt-2">Login Required</h2>
             <p className="text-sm text-slate-600 mt-2">
-              Please login to complete your purchase. We need your contact information to process orders and provide updates.
+              Please login with your mobile number to complete your purchase, access saved addresses, and track order updates.
             </p>
           </div>
           
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
-            <p className="text-xs text-blue-800 font-bold mb-2">
+          <div className="bg-amber-50/70 border border-amber-200/70 rounded-xl p-4 text-left">
+            <p className="text-xs text-amber-900 font-bold mb-2">
               Why login?
             </p>
-            <ul className="text-xs text-blue-800 space-y-1 list-disc list-inside">
-              <li>Track your orders</li>
-              <li>Save delivery addresses</li>
-              <li>Access purchased digital books</li>
-              <li>Get order updates via SMS</li>
+            <ul className="text-xs text-amber-800 space-y-1 list-disc list-inside">
+              <li>Auto-fill your saved delivery addresses</li>
+              <li>Track shipping & SMS order notifications</li>
+              <li>Instant access to purchased digital books</li>
             </ul>
           </div>
 
-          <button
-            onClick={() => setShowAuthModal(true)}
-            className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold text-white bg-orange-600 hover:bg-orange-700 transition cursor-pointer"
+          <Link
+            href="/auth/login?redirect=/checkout"
+            className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-600/20 transition cursor-pointer"
           >
             <LogIn className="w-5 h-5" />
             Login to Continue
-          </button>
+          </Link>
 
           <Link
             href="/cart"
-            className="block text-sm text-gray-600 hover:text-orange-600 transition"
+            className="block text-sm font-semibold text-slate-500 hover:text-amber-700 transition"
           >
             ← Back to Cart
           </Link>
         </div>
-
-        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
       </div>
     );
   }
@@ -736,8 +738,6 @@ export default function CheckoutPage() {
         </form>
 
       </div>
-
-      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 }
