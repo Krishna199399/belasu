@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BOOKS_DATA, PARENT_REVIEWS } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
@@ -28,7 +28,19 @@ export default function SaviClass3Client() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Class 3 book data
-  const book: BookProduct = BOOKS_DATA[2];
+  const [book, setBook] = useState<BookProduct>(BOOKS_DATA[2]);
+
+  useEffect(() => {
+    fetch('/api/books')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.books) {
+          const found = data.books.find((b: BookProduct) => b.id === '16142' || b.sku === 'SK3');
+          if (found) setBook(found);
+        }
+      })
+      .catch((err) => console.error('Failed to load live book stock:', err));
+  }, []);
 
   // Related Savi books for Class 1, 2, 4
   const relatedBooks = [
@@ -65,6 +77,10 @@ export default function SaviClass3Client() {
   const marqueeReviews = [...PARENT_REVIEWS, ...PARENT_REVIEWS];
 
   const handleAddToCart = () => {
+    if (book.stockQuantity <= 0 || !book.inStock) {
+      toast.error('Sorry, this book is currently out of stock.');
+      return;
+    }
     addToCart(book, 'physical', 1);
     toast.success(`Added ${book.title} to cart!`);
     openCart();
@@ -213,13 +229,21 @@ export default function SaviClass3Client() {
                   </span>
                 </div>
 
-                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-                  ✓ In Stock
-                </span>
+                {book.stockQuantity <= 0 || !book.inStock ? (
+                  <span className="text-xs font-bold text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
+                    ✕ Out of Stock
+                  </span>
+                ) : (
+                  <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+                    ✓ In Stock
+                  </span>
+                )}
 
-                <span className="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                  🚚 Fast Delivery (3-5 Days)
-                </span>
+                {book.stockQuantity > 0 && book.inStock && (
+                  <span className="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+                    🚚 Fast Delivery (3-5 Days)
+                  </span>
+                )}
               </div>
 
               {/* Exact Description */}
@@ -244,14 +268,24 @@ export default function SaviClass3Client() {
 
               {/* Primary & Secondary CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={handleAddToCart}
-                  className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-black text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>Add to Cart | ₹280</span>
-                </button>
+                {book.stockQuantity <= 0 || !book.inStock ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-bold text-slate-400 bg-slate-200 border border-slate-300 cursor-not-allowed flex items-center justify-center gap-2 text-sm uppercase tracking-wider shadow-none"
+                  >
+                    <span>Temporarily Out of Stock</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-black text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>Add to Cart | ₹{book.price}</span>
+                  </button>
+                )}
 
                 <button
                   type="button"

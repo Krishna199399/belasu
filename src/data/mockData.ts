@@ -170,8 +170,8 @@ export const BOOKS_DATA: BookProduct[] = [
         englishTranslation: 'Thorough solved question bank for homework and exam prep.'
       }
     ],
-    inStock: true,
-    stockQuantity: 50,
+    inStock: false,
+    stockQuantity: 0,
     rating: 4.92,
     reviewCount: 41
   },
@@ -228,8 +228,8 @@ export const BOOKS_DATA: BookProduct[] = [
         englishTranslation: 'Step-by-step answers for all textbook exercise questions.'
       }
     ],
-    inStock: true,
-    stockQuantity: 38,
+    inStock: false,
+    stockQuantity: 0,
     rating: 4.95,
     reviewCount: 52
   },

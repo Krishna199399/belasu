@@ -18,9 +18,15 @@ export function MobileBookStickyBar({ book, onAddToCart, onPreview }: MobileBook
         <div className="text-lg sm:text-xl font-black text-amber-600 leading-tight">
           {formatPrice(book.price)}
         </div>
-        <div className="text-[10px] sm:text-[11px] font-bold text-emerald-700 truncate">
-          In Stock
-        </div>
+        {book.stockQuantity <= 0 || !book.inStock ? (
+          <div className="text-[10px] sm:text-[11px] font-bold text-rose-600 truncate">
+            Out of Stock
+          </div>
+        ) : (
+          <div className="text-[10px] sm:text-[11px] font-bold text-emerald-700 truncate">
+            In Stock
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <button
@@ -32,11 +38,11 @@ export function MobileBookStickyBar({ book, onAddToCart, onPreview }: MobileBook
           <BookOpen className="w-4 h-4 text-amber-600" />
           <span className="hidden xs:inline">Preview</span>
         </button>
-        {book.stockQuantity <= 0 ? (
+        {book.stockQuantity <= 0 || !book.inStock ? (
           <button
             type="button"
             disabled
-            className="min-h-[44px] px-4 rounded-xl bg-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center"
+            className="min-h-[44px] px-4 rounded-xl bg-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center cursor-not-allowed"
           >
             Out of Stock
           </button>

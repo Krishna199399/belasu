@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { BookProduct, DigitalBook, EnhancedCartItem, ProductType } from '@/types';
 
 interface CartContextType {
@@ -56,6 +57,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const toggleCart = () => setIsOpen((prev) => !prev);
 
   const addToCart = (product: BookProduct | DigitalBook, productType: ProductType, quantity: number = 1) => {
+    // Check out of stock for physical books
+    if (productType === 'physical') {
+      const book = product as BookProduct;
+      if (book.stockQuantity <= 0 || book.inStock === false) {
+        toast.error('Sorry, this book is currently out of stock.');
+        return;
+      }
+    }
+
     setCart((prevCart) => {
       const existingIndex = prevCart.findIndex((item) => item.product.id === product.id);
       if (existingIndex > -1) {
