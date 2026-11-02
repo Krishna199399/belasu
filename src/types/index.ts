@@ -1,6 +1,6 @@
 export type BookSeries = 'Kali' | 'Savi' | 'Siri' | 'Tili' | 'Spoken';
 
-export type SamplePageCategory = 'Index' | 'Poem' | 'Exercises' | 'Textbook';
+export type SamplePageCategory = 'Index' | 'Poem' | 'Exercises' | 'Textbook' | 'Lesson';
 
 export interface SamplePage {
   pageNumber: number;

@@ -480,7 +480,7 @@ export default function DestinationToSpeakKannadaPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {book.samplePages?.map((page, idx) => (
               <div
                 key={page.pageNumber}
@@ -546,7 +546,7 @@ export default function DestinationToSpeakKannadaPage() {
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm shadow-md hover:shadow-lg transition cursor-pointer active:scale-98"
             >
               <Eye className="w-4 h-4 text-slate-950" />
-              <span>Launch Interactive 3-Page Preview</span>
+              <span>Launch Interactive 6-Page Preview</span>
             </button>
           </div>
         </div>

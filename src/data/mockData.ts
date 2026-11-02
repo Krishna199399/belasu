@@ -605,8 +605,144 @@ export const BOOKS_DATA: BookProduct[] = [
     samplePages: [
       {
         pageNumber: 1,
+        title: 'Section 2: Question Words & Everyday Conversations',
+        imageUrl: '/previews/A Destination to Speak Kannada/1.png',
+        category: 'Exercises',
+        kannadaText: 'ಪ್ರಶ್ನಾರ್ಥಕ ಪದಗಳು ಮತ್ತು ಸಂಭಾಷಣೆ (Which, Where, Who)',
+        englishTranslation: 'Illustrative dialogues introducing everyday question words: Which (ಯಾವ?), Where (ಎಲ್ಲಿ?), and Who (ಯಾರು?) with phonetic guide.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Chapter 14: Talk Idli, Eat Dosa – Morning at Darshini',
+        imageUrl: '/previews/A Destination to Speak Kannada/2.png',
+        category: 'Lesson',
+        kannadaText: 'ಅಧ್ಯಾಯ 14: ದರ್ಶಿನಿ ಉಪಾಹಾರ ಗೃಹದಲ್ಲಿ ಆರ್ಡರ್ ಮಾಡುವುದು',
+        englishTranslation: 'Ordering food at Bangalore Darshini counters: "One plate idli & masala dosa", "Make dosa crispy", and ordering bottled water.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Chapter 10: Meet You at Metro – Tickets & Enquiries',
+        imageUrl: '/previews/A Destination to Speak Kannada/3.png',
+        category: 'Lesson',
+        kannadaText: 'ನಮ್ಮ ಮೆಟ್ರೋ ಪ್ರಯಾಣ: ಟಿಕೆಟ್ ಖರೀದಿ ಮತ್ತು ವಿಚಾರಣೆ',
+        englishTranslation: 'Buying Namma Metro tickets, asking for direct trains to Kadugodi, and interchange enquiries at Majestic station.'
+      },
+      {
+        pageNumber: 4,
+        title: 'Chapter 8: Pride to Ride – Auto Driver Dialogues',
+        imageUrl: '/previews/A Destination to Speak Kannada/4.png',
+        category: 'Exercises',
+        kannadaText: 'ಅಧ್ಯಾಯ 8: ಆಟೋ ಚಾಲಕರೊಂದಿಗೆ ದೈನಂದಿನ ಸಂಭಾಷಣೆ',
+        englishTranslation: 'Everyday travel Kannada: "Will you come to MG Road?", asking fare to Koramangala, and polite price negotiation.'
+      },
+      {
+        pageNumber: 5,
+        title: 'Chapter 8 (Part 2): Journey with Bus Conductor & Stopping Auto',
+        imageUrl: '/previews/A Destination to Speak Kannada/5.png',
+        category: 'Lesson',
+        kannadaText: 'ಬಿಎಂಟಿಸಿ ಬಸ್ ಪ್ರಯಾಣ: ಟಿಕೆಟ್ ಮತ್ತು ಮಾರ್ಗ ವಿಚಾರಣೆ',
+        englishTranslation: 'BMTC bus dialogues: "Does this bus go to Koramangala?", "Give me two tickets", and guiding auto drivers to stop.'
+      },
+      {
+        pageNumber: 6,
+        title: 'Chapter 8 (Part 3): Hola to Cab Driver & UPI Payments',
+        imageUrl: '/previews/A Destination to Speak Kannada/6.png',
+        category: 'Exercises',
+        kannadaText: 'ಕ್ಯಾಬ್ ಪ್ರಯಾಣ: ಓಟಿಪಿ ಹಂಚಿಕೆ ಮತ್ತು ಯುಪಿಐ ಪಾವತಿ',
+        englishTranslation: 'Sharing ride OTP with cab driver, cashless UPI payments ("Change illaa, UPI maaDi"), and requesting bus stop alerts.'
+      }
+    ],
+    inStock: true,
+    stockQuantity: 50,
+    rating: 4.96,
+    reviewCount: 64
+  },
+  {
+    id: '20049',
+    title: 'Tili Kannada English Translated Innovative Guidebook Class 5',
+    slug: 'tili-kannada-english-translated-innovative-guidebook-class-5',
+    series: 'Tili',
+    gradeClass: 5,
+    sku: 'TL5',
+    price: 295,
+    originalPrice: 360,
+    badge: 'Bestseller',
+    description: 'High-level Class 5 Tili Kannada guidebook designed to build deep reading comprehension, vocabulary mastery, and high exam performance for 5th graders.',
+    features: [
+      'Kannada to English conversation for Pronunciation',
+      'Kannada text meaningfully translated to English',
+      'Covers all Exercises with Answers',
+      'Synopsis in English for Lessons',
+      'Aligned with Karnataka School Textbook for CBSE, ICSE, State, IG, KV.'
+    ],
+    tableOfContents: [
+      'Lesson 1: Kannada Sahitya Charitre (History of Literature)',
+      'Lesson 2: Parisara Samrakshane (Environmental Conservation)',
+      'Lesson 3: Advanced Grammar Masterclass',
+      'Lesson 4: Comprehensive Answer Key'
+    ],
+    coverImage: '/covers/tili-5.png',
+    karnatakaTextbookCover: '/government-covers/tili-5.jpg',
+    samplePages: [
+      {
+        pageNumber: 1,
+        title: 'Class 5 Tili Kannada Syllabus Index',
+        imageUrl: '/previews/Tili Kannada class 5/Index.jpeg',
+        category: 'Index',
+        kannadaText: 'ಅಧ್ಯಾಯ ಪಟ್ಟಿ (Tili Kannada Chapter Index)',
+        englishTranslation: 'Comprehensive Class 5 curriculum syllabus structure.'
+      },
+      {
+        pageNumber: 2,
+        title: 'Prose & Poetry Translation',
+        imageUrl: '/previews/Tili Kannada class 5/Poem.jpeg',
+        category: 'Poem',
+        kannadaText: 'ಪಾಠ ಅನುವಾದ ಮತ್ತು ಶಬ್ದ ಭಂಡಾರ (Translation & Vocabulary)',
+        englishTranslation: 'Chapter translations and advanced grammar rules in English.'
+      },
+      {
+        pageNumber: 3,
+        title: 'Comprehensive Solved Exercise Bank',
+        imageUrl: '/previews/Tili Kannada class 5/Exercises.jpeg',
+        category: 'Exercises',
+        kannadaText: 'ಅಭ್ಯಾಸ ಕೋಶ ಮತ್ತು ಉತ್ತರಗಳು (Solved Exercise Bank)',
+        englishTranslation: 'Complete answers for all textbook exercise and evaluation sections.'
+      }
+    ],
+    inStock: true,
+    stockQuantity: 42,
+    rating: 4.98,
+    reviewCount: 78
+  },
+  {
+    id: '21500',
+    title: 'A Destination to Speak Kannada',
+    slug: 'a-destination-to-speak-kannada',
+    series: 'Spoken',
+    gradeClass: 0,
+    sku: 'DSK',
+    price: 295,
+    originalPrice: 350,
+    badge: 'Illustrated Edition',
+    description: 'Pictorially and innovatively crafted book to speak and learn Kannada for beginners and non-Kannada speakers across 23 practical conversation chapters.',
+    features: [
+      '23 chapters covering everyday situations and conversations',
+      'Pictorial approach connecting Kannada words to real-life scenarios',
+      'Practical Kannada vocabulary for travel, shopping, family and services',
+      'Language basics: numbers, pronouns, tenses and Gunithakshara'
+    ],
+    tableOfContents: [
+      'Part 1: Kannada Introductions & Family Conversations',
+      'Part 2: Questions, Pronouns, Numbers & Descriptions',
+      'Part 3: Travel, Transport, Shopping & Local Services',
+      'Part 4: Language Basics, Tenses & Everyday Vocabulary'
+    ],
+    coverImage: '/covers/a-destination-to-speak-kannada.png',
+    samplePages: [
+      {
+        pageNumber: 1,
         title: 'Table of Contents & Curriculum Index',
-        imageUrl: '/previews/A Destination to Speak Kannada/Index.jpg',
+        imageUrl: '/previews/A Destination to Speak Kannada/1.png',
         category: 'Index',
         kannadaText: 'ಪರಿವಿಡಿ - 23 ಅಧ್ಯಾಯಗಳ ವಿವರ (Table of Contents)',
         englishTranslation: 'Complete syllabus covering everyday conversations, vocabulary, and grammar.'
