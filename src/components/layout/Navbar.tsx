@@ -173,14 +173,14 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-stone-200 shadow-sm">
       <div className="max-w-[1440px] mx-auto px-3 sm:px-5 xl:px-4 2xl:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-2 xl:gap-3">
+        <div className="flex items-center justify-between h-[68px] sm:h-20 gap-2 xl:gap-3">
 
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 py-1">
+          <Link href="/" className="flex-shrink-0 flex items-center py-1">
             <img
               src="/Belesu-logo1.png"
               alt="Belesu Logo"
-              className="h-10 sm:h-12 xl:h-12 2xl:h-16 w-auto object-contain"
+              className="h-12 xs:h-[54px] sm:h-14 xl:h-12 2xl:h-16 w-auto object-contain transition-all"
             />
           </Link>
 
@@ -572,7 +572,7 @@ export const Navbar: React.FC = () => {
                 <img
                   src="/Belesu-logo1.png"
                   alt="Belesu Logo"
-                  className="h-10 object-contain"
+                  className="h-11 sm:h-12 object-contain"
                 />
               </Link>
               <button
