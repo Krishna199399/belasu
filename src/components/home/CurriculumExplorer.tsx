@@ -159,7 +159,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
   };
 
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-gradient-to-b from-stone-50/80 via-white to-amber-50/20 border-b border-stone-200">
+    <section id="series-deck" className="py-8 sm:py-10 lg:py-12 bg-gradient-to-b from-stone-50/80 via-white to-amber-50/20 border-b border-stone-200">
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
