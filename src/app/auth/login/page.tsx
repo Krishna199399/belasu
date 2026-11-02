@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState, useRef, useCallback } from 'react';
+import { use, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -34,7 +34,6 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   const [error, setError] = useState('');
   const [devMessage, setDevMessage] = useState('');
   const [resendCountdown, setResendCountdown] = useState(0);
-  const [otpMethod, setOtpMethod] = useState<'msg91' | 'fallback'>('msg91');
 
   const otpInputRef = useRef<HTMLInputElement>(null);
 
@@ -88,22 +87,6 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     }
   }, [step]);
 
-  const fallbackSendOtp = useCallback(async () => {
-    setOtpMethod('fallback');
-    const result = await sendOtp(phone, name.trim());
-    setIsLoading(false);
-
-    if (result.success) {
-      setStep('otp');
-      setResendCountdown(30);
-      if (result.message?.includes('[DEV MODE]')) {
-        setDevMessage(result.message);
-      }
-    } else {
-      setError(result.error || 'Failed to send verification code. Please try again.');
-    }
-  }, [phone, name, sendOtp]);
-
   if (user) return null;
 
   const handleSendOtp = async () => {
@@ -118,55 +101,29 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     setError('');
     setIsLoading(true);
 
-    const fullPhone = `91${phone}`;
+    try {
+      // Primary: Dispatch WhatsApp OTP via Belesu WACRM
+      const result = await sendOtp(phone, name.trim());
+      setIsLoading(false);
 
-    // Try MSG91 OTP Widget first
-    if (typeof window.sendOtp === 'function') {
-      try {
-        window.sendOtp(
-          fullPhone,
-          (res: unknown) => {
-            console.log('[MSG91] OTP sent successfully:', res);
-            setIsLoading(false);
-            setStep('otp');
-            setResendCountdown(30);
-            setOtpMethod('msg91');
-          },
-          (err: unknown) => {
-            const errorObj = err as { message?: string; data?: { message?: string } };
-            const errMsg =
-              errorObj?.data?.message ||
-              errorObj?.message ||
-              'Failed to send OTP via MSG91 SMS. Switching to fallback...';
-            console.warn('[MSG91] sendOtp error:', errMsg);
-            fallbackSendOtp();
-          }
-        );
-        return;
-      } catch (e) {
-        console.warn('[MSG91] Exception in sendOtp, falling back:', e);
+      if (result.success) {
+        setStep('otp');
+        setResendCountdown(30);
+        if (result.message?.includes('[DEV MODE]')) {
+          setDevMessage(result.message);
+        }
+      } else {
+        setError(result.error || 'Failed to send WhatsApp verification code. Please try again.');
       }
+    } catch (e: unknown) {
+      setIsLoading(false);
+      const errMsg = e instanceof Error ? e.message : 'Network error sending WhatsApp OTP. Please try again.';
+      setError(errMsg);
     }
-
-    fallbackSendOtp();
   };
 
   const handleResendOtp = () => {
-    if (otpMethod === 'msg91' && typeof window.retryOtp === 'function') {
-      setIsLoading(true);
-      window.retryOtp(
-        '11',
-        () => {
-          setIsLoading(false);
-          setResendCountdown(30);
-        },
-        () => {
-          handleSendOtp();
-        }
-      );
-    } else {
-      handleSendOtp();
-    }
+    handleSendOtp();
   };
 
   const handleVerifyOtp = async () => {
@@ -177,48 +134,19 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     setError('');
     setIsLoading(true);
 
-    if (otpMethod === 'msg91' && typeof window.verifyOtp === 'function') {
-      try {
-        window.verifyOtp(
-          otp,
-          async (res: unknown) => {
-            console.log('[MSG91] verifyOtp success response:', res);
-            const resData = res as Record<string, unknown>;
-            const accessToken = (resData?.['access-token'] || resData?.message || resData?.token || res) as string;
+    try {
+      const result = await verifyOtp(phone, otp, name.trim());
+      setIsLoading(false);
 
-            const result = await loginWithMsg91Token(phone, accessToken, name.trim());
-            setIsLoading(false);
-
-            if (result.success) {
-              router.replace(redirectTo || '/library');
-            } else {
-              setError(result.error || 'Authentication failed. Please try again.');
-            }
-          },
-          (err: unknown) => {
-            setIsLoading(false);
-            const errorObj = err as { message?: string; data?: { message?: string } };
-            const errMsg =
-              errorObj?.data?.message ||
-              errorObj?.message ||
-              'Incorrect verification code. Please check and try again.';
-            setError(errMsg);
-          }
-        );
-        return;
-      } catch (e) {
-        console.warn('[MSG91] Exception in verifyOtp, trying fallback:', e);
+      if (result.success) {
+        router.replace(redirectTo || '/library');
+      } else {
+        setError(result.error || 'Invalid verification code. Please check and try again.');
       }
-    }
-
-    // Fallback / Dev mode verification
-    const result = await verifyOtp(phone, otp, name.trim());
-    setIsLoading(false);
-
-    if (result.success) {
-      router.replace(redirectTo || '/library');
-    } else {
-      setError(result.error || 'Invalid verification code. Please check and try again.');
+    } catch (e: unknown) {
+      setIsLoading(false);
+      const errMsg = e instanceof Error ? e.message : 'Verification failed. Please try again.';
+      setError(errMsg);
     }
   };
 
@@ -281,12 +209,12 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
 
                 <div className="space-y-1">
                   <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                    {step === 'phone' ? 'Sign In with Mobile' : 'Verify Mobile Number'}
+                    {step === 'phone' ? 'Sign In with Mobile' : 'Verify WhatsApp OTP'}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500">
                     {step === 'phone'
-                      ? 'No password required. Enter your phone number for instant OTP.'
-                      : `Enter the 6-digit verification code sent to +91 ${phone}`}
+                      ? 'No password required. Enter your phone number for instant WhatsApp OTP.'
+                      : `Enter the 6-digit verification code sent to your WhatsApp on +91 ${phone}`}
                   </p>
                 </div>
 
@@ -334,8 +262,9 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                             <Phone className="w-3.5 h-3.5 text-amber-600" />
                             <span>Mobile Phone Number</span>
                           </span>
-                          <span className="text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70">
-                            SMS OTP
+                          <span className="inline-flex items-center gap-1 text-[11px] text-emerald-800 font-bold bg-emerald-100/90 px-2.5 py-0.5 rounded-full border border-emerald-300 shadow-2xs">
+                            <MessageCircle className="w-3 h-3 text-emerald-600 fill-emerald-600" />
+                            <span>WhatsApp OTP</span>
                           </span>
                         </label>
 
@@ -381,7 +310,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                       {isLoading ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Sending OTP...</span>
+                          <span>Sending WhatsApp OTP...</span>
                         </>
                       ) : (
                         <>
@@ -416,7 +345,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                     {/* 4 to 6-Digit OTP Input */}
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-                        <span>Enter Verification Code</span>
+                        <span>Enter 6-Digit WhatsApp Code</span>
                         <button
                           type="button"
                           onClick={() => {
@@ -485,7 +414,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                           className="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
                         >
                           <RotateCw className="w-3.5 h-3.5" />
-                          <span>Resend SMS OTP</span>
+                          <span>Resend WhatsApp OTP</span>
                         </button>
                       )}
 
