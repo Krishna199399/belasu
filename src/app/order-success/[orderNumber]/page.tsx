@@ -20,6 +20,8 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { BOOKS_DATA } from '@/data/mockData';
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 import toast from 'react-hot-toast';
 
 interface OrderItem {
@@ -225,11 +227,14 @@ export default function OrderSuccessPage({
   )}`;
 
   return (
-    <div className="min-h-screen bg-slate-50/70 py-10 sm:py-16">
+    <div className="min-h-screen bg-[#faf9f6] py-6 sm:py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         
+        {/* Progress Stepper: Step 3 (Confirmation) Active / Completed */}
+        <CheckoutStepper currentStep={3} />
+
         {/* Main Card */}
-        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden">
+        <div className="bg-white rounded-3xl border border-stone-200 shadow-xl overflow-hidden mt-2">
           
           {/* Top Celebration Header */}
           <div className="bg-gradient-to-b from-emerald-50 via-emerald-50/40 to-white px-6 pt-10 pb-8 text-center border-b border-emerald-100/60">
@@ -302,53 +307,66 @@ export default function OrderSuccessPage({
               </h2>
 
               <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-2xs">
-                {order.items.map((item) => (
-                  <div key={item.id} className="p-4 sm:p-5 flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3.5 min-w-0">
-                      <div className="w-10 h-12 bg-amber-50 rounded-xl border border-amber-200/60 flex items-center justify-center shrink-0 text-amber-700">
-                        {item.productType === 'digital' ? (
-                          <BookOpen className="w-5 h-5 text-indigo-600" />
-                        ) : (
-                          <Package className="w-5 h-5 text-amber-600" />
-                        )}
-                      </div>
+                {order.items.map((item) => {
+                  const bookMatch = BOOKS_DATA.find(
+                    (b) => b.id === item.productId || b.id === item.id || b.title.toLowerCase() === item.title.toLowerCase()
+                  );
+                  const coverSrc = bookMatch?.coverImage;
 
-                      <div className="min-w-0">
-                        <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-snug">
-                          {item.title}
-                        </h3>
-
-                        <div className="flex items-center gap-2 mt-1">
-                          <span
-                            className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                              item.productType === 'digital'
-                                ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                                : 'bg-amber-50 text-amber-800 border border-amber-200'
-                            }`}
-                          >
-                            {item.productType === 'digital' ? 'Digital Web Reader' : 'Hard Copy Book'}
-                          </span>
-
-                          {item.sku && (
-                            <span className="text-[11px] text-slate-400 font-mono">
-                              #{item.sku}
-                            </span>
+                  return (
+                    <div key={item.id} className="p-4 sm:p-5 flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-3.5 min-w-0">
+                        <div className="w-12 h-14 sm:w-14 sm:h-16 bg-stone-50 rounded-xl border border-stone-200/80 p-1 flex items-center justify-center shrink-0">
+                          {coverSrc ? (
+                            <img
+                              src={coverSrc}
+                              alt={item.title}
+                              className="max-h-full max-w-full object-contain rounded"
+                            />
+                          ) : item.productType === 'digital' ? (
+                            <BookOpen className="w-5 h-5 text-indigo-600" />
+                          ) : (
+                            <Package className="w-5 h-5 text-amber-600" />
                           )}
                         </div>
 
-                        <p className="text-[11px] text-slate-500 mt-1">
-                          Qty: <strong className="text-slate-700">{item.quantity}</strong> × {formatPrice(item.price)}
-                        </p>
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-snug">
+                            {item.title}
+                          </h3>
+
+                          <div className="flex items-center gap-2 mt-1">
+                            <span
+                              className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                                item.productType === 'digital'
+                                  ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+                              }`}
+                            >
+                              {item.productType === 'digital' ? 'Digital Web Reader' : 'Hard Copy Book'}
+                            </span>
+
+                            {item.sku && (
+                              <span className="text-[11px] text-slate-400 font-mono">
+                                #{item.sku}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-[11px] text-slate-500 mt-1">
+                            Qty: <strong className="text-slate-700">{item.quantity}</strong> × {formatPrice(item.price)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className="font-black text-xs sm:text-sm text-slate-900">
+                          {formatPrice(item.total || item.price * item.quantity)}
+                        </span>
                       </div>
                     </div>
-
-                    <div className="text-right shrink-0">
-                      <span className="font-black text-xs sm:text-sm text-slate-900">
-                        {formatPrice(item.total || item.price * item.quantity)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

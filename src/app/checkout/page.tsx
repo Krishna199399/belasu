@@ -6,9 +6,10 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Address } from '@/types';
 import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
-import { ShieldCheck, CreditCard, CheckCircle2, ArrowLeft, Lock, Package, BookOpen, LogIn, Loader, Phone, Mail } from 'lucide-react';
+import { ShieldCheck, CreditCard, CheckCircle2, ArrowLeft, Lock, Package, BookOpen, LogIn, Loader, Phone, Mail, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import AddressManager from '@/components/address/AddressManager';
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import toast from 'react-hot-toast';
 
@@ -257,11 +258,14 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="py-8 sm:py-12 md:py-20 bg-slate-50 min-h-screen pb-28 lg:pb-12">
+    <div className="py-6 sm:py-10 bg-[#faf9f6] min-h-screen pb-28 lg:pb-12">
       <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-5">
         
+        {/* Progress Stepper: Step 2 (Details & Payment) Active */}
+        <CheckoutStepper currentStep={2} />
+
         {/* Header */}
-        <div className="mb-6 sm:mb-10">
+        <div className="mb-6 sm:mb-8 mt-2">
           <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-amber-600 mb-2 transition min-h-[40px] py-1">
             <ArrowLeft className="w-4 h-4" /> Back to Cart
           </Link>
@@ -296,9 +300,9 @@ export default function CheckoutPage() {
 
               {/* Address Selection (only for physical books) */}
               {needsShipping() && (
-                <div className="bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-5 sm:space-y-6">
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                    <Package className="w-5 h-5 text-amber-600" /> Delivery Address
+                <div className="bg-white p-5 sm:p-7 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 border-b border-stone-100 pb-3 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-amber-600" /> Delivery Address
                   </h3>
                   
                   <AddressManager 
@@ -417,50 +421,39 @@ export default function CheckoutPage() {
 
             {/* Right: Order Summary & Confirmation Notices (4 cols) */}
             <div className="lg:col-span-4">
-              <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200 shadow-sm sticky top-28 space-y-5 sm:space-y-6">
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">
-                  Order Summary
+              <div className="bg-white p-5 sm:p-7 rounded-2xl border border-stone-200 shadow-sm sticky top-24 space-y-5">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 border-b border-stone-100 pb-3 flex items-center gap-2">
+                  <span className="text-amber-500 text-lg">🛒</span>
+                  <span>Order Summary</span>
                 </h3>
 
-                {/* Hard Copy Books */}
-                {physicalItems.length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center gap-2">
-                      <Package className="w-3 h-3" /> Hard Copy Books
-                    </h4>
-                    <div className="space-y-2">
-                      {physicalItems.map(({ product, quantity }) => (
-                        <div key={product.id} className="flex justify-between items-center text-xs">
-                          <span className="font-medium text-slate-700 line-clamp-1 max-w-[180px]">
-                            {quantity}x {product.title}
-                          </span>
-                          <span className="font-bold text-slate-900">{formatPrice(product.price * quantity)}</span>
-                        </div>
-                      ))}
+                {/* Items List matching mockup */}
+                <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                  {cart.map((item) => (
+                    <div key={item.product.id} className="flex items-center gap-3 py-1.5 border-b border-stone-100 last:border-b-0">
+                      <div className="w-12 h-14 sm:w-14 sm:h-16 rounded-xl bg-stone-50 border border-stone-200/80 p-1 flex items-center justify-center shrink-0">
+                        <img
+                          src={item.product.coverImage}
+                          alt={item.product.title}
+                          className="max-h-full max-w-full object-contain rounded"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                          {item.product.title}
+                        </h4>
+                        <p className="text-[11px] text-stone-500 truncate mt-0.5">
+                          {item.productType === 'digital' ? 'Official Digital Web Edition' : 'Kannada-English Translated Guidebook'}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0 text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap">
+                        {item.quantity} × {formatPrice(item.product.price)}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
 
-                {/* Digital Books */}
-                {digitalItems.length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center gap-2">
-                      <BookOpen className="w-3 h-3" /> Digital Books
-                    </h4>
-                    <div className="space-y-2">
-                      {digitalItems.map(({ product }) => (
-                        <div key={product.id} className="flex justify-between items-center text-xs">
-                          <span className="font-medium text-slate-700 line-clamp-1 max-w-[180px]">
-                            {product.title}
-                          </span>
-                          <span className="font-bold text-slate-900">{formatPrice(product.price)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                <div className="pt-3 border-t border-stone-100 space-y-2 text-xs text-slate-600">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
                     <span className="font-bold text-slate-900">{formatPrice(subtotal)}</span>
@@ -471,7 +464,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-slate-900">{formatPrice(shippingFee)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-100">
+                  <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-stone-100">
                     <span>Grand Total</span>
                     <span className="text-amber-600">{formatPrice(grandTotal)}</span>
                   </div>

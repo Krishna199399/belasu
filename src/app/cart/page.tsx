@@ -5,6 +5,7 @@ import { useCart } from '@/context/CartContext';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
 import Link from 'next/link';
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
@@ -12,13 +13,16 @@ export default function CartPage() {
   const grandTotal = subtotal + shippingFee;
 
   return (
-    <div className="py-8 sm:py-12 md:py-20 bg-slate-50 min-h-screen pb-28 lg:pb-12">
+    <div className="py-6 sm:py-10 bg-[#faf9f6] min-h-screen pb-28 lg:pb-12">
       <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-5">
         
+        {/* Progress Stepper: Step 1 (Cart) Active */}
+        <CheckoutStepper currentStep={1} />
+
         {/* Header */}
-        <div className="mb-6 sm:mb-10">
+        <div className="mb-6 sm:mb-8 mt-2">
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-3">
-            <ShoppingBag className="w-7 h-7 sm:w-8 sm:h-8 text-amber-600" /> Shopping Cart ({totalItems} items)
+            <ShoppingBag className="w-7 h-7 sm:w-8 sm:h-8 text-amber-600" /> Shopping Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})
           </h1>
         </div>
 
@@ -116,9 +120,10 @@ export default function CartPage() {
 
             {/* Summary Sidebar */}
             <div className="lg:col-span-4">
-              <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200 shadow-sm sticky top-28 space-y-6">
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 pb-3 border-b border-slate-100">
-                  Order Summary
+              <div className="bg-white p-5 sm:p-7 rounded-2xl border border-stone-200 shadow-sm sticky top-28 space-y-6">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 pb-3 border-b border-stone-100 flex items-center gap-2">
+                  <span className="text-amber-500 text-lg">🛒</span>
+                  <span>Order Summary</span>
                 </h3>
 
                 <div className="space-y-3 text-xs sm:text-sm text-slate-600">
@@ -132,7 +137,7 @@ export default function CartPage() {
                       {shippingFee > 0 ? formatPrice(shippingFee) : '₹0'}
                     </span>
                   </div>
-                  <div className="flex justify-between text-base sm:text-lg font-black text-slate-900 pt-3 border-t border-slate-100">
+                  <div className="flex justify-between text-base sm:text-lg font-black text-slate-900 pt-3 border-t border-stone-100">
                     <span>Total</span>
                     <span className="text-amber-600">{formatPrice(grandTotal)}</span>
                   </div>
@@ -141,7 +146,7 @@ export default function CartPage() {
                 <div className="pt-2">
                   <Link
                     href="/checkout"
-                    className="w-full min-h-[48px] py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 text-sm transition active:scale-98"
+                    className="w-full min-h-[48px] py-3.5 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 text-sm transition active:scale-98"
                   >
                     Proceed to Checkout <ArrowRight className="w-4 h-4" />
                   </Link>
