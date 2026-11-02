@@ -48,11 +48,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Create Razorpay order error:', error);
+    const errorMessage = error?.error?.description || error?.message || 'Failed to create payment order';
     return NextResponse.json(
       { 
         success: false, 
-        error: 'Failed to create payment order',
-        details: error.message 
+        error: errorMessage,
+        details: error?.message 
       },
       { status: 500 }
     );

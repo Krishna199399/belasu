@@ -27,7 +27,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify signature
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const keySecret = (
+      process.env.RAZORPAY_KEY_SECRET ||
+      process.env.RAZORPAY_SECRET ||
+      ''
+    ).trim();
     
     if (!keySecret) {
       return NextResponse.json(

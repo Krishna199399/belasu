@@ -2,19 +2,34 @@ import Razorpay from 'razorpay';
 
 // Server-side Razorpay instance (for creating orders)
 export function createRazorpayInstance() {
-  if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-    throw new Error('Razorpay credentials not found in environment variables');
+  const keyId = (
+    process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+    process.env.RAZORPAY_KEY_ID ||
+    ''
+  ).trim();
+  const keySecret = (
+    process.env.RAZORPAY_KEY_SECRET ||
+    process.env.RAZORPAY_SECRET ||
+    ''
+  ).trim();
+
+  if (!keyId || !keySecret) {
+    throw new Error('Razorpay credentials not found in environment variables (NEXT_PUBLIC_RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET)');
   }
 
   return new Razorpay({
-    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET,
+    key_id: keyId,
+    key_secret: keySecret,
   });
 }
 
 // Client-side configuration
 export const razorpayConfig = {
-  keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
+  keyId: (
+    process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+    process.env.RAZORPAY_KEY_ID ||
+    ''
+  ).trim(),
 };
 
 // Helper to load Razorpay script
