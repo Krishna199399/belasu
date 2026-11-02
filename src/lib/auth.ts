@@ -72,3 +72,62 @@ export function buildAuthCookieHeader(token: string): string {
 export function buildClearCookieHeader(): string {
   return `${COOKIE_NAME}=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax`;
 }
+
+/** Fetch full user profile with addresses and books from Supabase */
+export async function getFullUserProfile(userId: string) {
+  const { createAdminClient } = await import('@/lib/supabase');
+  const supabase = createAdminClient();
+
+  const { data: user, error: userError } = await supabase
+    .from('users')
+    .select('id, name, phone, email, purchased_books, created_at, is_admin')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (userError || !user) return null;
+
+  const { data: addressesData } = await supabase
+    .from('addresses')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('is_default', { ascending: false })
+    .order('usage_count', { ascending: false });
+
+  const addresses = (addressesData || []).map((addr) => ({
+    id: addr.id,
+    userId: addr.user_id,
+    firstName: addr.first_name,
+    lastName: addr.last_name,
+    address1: addr.address1,
+    address2: addr.address2,
+    city: addr.city,
+    state: addr.state,
+    postcode: addr.postcode,
+    phone: addr.phone,
+    email: addr.email,
+    label: addr.label,
+    isDefault: addr.is_default,
+    coordinates: addr.latitude && addr.longitude ? {
+      latitude: addr.latitude,
+      longitude: addr.longitude,
+    } : null,
+    usageCount: addr.usage_count,
+    lastUsedAt: addr.last_used_at,
+    createdAt: addr.created_at,
+    updatedAt: addr.updated_at,
+  }));
+
+  const defaultAddr = addresses.find((a) => a.isDefault);
+
+  return {
+    id: user.id,
+    name: user.name,
+    phone: user.phone,
+    email: user.email || '',
+    isAdmin: Boolean((user as any).is_admin || isPhoneAdmin(user.phone, user.name)),
+    purchasedBooks: user.purchased_books || { physical: [], digital: [] },
+    addresses,
+    defaultAddressId: defaultAddr?.id,
+    createdAt: user.created_at,
+  };
+}

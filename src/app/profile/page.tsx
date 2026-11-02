@@ -16,7 +16,7 @@ type TabType = 'orders' | 'addresses' | 'profile' | 'library';
 function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isLoading: authLoading, updateProfile, logout } = useAuth();
+  const { user, isLoading: authLoading, updateProfile, logout, refreshUser } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>(
     (searchParams.get('tab') as TabType) || 'orders'
   );
@@ -36,6 +36,13 @@ function ProfileContent() {
       router.push('/auth/login');
     }
   }, [user, authLoading, router]);
+
+  // Ensure fresh user addresses and profile details on mount
+  useEffect(() => {
+    if (user && (!user.addresses || user.addresses.length === 0)) {
+      refreshUser();
+    }
+  }, [user, refreshUser]);
 
   useEffect(() => {
     if (user) {

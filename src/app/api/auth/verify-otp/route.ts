@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
-import { signToken, buildAuthCookieHeader } from '@/lib/auth';
+import { signToken, buildAuthCookieHeader, getFullUserProfile } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,11 +51,22 @@ export async function POST(request: NextRequest) {
 
     // 6. Issue JWT
     const { isPhoneAdmin } = await import('@/lib/auth');
-    const isAdmin = Boolean((user as any).is_admin || isPhoneAdmin(user.phone));
+    const isAdmin = Boolean((user as any).is_admin || isPhoneAdmin(user.phone, user.name));
     const token = await signToken({ userId: user.id, phone: user.phone, name: user.name, isAdmin });
 
+    const profile = await getFullUserProfile(user.id);
+
     return new Response(
-      JSON.stringify({ success: true, user: { id: user.id, name: user.name, phone: user.phone, isAdmin } }),
+      JSON.stringify({
+        success: true,
+        user: profile || {
+          id: user.id,
+          name: user.name,
+          phone: user.phone,
+          isAdmin,
+          addresses: [],
+        },
+      }),
       {
         status: 200,
         headers: {

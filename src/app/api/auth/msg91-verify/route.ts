@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
-import { signToken, buildAuthCookieHeader, isPhoneAdmin } from '@/lib/auth';
+import { signToken, buildAuthCookieHeader, isPhoneAdmin, getFullUserProfile } from '@/lib/auth';
 
 interface Msg91VerifyResponse {
   type: string;
@@ -114,14 +114,17 @@ export async function POST(request: NextRequest) {
       isAdmin,
     });
 
+    const profile = await getFullUserProfile(user.id);
+
     return new Response(
       JSON.stringify({
         success: true,
-        user: {
+        user: profile || {
           id: user.id,
           name: user.name,
           phone: user.phone,
           isAdmin,
+          addresses: [],
         },
       }),
       {

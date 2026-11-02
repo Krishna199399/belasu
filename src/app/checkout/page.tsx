@@ -31,6 +31,13 @@ export default function CheckoutPage() {
     }
   }, [user, authLoading, router]);
 
+  // Ensure addresses are refreshed if missing
+  useEffect(() => {
+    if (user && (!user.addresses || user.addresses.length === 0)) {
+      refreshUser();
+    }
+  }, [user, refreshUser]);
+
   // Digital access contact fields
   const [digitalEmail, setDigitalEmail] = useState(() => user?.email || '');
   const [digitalPhone, setDigitalPhone] = useState(() => user?.phone || '');
