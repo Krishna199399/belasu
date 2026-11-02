@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState, useRef } from 'react';
+import { use, useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -34,8 +34,20 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   const [error, setError] = useState('');
   const [devMessage, setDevMessage] = useState('');
   const [resendCountdown, setResendCountdown] = useState(0);
+  const [otpMethod, setOtpMethod] = useState<'msg91' | 'fallback'>('msg91');
 
   const otpInputRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef(phone);
+  const nameRef = useRef(name);
+  const hasLoggedInRef = useRef(false);
+
+  useEffect(() => {
+    phoneRef.current = phone;
+  }, [phone]);
+
+  useEffect(() => {
+    nameRef.current = name;
+  }, [name]);
 
   // Auto-redirect if already logged in
   useEffect(() => {
@@ -48,15 +60,20 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   useEffect(() => {
     loadMsg91OtpScript(
       async (data: unknown) => {
+        if (hasLoggedInRef.current) return;
         const resData = data as Record<string, unknown>;
         const accessToken = (resData?.['access-token'] || resData?.message || resData?.token || data) as string;
         if (accessToken && typeof accessToken === 'string') {
+          hasLoggedInRef.current = true;
           setIsLoading(true);
-          const result = await loginWithMsg91Token(phone, accessToken, name.trim());
+          const currentPhone = phoneRef.current;
+          const currentName = nameRef.current;
+          const result = await loginWithMsg91Token(currentPhone, accessToken, currentName.trim());
           setIsLoading(false);
           if (result.success) {
             router.replace(redirectTo || '/library');
           } else {
+            hasLoggedInRef.current = false;
             setError(result.error || 'Login verification failed. Please try again.');
           }
         }
@@ -65,7 +82,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
         console.warn('[MSG91] Widget script notification:', err);
       }
     );
-  }, [phone, name, loginWithMsg91Token, redirectTo, router]);
+  }, [loginWithMsg91Token, redirectTo, router]);
 
   // Handle Resend countdown timer
   useEffect(() => {
@@ -87,22 +104,9 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     }
   }, [step]);
 
-  if (user) return null;
-
-  const handleSendOtp = async () => {
-    if (!name.trim()) {
-      setError('Please enter parent name');
-      return;
-    }
-    if (!/^\d{10}$/.test(phone)) {
-      setError('Please enter a valid 10-digit mobile number');
-      return;
-    }
-    setError('');
-    setIsLoading(true);
-
+  const fallbackSendOtp = useCallback(async () => {
+    setOtpMethod('fallback');
     try {
-      // Primary: Dispatch WhatsApp OTP via Belesu WACRM
       const result = await sendOtp(phone, name.trim());
       setIsLoading(false);
 
@@ -120,10 +124,87 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
       const errMsg = e instanceof Error ? e.message : 'Network error sending WhatsApp OTP. Please try again.';
       setError(errMsg);
     }
+  }, [phone, name, sendOtp]);
+
+  if (user) return null;
+
+  const handleSendOtp = async () => {
+    if (!name.trim()) {
+      setError('Please enter parent name');
+      return;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
+    setError('');
+    setIsLoading(true);
+    setDevMessage('');
+
+    const fullPhone = `91${phone}`;
+
+    // Primary: MSG91 Widget (Configured with Default Channel 12: WHATSAPP)
+    if (typeof window.sendOtp === 'function') {
+      try {
+        window.sendOtp(
+          fullPhone,
+          (res: unknown) => {
+            console.log('[MSG91] WhatsApp OTP sent successfully:', res);
+            setIsLoading(false);
+            setStep('otp');
+            setResendCountdown(30);
+            setOtpMethod('msg91');
+          },
+          (err: unknown) => {
+            const errorObj = err as { message?: string; data?: { message?: string } };
+            const errMsg =
+              errorObj?.data?.message ||
+              errorObj?.message ||
+              'Failed to send OTP via MSG91 WhatsApp. Switching to fallback...';
+            console.warn('[MSG91] sendOtp warning:', errMsg);
+            fallbackSendOtp();
+          }
+        );
+        return;
+      } catch (e) {
+        console.warn('[MSG91] Exception in sendOtp, falling back:', e);
+      }
+    }
+
+    // Fallback if widget script is unavailable or blocked
+    fallbackSendOtp();
   };
 
   const handleResendOtp = () => {
-    handleSendOtp();
+    const retryOtpFn = typeof window !== 'undefined' ? window.retryOtp : undefined;
+    if (otpMethod === 'msg91' && typeof retryOtpFn === 'function') {
+      setIsLoading(true);
+      // Channel 12 = WhatsApp
+      retryOtpFn(
+        '12',
+        () => {
+          setIsLoading(false);
+          setResendCountdown(30);
+        },
+        (err12: unknown) => {
+          console.warn('[MSG91] WhatsApp retry failed, attempting SMS retry (channel 11):', err12);
+          // Fallback to Channel 11 = SMS
+          retryOtpFn(
+            '11',
+            () => {
+              setIsLoading(false);
+              setResendCountdown(30);
+            },
+            () => {
+              setIsLoading(false);
+              fallbackSendOtp();
+            }
+          );
+        }
+      );
+    } else {
+      fallbackSendOtp();
+    }
   };
 
   const handleVerifyOtp = async () => {
@@ -134,6 +215,54 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     setError('');
     setIsLoading(true);
 
+    if (otpMethod === 'msg91' && typeof window.verifyOtp === 'function') {
+      try {
+        window.verifyOtp(
+          otp,
+          async (res: unknown) => {
+            if (hasLoggedInRef.current) return;
+            hasLoggedInRef.current = true;
+            console.log('[MSG91] verifyOtp success response:', res);
+            const resData = res as Record<string, unknown>;
+            const accessToken = (resData?.['access-token'] || resData?.message || resData?.token || res) as string;
+
+            const result = await loginWithMsg91Token(phone, accessToken, name.trim());
+            setIsLoading(false);
+
+            if (result.success) {
+              router.replace(redirectTo || '/library');
+            } else {
+              hasLoggedInRef.current = false;
+              setError(result.error || 'Authentication failed. Please try again.');
+            }
+          },
+          async (err: unknown) => {
+            // Attempt server-side verification in case of dev mode fallback code
+            try {
+              const fallbackResult = await verifyOtp(phone, otp, name.trim());
+              if (fallbackResult.success) {
+                setIsLoading(false);
+                router.replace(redirectTo || '/library');
+                return;
+              }
+            } catch {}
+
+            setIsLoading(false);
+            const errorObj = err as { message?: string; data?: { message?: string } };
+            const errMsg =
+              errorObj?.data?.message ||
+              errorObj?.message ||
+              'Incorrect verification code. Please check and try again.';
+            setError(errMsg);
+          }
+        );
+        return;
+      } catch (e) {
+        console.warn('[MSG91] Exception in verifyOtp, trying fallback:', e);
+      }
+    }
+
+    // Fallback / Dev mode verification
     try {
       const result = await verifyOtp(phone, otp, name.trim());
       setIsLoading(false);
@@ -407,15 +536,45 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                           Resend code in <strong className="text-slate-700 font-mono">{resendCountdown}s</strong>
                         </p>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleResendOtp()}
-                          disabled={isLoading}
-                          className="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
-                        >
-                          <RotateCw className="w-3.5 h-3.5" />
-                          <span>Resend WhatsApp OTP</span>
-                        </button>
+                        <div className="flex flex-wrap items-center justify-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => handleResendOtp()}
+                            disabled={isLoading}
+                            className="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
+                          >
+                            <RotateCw className="w-3.5 h-3.5" />
+                            <span>Resend WhatsApp OTP</span>
+                          </button>
+
+                          <span className="text-slate-300">|</span>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (typeof window !== 'undefined' && typeof window.retryOtp === 'function') {
+                                setIsLoading(true);
+                                window.retryOtp(
+                                  '11',
+                                  () => {
+                                    setIsLoading(false);
+                                    setResendCountdown(30);
+                                  },
+                                  () => {
+                                    setIsLoading(false);
+                                    fallbackSendOtp();
+                                  }
+                                );
+                              } else {
+                                fallbackSendOtp();
+                              }
+                            }}
+                            disabled={isLoading}
+                            className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-slate-800 transition cursor-pointer"
+                          >
+                            <span>Send via SMS</span>
+                          </button>
+                        </div>
                       )}
 
                       <button

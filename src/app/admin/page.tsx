@@ -177,13 +177,13 @@ export default function AdminDashboardPage() {
             <span>Manage Orders</span>
           </Link>
           <a
-            href={process.env.NEXT_PUBLIC_WACRM_URL || "https://crm.belesu.com"}
+            href="https://control.msg91.com"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition shadow-sm shadow-emerald-600/20"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span>WhatsApp CRM</span>
+            <span>MSG91 Panel</span>
           </a>
         </div>
       </div>
