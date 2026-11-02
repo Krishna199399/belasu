@@ -68,13 +68,13 @@ CREATE TABLE IF NOT EXISTS public.addresses (
 CREATE INDEX IF NOT EXISTS idx_addresses_user_id ON public.addresses(user_id);
 
 -- 4. Order sequence & generator
-CREATE SEQUENCE IF NOT EXISTS order_number_seq START 10001 INCREMENT 1 NO CYCLE;
+CREATE SEQUENCE IF NOT EXISTS order_number_seq START 23401 INCREMENT 1 NO CYCLE;
 
 CREATE OR REPLACE FUNCTION public.generate_order_number()
 RETURNS TEXT
 LANGUAGE sql
 AS $$
-  SELECT 'BLS-' || LPAD(nextval('order_number_seq')::TEXT, 5, '0');
+  SELECT nextval('public.order_number_seq')::TEXT;
 $$;
 
 -- 5. orders

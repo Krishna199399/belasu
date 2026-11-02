@@ -154,12 +154,12 @@ export async function POST(request: NextRequest) {
     const billingPhone = defaultAddr?.phone || finalPhone;
     const billingEmail = defaultAddr?.email || finalEmail || null;
 
-    // Generate valid order number using DB sequence or fallback
+    // Generate valid order number using DB sequence or fallback (pure numeric, no BLS- prefix)
     let orderNumber = `${Date.now()}`;
     try {
       const { data: orderNumData } = await supabase.rpc('generate_order_number');
       if (orderNumData) {
-        orderNumber = orderNumData;
+        orderNumber = String(orderNumData).replace(/^BLS-?/i, '').replace(/^#+/, '').trim() || `${Date.now()}`;
       }
     } catch {
       // Keep timestamp fallback

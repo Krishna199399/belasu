@@ -142,9 +142,12 @@ export async function POST(request: NextRequest) {
     const taxAmount = 0;
     const totalAmount = subtotal + shippingAmount + taxAmount;
 
-    // Generate order number
+    // Generate order number (pure numeric, no BLS- prefix)
     const { data: orderNumData } = await supabase.rpc('generate_order_number');
-    const orderNumber = orderNumData || `${Date.now()}`;
+    let orderNumber = String(orderNumData || Date.now()).replace(/^BLS-?/i, '').replace(/^#+/, '').trim();
+    if (!orderNumber) {
+      orderNumber = `${Date.now()}`;
+    }
 
     // Insert main order record
     const { data: order, error: orderError } = await supabase

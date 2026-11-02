@@ -75,13 +75,13 @@ CREATE TABLE addresses (
 CREATE INDEX idx_addresses_user_id ON addresses(user_id);
 
 -- ── Step 6: Order number sequence + function ──────────────────
-CREATE SEQUENCE order_number_seq START 10001 INCREMENT 1 NO CYCLE;
+CREATE SEQUENCE order_number_seq START 23401 INCREMENT 1 NO CYCLE;
 
 CREATE OR REPLACE FUNCTION generate_order_number()
 RETURNS TEXT
 LANGUAGE sql
 AS $$
-  SELECT 'BLS-' || LPAD(nextval('order_number_seq')::TEXT, 5, '0');
+  SELECT nextval('public.order_number_seq')::TEXT;
 $$;
 
 -- ── Step 7: orders ────────────────────────────────────────────
