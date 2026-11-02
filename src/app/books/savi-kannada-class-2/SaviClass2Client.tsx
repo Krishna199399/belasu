@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BOOKS_DATA, PARENT_REVIEWS } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
@@ -28,7 +28,19 @@ export default function SaviClass2Client() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Class 2 book data
-  const book: BookProduct = BOOKS_DATA[1];
+  const [book, setBook] = useState<BookProduct>(BOOKS_DATA[1]);
+
+  useEffect(() => {
+    fetch('/api/books')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.books) {
+          const found = data.books.find((b: BookProduct) => b.id === '15849' || b.sku === 'SK2');
+          if (found) setBook(found);
+        }
+      })
+      .catch((err) => console.error('Failed to load live book stock:', err));
+  }, []);
 
   // Related Savi books for Class 1, 3, 4
   const relatedBooks = [
@@ -62,6 +74,10 @@ export default function SaviClass2Client() {
   const marqueeReviews = [...PARENT_REVIEWS, ...PARENT_REVIEWS];
 
   const handleAddToCart = () => {
+    if (book.stockQuantity <= 0 || !book.inStock) {
+      toast.error(`${book.title} is currently out of stock`);
+      return;
+    }
     addToCart(book, 'physical', 1);
     toast.success(`Added ${book.title} to cart!`);
     openCart();
@@ -122,9 +138,15 @@ export default function SaviClass2Client() {
                 Savi Kannada Class 2
               </span>
             </div>
-            <span className="hidden sm:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-              In Stock
-            </span>
+            {book.stockQuantity <= 0 || !book.inStock ? (
+              <span className="hidden sm:inline-block text-[11px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+                ✕ Out of Stock
+              </span>
+            ) : (
+              <span className="hidden sm:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                ✓ In Stock
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -210,9 +232,15 @@ export default function SaviClass2Client() {
                   </span>
                 </div>
 
-                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-                  ✓ In Stock
-                </span>
+                {book.stockQuantity <= 0 || !book.inStock ? (
+                  <span className="text-xs font-bold text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
+                    ✕ Out of Stock
+                  </span>
+                ) : (
+                  <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+                    ✓ In Stock
+                  </span>
+                )}
 
                 <span className="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
                   🚚 Fast Delivery (3-5 Days)
@@ -241,14 +269,24 @@ export default function SaviClass2Client() {
 
               {/* Primary & Secondary CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={handleAddToCart}
-                  className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-black text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>Add to Cart (₹260)</span>
-                </button>
+                {book.stockQuantity <= 0 || !book.inStock ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-bold text-slate-400 bg-slate-200 border border-slate-300 cursor-not-allowed flex items-center justify-center gap-2 text-sm uppercase tracking-wider shadow-none"
+                  >
+                    <span>Temporarily Out of Stock</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-black text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>Add to Cart (₹260)</span>
+                  </button>
+                )}
 
                 <button
                   type="button"

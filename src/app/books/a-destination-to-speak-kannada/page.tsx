@@ -43,6 +43,10 @@ export default function DestinationToSpeakKannadaPage() {
     BOOKS_DATA.find((b) => b.slug === 'a-destination-to-speak-kannada') || BOOKS_DATA[BOOKS_DATA.length - 1];
 
   const handleBuyNow = () => {
+    if (book.stockQuantity <= 0 || !book.inStock) {
+      toast.error(`${book.title} is currently out of stock`);
+      return;
+    }
     addToCart(book, 'physical', 1);
     toast.success('Added A Destination to Speak Kannada to cart!');
     openCart();
@@ -253,10 +257,16 @@ export default function DestinationToSpeakKannadaPage() {
                   <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                   Pictorially & Innovatively Crafted
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  Physical Book • In Stock
-                </span>
+                {book.stockQuantity <= 0 || !book.inStock ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                    ✕ Physical Book • Out of Stock
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    Physical Book • In Stock
+                  </span>
+                )}
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700">
                   SKU: DSK
                 </span>
@@ -300,13 +310,22 @@ export default function DestinationToSpeakKannadaPage() {
 
               {/* CTAs */}
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <button
-                  onClick={handleBuyNow}
-                  className="flex-1 min-h-[48px] inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-xl text-base font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all transform active:scale-[0.99] shadow-lg shadow-amber-500/25 cursor-pointer"
-                >
-                  <ShoppingBag className="w-5 h-5 text-slate-950" />
-                  <span>Buy Now for ₹295</span>
-                </button>
+                {book.stockQuantity <= 0 || !book.inStock ? (
+                  <button
+                    disabled
+                    className="flex-1 min-h-[48px] inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-xl text-base font-bold bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed uppercase tracking-wider"
+                  >
+                    <span>Temporarily Out of Stock</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleBuyNow}
+                    className="flex-1 min-h-[48px] inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-xl text-base font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all transform active:scale-[0.99] shadow-lg shadow-amber-500/25 cursor-pointer"
+                  >
+                    <ShoppingBag className="w-5 h-5 text-slate-950" />
+                    <span>Buy Now for ₹295</span>
+                  </button>
+                )}
 
                 <button
                   type="button"

@@ -1,6 +1,9 @@
 import { BOOKS_DATA } from '@/data/mockData';
 import { getPhysicalInventory } from '@/lib/inventory';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const { items: liveInventory } = await getPhysicalInventory();

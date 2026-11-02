@@ -141,9 +141,15 @@ export default function SaviClass3Client() {
                 Savi Kannada Class 3
               </span>
             </div>
-            <span className="hidden sm:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-              In Stock
-            </span>
+            {book.stockQuantity <= 0 || !book.inStock ? (
+              <span className="hidden sm:inline-block text-[11px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+                ✕ Out of Stock
+              </span>
+            ) : (
+              <span className="hidden sm:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                ✓ In Stock
+              </span>
+            )}
           </div>
         </div>
       </div>

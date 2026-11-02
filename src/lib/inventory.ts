@@ -328,6 +328,120 @@ export async function restockBook(
 }
 
 /**
+ * Toggle book stock status (In Stock <-> Out of Stock) from Admin panel
+ */
+export async function toggleBookStockStatus(
+  bookId: string,
+  targetInStock?: boolean,
+  initialStockIfZero: number = 25
+): Promise<{ success: boolean; error?: string; inStock?: boolean; stockQuantity?: number }> {
+  const supabase = createAdminClient();
+
+  try {
+    let targetTable = 'hard_copy_inventory';
+    let { data: dbItem } = await supabase
+      .from('hard_copy_inventory')
+      .select('*')
+      .eq('book_id', bookId)
+      .maybeSingle();
+
+    if (!dbItem) {
+      const fallback = await supabase
+        .from('physical_inventory')
+        .select('*')
+        .eq('book_id', bookId)
+        .maybeSingle();
+      if (fallback.data) {
+        dbItem = fallback.data;
+        targetTable = 'physical_inventory';
+      }
+    }
+
+    // Determine current status
+    const currentInStock = dbItem
+      ? Boolean(dbItem.is_in_stock)
+      : (inMemoryStock[bookId]?.isInStock ?? (BOOKS_DATA.find((b) => b.id === bookId)?.inStock ?? false));
+    const currentStock = dbItem
+      ? Number(dbItem.stock_quantity)
+      : (inMemoryStock[bookId]?.stockQuantity ?? (BOOKS_DATA.find((b) => b.id === bookId)?.stockQuantity ?? 0));
+
+    const newInStock = targetInStock !== undefined ? targetInStock : !currentInStock;
+    let newStock = currentStock;
+
+    if (!newInStock) {
+      // Toggling Out of Stock: zero out active stock
+      newStock = 0;
+    } else {
+      // Toggling In Stock: ensure positive stock
+      if (newStock <= 0) {
+        newStock = initialStockIfZero > 0 ? initialStockIfZero : 25;
+      }
+    }
+
+    const reason = `[Admin Toggle] Marked ${newInStock ? 'IN STOCK' : 'OUT OF STOCK'}`;
+
+    if (dbItem) {
+      const updatePayload: any = {
+        stock_quantity: newStock,
+        is_in_stock: newInStock,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error: updateError } = await supabase
+        .from(targetTable)
+        .update(updatePayload)
+        .eq('book_id', bookId);
+
+      if (updateError) throw updateError;
+
+      // Insert audit log
+      try {
+        await supabase.from('inventory_logs').insert({
+          book_id: bookId,
+          change_amount: newStock - currentStock,
+          remaining_stock: newStock,
+          reason,
+        });
+      } catch (logErr) {
+        console.warn('Failed to insert inventory log:', logErr);
+      }
+    }
+
+    // Update in-memory fallback
+    if (!inMemoryStock[bookId]) {
+      inMemoryStock[bookId] = {
+        stockQuantity: newStock,
+        lowStockThreshold: 10,
+        isInStock: newInStock,
+        updatedAt: new Date().toISOString(),
+      };
+    } else {
+      inMemoryStock[bookId].stockQuantity = newStock;
+      inMemoryStock[bookId].isInStock = newInStock;
+      inMemoryStock[bookId].updatedAt = new Date().toISOString();
+    }
+
+    inMemoryLogs.unshift({
+      id: `log-${Date.now()}`,
+      bookId,
+      changeAmount: newStock - currentStock,
+      remainingStock: newStock,
+      reason,
+      createdAt: new Date().toISOString(),
+    });
+
+    return {
+      success: true,
+      inStock: newInStock,
+      stockQuantity: newStock,
+    };
+  } catch (err: any) {
+    console.error('Toggle stock error:', err);
+    return { success: false, error: err.message || 'Failed to toggle stock' };
+  }
+}
+
+/**
  * Fetch inventory change logs (audit history)
  */
 export async function getInventoryLogs(bookId?: string): Promise<InventoryLogItem[]> {

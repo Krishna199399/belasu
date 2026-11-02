@@ -46,6 +46,50 @@ export default function AdminInventoryPage() {
   const [logsModalBook, setLogsModalBook] = useState<PhysicalBookInventory | null>(null);
   const [logs, setLogs] = useState<InventoryLogItem[]>([]);
   const [logsLoading, setLogsLoading] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+
+  const handleToggleStock = async (book: PhysicalBookInventory) => {
+    const isCurrentlyOut = book.stockQuantity <= 0 || !book.isInStock;
+    const nextInStock = isCurrentlyOut; // if currently out -> turn ON (true)
+    setTogglingId(book.bookId);
+
+    // Optimistic UI update
+    setItems((prev) =>
+      prev.map((i) =>
+        i.bookId === book.bookId
+          ? {
+              ...i,
+              isInStock: nextInStock,
+              stockQuantity: nextInStock ? (i.stockQuantity > 0 ? i.stockQuantity : 25) : 0,
+            }
+          : i
+      )
+    );
+
+    try {
+      const res = await fetch('/api/admin/inventory/toggle-stock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookId: book.bookId, inStock: nextInStock }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success(
+          `${book.title} is now ${nextInStock ? 'IN STOCK (Active)' : 'OUT OF STOCK (Disabled)'}`
+        );
+        fetchInventory();
+      } else {
+        toast.error(data.error || 'Failed to toggle stock');
+        fetchInventory();
+      }
+    } catch (err) {
+      toast.error('Network error toggling stock');
+      fetchInventory();
+    } finally {
+      setTogglingId(null);
+    }
+  };
 
   const fetchInventory = async () => {
     setLoading(true);
@@ -358,7 +402,7 @@ export default function AdminInventoryPage() {
                 <tr>
                   <th className="py-3.5 px-4">Book Title & SKU</th>
                   <th className="py-3.5 px-4">Series & Grade</th>
-                  <th className="py-3.5 px-4 text-center">Stock Health</th>
+                  <th className="py-3.5 px-4 text-center">Stock Status (1-Click Toggle)</th>
                   <th className="py-3.5 px-4 text-center">Copies Left</th>
                   <th className="py-3.5 px-4 text-center">Alert At</th>
                   <th className="py-3.5 px-4 text-center">Total Sold</th>
@@ -416,21 +460,39 @@ export default function AdminInventoryPage() {
                         </div>
                       </td>
 
-                      {/* Health Status */}
+                      {/* Health Status & 1-Click Toggle */}
                       <td className="py-3.5 px-4 text-center">
-                        {isOutOfStock ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                            <AlertCircle className="w-3 h-3 text-rose-600" /> Out of stock
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleStock(book)}
+                            disabled={togglingId === book.bookId}
+                            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-2xs border ${
+                              isOutOfStock
+                                ? 'bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100 hover:border-rose-400'
+                                : isLowStock
+                                ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 hover:border-amber-400'
+                                : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 hover:border-emerald-400'
+                            } ${togglingId === book.bookId ? 'opacity-60 cursor-wait' : ''}`}
+                            title={`Click to turn ${isOutOfStock ? 'ON (In Stock)' : 'OFF (Out of Stock)'}`}
+                          >
+                            {/* Sliding Toggle Visual */}
+                            <div
+                              className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                                isOutOfStock ? 'bg-slate-300 justify-start' : 'bg-emerald-600 justify-end'
+                              }`}
+                            >
+                              <div className="bg-white w-3 h-3 rounded-full shadow-xs transform transition-transform" />
+                            </div>
+
+                            <span className="flex items-center gap-1 font-semibold">
+                              {isOutOfStock ? 'Out of Stock' : isLowStock ? 'Low Stock' : 'In Stock'}
+                            </span>
+                          </button>
+                          <span className="text-[9.5px] text-slate-400 font-medium">
+                            {isOutOfStock ? 'Click to mark In Stock' : 'Click to mark Out of Stock'}
                           </span>
-                        ) : isLowStock ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                            <AlertTriangle className="w-3 h-3 text-amber-600" /> Low Stock
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> In Stock
-                          </span>
-                        )}
+                        </div>
                       </td>
 
                       {/* Copies Left */}

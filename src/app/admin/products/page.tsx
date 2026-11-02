@@ -13,6 +13,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 interface PhysicalProduct {
   id: string;
@@ -35,6 +36,7 @@ export default function AdminProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSeries, setSelectedSeries] = useState('all');
   const [selectedGrade, setSelectedGrade] = useState('all');
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -47,6 +49,62 @@ export default function AdminProductsPage() {
       console.error('Failed to load products:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleStock = async (book: PhysicalProduct) => {
+    const nextInStock = !book.inStock;
+    setTogglingId(book.id);
+
+    // Optimistic UI update
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === book.id
+          ? {
+              ...p,
+              inStock: nextInStock,
+              stockQuantity: nextInStock ? (p.stockQuantity > 0 ? p.stockQuantity : 25) : 0,
+            }
+          : p
+      )
+    );
+
+    try {
+      const res = await fetch('/api/admin/inventory/toggle-stock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookId: book.id, inStock: nextInStock }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success(
+          `${book.title} is now ${nextInStock ? 'IN STOCK' : 'OUT OF STOCK'}`
+        );
+        setProducts((prev) =>
+          prev.map((p) =>
+            p.id === book.id
+              ? {
+                  ...p,
+                  inStock: data.inStock,
+                  stockQuantity: data.stockQuantity,
+                }
+              : p
+          )
+        );
+      } else {
+        setProducts((prev) =>
+          prev.map((p) => (p.id === book.id ? book : p))
+        );
+        toast.error(data.error || 'Failed to update stock');
+      }
+    } catch (err) {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === book.id ? book : p))
+      );
+      toast.error('Network error updating stock');
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -177,7 +235,7 @@ export default function AdminProductsPage() {
                   <th className="py-3.5 px-4">SKU</th>
                   <th className="py-3.5 px-4">Series & Grade</th>
                   <th className="py-3.5 px-4 text-right">Price</th>
-                  <th className="py-3.5 px-4 text-center">Stock</th>
+                  <th className="py-3.5 px-4 text-center">Stock Status (1-Click Toggle)</th>
                   <th className="py-3.5 px-4 text-center">Sold</th>
                   <th className="py-3.5 px-4 text-right">Revenue</th>
                   <th className="py-3.5 px-4 text-right">Storefront</th>
@@ -227,15 +285,44 @@ export default function AdminProductsPage() {
                     </td>
 
                     <td className="py-3.5 px-4 text-center">
-                      {book.inStock ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                          <CheckCircle2 className="w-3 h-3" /> {book.stockQuantity} left
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleStock(book)}
+                          disabled={togglingId === book.id}
+                          className={`relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-2xs border ${
+                            book.inStock
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 hover:border-emerald-400'
+                              : 'bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100 hover:border-rose-400'
+                          } ${togglingId === book.id ? 'opacity-60 cursor-wait' : ''}`}
+                          title={`Click to turn ${book.inStock ? 'OFF (Out of Stock)' : 'ON (In Stock)'}`}
+                        >
+                          {/* Sliding Toggle Visual */}
+                          <div
+                            className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                              book.inStock ? 'bg-emerald-600 justify-end' : 'bg-slate-300 justify-start'
+                            }`}
+                          >
+                            <div className="bg-white w-3 h-3 rounded-full shadow-xs transform transition-transform" />
+                          </div>
+
+                          <span className="flex items-center gap-1 font-semibold">
+                            {book.inStock ? (
+                              <>
+                                <span>In Stock</span>
+                                <span className="font-mono text-[10px] text-emerald-700 bg-emerald-100/90 px-1.5 py-0.5 rounded-md font-bold">
+                                  {book.stockQuantity}
+                                </span>
+                              </>
+                            ) : (
+                              <span>Out of Stock</span>
+                            )}
+                          </span>
+                        </button>
+                        <span className="text-[9.5px] text-slate-400 font-medium">
+                          {book.inStock ? 'Click to mark Out of Stock' : 'Click to mark In Stock'}
                         </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/60">
-                          <AlertTriangle className="w-3 h-3" /> Out of stock
-                        </span>
-                      )}
+                      </div>
                     </td>
 
                     <td className="py-3.5 px-4 text-center font-bold text-slate-900">

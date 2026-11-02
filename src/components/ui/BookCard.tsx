@@ -72,7 +72,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
           <span className="text-base sm:text-lg font-black text-slate-900 block leading-tight">
             {formatPrice(book.price)}
           </span>
-          {book.stockQuantity <= 5 && book.stockQuantity > 0 && (
+          {book.inStock && book.stockQuantity <= 5 && book.stockQuantity > 0 && (
             <span className="text-xs font-bold text-amber-700 block mt-0.5">
               Only {book.stockQuantity} left!
             </span>
@@ -89,14 +89,14 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
           >
             <BookOpen className="w-4 h-4" />
           </IconButton>
-          {book.stockQuantity <= 0 ? (
+          {(!book.inStock || book.stockQuantity <= 0) ? (
             <Button
               variant="outline"
               size="sm"
               disabled
               className="opacity-60 cursor-not-allowed text-rose-600 border-rose-200 min-h-[40px]"
             >
-              Sold Out
+              Out of Stock
             </Button>
           ) : (
             <Button

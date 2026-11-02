@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   BookOpen,
@@ -132,6 +132,7 @@ const DECK_SERIES: SeriesDeckConfig[] = [
 
 export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPreview }) => {
   const { addToCart, openCart } = useCart();
+  const [books, setBooks] = useState<BookProduct[]>(BOOKS_DATA);
 
   // Selected grade per series (for Savi & Kali multi-grade selector)
   const [selectedGrades, setSelectedGrades] = useState<Record<string, number>>({
@@ -141,6 +142,17 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
     Tili: 5,
   });
 
+  useEffect(() => {
+    fetch('/api/books')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.books && Array.isArray(data.books)) {
+          setBooks(data.books);
+        }
+      })
+      .catch((err) => console.error('Failed to load live book data in explorer:', err));
+  }, []);
+
   const handleSelectGrade = (seriesId: string, grade: number) => {
     setSelectedGrades((prev) => ({
       ...prev,
@@ -149,6 +161,10 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
   };
 
   const handleAddToCart = (book: BookProduct) => {
+    if (book.stockQuantity <= 0 || !book.inStock) {
+      toast.error(`${book.title} is currently out of stock`);
+      return;
+    }
     addToCart(book, 'physical', 1);
     toast.success(`Added ${book.title} to cart`);
     openCart();
@@ -187,9 +203,11 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
             
             // Resolve active book for selected grade
             const activeBook =
-              BOOKS_DATA.find((b) => b.series === series.id && b.gradeClass === currentGrade) ||
-              BOOKS_DATA.find((b) => b.series === series.id) ||
-              BOOKS_DATA[0];
+              books.find((b) => b.series === series.id && b.gradeClass === currentGrade) ||
+              books.find((b) => b.series === series.id) ||
+              books[0];
+
+            const isOutOfStock = !activeBook.inStock || (activeBook.stockQuantity !== undefined && activeBook.stockQuantity <= 0);
 
             return (
               <div
@@ -310,10 +328,17 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                           </span>
                         )}
                       </div>
-                      <span className="text-[8.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-0.5">
-                        <Check className="w-2.5 h-2.5 text-emerald-600 stroke-[3]" />
-                        <span>In Stock · Fast Dispatch</span>
-                      </span>
+                      {isOutOfStock ? (
+                        <span className="text-[8.5px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200 flex items-center gap-0.5">
+                          <span className="font-bold">✕</span>
+                          <span>Out of Stock</span>
+                        </span>
+                      ) : (
+                        <span className="text-[8.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-0.5">
+                          <Check className="w-2.5 h-2.5 text-emerald-600 stroke-[3]" />
+                          <span>In Stock · Fast Dispatch</span>
+                        </span>
+                      )}
                     </div>
 
                   </div>
@@ -337,10 +362,17 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                         </span>
                       )}
                     </div>
-                    <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-0.5">
-                      <Check className="w-3 h-3 text-emerald-600 stroke-[3]" />
-                      <span>In Stock · Fast Dispatch</span>
-                    </span>
+                    {isOutOfStock ? (
+                      <span className="text-[9.5px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200 flex items-center gap-0.5">
+                        <span className="font-bold">✕</span>
+                        <span>Out of Stock</span>
+                      </span>
+                    ) : (
+                      <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-0.5">
+                        <Check className="w-3 h-3 text-emerald-600 stroke-[3]" />
+                        <span>In Stock · Fast Dispatch</span>
+                      </span>
+                    )}
                   </div>
 
                   {/* Dual Action Buttons */}
@@ -360,21 +392,37 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
 
                     {/* Right Button: Primary BUY BOOK + Add to Cart */}
                     <div className="flex items-center gap-1">
-                      <Link
-                        href={`/books/${activeBook.slug}`}
-                        title={`Buy ${activeBook.title}`}
-                        className={`flex-1 py-2.5 px-2.5 rounded-xl font-bold text-xs ${series.theme.btnBg} ${series.theme.btnHover} ${series.theme.btnText} shadow-xs flex items-center justify-center gap-1 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[42px]`}
-                      >
-                        <span className="truncate">{series.ctaText}</span>
-                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                      </Link>
+                      {isOutOfStock ? (
+                        <Link
+                          href={`/books/${activeBook.slug}`}
+                          title={`View ${activeBook.title} (Temporarily Out of Stock)`}
+                          className="flex-1 py-2.5 px-2 rounded-xl font-bold text-[11px] sm:text-xs bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-200 shadow-2xs flex items-center justify-center gap-1 transition cursor-pointer uppercase tracking-wider min-h-[42px]"
+                        >
+                          <span className="truncate">Out of Stock</span>
+                          <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/books/${activeBook.slug}`}
+                          title={`Buy ${activeBook.title}`}
+                          className={`flex-1 py-2.5 px-2.5 rounded-xl font-bold text-xs ${series.theme.btnBg} ${series.theme.btnHover} ${series.theme.btnText} shadow-xs flex items-center justify-center gap-1 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[42px]`}
+                        >
+                          <span className="truncate">{series.ctaText}</span>
+                          <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                        </Link>
+                      )}
 
                       <button
                         type="button"
+                        disabled={isOutOfStock}
                         onClick={() => handleAddToCart(activeBook)}
-                        title={`Add ${activeBook.title} to cart`}
-                        aria-label={`Add ${activeBook.title} to cart`}
-                        className="py-2.5 px-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-900 border border-stone-200 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-xs min-h-[42px] shrink-0"
+                        title={isOutOfStock ? `${activeBook.title} is currently out of stock` : `Add ${activeBook.title} to cart`}
+                        aria-label={isOutOfStock ? `${activeBook.title} is currently out of stock` : `Add ${activeBook.title} to cart`}
+                        className={`py-2.5 px-2.5 rounded-xl border flex items-center justify-center transition min-h-[42px] shrink-0 ${
+                          isOutOfStock
+                            ? 'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed opacity-50'
+                            : 'bg-stone-100 hover:bg-stone-200 text-slate-900 border-stone-200 active:scale-95 cursor-pointer shadow-xs'
+                        }`}
                       >
                         <ShoppingBag className="w-4 h-4 text-slate-800" />
                       </button>

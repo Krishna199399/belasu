@@ -189,7 +189,13 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
 
   if (!book || !currentSample) return null;
 
+  const isOutOfStock = !book.inStock || (book.stockQuantity !== undefined && book.stockQuantity <= 0);
+
   const handleAddToCart = () => {
+    if (isOutOfStock) {
+      toast.error(`${book.title} is currently out of stock`);
+      return;
+    }
     addToCart(book, 'physical', 1);
     toast.success(`Added ${book.title} to cart`);
     openCart();
@@ -500,19 +506,35 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
                     </div>
                   )}
                 </div>
-                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-                  In Stock · Ready to Ship
-                </span>
+                {isOutOfStock ? (
+                  <span className="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">
+                    ✕ Out of Stock
+                  </span>
+                ) : (
+                  <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                    ✓ In Stock · Ready to Ship
+                  </span>
+                )}
               </div>
 
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className="w-full py-3.5 px-6 rounded-xl font-black text-sm text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[48px]"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>Add to Cart ({formatPrice(book.price)})</span>
-              </button>
+              {isOutOfStock ? (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-slate-400 bg-slate-200 border border-slate-300 cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-wider min-h-[48px]"
+                >
+                  <span>Temporarily Out of Stock</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="w-full py-3.5 px-6 rounded-xl font-black text-sm text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[48px]"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Add to Cart ({formatPrice(book.price)})</span>
+                </button>
+              )}
 
               <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 text-center">
                 <Truck className="w-3.5 h-3.5 text-amber-600" />
@@ -531,19 +553,35 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
             <div className="text-lg font-black text-slate-900 leading-tight">
               {formatPrice(book.price)}
             </div>
-            <div className="text-[10px] font-bold text-emerald-700 truncate">
-              In Stock
-            </div>
+            {isOutOfStock ? (
+              <div className="text-[10px] font-bold text-rose-600 truncate">
+                ✕ Out of Stock
+              </div>
+            ) : (
+              <div className="text-[10px] font-bold text-emerald-700 truncate">
+                ✓ In Stock
+              </div>
+            )}
           </div>
 
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className="flex-1 max-w-xs py-3 px-4 rounded-xl font-black text-xs sm:text-sm text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[44px]"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Add to Cart</span>
-          </button>
+          {isOutOfStock ? (
+            <button
+              type="button"
+              disabled
+              className="flex-1 max-w-xs py-3 px-4 rounded-xl font-bold text-xs sm:text-sm text-slate-400 bg-slate-200 border border-slate-300 cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-wider min-h-[44px]"
+            >
+              <span>Out of Stock</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className="flex-1 max-w-xs py-3 px-4 rounded-xl font-black text-xs sm:text-sm text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[44px]"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>Add to Cart</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
