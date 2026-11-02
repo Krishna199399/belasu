@@ -7,9 +7,11 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { BOOKS_DATA } from '@/data/mockData';
 import { DIGITAL_BOOKS_DATA, HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
-import { BookCard } from '@/components/ui/BookCard';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
 import { BookProduct } from '@/types';
+import { useCart } from '@/context/CartContext';
+import toast from 'react-hot-toast';
+import { formatPrice } from '@/lib/utils';
 import {
   BookOpen,
   Sparkles,
@@ -21,6 +23,8 @@ import {
   ArrowRight,
   Eye,
   SlidersHorizontal,
+  ShoppingBag,
+  ArrowUpDown,
   X,
 } from 'lucide-react';
 
@@ -59,6 +63,23 @@ function BooksContent() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const catalogRef = useRef<HTMLElement>(null);
+
+  type SortOption = 'bestseller' | 'price-low' | 'price-high' | 'class-asc';
+  const [selectedSort, setSelectedSort] = useState<SortOption>('bestseller');
+  const [isSeriesOpen, setIsSeriesOpen] = useState(true);
+  const [isClassOpen, setIsClassOpen] = useState(true);
+
+  const { addToCart, openCart } = useCart();
+
+  const handleAddToCart = (book: BookProduct) => {
+    if (book.stockQuantity <= 0 || !book.inStock) {
+      toast.error(`${book.title} is currently out of stock`);
+      return;
+    }
+    addToCart(book, 'physical', 1);
+    toast.success(`Added ${book.title} to cart`);
+    openCart();
+  };
 
   useEffect(() => {
     fetch('/api/books')
@@ -129,6 +150,20 @@ function BooksContent() {
       return matchesSeries && matchesGrade;
     });
   }, [academicBooksList, selectedSeries, selectedGrade]);
+
+  const sortedPhysicalBooks = useMemo(() => {
+    const list = [...filteredPhysicalBooks];
+    if (selectedSort === 'price-low') {
+      return list.sort((a, b) => a.price - b.price);
+    }
+    if (selectedSort === 'price-high') {
+      return list.sort((a, b) => b.price - a.price);
+    }
+    if (selectedSort === 'class-asc') {
+      return list.sort((a, b) => a.gradeClass - b.gradeClass);
+    }
+    return list;
+  }, [filteredPhysicalBooks, selectedSort]);
 
   // Digital Class 6 Book matching (Hidden while PDF is prepared)
   const showDigitalClass6 = useMemo(() => {
@@ -214,41 +249,85 @@ function BooksContent() {
   return (
     <div className="bg-white min-h-screen text-slate-900 font-sans selection:bg-amber-100 selection:text-amber-900">
       
-      {/* ── Breadcrumb ── */}
-      <div className="bg-stone-50 border-b border-stone-200 py-2.5">
+      {/* ══════════════════════════════════════════════════════════════════════════
+          1. HERO BANNER: SHOP KANNADA GUIDEBOOKS + 3 FANNED BELESU BOOKS
+      ══════════════════════════════════════════════════════════════════════════ */}
+      <section className="relative bg-gradient-to-b from-[#FFF9EE] via-[#FFFBF5] to-white border-b border-stone-200/80 pt-4 pb-8 sm:pb-12 overflow-hidden">
+        {/* Ambient warm glow */}
+        <div className="absolute -top-24 right-1/4 w-[500px] h-[300px] bg-amber-200/30 rounded-full blur-3xl pointer-events-none" />
+
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+          
+          {/* Breadcrumb */}
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-5">
             <Link href="/" className="hover:text-amber-600 transition">Home</Link>
-            <span>/</span>
+            <span className="text-slate-400">/</span>
             <span className="text-slate-900 font-bold" aria-current="page">Books</span>
           </nav>
-        </div>
-      </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════════
-          1. H1: Buy Kannada Academic Guidebooks Online
-      ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-10 sm:py-12 bg-gradient-to-b from-amber-500/10 via-amber-100/30 to-white border-b border-stone-200 overflow-hidden text-center">
-        {/* Subtle ambient lighting */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[320px] bg-gradient-to-tr from-amber-300/20 via-orange-200/25 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            {/* Left: Titles & Tagline */}
+            <div className="lg:col-span-7 space-y-3.5 text-center lg:text-left">
+              
+              {/* Tagline Pill */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-[11px] sm:text-xs font-black uppercase tracking-wider shadow-2xs">
+                <span>📖</span>
+                <span>SHOP KANNADA GUIDEBOOKS</span>
+              </div>
 
-        <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
-          
-          {/* Tagline Pill */}
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/90 border border-amber-300/80 text-amber-950 text-xs font-bold uppercase tracking-wider shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            <span>Kannada Mathadi, Kannada Belesi.</span>
+              {/* Headline with Radiant Rays */}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+                <span className="inline-flex items-center justify-center lg:justify-start gap-2 sm:gap-3 flex-wrap">
+                  <span className="text-amber-500 font-bold select-none text-xl sm:text-2xl lg:text-3xl tracking-tighter">\ | /</span>
+                  <span>Shop Kannada Guidebooks</span>
+                  <span className="text-amber-500 font-bold select-none text-xl sm:text-2xl lg:text-3xl tracking-tighter">\ | /</span>
+                </span>
+                <span className="block mt-1 font-serif text-slate-900">
+                  by Series and Class
+                </span>
+              </h1>
+
+              {/* Subheading */}
+              <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed font-normal max-w-xl mx-auto lg:mx-0">
+                Browse available guidebooks and choose the right book for your class and learning needs.
+              </p>
+            </div>
+
+            {/* Right: 3 Fanned 3D Belesu Guidebooks */}
+            <div className="lg:col-span-5 flex items-center justify-center">
+              <div className="relative flex items-center justify-center h-48 sm:h-56 w-full max-w-xs sm:max-w-md select-none">
+                
+                {/* Left Book: Kali Kannada Class 1 (Blue cover, tilted -10deg) */}
+                <div className="absolute -translate-x-14 sm:-translate-x-20 translate-y-3 -rotate-10 transition-transform duration-300 hover:-translate-y-1 z-0">
+                  <img
+                    src="/covers/kali-1.png"
+                    alt="Kali Kannada Class 1"
+                    className="w-24 sm:w-32 md:w-36 h-auto object-contain rounded-lg shadow-xl border border-stone-200/70 bg-white"
+                  />
+                </div>
+
+                {/* Center Book: Savi Kannada Class 2 (Yellow cover, upright 0deg, front z-10) */}
+                <div className="relative z-10 -translate-y-1 rotate-0 transition-transform duration-300 hover:-translate-y-3">
+                  <img
+                    src="/covers/savi-2.png"
+                    alt="Savi Kannada Class 2"
+                    className="w-28 sm:w-36 md:w-40 h-auto object-contain rounded-lg shadow-2xl border border-amber-300 bg-white ring-2 ring-amber-400/40"
+                  />
+                </div>
+
+                {/* Right Book: Siri Kannada Class 5 (Green cover, tilted +10deg) */}
+                <div className="absolute translate-x-14 sm:translate-x-20 translate-y-3 rotate-10 transition-transform duration-300 hover:-translate-y-1 z-0">
+                  <img
+                    src="/covers/siri-5.png"
+                    alt="Siri Kannada Class 5"
+                    className="w-24 sm:w-32 md:w-36 h-auto object-contain rounded-lg shadow-xl border border-stone-200/70 bg-white"
+                  />
+                </div>
+              </div>
+            </div>
+
           </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-slate-900 tracking-tight leading-tight max-w-3xl mx-auto">
-            Buy Kannada Academic Guidebooks Online
-          </h1>
-
-          <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal max-w-2xl mx-auto pt-1">
-            {HIDE_DIGITAL_CLASS_6
-              ? 'Explore printed Kannada guidebooks for Classes 1–5. Belesu’s English-translated learning resources help students understand Kannada lessons and learn with confidence.'
-              : 'Explore printed Kannada guidebooks for Classes 1–5 and the available Siri Kannada digital guidebook for Class 6. Belesu’s English-translated learning resources help students understand Kannada lessons and learn with confidence.'}
-          </p>
 
         </div>
       </section>
@@ -263,60 +342,33 @@ function BooksContent() {
       >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Mobile Filter Control Bar */}
-          <div className="lg:hidden mb-5 p-3 sm:p-4 bg-stone-50 rounded-2xl border border-stone-200 shadow-2xs space-y-2.5">
-            <div className="flex items-center justify-between gap-2.5">
-              <button
-                onClick={() => setIsMobileFilterOpen(true)}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black text-xs uppercase tracking-wider shadow-xs cursor-pointer min-h-[44px]"
-                aria-label="Open filter menu"
+          {/* Mobile Filter & Sort Control Bar (Side-by-side as shown in mockup) */}
+          <div className="lg:hidden mb-5 grid grid-cols-2 gap-2.5">
+            <button
+              onClick={() => setIsMobileFilterOpen(true)}
+              className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-white border border-stone-200 text-slate-800 font-bold text-xs shadow-2xs hover:bg-stone-50 active:scale-95 transition cursor-pointer min-h-[44px]"
+              aria-label="Open filter menu"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5 text-amber-600" />
+              <span>Filters</span>
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+                {totalFilteredCount}
+              </span>
+            </button>
+
+            <div className="relative">
+              <select
+                value={selectedSort}
+                onChange={(e) => setSelectedSort(e.target.value as SortOption)}
+                className="w-full appearance-none bg-white border border-stone-200 text-slate-800 text-xs font-bold py-2.5 pl-3 pr-8 rounded-xl shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400 min-h-[44px]"
               >
-                <SlidersHorizontal className="w-4 h-4" />
-                <span>Filter Books</span>
-                {isAnyFilterActive && (
-                  <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse" />
-                )}
-              </button>
-
-              <div className="flex items-center gap-2">
-                {isAnyFilterActive && (
-                  <button
-                    onClick={resetAllFilters}
-                    className="text-xs font-bold text-rose-600 underline px-2 py-1 cursor-pointer"
-                  >
-                    Reset
-                  </button>
-                )}
-                <span className="text-xs font-bold text-slate-700 bg-white border border-stone-200 px-2.5 py-1.5 rounded-lg shadow-2xs">
-                  {totalFilteredCount} {totalFilteredCount === 1 ? 'Book' : 'Books'}
-                </span>
-              </div>
+                <option value="bestseller">Sort By: Bestseller</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="class-asc">Class: 1 to 5</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
-
-            {/* Quick Active Filter Dismiss Chips */}
-            {isAnyFilterActive && (
-              <div className="flex items-center gap-1.5 overflow-x-auto overflow-y-hidden pt-1 pb-0.5">
-                {selectedSeries !== 'All' && (
-                  <button
-                    onClick={() => handleSeriesSelect('All')}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-full shrink-0 cursor-pointer"
-                  >
-                    <span>Series: {selectedSeries}</span>
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {selectedGrade !== 'All' && (
-                  <button
-                    onClick={() => handleGradeSelect('All')}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold bg-stone-200 text-slate-800 border border-stone-300 px-2.5 py-1 rounded-full shrink-0 cursor-pointer"
-                  >
-                    <span>Class {selectedGrade}</span>
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-
-              </div>
-            )}
           </div>
 
           {/* 2-Column Responsive Layout */}
@@ -326,103 +378,117 @@ function BooksContent() {
                 LEFT COLUMN: E-COMMERCE FILTER SIDEBAR (Desktop Only: 3 cols)
             ──────────────────────────────────────────────────────────────── */}
             <aside className="hidden lg:block lg:col-span-3 lg:sticky lg:top-24 z-20 space-y-5">
-              <div className="bg-stone-50/90 rounded-2xl border border-stone-200/90 p-5 shadow-xs space-y-6 max-h-[calc(100vh-7rem)] overflow-y-auto">
+              <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs space-y-6">
                 
                 {/* Section Header */}
-                <div className="border-b border-stone-200 pb-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5">
-                      <SlidersHorizontal className="w-4 h-4 text-amber-600" />
-                      <h2 className="text-base sm:text-lg font-serif font-black text-slate-900 tracking-tight">
-                        Shop Kannada Guidebooks by Series and Class
-                      </h2>
-                    </div>
-
+                <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4 text-amber-600" />
+                    <h2 className="font-serif font-black text-slate-900 text-sm tracking-tight">
+                      Filters
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
                     {isAnyFilterActive && (
                       <button
                         onClick={resetAllFilters}
-                        className="text-[11px] font-bold text-rose-600 hover:text-rose-700 underline cursor-pointer shrink-0"
+                        className="text-[11px] font-bold text-rose-600 hover:text-rose-700 underline cursor-pointer"
                       >
                         Reset
                       </button>
                     )}
+                    <span className="text-xs font-semibold text-slate-500">
+                      {totalFilteredCount} {totalFilteredCount === 1 ? 'book' : 'books'}
+                    </span>
                   </div>
-                  
-                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                    Browse available guidebooks and choose the right book for your class and learning needs.
-                  </p>
-                </div>
-
-                {/* Filter Subheading */}
-                <div className="flex items-center justify-between text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  <span>Filters</span>
-                  <span className="text-[11px] font-semibold text-slate-500 normal-case">
-                    {totalFilteredCount} shown
-                  </span>
                 </div>
 
                 {/* Series Filter List */}
-                <div className="space-y-2 border-t border-stone-200/80 pt-4">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">
-                    Series
-                  </span>
-                  
-                  <div className="space-y-1">
-                    {seriesFilterOptions.map((s) => {
-                      const isSelected = selectedSeries === s.id;
-                      return (
-                        <button
-                          key={s.id}
-                          onClick={() => handleSeriesSelect(s.id as SeriesFilter)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                            isSelected
-                              ? 'bg-amber-500 text-slate-950 font-black shadow-2xs'
-                              : 'bg-transparent hover:bg-stone-200/70 text-slate-700'
-                          }`}
-                        >
-                          <span>{s.label}</span>
-                          <span
-                            className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                <div className="space-y-2">
+                  <div
+                    onClick={() => setIsSeriesOpen(!isSeriesOpen)}
+                    className="flex items-center justify-between text-xs font-bold text-slate-900 cursor-pointer select-none py-1"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                      Series
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${
+                        isSeriesOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </div>
+
+                  {isSeriesOpen && (
+                    <div className="space-y-1 pt-1">
+                      {seriesFilterOptions.map((s) => {
+                        const isSelected = selectedSeries === s.id;
+                        return (
+                          <button
+                            key={s.id}
+                            onClick={() => handleSeriesSelect(s.id as SeriesFilter)}
+                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                               isSelected
-                                ? 'bg-amber-600 text-slate-950'
-                                : 'bg-stone-200 text-slate-600'
+                                ? 'bg-amber-500 text-slate-950 font-black shadow-2xs'
+                                : 'bg-transparent hover:bg-stone-100 text-slate-700'
                             }`}
                           >
-                            {s.count}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                            <span>{s.label}</span>
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                isSelected
+                                  ? 'bg-amber-600 text-slate-950'
+                                  : 'bg-stone-100 text-slate-600'
+                              }`}
+                            >
+                              {s.count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 {/* Class Filter Grid */}
-                <div className="space-y-2 border-t border-stone-200/80 pt-4">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">
-                    Class
-                  </span>
-
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {gradeFilterOptions.map((g) => {
-                      const isSelected = selectedGrade === g.id;
-                      return (
-                        <button
-                          key={g.id}
-                          onClick={() => handleGradeSelect(g.id as GradeFilter)}
-                          className={`py-1.5 px-2.5 rounded-lg text-xs font-bold transition-all text-center cursor-pointer ${
-                            isSelected
-                              ? 'bg-slate-900 text-white shadow-xs font-black'
-                              : 'bg-white hover:bg-stone-200/70 text-slate-700 border border-stone-200'
-                          }`}
-                        >
-                          {g.label}
-                        </button>
-                      );
-                    })}
+                <div className="space-y-2 border-t border-stone-100 pt-4">
+                  <div
+                    onClick={() => setIsClassOpen(!isClassOpen)}
+                    className="flex items-center justify-between text-xs font-bold text-slate-900 cursor-pointer select-none py-1"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                      Class
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${
+                        isClassOpen ? 'rotate-180' : ''
+                      }`}
+                    />
                   </div>
+
+                  {isClassOpen && (
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      {gradeFilterOptions.map((g) => {
+                        const isSelected = selectedGrade === g.id;
+                        return (
+                          <button
+                            key={g.id}
+                            onClick={() => handleGradeSelect(g.id as GradeFilter)}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
+                              isSelected
+                                ? 'bg-slate-950 text-white font-black shadow-xs'
+                                : 'bg-white hover:bg-stone-100 text-slate-700 border border-stone-200'
+                            }`}
+                          >
+                            {g.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-
-
 
               </div>
             </aside>
@@ -514,8 +580,6 @@ function BooksContent() {
                         })}
                       </div>
                     </div>
-
-
                   </div>
 
                   {/* Drawer Footer Actions */}
@@ -535,7 +599,7 @@ function BooksContent() {
                         setIsMobileFilterOpen(false);
                         scrollToCatalogTop();
                       }}
-                      className="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-600 active:scale-98 text-slate-950 text-xs font-black rounded-xl uppercase tracking-wider shadow-md transition min-h-[48px] flex items-center justify-center gap-1.5"
+                      className="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-600 active:scale-98 text-slate-950 text-xs font-black rounded-xl uppercase tracking-wider shadow-md transition min-h-[48px] flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span>Show {totalFilteredCount} {totalFilteredCount === 1 ? 'Book' : 'Books'}</span>
                       <ArrowRight className="w-4 h-4" />
@@ -553,7 +617,7 @@ function BooksContent() {
               {/* Grid Top Status Bar */}
               <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-stone-200">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                  <span className="text-xs sm:text-sm font-bold text-slate-800">
                     Showing {totalFilteredCount} {totalFilteredCount === 1 ? 'Guidebook' : 'Guidebooks'}
                   </span>
 
@@ -564,17 +628,34 @@ function BooksContent() {
                   )}
                 </div>
 
-                {isAnyFilterActive && (
-                  <button
-                    onClick={resetAllFilters}
-                    className="text-xs font-bold text-rose-600 hover:text-rose-700 underline cursor-pointer"
-                  >
-                    Clear all filters
-                  </button>
-                )}
+                <div className="hidden lg:flex items-center gap-2">
+                  {/* Desktop Sort Dropdown */}
+                  <div className="relative">
+                    <select
+                      value={selectedSort}
+                      onChange={(e) => setSelectedSort(e.target.value as SortOption)}
+                      className="appearance-none bg-white border border-stone-200 hover:border-amber-400 text-slate-800 text-xs font-bold py-2 pl-3 pr-8 rounded-xl shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    >
+                      <option value="bestseller">Sort By: Bestseller</option>
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                      <option value="class-asc">Class: 1 to 5</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+
+                  {isAnyFilterActive && (
+                    <button
+                      onClick={resetAllFilters}
+                      className="text-xs font-bold text-rose-600 hover:text-rose-700 underline cursor-pointer ml-2"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {/* Product Cards Container (3 Columns on Desktop = 3x3 Grid) */}
+              {/* Product Cards Container */}
               {totalFilteredCount === 0 ? (
                 <div className="text-center py-20 bg-stone-50 rounded-2xl border border-stone-200 max-w-md mx-auto space-y-3">
                   <BookOpen className="w-10 h-10 text-slate-300 mx-auto" />
@@ -587,88 +668,257 @@ function BooksContent() {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  
-                  {/* Physical Books */}
-                  {filteredPhysicalBooks.map((book) => (
-                    <BookCard key={book.id} book={book} onPreview={(b) => setPreviewBook(b)} />
-                  ))}
+                <>
+                  {/* Desktop / Tablet Cards Grid (3 Columns) */}
+                  <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                    {sortedPhysicalBooks.map((book) => (
+                      <div
+                        key={book.id}
+                        className="group relative bg-white rounded-2xl border border-stone-200 hover:border-amber-400 shadow-2xs hover:shadow-xl transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between"
+                      >
+                        <div>
+                          {/* Class Badge */}
+                          <div className="mb-3">
+                            <span className="text-[11px] font-bold text-amber-950 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                              {book.gradeClass > 0 ? `Class ${book.gradeClass}` : 'Special'}
+                            </span>
+                          </div>
 
-                  {/* Digital Class 6 Card */}
-                  {showDigitalClass6 && (
-                    <div className="group relative bg-white rounded-2xl border border-emerald-300 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-                      <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-black bg-emerald-600 text-white shadow-xs uppercase tracking-wider">
-                          Class 6
-                        </span>
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-200 uppercase tracking-wider">
-                          Digital Edition
-                        </span>
+                          {/* Cover Image Container */}
+                          <Link
+                            href={`/books/${book.slug}`}
+                            className="relative w-full h-48 sm:h-52 rounded-xl bg-stone-50/60 border border-stone-100 flex items-center justify-center p-2 mb-3 group-hover:bg-amber-50/30 transition-colors block overflow-hidden"
+                          >
+                            <img
+                              src={book.coverImage}
+                              alt={book.title}
+                              className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-sm"
+                            />
+                          </Link>
+
+                          {/* Series Tag */}
+                          <div className="mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-amber-700">
+                              {book.series.toUpperCase()} KANNADA SERIES
+                            </span>
+                          </div>
+
+                          {/* Title */}
+                          <Link href={`/books/${book.slug}`}>
+                            <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 hover:text-amber-700 transition mb-1.5">
+                              {book.title}
+                            </h3>
+                          </Link>
+
+                          {/* Short Description */}
+                          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">
+                            {book.description}
+                          </p>
+                        </div>
+
+                        {/* Bottom Row: Price & Actions */}
+                        <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+                          <span className="text-lg font-black text-slate-900">
+                            {formatPrice(book.price)}
+                          </span>
+
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewBook(book)}
+                              className="p-2 rounded-xl border border-stone-200 hover:border-amber-400 hover:bg-amber-50 text-slate-700 transition cursor-pointer shadow-2xs"
+                              title="Preview Sample Pages"
+                              aria-label={`Preview ${book.title}`}
+                            >
+                              <BookOpen className="w-4 h-4 text-slate-800" />
+                            </button>
+
+                            {book.stockQuantity <= 0 || !book.inStock ? (
+                              <span className="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-400 bg-stone-100 border border-stone-200 cursor-not-allowed">
+                                Sold Out
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleAddToCart(book)}
+                                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black text-xs uppercase tracking-wider shadow-xs transition cursor-pointer"
+                              >
+                                <span>Add</span>
+                                <ShoppingBag className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
                       </div>
+                    ))}
 
-                      <div className="p-6 pb-3">
-                        <div className="relative w-full h-56 rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-100/30 to-teal-50 flex items-center justify-center p-3 mb-4 group-hover:bg-emerald-50/50 transition-colors overflow-hidden">
-                          <img
-                            src="/digital/class-6-siri/cover.jpeg"
-                            alt={digitalBookClass6.title}
-                            className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
-                          />
-                          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 p-3">
+                    {/* Digital Class 6 Card (Desktop) */}
+                    {showDigitalClass6 && (
+                      <div className="group relative bg-white rounded-2xl border border-emerald-300 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden p-4 sm:p-5">
+                        <div>
+                          <div className="mb-3 flex items-center gap-1.5">
+                            <span className="px-2 py-0.5 rounded-md text-[11px] font-black bg-emerald-600 text-white uppercase tracking-wider">
+                              Class 6
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-200 uppercase tracking-wider">
+                              Digital Edition
+                            </span>
+                          </div>
+
+                          <div className="relative w-full h-48 sm:h-52 rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-100/30 to-teal-50 flex items-center justify-center p-2 mb-3 overflow-hidden">
+                            <img
+                              src="/digital/class-6-siri/cover.jpeg"
+                              alt={digitalBookClass6.title}
+                              className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
+                            />
+                          </div>
+
+                          <div className="mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700">
+                              SIRI KANNADA DIGITAL GUIDEBOOK
+                            </span>
+                          </div>
+
+                          <Link href={`/digital/${digitalBookClass6.slug}`}>
+                            <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 hover:text-emerald-700 transition mb-1.5">
+                              {digitalBookClass6.title}
+                            </h3>
+                          </Link>
+
+                          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">
+                            {digitalBookClass6.description}
+                          </p>
+                        </div>
+
+                        <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+                          <span className="text-lg font-black text-slate-900">
+                            {formatPrice(digitalBookClass6.price)}
+                          </span>
+
+                          <div className="flex items-center gap-1.5">
                             <Link
                               href="/reader/kannada-class-6-guide?preview=true"
-                              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 hover:bg-stone-100 transition shadow-md flex items-center gap-1.5"
+                              className="p-2 rounded-xl border border-stone-200 hover:bg-stone-50 text-slate-700 transition"
+                              title="Preview"
                             >
-                              <Eye className="w-3.5 h-3.5 text-amber-600" /> View Free Preview
+                              <BookOpen className="w-4 h-4 text-slate-800" />
+                            </Link>
+                            <Link
+                              href={`/digital/${digitalBookClass6.slug}`}
+                              className="px-3.5 py-2 rounded-xl text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white uppercase tracking-wider shadow-xs transition"
+                            >
+                              Explore
                             </Link>
                           </div>
                         </div>
-
-                        <div className="mb-1">
-                          <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
-                            Siri Kannada Digital Guidebook
-                          </span>
-                        </div>
-
-                        <Link href={`/digital/${digitalBookClass6.slug}`}>
-                          <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 hover:text-emerald-700 transition mb-2">
-                            {digitalBookClass6.title}
-                          </h3>
-                        </Link>
-
-                        <p className="text-xs text-slate-600 line-clamp-2 mb-3 leading-relaxed">
-                          {digitalBookClass6.description}
-                        </p>
                       </div>
+                    )}
+                  </div>
 
-                      <div className="p-6 pt-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
-                        <div>
-                          <span className="text-lg font-black text-slate-900 block leading-tight">
-                            ₹{digitalBookClass6.price}
+                  {/* Mobile Horizontal Row List (Matching Mobile View Screenshot) */}
+                  <div className="sm:hidden space-y-3">
+                    {sortedPhysicalBooks.map((book) => (
+                      <div
+                        key={book.id}
+                        className="bg-white rounded-2xl border border-stone-200 p-3 shadow-2xs flex items-center gap-3"
+                      >
+                        {/* Left: Thumbnail & Class Pill */}
+                        <div className="relative shrink-0 w-20 h-24 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5 overflow-hidden">
+                          <span className="absolute top-1 left-1 z-10 text-[9px] font-bold text-amber-950 bg-amber-100/95 border border-amber-300 px-1 py-0.2 rounded">
+                            {book.gradeClass > 0 ? `Class ${book.gradeClass}` : 'Special'}
                           </span>
-                          <span className="text-[10px] font-bold text-emerald-700 block mt-0.5">
-                            Lifetime Access
-                          </span>
+                          <img
+                            src={book.coverImage}
+                            alt={book.title}
+                            className="max-h-full max-w-full object-contain drop-shadow-2xs"
+                          />
                         </div>
 
-                        <div className="flex items-center gap-1.5">
-                          <Link
-                            href="/reader/kannada-class-6-guide?preview=true"
-                            className="px-3 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:bg-stone-100 border border-stone-200 transition"
-                          >
-                            Preview
+                        {/* Right: Info & Actions */}
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 block truncate">
+                            {book.series.toUpperCase()} KANNADA SERIES
+                          </span>
+                          <Link href={`/books/${book.slug}`}>
+                            <h3 className="font-bold text-slate-900 text-xs leading-snug line-clamp-2 hover:text-amber-700 transition mt-0.5">
+                              {book.title}
+                            </h3>
                           </Link>
-                          <Link
-                            href={`/digital/${digitalBookClass6.slug}`}
-                            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center gap-1 shadow-xs"
-                          >
-                            Explore
-                          </Link>
+
+                          <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-stone-100">
+                            <span className="text-sm font-black text-slate-900">
+                              {formatPrice(book.price)}
+                            </span>
+
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setPreviewBook(book)}
+                                className="p-1.5 rounded-lg border border-stone-200 text-slate-700 hover:bg-stone-50 transition cursor-pointer"
+                                title="Preview"
+                                aria-label={`Preview ${book.title}`}
+                              >
+                                <BookOpen className="w-3.5 h-3.5 text-slate-800" />
+                              </button>
+
+                              {book.stockQuantity <= 0 || !book.inStock ? (
+                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 bg-stone-100 border border-stone-200">
+                                  Sold Out
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddToCart(book)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black text-[11px] uppercase tracking-wider shadow-2xs transition cursor-pointer"
+                                >
+                                  <span>Add</span>
+                                  <ShoppingBag className="w-3 h-3" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    ))}
 
-                </div>
+                    {/* Mobile Digital Class 6 Card */}
+                    {showDigitalClass6 && (
+                      <div className="bg-white rounded-2xl border border-emerald-200 p-3 shadow-2xs flex items-center gap-3">
+                        <div className="relative shrink-0 w-20 h-24 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center p-1.5 overflow-hidden">
+                          <span className="absolute top-1 left-1 z-10 text-[9px] font-bold text-emerald-950 bg-emerald-100/95 border border-emerald-300 px-1 py-0.2 rounded">
+                            Class 6
+                          </span>
+                          <img
+                            src="/digital/class-6-siri/cover.jpeg"
+                            alt={digitalBookClass6.title}
+                            className="max-h-full max-w-full object-contain drop-shadow-2xs"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 block truncate">
+                            SIRI KANNADA DIGITAL
+                          </span>
+                          <Link href={`/digital/${digitalBookClass6.slug}`}>
+                            <h3 className="font-bold text-slate-900 text-xs leading-snug line-clamp-2 hover:text-emerald-700 transition mt-0.5">
+                              {digitalBookClass6.title}
+                            </h3>
+                          </Link>
+                          <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-stone-100">
+                            <span className="text-sm font-black text-slate-900">
+                              {formatPrice(digitalBookClass6.price)}
+                            </span>
+                            <Link
+                              href={`/digital/${digitalBookClass6.slug}`}
+                              className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-black text-[11px] uppercase tracking-wider shadow-2xs"
+                            >
+                              Explore
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
 
             </main>
