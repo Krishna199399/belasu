@@ -27,7 +27,7 @@ export default function VideosMediaPage() {
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (hash === 'social-impact' || hash === 'social-impacts') return 'social-impact';
+      if (hash === 'social-impact' || hash === 'social-impacts' || hash === 'gallery') return 'social-impact';
       if (hash === 'csr') return 'csr';
     }
     return 'videos';
@@ -39,7 +39,7 @@ export default function VideosMediaPage() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (hash === 'social-impact' || hash === 'social-impacts') {
+      if (hash === 'social-impact' || hash === 'social-impacts' || hash === 'gallery') {
         setActiveTab('social-impact');
       } else if (hash === 'csr') {
         setActiveTab('csr');
@@ -238,7 +238,7 @@ export default function VideosMediaPage() {
             <span>•</span>
             <span className="text-amber-800">
               {activeTab === 'videos' && 'Videos'}
-              {activeTab === 'social-impact' && 'Social Impacts'}
+              {activeTab === 'social-impact' && 'Gallery'}
               {activeTab === 'csr' && 'CSR Initiatives'}
             </span>
           </div>
@@ -246,7 +246,7 @@ export default function VideosMediaPage() {
           {/* Dynamic Page Title */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-amber-900 tracking-tight mb-3">
             {activeTab === 'videos' && 'Video Gallery'}
-            {activeTab === 'social-impact' && 'Social Impacts'}
+            {activeTab === 'social-impact' && 'Gallery'}
             {activeTab === 'csr' && 'Corporate Social Responsibility (CSR)'}
           </h1>
 
@@ -279,7 +279,7 @@ export default function VideosMediaPage() {
               </span>
             </button>
 
-            {/* Tab 2: Social Impacts */}
+            {/* Tab 2: Gallery */}
             <button
               type="button"
               onClick={() => handleTabChange('social-impact')}
@@ -290,7 +290,7 @@ export default function VideosMediaPage() {
               }`}
             >
               <HeartHandshake className="w-4 h-4" />
-              <span>Social Impacts</span>
+              <span>Gallery</span>
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
                 activeTab === 'social-impact' ? 'bg-amber-700 text-amber-100' : 'bg-stone-300 text-slate-700'
               }`}>

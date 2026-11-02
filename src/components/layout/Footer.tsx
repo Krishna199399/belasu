@@ -277,7 +277,7 @@ export const Footer: React.FC = () => {
                     <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-slate-600">
                       <Link href="/about" className="hover:text-amber-800 hover:underline transition">About Us</Link>
                       <Link href="/team" className="hover:text-amber-800 hover:underline transition">Academic Team</Link>
-                      <Link href="/videos" className="hover:text-amber-800 hover:underline transition">Video Demos</Link>
+                      <Link href="/video-gallery" className="hover:text-amber-800 hover:underline transition">Video Gallery</Link>
                       <Link href="/reviews" className="hover:text-amber-800 hover:underline transition">Parent Reviews</Link>
                       <Link href="/faqs" className="hover:text-amber-800 hover:underline transition">FAQs & Help</Link>
                       <Link href="/contact" className="hover:text-amber-800 hover:underline transition">Contact Us</Link>
@@ -614,8 +614,8 @@ export const Footer: React.FC = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/videos" className="hover:text-amber-700 hover:underline transition">
-                      Video Demonstrations
+                    <Link href="/video-gallery" className="hover:text-amber-700 hover:underline transition">
+                      Video Gallery
                     </Link>
                   </li>
                   <li>

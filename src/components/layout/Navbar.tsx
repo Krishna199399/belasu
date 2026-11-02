@@ -165,7 +165,7 @@ export const Navbar: React.FC = () => {
       isSpokenDropdown: true,
       isHighlight: true,
     },
-    { label: 'Videos', href: '/videos' },
+    { label: 'Video Gallery', href: '/video-gallery' },
     { label: 'Reviews', href: '/reviews' },
     { label: 'Contact', href: '/contact' },
   ];
@@ -187,7 +187,7 @@ export const Navbar: React.FC = () => {
           {/* Desktop Nav */}
           <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1 text-xs 2xl:text-sm font-bold tracking-wide text-slate-700">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive = pathname === link.href || (link.href === '/video-gallery' && pathname === '/videos');
 
               if (link.isAcademicDropdown) {
                 return (
@@ -587,7 +587,7 @@ export const Navbar: React.FC = () => {
             {/* Scrollable Nav List */}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5 touch-scroll">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = pathname === link.href || (link.href === '/video-gallery' && pathname === '/videos');
 
                 if (link.isAcademicDropdown) {
                   return (
