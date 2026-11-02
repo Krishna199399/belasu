@@ -358,7 +358,7 @@ export default function AddressForm({
               if (suggestions.length > 0) setShowSuggestions(true);
             }}
             onKeyDown={handleAddress1KeyDown}
-            placeholder="Type locality/colony (e.g. Samarth Nagar, Indiranagar, Tilakwadi)..."
+            placeholder="Locality / Area / Street / Colony"
             autoComplete="off"
             className={`w-full px-3.5 py-2.5 pr-16 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.address1 ? 'border-red-500' : 'border-gray-300'
@@ -486,7 +486,7 @@ export default function AddressForm({
             name="city"
             value={formData.city}
             onChange={handleInputChange}
-            placeholder="e.g. Belagavi"
+            placeholder="City"
             className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.city ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -535,7 +535,7 @@ export default function AddressForm({
               name="postcode"
               value={formData.postcode}
               onChange={handleInputChange}
-              placeholder="e.g. 590001"
+              placeholder="6-digit PIN code"
               maxLength={6}
               className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
                 errors.postcode ? 'border-red-500' : 'border-gray-300'
@@ -561,7 +561,7 @@ export default function AddressForm({
             name="phone"
             value={formData.phone}
             onChange={handleInputChange}
-            placeholder="9876543210"
+            placeholder="10-digit mobile number"
             maxLength={10}
             className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.phone ? 'border-red-500' : 'border-gray-300'
@@ -580,7 +580,7 @@ export default function AddressForm({
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            placeholder="your@email.com"
+            placeholder="Email address"
             className={`w-full px-3.5 py-2.5 min-h-[44px] text-base sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 ${
               errors.email ? 'border-red-500' : 'border-gray-300'
             }`}

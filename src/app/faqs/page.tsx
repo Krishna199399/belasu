@@ -17,7 +17,7 @@ export default function FAQsPage() {
     },
     {
       question: 'Are Belesu books 100% aligned with the Karnataka State Board syllabus?',
-      answer: 'Yes! Belesu guidebooks for Savi Kannada, Kali Kannada, Siri Kannada, and Tili Kannada (Classes 1-5) strictly mirror the latest Karnataka State Department of School Education & Literacy syllabus.'
+      answer: 'Yes! Belesu guidebooks for Savi Kannada, Kali Kannada, Siri Kannada, and Tili Kannada (Classes 1-6) strictly mirror the latest Karnataka State Department of School Education & Literacy syllabus.'
     },
     {
       question: 'Can non-Kannadiga parents teach their children using these guidebooks?',

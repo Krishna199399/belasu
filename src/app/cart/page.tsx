@@ -29,7 +29,7 @@ export default function CartPage() {
             </div>
             <h2 className="text-xl font-bold text-slate-900">Your shopping cart is empty</h2>
             <p className="text-xs text-slate-600 max-w-sm mx-auto">
-              Explore our English translated Kannada guidebooks for Classes 1 to 5 and add them to your cart.
+              Explore our English translated Kannada guidebooks for Classes 1 to 6 and add them to your cart.
             </p>
             <Link
               href="/books"

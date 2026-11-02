@@ -18,7 +18,7 @@ export const Hero: React.FC = () => {
             {/* Top Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold shadow-xs">
               <span className="flex h-2 w-2 rounded-full bg-amber-600 animate-ping" />
-              <span>Academic Kannada Guidebooks • Classes 1 to 5</span>
+              <span>Academic Kannada Guidebooks • Classes 1 to 6</span>
             </div>
 
             {/* Main Headline */}

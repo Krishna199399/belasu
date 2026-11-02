@@ -191,7 +191,7 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
               <p>
-                Belesu develops Kannada academic guidebooks for Classes 1 to 5, designed for both Kannada-speaking and non-Kannada-speaking students. The books connect Kannada textbook content with English translations, helping children understand lessons, learn word meanings and improve pronunciation.
+                Belesu develops Kannada academic guidebooks for Classes 1 to 6, designed for both Kannada-speaking and non-Kannada-speaking students. The books connect Kannada textbook content with English translations, helping children understand lessons, learn word meanings and improve pronunciation.
               </p>
               <p>
                 They also support parents who may have limited knowledge of Kannada and find it difficult to help their children with schoolwork. These guidebooks are supplementary learning resources intended to be used alongside prescribed textbooks.

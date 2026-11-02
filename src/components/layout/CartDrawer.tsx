@@ -118,7 +118,7 @@ export const CartDrawer: React.FC = () => {
                 </div>
                 <h4 className="font-bold text-slate-800 text-base mb-1">Your cart is empty</h4>
                 <p className="text-xs text-slate-500 mb-6 max-w-xs">
-                  Discover English translated Kannada guidebooks designed for Classes 1 to 5.
+                  Discover English translated Kannada guidebooks designed for Classes 1 to 6.
                 </p>
                 <button
                   onClick={closeCart}
