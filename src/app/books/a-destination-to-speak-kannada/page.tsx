@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { BOOKS_DATA } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
 import {
@@ -15,6 +15,8 @@ import {
   Image as ImageIcon,
   HelpCircle,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Building2,
   Phone,
   Compass,
@@ -38,6 +40,44 @@ export default function DestinationToSpeakKannadaPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
+
+  // Mobile sample pages carousel state & ref
+  const sampleCarouselRef = useRef<HTMLDivElement>(null);
+  const [activeSampleIndex, setActiveSampleIndex] = useState(0);
+
+  const handleSampleScroll = () => {
+    if (!sampleCarouselRef.current) return;
+    const { scrollLeft, clientWidth } = sampleCarouselRef.current;
+    if (clientWidth === 0) return;
+    const cardWidth = Math.min(clientWidth * 0.85, 340);
+    const newIndex = Math.round(scrollLeft / cardWidth);
+    const maxIdx = (book.samplePages?.length || 1) - 1;
+    setActiveSampleIndex(Math.min(Math.max(newIndex, 0), maxIdx));
+  };
+
+  const scrollToSample = (idx: number) => {
+    if (!sampleCarouselRef.current) return;
+    const cards = sampleCarouselRef.current.children;
+    if (cards[idx]) {
+      (cards[idx] as HTMLElement).scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest',
+      });
+      setActiveSampleIndex(idx);
+    }
+  };
+
+  const handlePrevSample = () => {
+    const nextIdx = Math.max(0, activeSampleIndex - 1);
+    scrollToSample(nextIdx);
+  };
+
+  const handleNextSample = () => {
+    const maxIdx = (book.samplePages?.length || 1) - 1;
+    const nextIdx = Math.min(maxIdx, activeSampleIndex + 1);
+    scrollToSample(nextIdx);
+  };
 
   // Find book in BOOKS_DATA or fallback
   const book: BookProduct =
@@ -448,9 +488,9 @@ export default function DestinationToSpeakKannadaPage() {
       {/* ══════════════════════════════════════════════════════════════════════════
           5. SAMPLE PAGES PREVIEW (PEEK INSIDE THE BOOK)
       ══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-14 sm:py-20 bg-white border-b border-stone-200">
+      <section className="py-10 sm:py-16 bg-white border-b border-stone-200">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center space-y-4 mb-12 sm:mb-16">
+          <div className="max-w-3xl mx-auto text-center space-y-3 mb-8 sm:mb-14">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-800 border border-amber-300">
               <Eye className="w-3.5 h-3.5 text-amber-600" />
               Verified Sample Pages
@@ -463,7 +503,42 @@ export default function DestinationToSpeakKannadaPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
+          {/* Mobile Carousel Navigation Toolbar (Only visible on mobile) */}
+          <div className="flex sm:hidden items-center justify-between gap-3 mb-4 px-1">
+            <span className="text-xs font-bold text-slate-700 bg-stone-100 border border-stone-200 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
+              <Sparkles className="w-3 h-3 text-amber-600" />
+              <span>Page {activeSampleIndex + 1} of {book.samplePages?.length || 6}</span>
+            </span>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={handlePrevSample}
+                disabled={activeSampleIndex === 0}
+                className="p-2 rounded-xl bg-white border border-stone-200 text-slate-700 hover:text-slate-950 disabled:opacity-30 disabled:cursor-not-allowed shadow-2xs active:scale-95 transition cursor-pointer"
+                aria-label="Previous sample page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleNextSample}
+                disabled={activeSampleIndex === (book.samplePages?.length || 1) - 1}
+                className="p-2 rounded-xl bg-white border border-stone-200 text-slate-700 hover:text-slate-950 disabled:opacity-30 disabled:cursor-not-allowed shadow-2xs active:scale-95 transition cursor-pointer"
+                aria-label="Next sample page"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Cards Track: Mobile Horizontal Snap Carousel / Desktop Multi-Column Grid */}
+          <div
+            ref={sampleCarouselRef}
+            onScroll={handleSampleScroll}
+            className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none px-4 sm:px-0 -mx-4 sm:mx-auto max-w-6xl pb-3 sm:pb-0"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
             {book.samplePages?.map((page, idx) => (
               <div
                 key={page.pageNumber}
@@ -471,7 +546,7 @@ export default function DestinationToSpeakKannadaPage() {
                   setPreviewPageIndex(idx);
                   setIsPreviewOpen(true);
                 }}
-                className="group bg-stone-50/70 hover:bg-white rounded-2xl p-4 border border-stone-200 hover:border-amber-400 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                className="shrink-0 w-[82vw] max-w-[320px] snap-center sm:w-auto sm:shrink sm:snap-align-none group bg-stone-50/80 hover:bg-white rounded-2xl p-4 sm:p-5 border border-stone-200 hover:border-amber-400 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -496,16 +571,16 @@ export default function DestinationToSpeakKannadaPage() {
                     </div>
                   </div>
 
-                  <h3 className="font-bold text-slate-900 text-sm mb-1.5 group-hover:text-amber-700 transition">
+                  <h3 className="font-bold text-slate-900 text-sm mb-1.5 group-hover:text-amber-700 transition line-clamp-2">
                     {page.title}
                   </h3>
                   {page.kannadaText && (
-                    <p className="text-xs text-slate-700 font-medium mb-1">
+                    <p className="text-xs text-slate-700 font-medium mb-1 line-clamp-2">
                       {page.kannadaText}
                     </p>
                   )}
                   {page.englishTranslation && (
-                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed line-clamp-3">
                       {page.englishTranslation}
                     </p>
                   )}
@@ -519,7 +594,24 @@ export default function DestinationToSpeakKannadaPage() {
             ))}
           </div>
 
-          <div className="mt-10 text-center">
+          {/* Mobile Dot Indicators (Only visible on mobile) */}
+          <div className="flex sm:hidden items-center justify-center gap-1.5 mt-4">
+            {book.samplePages?.map((_, dotIdx) => (
+              <button
+                key={dotIdx}
+                type="button"
+                onClick={() => scrollToSample(dotIdx)}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  activeSampleIndex === dotIdx
+                    ? 'w-7 bg-amber-500 shadow-2xs'
+                    : 'w-2 bg-stone-300 hover:bg-stone-400'
+                }`}
+                aria-label={`Go to sample page ${dotIdx + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="mt-8 sm:mt-10 text-center">
             <button
               type="button"
               onClick={() => {
