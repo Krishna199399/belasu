@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { BOOKS_DATA, PARENT_REVIEWS } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
+import { BookVisualShowcase } from '@/components/books/BookVisualShowcase';
 import { MobileBookStickyBar } from '@/components/ui/MobileBookStickyBar';
 import {
   ShoppingBag,
@@ -161,55 +162,14 @@ export default function KaliClass3Client() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
-            {/* Book Cover Showcase */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="relative bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-md flex flex-col items-center justify-center overflow-hidden group">
-                <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5">
-                  <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-500 text-slate-950 uppercase tracking-wider shadow-xs">
-                    Class 3
-                  </span>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-950 border border-amber-300 uppercase tracking-wider">
-                    Kali Series
-                  </span>
-                </div>
-
-                <div className="my-6 transform group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl">
-                  <img
-                    src={book.coverImage}
-                    alt="Kali Kannada English Translated Innovative Guidebook Class 3"
-                    className="max-h-72 sm:max-h-96 w-auto object-contain rounded-lg"
-                  />
-                </div>
-
-                {/* Secondary CTA: Preview Inside */}
-                <button
-                  type="button"
-                  onClick={() => setIsPreviewOpen(true)}
-                  className="w-full min-h-[44px] py-3 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-900 font-bold text-xs border border-stone-300 shadow-xs flex items-center justify-center gap-2 transition cursor-pointer active:scale-98"
-                >
-                  <Eye className="w-4 h-4 text-amber-600" />
-                  <span>Preview Inside</span>
-                </button>
-              </div>
-
-              {/* Karnataka School Textbook Aligned Badge Strip */}
-              {book.karnatakaTextbookCover && (
-                <div className="bg-amber-50/90 rounded-2xl p-4 border border-amber-200/90 flex items-center gap-3.5 shadow-2xs">
-                  <img
-                    src={book.karnatakaTextbookCover}
-                    alt="Karnataka School Textbook Class 3 Kali Kannada"
-                    className="w-12 h-16 object-contain rounded border border-amber-300 shadow-2xs shrink-0"
-                  />
-                  <div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                      Karnataka School Textbook Aligned
-                    </span>
-                    <span className="text-xs font-semibold text-slate-800 leading-snug block">
-                      English-translated companion engineered specifically for the official Class 3 Kali Kannada textbook.
-                    </span>
-                  </div>
-                </div>
-              )}
+            {/* Book Visual Showcase */}
+            <div className="lg:col-span-5 w-full">
+              <BookVisualShowcase
+                book={book}
+                primaryBadge="CLASS 3"
+                secondaryBadge="Kali Series"
+                onOpenPreview={() => setIsPreviewOpen(true)}
+              />
             </div>
 
             {/* Book Details Column */}

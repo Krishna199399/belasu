@@ -31,6 +31,7 @@ import Link from 'next/link';
 import { BookProduct } from '@/types';
 import toast from 'react-hot-toast';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
+import { BookVisualShowcase } from '@/components/books/BookVisualShowcase';
 
 export default function DestinationToSpeakKannadaPage() {
   const { addToCart, openCart } = useCart();
@@ -200,52 +201,18 @@ export default function DestinationToSpeakKannadaPage() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             
-            {/* Book Visual Presentation / Showcase (First on mobile, Left col on desktop) */}
+            {/* Book Visual Presentation / Showcase (Left col on desktop) */}
             <div className="lg:col-span-5 flex flex-col items-center w-full">
-              <div className="relative group w-full max-w-[340px] sm:max-w-[380px]">
-                
-                {/* Glow Backdrop */}
-                <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/20 to-orange-400/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500"></div>
-
-                {/* Cover Presentation Box */}
-                <div className="relative rounded-2xl bg-white p-3.5 sm:p-6 shadow-2xl border border-stone-200 flex flex-col items-center">
-                  <div className="w-full flex items-center justify-between mb-3 px-1">
-                    <span className="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
-                      Spoken Kannada
-                    </span>
-                    <span className="bg-stone-100 text-slate-700 border border-stone-200 text-xs font-bold px-2.5 py-1 rounded-full">
-                      23 Chapters
-                    </span>
-                  </div>
-
-                  <div className="w-full aspect-[3/4] flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl overflow-hidden rounded-xl bg-amber-50/40">
-                    <img
-                      src="/covers/a-destination-to-speak-kannada.png"
-                      alt="A Destination to Speak Kannada - Book Cover"
-                      className="w-full h-full max-h-[460px] object-contain rounded-xl"
-                    />
-                  </div>
-
-                  <div className="w-full pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-xs text-slate-600 font-semibold px-1">
-                    <span>Illustrated Practical Guide</span>
-                    <span className="text-amber-700 font-bold">Price: ₹295</span>
-                  </div>
-
-                  {/* Secondary CTA: Preview Inside */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPreviewPageIndex(0);
-                      setIsPreviewOpen(true);
-                    }}
-                    className="w-full min-h-[44px] mt-3 py-3 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold text-xs border border-amber-300 shadow-xs flex items-center justify-center gap-2 transition cursor-pointer active:scale-98"
-                  >
-                    <Eye className="w-4 h-4 text-amber-600" />
-                    <span>Preview Inside (3 Sample Pages)</span>
-                  </button>
-                </div>
-
-              </div>
+              <BookVisualShowcase
+                book={book}
+                primaryBadge="SPOKEN KANNADA"
+                secondaryBadge="23 Chapters"
+                categoryName="Spoken Kannada"
+                onOpenPreview={(pageIdx) => {
+                  setPreviewPageIndex(pageIdx || 0);
+                  setIsPreviewOpen(true);
+                }}
+              />
             </div>
 
             {/* Book Details & CTAs */}

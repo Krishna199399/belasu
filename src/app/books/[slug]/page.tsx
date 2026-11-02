@@ -5,6 +5,7 @@ import { useParams, notFound } from 'next/navigation';
 import { BOOKS_DATA, PARENT_REVIEWS } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
+import { BookVisualShowcase } from '@/components/books/BookVisualShowcase';
 import { formatPrice } from '@/lib/utils';
 import { ShoppingBag, Eye, CheckCircle2, ShieldCheck, Truck, ArrowLeft, BookOpen, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
@@ -48,41 +49,13 @@ export default function BookDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left Image Showcase */}
-            <div className="lg:col-span-5 bg-slate-50 border border-slate-100 rounded-2xl p-4 sm:p-8 flex flex-col items-center justify-center relative">
-              <span className="absolute top-3 left-3 sm:top-4 sm:left-4 px-3 py-1 bg-amber-500 text-white font-bold text-xs rounded-full shadow-xs">
-                Class {book.gradeClass} ({book.series} Series)
-              </span>
-
-              <img
-                src={book.coverImage}
-                alt={book.title}
-                className="max-h-72 sm:max-h-96 object-contain drop-shadow-2xl my-4 sm:mb-6"
+            <div className="lg:col-span-5 w-full">
+              <BookVisualShowcase
+                book={book}
+                primaryBadge={`CLASS ${book.gradeClass}`}
+                secondaryBadge={`${book.series} Series`}
+                onOpenPreview={() => setIsPreviewOpen(true)}
               />
-
-              <button
-                onClick={() => setIsPreviewOpen(true)}
-                className="w-full min-h-[44px] py-3 px-4 rounded-xl bg-white border border-amber-300 text-amber-900 font-bold text-xs sm:text-sm hover:bg-amber-50 shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
-              >
-                <Eye className="w-4 h-4 text-amber-600" /> Preview Sample Pages Inside
-              </button>
-
-              {book.karnatakaTextbookCover && (
-                <div className="w-full mt-4 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center gap-3">
-                  <img
-                    src={book.karnatakaTextbookCover}
-                    alt={`Karnataka School Textbook Class ${book.gradeClass}`}
-                    className="w-12 h-16 object-contain rounded border border-amber-300/80 shadow-2xs shrink-0"
-                  />
-                  <div className="text-left">
-                    <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
-                      Karnataka School Textbook Aligned
-                    </span>
-                    <span className="text-xs font-semibold text-slate-700 leading-tight block">
-                      English-translated companion for the official Class {book.gradeClass} {book.series} textbook.
-                    </span>
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Right Details Column */}
