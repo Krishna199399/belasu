@@ -540,7 +540,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               <Users className="w-5 h-5" />
             </div>
             <div className="text-xs sm:text-[13px] font-bold text-slate-800 leading-snug">
-              For CBSE | ICSE | English Medium | IG &amp; State Syllabus Students
+              For CBSE | ICSE | IG &amp; State Syllabus Students
             </div>
           </div>
 
@@ -550,8 +550,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               <GraduationCap className="w-5 h-5" />
             </div>
             <div className="text-xs sm:text-[13px] font-bold text-slate-800 leading-snug">
-              Savi (Class 1 – 4) <br className="hidden sm:inline" />
-              Siri (Class 5) | Kali (Class 1 – 4) | Tili (Class 5)
+              Savi (Class 1–4) | Kali (Class 1–4) <br className="hidden sm:inline" />
+              Siri (Class 5–10) | Tili (Class 5–10)
             </div>
           </div>
 
