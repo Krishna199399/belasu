@@ -1,107 +1,284 @@
 'use client';
 
-import React from 'react';
-import { VIDEO_REELS } from '@/data/mockData';
-import { Video, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { Video, ArrowRight, Play, X, MessageCircle } from 'lucide-react';
+
+interface VideoReelItem {
+  id: string;
+  title: string;
+  description: string;
+  tag: string;
+  duration: string;
+  thumbnailUrl: string;
+  videoUrl: string;
+}
 
 export const VideoReelsSection: React.FC = () => {
-  const videoDetails = [
+  const [activeVideo, setActiveVideo] = useState<VideoReelItem | null>(null);
+  const [videoError, setVideoError] = useState(false);
+
+  // Exact 3 Video Items preserving 100% of user content
+  const videoItems: VideoReelItem[] = [
     {
+      id: 'v1',
       title: 'How Belesu Helps Non-Kannada-Speaking Parents',
       description:
         'Discover how English-translated Kannada learning resources can help parents follow school lessons and support academic learning at home.',
-      tag: 'Parent Support',
+      tag: 'PARENT SUPPORT',
+      duration: '0:45',
+      thumbnailUrl: '/videos/reel-1.jpg',
+      videoUrl: '/videos/reel-1.mp4',
     },
     {
+      id: 'v2',
       title: 'Explore a Sample Kannada Lesson',
       description:
         'See how translated content and lesson guidance appear in a guidebook, helping you understand the learning format before choosing a book.',
-      tag: 'Lesson Preview',
+      tag: 'LESSON PREVIEW',
+      duration: '1:10',
+      thumbnailUrl: '/videos/reel-2.jpg',
+      videoUrl: '/videos/reel-2.mp4',
     },
     {
+      id: 'v3',
       title: 'Hear From Parents and Families',
       description:
         'Explore authentic parent experiences and feedback to learn how Belesu resources are used to support Kannada learning at home.',
-      tag: 'Family Stories',
+      tag: 'FAMILY STORIES',
+      duration: '0:55',
+      thumbnailUrl: '/videos/reel-3.jpg',
+      videoUrl: '/videos/reel-3.mp4',
     },
   ];
 
+  const handleOpenVideo = (video: VideoReelItem) => {
+    setVideoError(false);
+    setActiveVideo(video);
+  };
+
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-white text-slate-900 overflow-hidden border-b border-stone-200">
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative py-4 sm:py-5 lg:py-6 bg-gradient-to-b from-[#FFFDF9] via-[#FFFBF2] to-[#FFF8EA] text-slate-900 overflow-hidden border-b border-amber-100/70">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Header matching Belesu - Contents.md verbatim (Compact) */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-5 sm:mb-6">
-          <div className="max-w-2xl space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-rose-100 border border-rose-300 text-rose-800 text-[11px] font-bold uppercase tracking-wider shadow-2xs">
-              <Video className="w-3 h-3 text-rose-600" />
-              <span>Watch In Action</span>
-            </div>
-
-            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-              Explore Belesu Videos
-            </h2>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-              See our guidebooks and learning resources in action.
-            </p>
+        {/* ══════════════════════════════════════════════════════════════════
+            HEADER (Compact and reduced height)
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="text-center max-w-2xl mx-auto space-y-1 mb-3.5 sm:mb-4.5">
+          {/* Top Pill Badge */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#FDF2F8] border border-[#FBCFE8] text-[#BE185D] text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-2xs">
+            <Video className="w-3 h-3 text-[#BE185D]" />
+            <span>Watch In Action</span>
           </div>
 
-          <Link
-            href="/videos"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-xs transition shrink-0 uppercase tracking-wider min-h-[44px]"
-          >
-            <span>Watch Videos</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          {/* Heading with Decorative Radiant Rays & Curved Wave Underline */}
+          <div className="flex items-center justify-center gap-2 sm:gap-2.5 pt-0.5">
+            {/* Left Radiant Rays */}
+            <svg
+              className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-500 shrink-0 select-none"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <line x1="3" y1="12" x2="9" y2="12" />
+              <line x1="5" y1="5" x2="10" y2="9" />
+              <line x1="5" y1="19" x2="10" y2="15" />
+            </svg>
+
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-serif font-black text-slate-900 tracking-tight leading-tight relative inline-block">
+              <span>Explore Belesu Videos</span>
+              {/* Curved decorative underline */}
+              <svg
+                className="absolute -bottom-1 left-0 w-full h-1.5 text-amber-400 select-none"
+                viewBox="0 0 100 8"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M1 5.5C25 2 75 2 99 5.5"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </h2>
+
+            {/* Right Radiant Rays */}
+            <svg
+              className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-500 shrink-0 select-none"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <line x1="21" y1="12" x2="15" y2="12" />
+              <line x1="19" y1="5" x2="14" y2="9" />
+              <line x1="19" y1="19" x2="14" y2="15" />
+            </svg>
+          </div>
+
+          {/* Subtitle */}
+          <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-normal max-w-xl mx-auto">
+            See our guidebooks and learning resources in action.
+          </p>
         </div>
 
-        {/* Video Cards Grid with exact H3 headings (Compact) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
-          {VIDEO_REELS.map((reel, idx) => {
-            const meta = videoDetails[idx] || {
-              title: reel.title,
-              description: reel.description,
-              tag: 'Demonstration',
-            };
-            return (
-              <div
-                key={reel.id}
-                className="bg-stone-50/70 rounded-xl sm:rounded-2xl border border-stone-200/90 overflow-hidden group hover:border-amber-400 hover:shadow-md transition-all duration-200 flex flex-col justify-between"
-              >
-                {/* Video Player */}
-                <div className="relative aspect-video bg-slate-900 flex items-center justify-center overflow-hidden">
-                  <video
-                    src={reel.videoUrl}
-                    controls
-                    className="w-full h-full object-cover"
-                    preload="metadata"
-                  />
+        {/* ══════════════════════════════════════════════════════════════════
+            3 VIDEO CARDS: Responsive Stack (Mobile) & 3-Column Grid (Desktop)
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 max-w-5xl mx-auto">
+          {videoItems.map((video) => (
+            <div
+              key={video.id}
+              onClick={() => handleOpenVideo(video)}
+              className="bg-white rounded-2xl border border-[#FDE68A] p-3 sm:p-3.5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer hover:-translate-y-0.5 select-none"
+            >
+              {/* Thumbnail Container with Play Overlay & Duration Badge */}
+              <div className="relative aspect-[16/8.5] rounded-xl overflow-hidden bg-amber-100/40 mb-2.5 shadow-2xs">
+                <img
+                  src={video.thumbnailUrl}
+                  alt={video.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+
+                {/* Centered Translucent Play Button */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 text-slate-900 shadow-md flex items-center justify-center group-hover:scale-110 group-hover:bg-[#EA580C] group-hover:text-white transition-all duration-200">
+                    <Play className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current ml-0.5" />
+                  </div>
                 </div>
 
-                {/* Video Details */}
-                <div className="p-4 sm:p-5">
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100/90 border border-amber-300 px-2 py-0.5 rounded">
-                      {meta.tag}
+                {/* Duration Badge (Bottom-Right) */}
+                <div className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-xs text-white text-[10px] font-mono px-1.5 py-0.5 rounded font-bold">
+                  {video.duration}
+                </div>
+              </div>
+
+              {/* Video Info Details */}
+              <div className="flex-1 flex flex-col justify-between">
+                <div>
+                  {/* Category Pill Tag */}
+                  <div className="mb-1.5">
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-amber-900 bg-[#FEF3C7] border border-[#FDE68A] px-2 py-0.5 rounded">
+                      {video.tag}
                     </span>
-                    <span className="text-[10px] text-slate-500 font-medium">{reel.duration}</span>
                   </div>
 
-                  <h3 className="font-serif font-bold text-slate-900 text-sm sm:text-base leading-snug mb-1.5 group-hover:text-amber-800 transition">
-                    {meta.title}
+                  {/* Title */}
+                  <h3 className="font-serif font-black text-slate-900 text-xs sm:text-[13px] leading-snug mb-1 group-hover:text-amber-800 transition-colors">
+                    {video.title}
                   </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                    {meta.description}
+
+                  {/* Description */}
+                  <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-normal line-clamp-3">
+                    {video.description}
                   </p>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            CTA BUTTON: Centered Pill Button with Play Icon (Compact)
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="flex justify-center mt-3 sm:mt-4">
+          <Link
+            href="/videos"
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 group cursor-pointer"
+          >
+            <Play className="w-3.5 h-3.5 fill-current" />
+            <span>Watch More Videos</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
       </div>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          RESILIENT VIDEO MODAL (With Automatic WhatsApp Fallback)
+      ══════════════════════════════════════════════════════════════════ */}
+      {activeVideo && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
+          onClick={() => setActiveVideo(null)}
+        >
+          <div
+            className="relative w-full max-w-2xl bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-stone-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-3 sm:p-4 bg-slate-900/90 border-b border-stone-800 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                  {activeVideo.tag} • {activeVideo.duration}
+                </span>
+                <h4 className="text-white font-bold text-xs sm:text-sm truncate">
+                  {activeVideo.title}
+                </h4>
+              </div>
+              <button
+                onClick={() => setActiveVideo(null)}
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
+                aria-label="Close video"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Video Viewport / Graceful Fallback Handler */}
+            <div className="relative aspect-video bg-black flex items-center justify-center">
+              {videoError ? (
+                <div className="p-6 text-center max-w-md mx-auto space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-1">
+                    <Video className="w-6 h-6" />
+                  </div>
+                  <h5 className="text-white font-bold text-sm sm:text-base">
+                    Video Walkthrough Available
+                  </h5>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    This video demonstration is being optimized for high-speed streaming. You can watch the full demonstration instantly via WhatsApp!
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+                    <a
+                      href={`https://wa.me/919606636804?text=Hi%2C%20please%20share%20the%20video%3A%20${encodeURIComponent(
+                        activeVideo.title
+                      )}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                      <span>Request on WhatsApp</span>
+                    </a>
+                    <Link
+                      href="/videos"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition"
+                      onClick={() => setActiveVideo(null)}
+                    >
+                      <span>View Video Gallery</span>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <video
+                  src={activeVideo.videoUrl}
+                  controls
+                  autoPlay
+                  playsInline
+                  onError={() => setVideoError(true)}
+                  className="w-full h-full object-contain"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </section>
   );
 };
