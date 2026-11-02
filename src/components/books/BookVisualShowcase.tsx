@@ -82,12 +82,13 @@ export const BookVisualShowcase: React.FC<BookVisualShowcaseProps> = ({
 
   // Determine badges if not explicitly passed
   const leftBadgeText =
-    primaryBadge ||
-    (book.series === 'Spoken'
-      ? 'SPOKEN KANNADA'
+    primaryBadge !== undefined
+      ? primaryBadge
+      : book.series === 'Spoken'
+      ? ''
       : book.series
       ? `${book.series.toUpperCase()} KANNADA`
-      : `CLASS ${book.gradeClass}`);
+      : `CLASS ${book.gradeClass}`;
 
   const rightBadgeText =
     secondaryBadge ||
@@ -201,17 +202,21 @@ export const BookVisualShowcase: React.FC<BookVisualShowcaseProps> = ({
         <div className="flex-1 w-full max-w-[420px] md:max-w-none bg-white rounded-3xl border border-stone-200/90 shadow-lg p-4 sm:p-5 lg:p-6 flex flex-col justify-between relative group">
           
           {/* Top Badges Row inside Card */}
-          <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4 px-0.5">
-            {/* Left Category/Class Pill */}
-            <span className="bg-[#EA580C] text-white font-black text-[11px] sm:text-xs uppercase tracking-wider px-3.5 py-1 rounded-full shadow-xs">
-              {leftBadgeText}
-            </span>
+          {(leftBadgeText || rightBadgeText) && (
+            <div className={`flex items-center ${leftBadgeText ? 'justify-between' : 'justify-end'} gap-2 mb-3 sm:mb-4 px-0.5`}>
+              {leftBadgeText ? (
+                <span className="bg-[#EA580C] text-white font-black text-[11px] sm:text-xs uppercase tracking-wider px-3.5 py-1 rounded-full shadow-xs">
+                  {leftBadgeText}
+                </span>
+              ) : null}
 
-            {/* Right Feature / Chapters Pill */}
-            <span className="bg-white border border-stone-200 text-slate-700 font-bold text-[11px] sm:text-xs px-3 py-1 rounded-full shadow-2xs">
-              {rightBadgeText}
-            </span>
-          </div>
+              {rightBadgeText ? (
+                <span className="bg-white border border-stone-200 text-slate-700 font-bold text-[11px] sm:text-xs px-3 py-1 rounded-full shadow-2xs">
+                  {rightBadgeText}
+                </span>
+              ) : null}
+            </div>
+          )}
 
           {/* Main Visual Image Viewport */}
           <div

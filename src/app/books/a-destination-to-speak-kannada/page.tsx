@@ -180,15 +180,13 @@ export default function DestinationToSpeakKannadaPage() {
                 <ArrowLeft className="w-3.5 h-3.5" /> Back to All Books
               </Link>
               <span>/</span>
-              <span className="text-slate-400">Spoken Kannada</span>
-              <span>/</span>
               <span className="text-slate-900 font-bold truncate max-w-[200px] sm:max-w-none">
                 A Destination to Speak Kannada
               </span>
             </div>
             <div className="hidden sm:flex items-center gap-2 text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Illustrated Spoken Kannada</span>
+              <span>Illustrated Kannada Edition</span>
             </div>
           </div>
         </div>
@@ -205,9 +203,8 @@ export default function DestinationToSpeakKannadaPage() {
             <div className="lg:col-span-5 flex flex-col items-center w-full">
               <BookVisualShowcase
                 book={book}
-                primaryBadge="SPOKEN KANNADA"
+                primaryBadge=""
                 secondaryBadge="23 Chapters"
-                categoryName="Spoken Kannada"
                 onOpenPreview={(pageIdx) => {
                   setPreviewPageIndex(pageIdx || 0);
                   setIsPreviewOpen(true);
