@@ -52,8 +52,8 @@ export default function BookDetailPage() {
             <div className="lg:col-span-5 w-full">
               <BookVisualShowcase
                 book={book}
-                primaryBadge={`CLASS ${book.gradeClass}`}
-                secondaryBadge={`${book.series} Series`}
+                primaryBadge={book.gradeClass > 0 ? `CLASS ${book.gradeClass}` : ''}
+                secondaryBadge={book.series === 'Spoken' ? '23 Chapters' : `${book.series} Series`}
                 onOpenPreview={() => setIsPreviewOpen(true)}
               />
             </div>
@@ -80,7 +80,7 @@ export default function BookDetailPage() {
               </div>
 
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                {book.gradeClass ? `An English-translated Kannada guidebook for Class ${book.gradeClass} students.` : book.description}
+                {book.gradeClass > 0 ? `An English-translated Kannada guidebook for Class ${book.gradeClass} students.` : book.description}
               </p>
 
               {/* Stock Warning Banner if Low or Out */}

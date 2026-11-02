@@ -206,7 +206,12 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
   const zoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.25, 0.85));
   const resetZoom = () => setZoomLevel(1);
 
-  // Tab config matching the 3 sample page stages
+  const isDestinationBook =
+    book.slug === 'a-destination-to-speak-kannada' ||
+    book.series === 'Spoken' ||
+    book.gradeClass === 0;
+
+  // Tab config matching the 3 sample page stages for academic books
   const pageTabLabels = [
     { label: 'Syllabus Index', icon: <FileText className="w-3.5 h-3.5" /> },
     { label: 'Lesson & Translation', icon: <BookMarked className="w-3.5 h-3.5" /> },
@@ -240,9 +245,11 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-950 border border-amber-300 shrink-0">
-                  Class {book.gradeClass}
-                </span>
+                {!isDestinationBook && book.gradeClass > 0 && (
+                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-950 border border-amber-300 shrink-0">
+                    Class {book.gradeClass}
+                  </span>
+                )}
                 <h3 className="font-serif font-black text-slate-900 text-xs sm:text-sm md:text-base truncate">
                   {book.title}
                 </h3>
@@ -267,17 +274,22 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
           </div>
         </div>
 
-        {/* ── 2. Clean 3-Tab Quick Switcher (Index / Lesson / Exercises) ── */}
+        {/* ── 2. Quick Switcher Tabs (Page 1, 2, 3 for Destination; Stage Tabs for Curriculum Books) ── */}
         <div
           className="bg-stone-100/90 border-b border-stone-200 px-3 sm:px-6 py-2 flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none shrink-0"
           style={{ overscrollBehavior: 'contain' }}
         >
           {allSamples.map((sample, idx) => {
             const isActive = idx === safeIndex;
-            const tabMeta = pageTabLabels[idx] || {
-              label: sample.category || `Page ${idx + 1}`,
-              icon: <Sparkles className="w-3.5 h-3.5" />,
-            };
+            const tabMeta = isDestinationBook
+              ? {
+                  label: `Page ${idx + 1}`,
+                  icon: <FileText className="w-3.5 h-3.5" />,
+                }
+              : pageTabLabels[idx] || {
+                  label: sample.category || `Page ${idx + 1}`,
+                  icon: <Sparkles className="w-3.5 h-3.5" />,
+                };
 
             return (
               <button
@@ -422,9 +434,11 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
                         <div className="text-[10px] font-black uppercase text-amber-800">
                           Page {idx + 1}
                         </div>
-                        <div className="text-[11px] font-bold text-slate-800 max-w-[110px] truncate">
-                          {pageTabLabels[idx]?.label || sample.category}
-                        </div>
+                        {!isDestinationBook && (
+                          <div className="text-[11px] font-bold text-slate-800 max-w-[110px] truncate">
+                            {pageTabLabels[idx]?.label || sample.category}
+                          </div>
+                        )}
                       </div>
                     </button>
                   );
@@ -438,12 +452,20 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
             <div className="space-y-4">
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-950 border border-amber-300">
-                  Class {book.gradeClass} Edition
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs font-bold text-slate-700 bg-stone-100 border border-stone-200">
-                  {book.series} Kannada
-                </span>
+                {isDestinationBook ? (
+                  <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-950 border border-amber-300">
+                    23 Chapters
+                  </span>
+                ) : (
+                  <>
+                    <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-950 border border-amber-300">
+                      Class {book.gradeClass} Edition
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-xs font-bold text-slate-700 bg-stone-100 border border-stone-200">
+                      {book.series} Kannada
+                    </span>
+                  </>
+                )}
               </div>
 
               {/* Title & Reviews */}

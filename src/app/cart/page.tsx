@@ -58,7 +58,7 @@ export default function CartPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg inline-block">
-                        Class {product.gradeClass} {productType === 'physical' && 'series' in product && `(${product.series} - Hard Copy)`}
+                        {product.gradeClass > 0 ? `Class ${product.gradeClass} ` : ''}{productType === 'physical' && 'series' in product && (product.series === 'Spoken' ? '(Hard Copy)' : `(${product.series} - Hard Copy)`)}
                         {productType === 'digital' && ' - Digital'}
                       </span>
                       <h3 className="font-bold text-slate-900 text-xs sm:text-sm md:text-base leading-snug mt-1 max-w-md line-clamp-2">

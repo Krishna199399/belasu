@@ -155,7 +155,7 @@ export const CartDrawer: React.FC = () => {
                         </button>
                       </div>
                       <span className="inline-block mt-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800">
-                        Class {product.gradeClass} {productType === 'physical' && 'series' in product && `(${product.series} - Hard Copy)`}
+                        {product.gradeClass > 0 ? `Class ${product.gradeClass} ` : ''}{productType === 'physical' && 'series' in product && (product.series === 'Spoken' ? '(Hard Copy)' : `(${product.series} - Hard Copy)`)}
                         {productType === 'digital' && ' - Digital'}
                       </span>
                     </div>

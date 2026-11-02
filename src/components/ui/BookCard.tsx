@@ -21,7 +21,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
       {/* Class Badge */}
       <div className="absolute top-3 left-3 z-10">
         <Badge variant="amber">
-          Class {book.gradeClass}
+          {book.gradeClass > 0 ? `Class ${book.gradeClass}` : '23 Chapters'}
         </Badge>
       </div>
 
@@ -49,7 +49,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
         {/* Series Tag */}
         <div className="mb-2">
           <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
-            {book.series} Kannada Series
+            {book.series === 'Spoken' ? 'Illustrated Edition' : `${book.series} Kannada Series`}
           </span>
         </div>
 
