@@ -174,8 +174,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
 
   return (
     <section
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
