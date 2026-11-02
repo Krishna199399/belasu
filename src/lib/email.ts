@@ -291,12 +291,25 @@ export function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNo
       </table>
 
       <!-- Footer Message -->
+      ${
+        isAdminNotice
+          ? `
       <p style="margin: 24px 0 6px 0; font-size: 13px; color: #636363;">
         Congratulations on the sale.
       </p>
       <p style="margin: 0; font-size: 11px; color: #999999;">
         Process your orders on the go. Belesu Bookstore · Ckelp Technologies Private Limited
       </p>
+      `
+          : `
+      <p style="margin: 24px 0 6px 0; font-size: 13px; color: #636363;">
+        Thank you for choosing Belesu! For any assistance, reach out to us at <a href="mailto:belesuckelp@gmail.com" style="color: #7f1ae5; font-weight: 700; text-decoration: underline;">belesuckelp@gmail.com</a>.
+      </p>
+      <p style="margin: 0; font-size: 11px; color: #999999;">
+        Belesu Bookstore · Ckelp Technologies Private Limited
+      </p>
+      `
+      }
 
     </div>
 
@@ -309,8 +322,9 @@ export function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNo
 /**
  * Resolves the admin notification recipient emails.
  * Supports comma-separated strings in ADMIN_NOTIFICATION_EMAIL.
- * Guarantees that orderforbelesu@gmail.com and rosemeary45@gmail.com are included
- * so alerts always reach both administrative addresses even if VPS env variables vary.
+ * Guarantees that belesuckelp@gmail.com (official client),
+ * orderforbelesu@gmail.com (store operations), and rosemeary45@gmail.com
+ * are included so alerts reach all required parties reliably.
  */
 export function getAdminRecipients(): string[] {
   const envVal = process.env.ADMIN_NOTIFICATION_EMAIL;
@@ -325,8 +339,8 @@ export function getAdminRecipients(): string[] {
     });
   }
 
-  // Always ensure both client and store management addresses are included
-  const defaultRecipients = ['orderforbelesu@gmail.com', 'rosemeary45@gmail.com'];
+  // Always ensure official client, store operations, and developer admin are included
+  const defaultRecipients = ['belesuckelp@gmail.com', 'orderforbelesu@gmail.com', 'rosemeary45@gmail.com'];
   for (const def of defaultRecipients) {
     if (!emails.includes(def)) {
       emails.push(def);
@@ -367,7 +381,7 @@ export async function sendAdminOrderNotification(
       return { success: false, error: 'No recipient email configured' };
     }
 
-    const senderEmail = process.env.SMTP_FROM || `"Belesu Orders" <${process.env.SMTP_USER}>`;
+    const senderEmail = process.env.SMTP_FROM || `"Belesu Orders" <${process.env.SMTP_USER || 'belesuckelp@gmail.com'}>`;
     const subject = `[Belesu] New order #${payload.orderNumber}`;
 
     const html = buildOrderNotificationHtml(payload, true);
@@ -376,6 +390,7 @@ export async function sendAdminOrderNotification(
 
     const info = await transporter.sendMail({
       from: senderEmail,
+      replyTo: 'belesuckelp@gmail.com',
       to: recipients,
       subject,
       html,
@@ -409,12 +424,13 @@ export async function sendCustomerOrderReceipt(
       return { success: false, error: 'SMTP not configured' };
     }
 
-    const senderEmail = process.env.SMTP_FROM || `"Belesu Bookstore" <${process.env.SMTP_USER}>`;
+    const senderEmail = process.env.SMTP_FROM || `"Belesu Bookstore" <belesuckelp@gmail.com>`;
     const subject = `Order Confirmed! Your Belesu Order #${payload.orderNumber}`;
     const html = buildOrderNotificationHtml(payload, false);
 
     const info = await transporter.sendMail({
       from: senderEmail,
+      replyTo: 'belesuckelp@gmail.com',
       to: payload.customerEmail,
       subject,
       html,
