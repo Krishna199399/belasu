@@ -6,7 +6,6 @@ import {
   BookOpen,
   Eye,
   ShoppingBag,
-  Sparkles,
   ArrowRight,
   Star,
   ShieldCheck,
@@ -165,11 +164,6 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-2 mb-6 sm:mb-8">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-[11px] font-bold uppercase tracking-wider shadow-2xs">
-            <Sparkles className="w-3 h-3 text-amber-600" />
-            <span>State Syllabus Curriculum</span>
-          </div>
-
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-slate-900 tracking-tight leading-tight">
             Find the Right Kannada Guidebook
           </h2>
