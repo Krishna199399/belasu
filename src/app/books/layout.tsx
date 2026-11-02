@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'Kannada study books',
   ],
   alternates: {
-    canonical: '/books',
+    canonical: '/books/',
   },
 };
 

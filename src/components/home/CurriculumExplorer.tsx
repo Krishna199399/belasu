@@ -240,7 +240,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                   {/* Book Cover Image */}
                   <div className="shrink-0 w-[100px] xs:w-[115px] sm:w-full h-36 sm:h-44 flex items-center justify-center relative group/stage">
                     <Link
-                      href={`/books/${activeBook.slug}`}
+                      href={`/books/${activeBook.slug}/`}
                       className="h-full flex items-center justify-center transform group-hover/stage:scale-105 transition-transform duration-300 drop-shadow-sm block cursor-pointer"
                       title={`View ${activeBook.title}`}
                     >
@@ -271,7 +271,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                     {/* Series Title */}
                     <h3 className="text-sm sm:text-base font-serif font-black text-slate-900 leading-snug">
                       <Link
-                        href={`/books/${activeBook.slug}`}
+                        href={`/books/${activeBook.slug}/`}
                         className="hover:text-amber-600 transition-colors block line-clamp-1"
                         title={activeBook.title}
                       >
@@ -394,7 +394,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                     <div className="flex items-center gap-1">
                       {isOutOfStock ? (
                         <Link
-                          href={`/books/${activeBook.slug}`}
+                          href={`/books/${activeBook.slug}/`}
                           title={`View ${activeBook.title} (Temporarily Out of Stock)`}
                           className="flex-1 py-2.5 px-2 rounded-xl font-bold text-[11px] sm:text-xs bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-200 shadow-2xs flex items-center justify-center gap-1 transition cursor-pointer uppercase tracking-wider min-h-[42px]"
                         >
@@ -403,7 +403,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
                         </Link>
                       ) : (
                         <Link
-                          href={`/books/${activeBook.slug}`}
+                          href={`/books/${activeBook.slug}/`}
                           title={`Buy ${activeBook.title}`}
                           className={`flex-1 py-2.5 px-2.5 rounded-xl font-bold text-xs ${series.theme.btnBg} ${series.theme.btnHover} ${series.theme.btnText} shadow-xs flex items-center justify-center gap-1 transition active:scale-95 cursor-pointer uppercase tracking-wider min-h-[42px]`}
                         >

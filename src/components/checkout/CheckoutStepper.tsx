@@ -77,3 +77,4 @@ export const CheckoutStepper: React.FC<CheckoutStepperProps> = ({ currentStep })
 };
 
 export default CheckoutStepper;
+

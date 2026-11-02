@@ -100,25 +100,25 @@ export const Footer: React.FC = () => {
                     </span>
                     <div className="grid grid-cols-2 gap-1.5">
                       <Link
-                        href="/books/savi-kannada-class-1"
+                        href="/books/savi-kannada-class-1/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 1 · Savi
                       </Link>
                       <Link
-                        href="/books/savi-kannada-class-2"
+                        href="/books/savi-kannada-class-2/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 2 · Savi
                       </Link>
                       <Link
-                        href="/books/savi-kannada-class-3"
+                        href="/books/savi-kannada-class-3/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 3 · Savi
                       </Link>
                       <Link
-                        href="/books/savi-kannada-class-4"
+                        href="/books/savi-kannada-class-4/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 4 · Savi
@@ -133,25 +133,25 @@ export const Footer: React.FC = () => {
                     </span>
                     <div className="grid grid-cols-2 gap-1.5">
                       <Link
-                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-1"
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-1/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 1 · Kali
                       </Link>
                       <Link
-                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-2"
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-2/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 2 · Kali
                       </Link>
                       <Link
-                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-3"
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-3/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 3 · Kali
                       </Link>
                       <Link
-                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-4"
+                        href="/books/kali-kannada-english-translated-innovative-guidebook-class-4/"
                         className="px-2.5 py-1.5 rounded-lg bg-stone-100/80 hover:bg-amber-100/60 border border-stone-200/80 text-slate-700 hover:text-amber-900 text-center font-medium transition"
                       >
                         Class 4 · Kali
@@ -162,7 +162,7 @@ export const Footer: React.FC = () => {
                   {/* Direct Catalog Link */}
                   <div className="pt-1">
                     <Link
-                      href="/books"
+                      href="/books/"
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 hover:text-amber-950 underline underline-offset-2"
                     >
                       <span>Browse All 11 Guidebooks</span>
@@ -204,12 +204,12 @@ export const Footer: React.FC = () => {
                     <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 block">Class 5 Series</span>
                     <ul className="space-y-1.5 text-slate-600">
                       <li>
-                        <Link href="/books/siri-kannada-english-translated-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
+                        <Link href="/books/siri-kannada-english-translated-guidebook-class-5/" className="hover:text-amber-800 hover:underline transition">
                           Class 5 · Siri Kannada
                         </Link>
                       </li>
                       <li>
-                        <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5" className="hover:text-amber-800 hover:underline transition">
+                        <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5/" className="hover:text-amber-800 hover:underline transition">
                           Class 5 · Tili Kannada
                         </Link>
                       </li>
@@ -220,7 +220,7 @@ export const Footer: React.FC = () => {
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">Spoken Kannada</span>
                     <ul className="space-y-1.5 text-slate-600">
                       <li>
-                        <Link href="/books/a-destination-to-speak-kannada" className="hover:text-amber-800 hover:underline transition flex items-center gap-1.5">
+                        <Link href="/books/a-destination-to-speak-kannada/" className="hover:text-amber-800 hover:underline transition flex items-center gap-1.5">
                           <span>A Destination to Speak Kannada</span>
                           <span className="text-[9px] bg-amber-500 text-slate-950 font-black px-1.5 py-0.2 rounded-full uppercase">New</span>
                         </Link>
@@ -234,7 +234,7 @@ export const Footer: React.FC = () => {
                       <ul className="space-y-1.5 text-slate-600">
                         <li>
                           <Link
-                            href="/digital/kannada-class-6-guide"
+                            href="/digital/kannada-class-6-guide/"
                             className="text-indigo-700 font-bold hover:underline flex items-center gap-1.5"
                           >
                             <span>Class 6 Digital Guide</span>
@@ -275,12 +275,12 @@ export const Footer: React.FC = () => {
                       Explore Belesu
                     </span>
                     <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-slate-600">
-                      <Link href="/about" className="hover:text-amber-800 hover:underline transition">About Us</Link>
-                      <Link href="/team" className="hover:text-amber-800 hover:underline transition">Academic Team</Link>
-                      <Link href="/video-gallery" className="hover:text-amber-800 hover:underline transition">Video Gallery</Link>
-                      <Link href="/reviews" className="hover:text-amber-800 hover:underline transition">Parent Reviews</Link>
-                      <Link href="/faqs" className="hover:text-amber-800 hover:underline transition">FAQs & Help</Link>
-                      <Link href="/contact" className="hover:text-amber-800 hover:underline transition">Contact Us</Link>
+                      <Link href="/about/" className="hover:text-amber-800 hover:underline transition">About Us</Link>
+                      <Link href="/team/" className="hover:text-amber-800 hover:underline transition">Academic Team</Link>
+                      <Link href="/video-gallery/" className="hover:text-amber-800 hover:underline transition">Video Gallery</Link>
+                      <Link href="/reviews/" className="hover:text-amber-800 hover:underline transition">Parent Reviews</Link>
+                      <Link href="/faqs/" className="hover:text-amber-800 hover:underline transition">FAQs & Help</Link>
+                      <Link href="/contact/" className="hover:text-amber-800 hover:underline transition">Contact Us</Link>
                     </div>
                   </div>
 
@@ -289,10 +289,10 @@ export const Footer: React.FC = () => {
                       Customer Policies
                     </span>
                     <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-slate-600">
-                      <Link href="/policies/returns" className="hover:text-amber-800 hover:underline transition">Returns & Refunds</Link>
-                      <Link href="/policies/shipping" className="hover:text-amber-800 hover:underline transition">Shipping Policy</Link>
-                      <Link href="/policies/terms" className="hover:text-amber-800 hover:underline transition">Terms of Service</Link>
-                      <Link href="/policies/privacy" className="hover:text-amber-800 hover:underline transition">Privacy Policy</Link>
+                      <Link href="/returns/" className="hover:text-amber-800 hover:underline transition">Returns & Refunds</Link>
+                      <Link href="/shipping-policy/" className="hover:text-amber-800 hover:underline transition">Shipping Policy</Link>
+                      <Link href="/terms-and-conditions/" className="hover:text-amber-800 hover:underline transition">Terms of Service</Link>
+                      <Link href="/privacy-policy/" className="hover:text-amber-800 hover:underline transition">Privacy Policy</Link>
                     </div>
                   </div>
                 </div>
@@ -459,22 +459,22 @@ export const Footer: React.FC = () => {
                 </span>
                 <ul className="space-y-1.5">
                   <li>
-                    <Link href="/books/savi-kannada-class-1" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/savi-kannada-class-1/" className="hover:text-amber-700 hover:underline transition">
                       Class 1 · Savi Kannada
                     </Link>
                   </li>
                   <li>
-                    <Link href="/books/savi-kannada-class-2" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/savi-kannada-class-2/" className="hover:text-amber-700 hover:underline transition">
                       Class 2 · Savi Kannada
                     </Link>
                   </li>
                   <li>
-                    <Link href="/books/savi-kannada-class-3" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/savi-kannada-class-3/" className="hover:text-amber-700 hover:underline transition">
                       Class 3 · Savi Kannada
                     </Link>
                   </li>
                   <li>
-                    <Link href="/books/savi-kannada-class-4" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/savi-kannada-class-4/" className="hover:text-amber-700 hover:underline transition">
                       Class 4 · Savi Kannada
                     </Link>
                   </li>
@@ -487,22 +487,22 @@ export const Footer: React.FC = () => {
                 </span>
                 <ul className="space-y-1.5">
                   <li>
-                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-1" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-1/" className="hover:text-amber-700 hover:underline transition">
                       Class 1 · Kali Kannada
                     </Link>
                   </li>
                   <li>
-                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-2" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-2/" className="hover:text-amber-700 hover:underline transition">
                       Class 2 · Kali Kannada
                     </Link>
                   </li>
                   <li>
-                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-3" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-3/" className="hover:text-amber-700 hover:underline transition">
                       Class 3 · Kali Kannada
                     </Link>
                   </li>
                   <li>
-                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-4" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/kali-kannada-english-translated-innovative-guidebook-class-4/" className="hover:text-amber-700 hover:underline transition">
                       Class 4 · Kali Kannada
                     </Link>
                   </li>
@@ -524,12 +524,12 @@ export const Footer: React.FC = () => {
                 </span>
                 <ul className="space-y-1.5">
                   <li>
-                    <Link href="/books/siri-kannada-english-translated-guidebook-class-5" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/siri-kannada-english-translated-guidebook-class-5/" className="hover:text-amber-700 hover:underline transition">
                       Class 5 · Siri Kannada
                     </Link>
                   </li>
                   <li>
-                    <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/books/tili-kannada-english-translated-innovative-guidebook-class-5/" className="hover:text-amber-700 hover:underline transition">
                       Class 5 · Tili Kannada
                     </Link>
                   </li>
@@ -543,7 +543,7 @@ export const Footer: React.FC = () => {
                 <ul className="space-y-1.5">
                   <li>
                     <Link
-                      href="/books/a-destination-to-speak-kannada"
+                      href="/books/a-destination-to-speak-kannada/"
                       className="hover:text-amber-700 hover:underline transition flex items-center gap-1.5"
                     >
                       <span>A Destination to Speak Kannada</span>
@@ -561,7 +561,7 @@ export const Footer: React.FC = () => {
                   <ul className="space-y-1.5">
                     <li>
                       <Link
-                        href="/digital/kannada-class-6-guide"
+                        href="/digital/kannada-class-6-guide/"
                         className="hover:text-indigo-700 transition flex items-center gap-1 text-indigo-700 font-bold"
                       >
                         <span>Class 6 Digital Guide</span>
@@ -569,7 +569,7 @@ export const Footer: React.FC = () => {
                       </Link>
                     </li>
                     <li className="pt-1">
-                      <Link href="/books" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
+                      <Link href="/books/" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
                         <span>Browse All 11 Books</span>
                         <span>→</span>
                       </Link>
@@ -580,7 +580,7 @@ export const Footer: React.FC = () => {
                 <div className="pt-1.5 border-t border-stone-200/60">
                   <ul className="space-y-1.5">
                     <li>
-                      <Link href="/books" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
+                      <Link href="/books/" className="text-amber-800 font-black hover:text-amber-900 transition flex items-center gap-1">
                         <span>Browse All Books (10 Books)</span>
                         <span>→</span>
                       </Link>
@@ -604,32 +604,32 @@ export const Footer: React.FC = () => {
                 </span>
                 <ul className="space-y-1.5">
                   <li>
-                    <Link href="/about" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/about/" className="hover:text-amber-700 hover:underline transition">
                       About Us
                     </Link>
                   </li>
                   <li>
-                    <Link href="/team" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/team/" className="hover:text-amber-700 hover:underline transition">
                       Our Academic Team
                     </Link>
                   </li>
                   <li>
-                    <Link href="/video-gallery" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/video-gallery/" className="hover:text-amber-700 hover:underline transition">
                       Video Gallery
                     </Link>
                   </li>
                   <li>
-                    <Link href="/reviews" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/reviews/" className="hover:text-amber-700 hover:underline transition">
                       Parent & Student Reviews
                     </Link>
                   </li>
                   <li>
-                    <Link href="/faqs" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/faqs/" className="hover:text-amber-700 hover:underline transition">
                       FAQs & Help
                     </Link>
                   </li>
                   <li>
-                    <Link href="/contact" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/contact/" className="hover:text-amber-700 hover:underline transition">
                       Contact Us
                     </Link>
                   </li>
@@ -642,22 +642,22 @@ export const Footer: React.FC = () => {
                 </span>
                 <ul className="space-y-1.5">
                   <li>
-                    <Link href="/policies/returns" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/returns/" className="hover:text-amber-700 hover:underline transition">
                       Returns & Refunds
                     </Link>
                   </li>
                   <li>
-                    <Link href="/policies/shipping" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/shipping-policy/" className="hover:text-amber-700 hover:underline transition">
                       Shipping Policy
                     </Link>
                   </li>
                   <li>
-                    <Link href="/policies/terms" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/terms-and-conditions/" className="hover:text-amber-700 hover:underline transition">
                       Terms & Conditions
                     </Link>
                   </li>
                   <li>
-                    <Link href="/policies/privacy" className="hover:text-amber-700 hover:underline transition">
+                    <Link href="/privacy-policy/" className="hover:text-amber-700 hover:underline transition">
                       Privacy Policy
                     </Link>
                   </li>

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description:
     'Read Belesu’s privacy policy to understand how personal information is collected, used and protected when you use our website and services.',
   alternates: {
-    canonical: '/privacy-policy',
+    canonical: '/privacy-policy/',
   },
 };
 

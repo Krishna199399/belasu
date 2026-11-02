@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     'Contact Belesu at 9606636804 for questions about Kannada guidebooks, orders, delivery or academic learning resources.',
   alternates: {
-    canonical: '/contact',
+    canonical: '/contact/',
   },
 };
 

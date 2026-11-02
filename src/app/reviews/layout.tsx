@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     'Read reviews and feedback about Belesu Kannada guidebooks and academic learning resources from students and parents.',
   alternates: {
-    canonical: '/reviews',
+    canonical: '/reviews/',
   },
 };
 

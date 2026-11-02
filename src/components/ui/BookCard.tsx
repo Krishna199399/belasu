@@ -54,7 +54,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
         </div>
 
         {/* Title */}
-        <Link href={`/books/${book.slug}`}>
+        <Link href={`/books/${book.slug}/`}>
           <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 hover:text-amber-600 transition mb-2">
             {book.title}
           </h3>

@@ -302,7 +302,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               </Link>
 
               <Link
-                href="/books"
+                href="/books/"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border border-slate-300 shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
               >
                 <BookOpen className="w-4 h-4 text-slate-700" />
@@ -480,7 +480,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             </Link>
 
             <Link
-              href="/books"
+              href="/books/"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-xs active:scale-95 transition-all text-center cursor-pointer"
             >
               <BookOpen className="w-4 h-4 text-slate-700" />

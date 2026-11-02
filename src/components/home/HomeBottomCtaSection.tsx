@@ -148,7 +148,7 @@ export const HomeBottomCtaSection: React.FC = () => {
               {/* Action Buttons (Desktop Side-by-Side) */}
               <div className="hidden lg:flex items-center gap-3 pt-1 w-full">
                 <Link
-                  href="/books"
+                  href="/books/"
                   className="px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-wider bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 cursor-pointer"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
@@ -157,7 +157,7 @@ export const HomeBottomCtaSection: React.FC = () => {
                 </Link>
 
                 <Link
-                  href="/contact"
+                  href="/contact/"
                   className="px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider text-white bg-[#1E293B] hover:bg-[#334155] border border-slate-700 flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 cursor-pointer"
                 >
                   <PhoneCall className="w-3.5 h-3.5 text-amber-400" />
@@ -240,7 +240,7 @@ export const HomeBottomCtaSection: React.FC = () => {
             ══════════════════════════════════════════════════════════════════ */}
             <div className="lg:hidden col-span-1 flex flex-col gap-2 pt-1 w-full max-w-md mx-auto">
               <Link
-                href="/books"
+                href="/books/"
                 className="w-full py-2.5 rounded-full font-black text-xs uppercase tracking-wider bg-[#F59E0B] hover:bg-[#D97706] text-slate-950 shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer"
               >
                 <BookOpen className="w-3.5 h-3.5" />
@@ -249,7 +249,7 @@ export const HomeBottomCtaSection: React.FC = () => {
               </Link>
 
               <Link
-                href="/contact"
+                href="/contact/"
                 className="w-full py-2.5 rounded-full font-bold text-xs uppercase tracking-wider text-white bg-[#1E293B] hover:bg-[#334155] border border-slate-700 flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer"
               >
                 <PhoneCall className="w-3.5 h-3.5 text-amber-400" />

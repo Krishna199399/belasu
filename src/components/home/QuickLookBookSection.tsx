@@ -388,7 +388,7 @@ export const QuickLookBookSection: React.FC = () => {
           {selectedTrack === 'SaviSiri' ? (
             <>
               <Link
-                href="/books?series=Savi"
+                href="/books/?series=Savi"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 font-black text-xs sm:text-sm tracking-wider rounded-full shadow-sm hover:shadow-md transition transform active:scale-98 uppercase whitespace-nowrap min-h-[46px]"
               >
                 <BookOpen className="w-4 h-4 shrink-0" />
@@ -397,7 +397,7 @@ export const QuickLookBookSection: React.FC = () => {
               </Link>
 
               <Link
-                href="/books?series=Siri"
+                href="/books/?series=Siri"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-white hover:bg-amber-50/60 border-2 border-[#f59e0b] text-slate-900 font-black text-xs sm:text-sm tracking-wider rounded-full shadow-2xs hover:shadow-sm transition transform active:scale-98 uppercase whitespace-nowrap min-h-[46px]"
               >
                 <BookOpen className="w-4 h-4 shrink-0 text-amber-600" />
@@ -408,7 +408,7 @@ export const QuickLookBookSection: React.FC = () => {
           ) : (
             <>
               <Link
-                href="/books?series=Kali"
+                href="/books/?series=Kali"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-[#f59e0b] hover:bg-[#d97706] text-slate-950 font-black text-xs sm:text-sm tracking-wider rounded-full shadow-sm hover:shadow-md transition transform active:scale-98 uppercase whitespace-nowrap min-h-[46px]"
               >
                 <BookOpen className="w-4 h-4 shrink-0" />
@@ -417,7 +417,7 @@ export const QuickLookBookSection: React.FC = () => {
               </Link>
 
               <Link
-                href="/books?series=Tili"
+                href="/books/?series=Tili"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 bg-white hover:bg-amber-50/60 border-2 border-[#f59e0b] text-slate-900 font-black text-xs sm:text-sm tracking-wider rounded-full shadow-2xs hover:shadow-sm transition transform active:scale-98 uppercase whitespace-nowrap min-h-[46px]"
               >
                 <BookOpen className="w-4 h-4 shrink-0 text-amber-600" />

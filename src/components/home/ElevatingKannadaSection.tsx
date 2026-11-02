@@ -97,7 +97,7 @@ export const ElevatingKannadaSection: React.FC = () => {
             </p>
             <div className="pt-4">
               <Link
-                href="/about"
+                href="/about/"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-900 hover:bg-amber-50 font-bold text-sm rounded-xl transition shadow-md active:scale-95"
               >
                 Read Our Vision and Mission <ArrowRight className="w-4 h-4 text-amber-600" />

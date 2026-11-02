@@ -391,7 +391,7 @@ export default function VideosMediaPage() {
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Link
-                  href="/books"
+                  href="/books/"
                   className="px-5 py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-sm"
                 >
                   Browse 11 Books
@@ -874,7 +874,7 @@ export default function VideosMediaPage() {
 
             <div className="text-center md:text-right space-y-3">
               <Link
-                href="/books"
+                href="/books/"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 min-h-[44px] rounded-full font-black text-slate-900 bg-amber-400 hover:bg-amber-500 text-xs uppercase tracking-wider transition active:scale-98 cursor-pointer"
               >
                 <BookOpen className="w-4 h-4" /> Explore Book Catalog <ChevronRight className="w-4 h-4" />

@@ -3,7 +3,7 @@ import PrivacyPage, { metadata as privacyMetadata } from '@/app/policies/privacy
 export const metadata = {
   ...privacyMetadata,
   alternates: {
-    canonical: '/privacy-policy',
+    canonical: '/privacy-policy/',
   },
 };
 

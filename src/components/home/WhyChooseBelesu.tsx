@@ -135,7 +135,7 @@ export const WhyChooseBelesu: React.FC = () => {
         {/* Bottom CTA Button verbatim (Compact) */}
         <div className="text-center pt-5 sm:pt-6">
           <Link
-            href="/about"
+            href="/about/"
             className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-md shadow-orange-500/25 hover:shadow-orange-500/35 transition-all transform active:scale-95"
           >
             <span>About Belesu</span>

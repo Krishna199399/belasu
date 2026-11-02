@@ -149,7 +149,7 @@ export default function DigitalClient() {
               </p>
               <div className="pt-2">
                 <Link
-                  href="/books"
+                  href="/books/"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-sm cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4" />
@@ -608,7 +608,7 @@ export default function DigitalClient() {
 
           <div>
             <Link
-              href="/contact"
+              href="/contact/"
               className="min-h-[48px] inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-md active:scale-98 cursor-pointer"
             >
               <Phone className="w-4 h-4 text-slate-950" />

@@ -225,7 +225,7 @@ export const ParentFeedbackSection: React.FC = () => {
         ══════════════════════════════════════════════════════════════════ */}
         <div className="flex justify-center mt-3 sm:mt-4 mb-3 sm:mb-4">
           <Link
-            href="/reviews"
+            href="/reviews/"
             className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2 rounded-full bg-[#0B1B3D] hover:bg-[#152B5A] text-white font-bold text-xs shadow-xs transition-all duration-200 hover:shadow-md active:scale-95 group cursor-pointer"
           >
             <span>Read More Parent Reviews</span>

@@ -452,7 +452,7 @@ export default function OrderSuccessPage({
             <div className="pt-4 border-t border-slate-100 space-y-3">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
-                  href="/books"
+                  href="/books/"
                   className="flex-1 py-3 px-5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs sm:text-sm text-center shadow-md shadow-amber-500/25 transition active:scale-98"
                 >
                   Continue Shopping

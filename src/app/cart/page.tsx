@@ -36,7 +36,7 @@ export default function CartPage() {
               Explore our English translated Kannada guidebooks for Classes 1 to 6 and add them to your cart.
             </p>
             <Link
-              href="/books"
+              href="/books/"
               className="inline-flex items-center gap-2 py-3 px-6 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 transition text-xs shadow-md min-h-[44px]"
             >
               Browse Catalog
@@ -145,7 +145,7 @@ export default function CartPage() {
 
                 <div className="pt-2">
                   <Link
-                    href="/checkout"
+                    href="/checkout/"
                     className="w-full min-h-[48px] py-3.5 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 text-sm transition active:scale-98"
                   >
                     Proceed to Checkout <ArrowRight className="w-4 h-4" />
@@ -171,7 +171,7 @@ export default function CartPage() {
             </div>
           </div>
           <Link
-            href="/checkout"
+            href="/checkout/"
             className="min-h-[44px] px-5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 transition cursor-pointer active:scale-95 shrink-0"
           >
             <span>Checkout</span>

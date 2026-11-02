@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description:
     'Read Belesu’s terms and conditions covering website use, purchases, payments, digital products and the applicable terms of service.',
   alternates: {
-    canonical: '/terms-and-conditions',
+    canonical: '/terms-and-conditions/',
   },
 };
 

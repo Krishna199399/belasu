@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     'Explore Belesu video gallery for Kannada learning, classroom walkthroughs, parent-child study routines, and book demonstrations.',
   alternates: {
-    canonical: '/video-gallery',
+    canonical: '/video-gallery/',
   },
 };
 

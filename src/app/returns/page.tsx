@@ -3,7 +3,7 @@ import ReturnsPolicyPage, { metadata as returnsMetadata } from '@/app/policies/r
 export const metadata = {
   ...returnsMetadata,
   alternates: {
-    canonical: '/returns',
+    canonical: '/returns/',
   },
 };
 

@@ -108,7 +108,7 @@ export default function LibraryPage() {
               </p>
             </div>
             <Link
-              href="/digital"
+              href="/digital/"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm px-5 py-3 min-h-[44px] rounded-xl shadow-xs transition active:scale-98 cursor-pointer"
             >
               Browse More Books <ArrowRight className="w-4 h-4" />
@@ -131,7 +131,7 @@ export default function LibraryPage() {
             </p>
             <div className="pt-2">
               <Link
-                href="/digital"
+                href="/digital/"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-3 min-h-[44px] rounded-xl text-sm shadow-xs transition active:scale-98 cursor-pointer"
               >
                 <BookOpen className="w-4 h-4" /> Browse Digital Books

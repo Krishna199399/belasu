@@ -1,0 +1,60 @@
+# Belesu robots.txt
+# Search engine crawlers are allowed by default unless a rule below says otherwise.
+
+User-agent: *
+Disallow: /auth/login
+Disallow: /checkout/
+Disallow: /profile
+Disallow: /library
+Disallow: /*?series=
+Disallow: /*&series=
+
+# Search and user-request crawlers: explicitly permitted.
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# AI model-training / dataset crawlers: disallowed.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+Sitemap: https://belesu.in/sitemap.xml
+

@@ -1197,7 +1197,7 @@ function BooksContent() {
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
-                href="/contact"
+                href="/contact/"
                 className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition active:scale-95 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer"
               >
                 <span>Contact Us</span>

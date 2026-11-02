@@ -3,7 +3,7 @@ import ShippingPolicyPage, { metadata as shippingMetadata } from '@/app/policies
 export const metadata = {
   ...shippingMetadata,
   alternates: {
-    canonical: '/shipping-policy',
+    canonical: '/shipping-policy/',
   },
 };
 

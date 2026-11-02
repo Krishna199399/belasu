@@ -54,7 +54,7 @@ export const Hero: React.FC = () => {
             {/* CTAs */}
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <Link
-                href="/books"
+                href="/books/"
                 className="w-full sm:w-auto py-4 px-8 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:to-amber-800 shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 text-base transition-transform active:scale-95"
               >
                 <BookOpen className="w-5 h-5" /> Explore All Guidebooks <ArrowRight className="w-5 h-5" />
@@ -109,7 +109,7 @@ export const Hero: React.FC = () => {
                   <p className="text-xs text-slate-600">Class 1 to 4 • Line-by-line English Translation</p>
                 </div>
                 <Link
-                  href="/books/savi-kannada-class-4"
+                  href="/books/savi-kannada-class-4/"
                   className="py-2 px-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition"
                 >
                   Buy ₹280

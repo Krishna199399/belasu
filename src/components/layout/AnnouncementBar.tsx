@@ -32,7 +32,7 @@ const ALL_ANNOUNCEMENTS: AnnouncementItem[] = [
     icon: '🏛️',
     headline: 'Belesu Inaugurated New Office at Visveswariya Technological University (VTU), Belagavi',
     ctaText: 'Visit Us',
-    href: '/contact',
+    href: '/contact/',
   },
   {
     id: 'spoken-kannada-launch',
@@ -41,7 +41,7 @@ const ALL_ANNOUNCEMENTS: AnnouncementItem[] = [
     icon: '✨',
     headline: 'Launch of "A Destination to Speak Kannada" Book with MP Shri Tejasvi Surya',
     ctaText: 'Order Book',
-    href: '/books/a-destination-to-speak-kannada',
+    href: '/books/a-destination-to-speak-kannada/',
   },
   {
     id: 'digital-class-6',
@@ -50,7 +50,7 @@ const ALL_ANNOUNCEMENTS: AnnouncementItem[] = [
     icon: '💻',
     headline: 'Class 6 Kannada English-Translated Digital Guidebook is Now Live on Web Reader',
     ctaText: 'Read Online',
-    href: '/digital/kannada-class-6-guide',
+    href: '/digital/kannada-class-6-guide/',
   },
 ];
 

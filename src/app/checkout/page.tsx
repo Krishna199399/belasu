@@ -247,7 +247,7 @@ export default function CheckoutPage() {
           </Link>
 
           <Link
-            href="/cart"
+            href="/cart/"
             className="block text-sm font-semibold text-slate-500 hover:text-amber-700 transition"
           >
             ← Back to Cart
@@ -266,7 +266,7 @@ export default function CheckoutPage() {
 
         {/* Header */}
         <div className="mb-6 sm:mb-8 mt-2">
-          <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-amber-600 mb-2 transition min-h-[40px] py-1">
+          <Link href="/cart/" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-amber-600 mb-2 transition min-h-[40px] py-1">
             <ArrowLeft className="w-4 h-4" /> Back to Cart
           </Link>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2">
@@ -473,7 +473,7 @@ export default function CheckoutPage() {
                 {/* ── Privacy Policy Transparency Notice ── */}
                 <p className="text-[11px] text-slate-500 leading-relaxed pt-1 border-t border-slate-100">
                   Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our{' '}
-                  <Link href="/policies/privacy" target="_blank" className="font-semibold text-slate-800 underline hover:text-amber-700">
+                  <Link href="/privacy-policy/" target="_blank" className="font-semibold text-slate-800 underline hover:text-amber-700">
                     privacy policy
                   </Link>.
                 </p>
@@ -494,7 +494,7 @@ export default function CheckoutPage() {
                     />
                     <span>
                       I have read and agree to the website{' '}
-                      <Link href="/policies/terms" target="_blank" className="font-bold text-red-600 underline hover:text-red-700">
+                      <Link href="/terms-and-conditions/" target="_blank" className="font-bold text-red-600 underline hover:text-red-700">
                         terms and conditions
                       </Link>{' '}
                       <span className="text-red-500 font-bold">*</span>

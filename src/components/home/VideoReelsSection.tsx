@@ -188,7 +188,7 @@ export const VideoReelsSection: React.FC = () => {
         ══════════════════════════════════════════════════════════════════ */}
         <div className="flex justify-center mt-3 sm:mt-4">
           <Link
-            href="/video-gallery"
+            href="/video-gallery/"
             className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 group cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
@@ -256,7 +256,7 @@ export const VideoReelsSection: React.FC = () => {
                       <span>Request on WhatsApp</span>
                     </a>
                     <Link
-                      href="/video-gallery"
+                      href="/video-gallery/"
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition"
                       onClick={() => setActiveVideo(null)}
                     >

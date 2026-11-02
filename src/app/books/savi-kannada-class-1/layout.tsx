@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     'Kannada academic guidebook Class 1',
   ],
   alternates: {
-    canonical: '/books/savi-kannada-class-1',
+    canonical: '/books/savi-kannada-class-1/',
   },
 };
 

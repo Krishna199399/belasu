@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     'Review Belesu’s returns and refund policy for information about eligibility, conditions and how to raise a return or refund request.',
   alternates: {
-    canonical: '/returns',
+    canonical: '/returns/',
   },
 };
 

@@ -123,26 +123,26 @@ export const Navbar: React.FC = () => {
 
   // ── Book Catalog Direct Routes ──
   const saviBooks = [
-    { label: 'Class 1 · Savi Kannada', href: '/books/savi-kannada-class-1' },
-    { label: 'Class 2 · Savi Kannada', href: '/books/savi-kannada-class-2' },
-    { label: 'Class 3 · Savi Kannada', href: '/books/savi-kannada-class-3' },
-    { label: 'Class 4 · Savi Kannada', href: '/books/savi-kannada-class-4' },
+    { label: 'Class 1 · Savi Kannada', href: '/books/savi-kannada-class-1/' },
+    { label: 'Class 2 · Savi Kannada', href: '/books/savi-kannada-class-2/' },
+    { label: 'Class 3 · Savi Kannada', href: '/books/savi-kannada-class-3/' },
+    { label: 'Class 4 · Savi Kannada', href: '/books/savi-kannada-class-4/' },
   ];
 
   const kaliBooks = [
-    { label: 'Class 1 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-1' },
-    { label: 'Class 2 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-2' },
-    { label: 'Class 3 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-3' },
-    { label: 'Class 4 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-4' },
+    { label: 'Class 1 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-1/' },
+    { label: 'Class 2 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-2/' },
+    { label: 'Class 3 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-3/' },
+    { label: 'Class 4 · Kali Kannada', href: '/books/kali-kannada-english-translated-innovative-guidebook-class-4/' },
   ];
 
   const class5Books = [
-    { label: 'Class 5 · Siri Kannada', href: '/books/siri-kannada-english-translated-guidebook-class-5' },
-    { label: 'Class 5 · Tili Kannada', href: '/books/tili-kannada-english-translated-innovative-guidebook-class-5' },
+    { label: 'Class 5 · Siri Kannada', href: '/books/siri-kannada-english-translated-guidebook-class-5/' },
+    { label: 'Class 5 · Tili Kannada', href: '/books/tili-kannada-english-translated-innovative-guidebook-class-5/' },
   ];
 
   const spokenBooks = [
-    { label: 'A Destination to Speak Kannada', href: '/books/a-destination-to-speak-kannada' },
+    { label: 'A Destination to Speak Kannada', href: '/books/a-destination-to-speak-kannada/' },
   ];
 
   interface NavLinkItem {
@@ -156,18 +156,18 @@ export const Navbar: React.FC = () => {
 
   const navLinks: NavLinkItem[] = [
     { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'Team', href: '/team' },
-    { label: 'Purchase Academic Books', href: '/books', isAcademicDropdown: true },
+    { label: 'About', href: '/about/' },
+    { label: 'Team', href: '/team/' },
+    { label: 'Purchase Academic Books', href: '/books/', isAcademicDropdown: true },
     {
       label: 'Destination to Speak Kannada',
-      href: '/books/a-destination-to-speak-kannada',
+      href: '/books/a-destination-to-speak-kannada/',
       isSpokenDropdown: true,
       isHighlight: true,
     },
-    { label: 'Video Gallery', href: '/video-gallery' },
-    { label: 'Reviews', href: '/reviews' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Video Gallery', href: '/video-gallery/' },
+    { label: 'Reviews', href: '/reviews/' },
+    { label: 'Contact', href: '/contact/' },
   ];
 
   return (
@@ -187,7 +187,7 @@ export const Navbar: React.FC = () => {
           {/* Desktop Nav */}
           <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1 text-xs 2xl:text-sm font-bold tracking-normal text-slate-700 shrink-0">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href === '/video-gallery' && pathname === '/videos');
+              const isActive = pathname === link.href || pathname === link.href.slice(0, -1) || (link.href === '/video-gallery/' && (pathname === '/videos/' || pathname === '/videos'));
 
               if (link.isAcademicDropdown) {
                 return (
@@ -316,7 +316,7 @@ export const Navbar: React.FC = () => {
                                 </div>
                                 <div className="space-y-1">
                                   <Link
-                                    href="/digital/kannada-class-6-guide"
+                                    href="/digital/kannada-class-6-guide/"
                                     onClick={() => setPurchaseDropdownOpen(false)}
                                     className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group border border-transparent hover:border-indigo-100"
                                   >
@@ -330,7 +330,7 @@ export const Navbar: React.FC = () => {
                                   </Link>
 
                                   <Link
-                                    href="/digital"
+                                    href="/digital/"
                                     onClick={() => setPurchaseDropdownOpen(false)}
                                     className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group"
                                   >
@@ -352,7 +352,7 @@ export const Navbar: React.FC = () => {
                         {/* Bottom: Browse All Books Button */}
                         <div className="border-t border-stone-200 mt-4 pt-3 px-6 flex items-center justify-between text-xs">
                           <Link
-                            href="/books"
+                            href="/books/"
                             onClick={() => setPurchaseDropdownOpen(false)}
                             className="flex items-center gap-1.5 font-black text-amber-700 hover:text-amber-800 transition py-1"
                           >
@@ -403,7 +403,7 @@ export const Navbar: React.FC = () => {
                             Spoken Kannada
                           </div>
                           <Link
-                            href="/books/a-destination-to-speak-kannada"
+                            href="/books/a-destination-to-speak-kannada/"
                             onClick={() => setSpokenDropdownOpen(false)}
                             className="flex items-center justify-between p-2.5 rounded-xl text-sm font-bold text-slate-800 hover:bg-amber-50 hover:text-amber-800 transition group"
                           >
@@ -508,7 +508,7 @@ export const Navbar: React.FC = () => {
 
             {/* BUY NOW — hidden on small screens */}
             <Link
-              href="/books"
+              href="/books/"
               className="hidden md:inline-flex items-center justify-center bg-[#b5834e] hover:bg-[#996d3f] text-white text-xs font-black px-3.5 2xl:px-5 py-2 2xl:py-2.5 rounded-lg uppercase tracking-wider shadow-sm transition whitespace-nowrap shrink-0"
             >
               BUY NOW
@@ -587,7 +587,7 @@ export const Navbar: React.FC = () => {
             {/* Scrollable Nav List */}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5 touch-scroll">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href || (link.href === '/video-gallery' && pathname === '/videos');
+                const isActive = pathname === link.href || pathname === link.href.slice(0, -1) || (link.href === '/video-gallery/' && (pathname === '/videos/' || pathname === '/videos'));
 
                 if (link.isAcademicDropdown) {
                   return (
@@ -700,7 +700,7 @@ export const Navbar: React.FC = () => {
                               </div>
                               <div className="space-y-1 pl-1">
                                 <Link
-                                  href="/digital/kannada-class-6-guide"
+                                  href="/digital/kannada-class-6-guide/"
                                   onClick={() => setMobileMenuOpen(false)}
                                   className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold text-indigo-900 bg-indigo-50/70 hover:bg-indigo-100 transition min-h-[40px]"
                                 >
@@ -708,7 +708,7 @@ export const Navbar: React.FC = () => {
                                   <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-black">Available</span>
                                 </Link>
                                 <Link
-                                  href="/digital"
+                                  href="/digital/"
                                   onClick={() => setMobileMenuOpen(false)}
                                   className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-bold text-indigo-700 hover:bg-indigo-50 transition min-h-[40px]"
                                 >
@@ -722,7 +722,7 @@ export const Navbar: React.FC = () => {
                           {/* All Books Link */}
                           <div className="pt-2 border-t border-stone-100">
                             <Link
-                              href="/books"
+                              href="/books/"
                               onClick={() => setMobileMenuOpen(false)}
                               className="flex items-center justify-center py-2.5 text-xs font-black text-amber-700 hover:bg-amber-50 rounded-lg transition"
                             >
@@ -763,7 +763,7 @@ export const Navbar: React.FC = () => {
                             Spoken Kannada
                           </div>
                           <Link
-                            href="/books/a-destination-to-speak-kannada"
+                            href="/books/a-destination-to-speak-kannada/"
                             onClick={() => setMobileMenuOpen(false)}
                             className="flex items-center justify-between p-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-800 hover:bg-amber-50 hover:text-amber-800 transition group"
                           >
@@ -872,7 +872,7 @@ export const Navbar: React.FC = () => {
             {/* Drawer Footer with BUY NOW CTA */}
             <div className="p-4 border-t border-stone-200 bg-stone-50/90 pb-safe">
               <Link
-                href="/books"
+                href="/books/"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full flex items-center justify-center py-3.5 px-4 bg-[#b5834e] hover:bg-[#996d3f] active:scale-98 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-md transition min-h-[48px]"
               >

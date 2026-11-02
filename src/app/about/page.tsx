@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     'Kannada guidebooks for school students',
   ],
   alternates: {
-    canonical: '/about',
+    canonical: '/about/',
   },
 };
 
@@ -299,7 +299,7 @@ export default function AboutPage() {
           {/* Primary & Secondary CTAs */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/books"
+              href="/books/"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition active:scale-98 uppercase tracking-wider cursor-pointer"
             >
               <BookOpen className="w-4 h-4" />
@@ -308,7 +308,7 @@ export default function AboutPage() {
             </Link>
 
             <Link
-              href="/contact"
+              href="/contact/"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-xl bg-white hover:bg-stone-100 text-slate-900 border border-stone-300 font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 uppercase tracking-wider cursor-pointer"
             >
               <PhoneCall className="w-3.5 h-3.5 text-amber-600" />

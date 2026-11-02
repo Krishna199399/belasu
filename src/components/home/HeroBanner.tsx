@@ -117,10 +117,10 @@ export const HeroBanner: React.FC<HeroBannerProps> = () => {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 w-full sm:w-auto">
-              <Link href="/books" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm px-7 py-3.5 rounded-xl transition-all shadow-lg shadow-amber-400/30 active:scale-95 tracking-wide min-h-[48px]">
+              <Link href="/books/" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm px-7 py-3.5 rounded-xl transition-all shadow-lg shadow-amber-400/30 active:scale-95 tracking-wide min-h-[48px]">
                 Explore Kannada Guidebooks <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link href="/books" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-amber-50 text-slate-900 border border-slate-300 hover:border-amber-400 font-bold text-sm px-6 py-3.5 rounded-xl transition-all shadow-sm active:scale-95 min-h-[48px]">
+              <Link href="/books/" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-amber-50 text-slate-900 border border-slate-300 hover:border-amber-400 font-bold text-sm px-6 py-3.5 rounded-xl transition-all shadow-sm active:scale-95 min-h-[48px]">
                 View All Books
               </Link>
             </div>

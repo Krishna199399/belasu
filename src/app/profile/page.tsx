@@ -202,7 +202,7 @@ function ProfileContent() {
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
                     <p className="text-xs sm:text-sm text-gray-600 mb-6">Start shopping to see your order history here.</p>
                     <Link
-                      href="/books"
+                      href="/books/"
                       className="min-h-[44px] inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-xs sm:text-sm font-bold"
                     >
                       Browse Books

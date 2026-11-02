@@ -29,6 +29,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://belesu.in'),
+  alternates: {
+    canonical: '/',
+  },
   title: 'Kannada Guidebooks for Academic Learning | Belesu',
   description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
   keywords: [

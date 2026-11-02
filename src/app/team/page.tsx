@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description:
     'Meet Roopa Sanjiv P, Founder and Director of Belesu, and learn about the research and purpose behind its English-translated Kannada guidebooks.',
   alternates: {
-    canonical: '/team',
+    canonical: '/team/',
   },
 };
 

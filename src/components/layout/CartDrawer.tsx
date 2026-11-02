@@ -219,14 +219,14 @@ export const CartDrawer: React.FC = () => {
 
               <div className="space-y-2">
                 <Link
-                  href="/checkout"
+                  href="/checkout/"
                   onClick={closeCart}
                   className="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition text-sm min-h-[48px]"
                 >
                   Proceed to Checkout <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
-                  href="/cart"
+                  href="/cart/"
                   onClick={closeCart}
                   className="block text-center py-2 text-xs font-semibold text-slate-600 hover:text-amber-600 transition min-h-[40px] flex items-center justify-center"
                 >

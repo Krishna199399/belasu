@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description:
     'Learn about Belesu’s shipping process, delivery timelines, shipping charges and order delivery information for physical guidebooks.',
   alternates: {
-    canonical: '/shipping-policy',
+    canonical: '/shipping-policy/',
   },
 };
 

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'Basic Kannada Words',
   ],
   alternates: {
-    canonical: '/books/a-destination-to-speak-kannada',
+    canonical: '/books/a-destination-to-speak-kannada/',
   },
 };
 

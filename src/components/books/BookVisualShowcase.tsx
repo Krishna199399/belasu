@@ -110,7 +110,7 @@ export const BookVisualShowcase: React.FC<BookVisualShowcaseProps> = ({
       {showBreadcrumb && (
         <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold mb-2">
           <Link
-            href="/books"
+            href="/books/"
             className="inline-flex items-center gap-1 text-slate-700 hover:text-amber-600 transition"
           >
             <ArrowLeft className="w-3.5 h-3.5" />

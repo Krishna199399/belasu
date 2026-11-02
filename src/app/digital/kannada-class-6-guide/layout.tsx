@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     'Karnataka State Board Class 6 Kannada',
   ],
   alternates: {
-    canonical: '/digital/kannada-class-6-guide',
+    canonical: '/digital/kannada-class-6-guide/',
   },
 };
 
