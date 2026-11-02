@@ -322,9 +322,8 @@ export function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNo
 /**
  * Resolves the admin notification recipient emails.
  * Supports comma-separated strings in ADMIN_NOTIFICATION_EMAIL.
- * Guarantees that belesuckelp@gmail.com (official client) and
- * orderforbelesu@gmail.com (store operations) are included
- * so alerts reach all required parties reliably.
+ * Guarantees that orderforbelesu@gmail.com (store operations) is included
+ * so alerts reach the fulfillment team reliably.
  */
 export function getAdminRecipients(): string[] {
   const envVal = process.env.ADMIN_NOTIFICATION_EMAIL;
@@ -339,19 +338,11 @@ export function getAdminRecipients(): string[] {
     });
   }
 
-  // Always ensure official client and store operations are included
-  const defaultRecipients = ['belesuckelp@gmail.com', 'orderforbelesu@gmail.com'];
+  // Always ensure store operations email is included
+  const defaultRecipients = ['orderforbelesu@gmail.com'];
   for (const def of defaultRecipients) {
     if (!emails.includes(def)) {
       emails.push(def);
-    }
-  }
-
-  // Include SMTP_USER if configured
-  if (process.env.SMTP_USER) {
-    const smtpUser = process.env.SMTP_USER.trim().toLowerCase();
-    if (smtpUser && !emails.includes(smtpUser)) {
-      emails.push(smtpUser);
     }
   }
 
