@@ -13,3 +13,4 @@ export const metadata: Metadata = {
 export default function VideoGalleryLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
+

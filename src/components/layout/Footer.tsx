@@ -789,25 +789,66 @@ export const Footer: React.FC = () => {
           </p>
 
           {/* Payment Method Badges */}
-          <div className="flex items-center gap-1.5 flex-wrap justify-center">
-            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
-              UPI
-            </span>
-            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
-              RuPay
-            </span>
-            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
-              Visa
-            </span>
-            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
-              MasterCard
-            </span>
-            <span className="px-2 py-0.5 bg-white text-slate-700 rounded text-[10px] font-bold border border-stone-200">
-              NetBanking
-            </span>
-            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded text-[10px] font-semibold border border-emerald-200 flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-emerald-600" /> Razorpay Secured
-            </span>
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-center md:justify-end">
+            {/* UPI */}
+            <div
+              className="h-8 sm:h-9 px-2.5 sm:px-3 bg-white rounded-md border border-stone-200 flex items-center justify-center shadow-2xs hover:border-amber-300 transition"
+              title="UPI"
+            >
+              <img
+                src="/payment-logo/upi.jpg"
+                alt="UPI"
+                className="h-4 sm:h-5 w-auto object-contain"
+              />
+            </div>
+
+            {/* RuPay */}
+            <div
+              className="h-8 sm:h-9 px-2.5 sm:px-3 bg-white rounded-md border border-stone-200 flex items-center justify-center shadow-2xs hover:border-amber-300 transition"
+              title="RuPay"
+            >
+              <img
+                src="/payment-logo/rupay.png"
+                alt="RuPay"
+                className="h-5 sm:h-6 w-auto object-contain"
+              />
+            </div>
+
+            {/* Visa */}
+            <div
+              className="h-8 sm:h-9 px-2.5 sm:px-3 bg-white rounded-md border border-stone-200 flex items-center justify-center shadow-2xs hover:border-amber-300 transition"
+              title="Visa"
+            >
+              <img
+                src="/payment-logo/visa.png"
+                alt="Visa"
+                className="h-5 sm:h-6 w-auto object-contain"
+              />
+            </div>
+
+            {/* MasterCard */}
+            <div
+              className="h-8 sm:h-9 px-2.5 sm:px-3 bg-white rounded-md border border-stone-200 flex items-center justify-center shadow-2xs hover:border-amber-300 transition"
+              title="MasterCard"
+            >
+              <img
+                src="/payment-logo/mastercard.png"
+                alt="MasterCard"
+                className="h-5 sm:h-6 w-auto object-contain"
+              />
+            </div>
+
+            {/* Maestro */}
+            <div
+              className="h-8 sm:h-9 px-2.5 sm:px-3 bg-white rounded-md border border-stone-200 flex items-center justify-center shadow-2xs hover:border-amber-300 transition"
+              title="Maestro"
+            >
+              <img
+                src="/payment-logo/maestro.png"
+                alt="Maestro"
+                className="h-5 sm:h-6 w-auto object-contain"
+              />
+            </div>
           </div>
         </div>
 
