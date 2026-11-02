@@ -241,27 +241,39 @@ export const QuickLookBookSection: React.FC = () => {
         <div className="mb-5">
           <div className="flex items-center justify-start lg:justify-center gap-3 overflow-x-auto overflow-y-hidden pb-3 pt-1 px-1 scrollbar-thin scrollbar-thumb-stone-300 overscroll-x-auto overscroll-y-auto">
             {galleryItems.map((item) => (
-              <div
-                key={item.id}
-                className="shrink-0 flex flex-col items-center group transition-transform duration-200"
-              >
-                {/* Book / Page Stage (Compact ~210px) */}
-                <div className="relative h-48 sm:h-52 lg:h-56 aspect-[3/4] bg-white rounded-lg overflow-hidden border border-stone-200 shadow-sm p-1 flex items-center justify-center bg-stone-50/40">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="max-h-full max-w-full object-contain pointer-events-none select-none"
-                    draggable={false}
-                  />
-                </div>
+              <React.Fragment key={item.id}>
+                {item.id === 'belesu-cover' && (
+                  <div
+                    aria-label="Translates to Belesu Guidebook"
+                    className="shrink-0 flex items-center justify-center px-1 sm:px-2 self-center -mt-5"
+                  >
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 flex items-center justify-center shadow-md shadow-amber-500/20 border border-amber-300">
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
+                    </div>
+                  </div>
+                )}
 
-                {/* Compact Tag below each card */}
-                <span
-                  className={`mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded border text-center whitespace-nowrap shadow-2xs ${item.badgeColor}`}
+                <div
+                  className="shrink-0 flex flex-col items-center group transition-transform duration-200"
                 >
-                  {item.tag}
-                </span>
-              </div>
+                  {/* Book / Page Stage (Compact ~210px) */}
+                  <div className="relative h-48 sm:h-52 lg:h-56 aspect-[3/4] bg-white rounded-lg overflow-hidden border border-stone-200 shadow-sm p-1 flex items-center justify-center bg-stone-50/40">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="max-h-full max-w-full object-contain pointer-events-none select-none"
+                      draggable={false}
+                    />
+                  </div>
+
+                  {/* Compact Tag below each card */}
+                  <span
+                    className={`mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded border text-center whitespace-nowrap shadow-2xs ${item.badgeColor}`}
+                  >
+                    {item.tag}
+                  </span>
+                </div>
+              </React.Fragment>
             ))}
           </div>
         </div>
