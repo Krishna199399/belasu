@@ -52,7 +52,7 @@ const DECK_SERIES: SeriesDeckConfig[] = [
     grades: [1, 2, 3, 4],
     defaultGrade: 4,
     description: 'English-translated Kannada guidebooks for primary school students.',
-    ctaText: 'Explore Books',
+    ctaText: 'Buy Book',
     theme: {
       accent: 'text-amber-600',
       border: 'border-amber-200/90',
@@ -74,7 +74,7 @@ const DECK_SERIES: SeriesDeckConfig[] = [
     grades: [1, 2, 3, 4],
     defaultGrade: 1,
     description: 'Kannada guidebooks with English translations for primary school learning.',
-    ctaText: 'Explore Books',
+    ctaText: 'Buy Book',
     theme: {
       accent: 'text-indigo-600',
       border: 'border-indigo-200/90',
@@ -96,7 +96,7 @@ const DECK_SERIES: SeriesDeckConfig[] = [
     grades: [5],
     defaultGrade: 5,
     description: 'Explore the Class 5 Siri Kannada guidebook.',
-    ctaText: 'View Book',
+    ctaText: 'Buy Book',
     theme: {
       accent: 'text-rose-600',
       border: 'border-rose-200/90',
@@ -118,7 +118,7 @@ const DECK_SERIES: SeriesDeckConfig[] = [
     grades: [5],
     defaultGrade: 5,
     description: 'Explore the Class 5 Tili Kannada guidebook.',
-    ctaText: 'View Book',
+    ctaText: 'Buy Book',
     theme: {
       accent: 'text-teal-600',
       border: 'border-teal-200/90',

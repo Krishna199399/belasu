@@ -273,7 +273,7 @@ export const QuickLookBookSection: React.FC = () => {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-6 py-3 sm:py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm tracking-wide rounded-xl shadow-xs transition transform active:scale-95 uppercase min-h-[44px]"
           >
             <BookOpen className="w-4 h-4" />
-            <span>Explore Savi Kannada</span>
+            <span>Buy Savi Kannada</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
           <Link
@@ -281,7 +281,7 @@ export const QuickLookBookSection: React.FC = () => {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-6 py-3 sm:py-2.5 bg-white hover:bg-stone-100 text-slate-900 border border-stone-300 font-bold text-xs sm:text-sm tracking-wide rounded-xl shadow-2xs transition transform active:scale-95 uppercase min-h-[44px]"
           >
             <BookOpen className="w-4 h-4 text-amber-600" />
-            <span>Explore Siri Kannada</span>
+            <span>Buy Siri Kannada</span>
             <ArrowRight className="w-3.5 h-3.5 text-amber-600" />
           </Link>
         </div>
