@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { DigitalBook } from '@/types';
-import { PageWatermark } from './PageWatermark';
 import { ReaderSidebar } from './ReaderSidebar';
 import { ReaderToolbar } from './ReaderToolbar';
 import { Lock, ShieldAlert, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -282,7 +281,6 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                 className={`w-full max-w-[680px] min-h-[550px] sm:min-h-[800px] rounded-2xl shadow-2xl relative overflow-hidden flex flex-col ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
                 onDragStart={(e) => e.preventDefault()}
               >
-                <PageWatermark userPhone={userPhone} />
                 <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 md:p-16 text-center gap-4 sm:gap-6">
                   <div className="text-5xl sm:text-7xl">📖</div>
                   <div>
@@ -312,7 +310,6 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                 className={`relative rounded-2xl shadow-2xl overflow-hidden w-full max-w-[680px] ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
                 onDragStart={(e) => e.preventDefault()}
               >
-                <PageWatermark userPhone={userPhone} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={pageImageUrl}

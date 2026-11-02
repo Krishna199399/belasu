@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BOOKS_DATA, PARENT_REVIEWS } from '@/data/mockData';
+import { SAVI_4_DIGITAL_BOOK } from '@/data/digitalBooksData';
 import { useCart } from '@/context/CartContext';
 import { BookPreviewModal } from '@/components/ui/BookPreviewModal';
 import { BookVisualShowcase } from '@/components/books/BookVisualShowcase';
@@ -18,6 +19,8 @@ import {
   ArrowRight,
   Star,
   CheckCircle,
+  Laptop,
+  Lock,
 } from 'lucide-react';
 import Link from 'next/link';
 import { BookProduct } from '@/types';
@@ -27,9 +30,11 @@ export default function SaviClass4Client() {
   const { addToCart, openCart } = useCart();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [selectedFormat, setSelectedFormat] = useState<'physical' | 'digital'>('physical');
 
   // Class 4 book data
   const [book, setBook] = useState<BookProduct>(BOOKS_DATA[3]);
+  const digitalBook = SAVI_4_DIGITAL_BOOK;
 
   useEffect(() => {
     fetch('/api/books')
@@ -186,35 +191,105 @@ export default function SaviClass4Client() {
                 </h1>
               </div>
 
+              {/* ── Dual-Format Selector: Paperback vs Digital Web Edition ── */}
+              <div className="space-y-2 pt-1">
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">
+                  Select Format:
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedFormat('physical')}
+                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer relative ${
+                      selectedFormat === 'physical'
+                        ? 'border-amber-500 bg-amber-50/70 ring-2 ring-amber-400/40 shadow-xs'
+                        : 'border-stone-200 bg-white hover:border-amber-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                        <span>📦</span> Printed Book
+                      </span>
+                      <span className="text-base font-black text-slate-900">₹{book.price}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-snug">
+                      Official Paperback • Doorstep delivery across Karnataka
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedFormat('digital')}
+                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer relative ${
+                      selectedFormat === 'digital'
+                        ? 'border-indigo-500 bg-indigo-50/70 ring-2 ring-indigo-400/40 shadow-xs'
+                        : 'border-stone-200 bg-white hover:border-indigo-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                        <Laptop className="w-4 h-4 text-indigo-600" /> Digital Edition
+                        <span className="text-[9px] bg-indigo-600 text-white font-black px-1.5 py-0.5 rounded-full uppercase leading-none">
+                          New
+                        </span>
+                      </span>
+                      <span className="text-base font-black text-slate-900">₹{digitalBook.price}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-snug">
+                      Instant E-Reader on Mobile & PC • Price confirmation pending
+                    </p>
+                  </button>
+                </div>
+              </div>
+
               {/* Price, Availability, Shipping */}
-              <div className="flex flex-wrap items-baseline gap-3 sm:gap-4 py-3 border-y border-stone-200">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs font-bold uppercase text-slate-500">Price:</span>
-                  <span className="text-3xl sm:text-4xl font-black text-slate-900">
-                    ₹280
+              {selectedFormat === 'physical' ? (
+                <div className="flex flex-wrap items-baseline gap-3 sm:gap-4 py-3 border-y border-stone-200">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs font-bold uppercase text-slate-500">Price:</span>
+                    <span className="text-3xl sm:text-4xl font-black text-slate-900">
+                      ₹{book.price}
+                    </span>
+                  </div>
+
+                  {book.stockQuantity <= 0 || !book.inStock ? (
+                    <span className="text-xs font-bold text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
+                      ✕ Out of Stock
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+                      ✓ In Stock
+                    </span>
+                  )}
+
+                  {book.stockQuantity > 0 && book.inStock && (
+                    <span className="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+                      🚚 Fast Delivery (3-5 Days)
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-baseline gap-3 sm:gap-4 py-3 border-y border-stone-200 bg-indigo-50/40 px-3.5 rounded-xl border-dashed">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs font-bold uppercase text-slate-500">Digital Price:</span>
+                    <span className="text-3xl sm:text-4xl font-black text-indigo-950">
+                      ₹{digitalBook.price}
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-indigo-700 bg-indigo-100/70 border border-indigo-200 px-3 py-1 rounded-full">
+                    ⚡ Instant Digital Access
+                  </span>
+                  <span className="text-xs font-medium text-slate-500">
+                    (Official Price Confirmation in Progress)
                   </span>
                 </div>
-
-                {book.stockQuantity <= 0 || !book.inStock ? (
-                  <span className="text-xs font-bold text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
-                    ✕ Out of Stock
-                  </span>
-                ) : (
-                  <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-                    ✓ In Stock
-                  </span>
-                )}
-
-                {book.stockQuantity > 0 && book.inStock && (
-                  <span className="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                    🚚 Fast Delivery (3-5 Days)
-                  </span>
-                )}
-              </div>
+              )}
 
               {/* Exact Description */}
               <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                An English-translated Kannada guidebook for Class 4 students.
+                {selectedFormat === 'physical'
+                  ? 'An English-translated Kannada guidebook for Class 4 students.'
+                  : digitalBook.description}
               </p>
 
               {/* Key Benefits */}
@@ -234,33 +309,57 @@ export default function SaviClass4Client() {
 
               {/* Primary & Secondary CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                {book.stockQuantity <= 0 || !book.inStock ? (
-                  <button
-                    type="button"
-                    disabled
-                    className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-bold text-slate-400 bg-slate-200 border border-slate-300 cursor-not-allowed flex items-center justify-center gap-2 text-sm uppercase tracking-wider shadow-none"
-                  >
-                    <span>Temporarily Out of Stock</span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-black text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>Add to Cart | ₹{book.price}</span>
-                  </button>
-                )}
+                {selectedFormat === 'physical' ? (
+                  <>
+                    {book.stockQuantity <= 0 || !book.inStock ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-bold text-slate-400 bg-slate-200 border border-slate-300 cursor-not-allowed flex items-center justify-center gap-2 text-sm uppercase tracking-wider shadow-none"
+                      >
+                        <span>Temporarily Out of Stock</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleAddToCart}
+                        className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-black text-slate-950 bg-amber-500 hover:bg-amber-600 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
+                      >
+                        <ShoppingBag className="w-4 h-4" />
+                        <span>Add Printed Book to Cart | ₹{book.price}</span>
+                      </button>
+                    )}
 
-                <button
-                  type="button"
-                  onClick={() => setIsPreviewOpen(true)}
-                  className="min-h-[48px] py-4 px-6 rounded-xl font-bold text-slate-900 bg-white hover:bg-stone-100 border border-stone-300 shadow-2xs hover:shadow-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm cursor-pointer"
-                >
-                  <BookOpen className="w-4 h-4 text-amber-600" />
-                  <span>Preview Inside</span>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsPreviewOpen(true)}
+                      className="min-h-[48px] py-4 px-6 rounded-xl font-bold text-slate-900 bg-white hover:bg-stone-100 border border-stone-300 shadow-2xs hover:shadow-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm cursor-pointer"
+                    >
+                      <BookOpen className="w-4 h-4 text-amber-600" />
+                      <span>Preview Inside</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      disabled
+                      title="Price confirmation pending with publisher. Full instant checkout will activate once confirmed."
+                      className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 flex items-center justify-center gap-2 text-xs sm:text-sm uppercase tracking-wider cursor-not-allowed opacity-90"
+                    >
+                      <Lock className="w-4 h-4 text-indigo-600" />
+                      <span>Digital Edition Launching Soon — Price Pending</span>
+                    </button>
+
+                    <Link
+                      href={`/reader/${digitalBook.slug}?preview=true`}
+                      className="min-h-[48px] py-4 px-6 rounded-xl font-black text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm cursor-pointer whitespace-nowrap"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      <span>Read Free Pages in E-Reader →</span>
+                    </Link>
+                  </>
+                )}
               </div>
 
               {/* Delivery & Curriculum Metadata */}

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { PARENT_REVIEWS } from '@/data/mockData';
-import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
+import { HIDE_DIGITAL_CLASS_6, CLASS_6_DIGITAL_BOOK, SAVI_4_DIGITAL_BOOK, SAVI_3_DIGITAL_BOOK } from '@/data/digitalBooksData';
 import {
   BookOpen,
   Lock,
@@ -162,15 +162,18 @@ export default function DigitalClient() {
         </section>
       ) : (
         <section className="py-12 sm:py-16 bg-white border-b border-stone-200">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             
             <div className="max-w-3xl mx-auto text-center space-y-2">
               <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-                Available Digital Guidebook
+                Available Digital Guidebooks
               </h2>
+              <p className="text-sm text-slate-600">
+                Read complete English-translated guidebooks directly in your browser with lifetime digital access.
+              </p>
             </div>
 
-            {/* Spotlight Book Card */}
+            {/* Spotlight Book Card: Class 6 */}
             <div className="max-w-4xl mx-auto rounded-3xl bg-stone-50/70 border border-stone-200 shadow-md overflow-hidden hover:border-amber-400 transition-all duration-300">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 sm:p-10 items-center">
                 
@@ -199,6 +202,11 @@ export default function DigitalClient() {
                 <div className="md:col-span-7 space-y-5">
                   
                   <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Full Digital Access Available</span>
+                    </div>
+
                     <h3 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
                       Kannada Class 6 Digital Guidebook
                     </h3>
@@ -239,7 +247,7 @@ export default function DigitalClient() {
                       className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-md shadow-amber-500/20 cursor-pointer active:scale-98"
                     >
                       <BookOpen className="w-4 h-4 text-slate-950" />
-                      <span>View Class 6 Guidebook</span>
+                      <span>View & Buy Digital Guidebook</span>
                     </Link>
 
                     <Link
@@ -251,6 +259,136 @@ export default function DigitalClient() {
                     </Link>
                   </div>
 
+                </div>
+
+              </div>
+            </div>
+
+            {/* Dual Editions Grid: Savi Kannada Class 4 & Class 3 */}
+            <div className="max-w-4xl mx-auto space-y-6 pt-4">
+              <div className="text-center sm:text-left space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Dual Format Available · Print & Digital Editions</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900">
+                  Savi Kannada Primary Digital Editions
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600">
+                  Preview free pages directly in our browser reader now. Digital checkout launching shortly alongside hard copies.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {/* Savi Class 4 Digital Card */}
+                <div className="bg-stone-50/70 border border-stone-200 rounded-3xl p-6 flex flex-col justify-between hover:border-amber-400 transition-all duration-300 shadow-sm space-y-6">
+                  <div className="flex gap-4 items-start">
+                    <div className="w-24 sm:w-28 shrink-0 aspect-[3/4] bg-white rounded-xl border border-stone-200 p-1 overflow-hidden shadow-xs">
+                      <img
+                        src="/covers/savi-4.png"
+                        alt="Savi Kannada Class 4"
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div className="space-y-2 min-w-0 flex-1">
+                      <div className="flex flex-wrap gap-1.5 items-center">
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-orange-100 text-orange-800 px-2 py-0.5 rounded-md">
+                          Class 4
+                        </span>
+                        <span className="text-[10px] font-bold bg-stone-200 text-slate-700 px-2 py-0.5 rounded-md">
+                          Savi Series
+                        </span>
+                      </div>
+                      <h4 className="font-serif font-black text-base text-slate-900 leading-snug line-clamp-2">
+                        Savi Kannada Class 4 Digital Edition
+                      </h4>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-lg font-black text-slate-900">₹199</span>
+                        <span className="text-xs text-slate-400 line-through">₹280</span>
+                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                          Price Pending
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Savi Kannada Class 4 with line-by-line English translations, syllable pronunciation guides, and solved exercise questions.
+                  </p>
+
+                  <div className="space-y-2.5 pt-2 border-t border-stone-200">
+                    <Link
+                      href="/reader/savi-kannada-class-4-digital?preview=true"
+                      className="w-full min-h-[42px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-xs cursor-pointer"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>Read Free Pages in E-Reader</span>
+                    </Link>
+
+                    <Link
+                      href="/books/savi-kannada-class-4"
+                      className="w-full min-h-[40px] inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 text-slate-600" />
+                      <span>Order Printed Book (₹280)</span>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Savi Class 3 Digital Card */}
+                <div className="bg-stone-50/70 border border-stone-200 rounded-3xl p-6 flex flex-col justify-between hover:border-amber-400 transition-all duration-300 shadow-sm space-y-6">
+                  <div className="flex gap-4 items-start">
+                    <div className="w-24 sm:w-28 shrink-0 aspect-[3/4] bg-white rounded-xl border border-stone-200 p-1 overflow-hidden shadow-xs">
+                      <img
+                        src="/covers/savi-3.png"
+                        alt="Savi Kannada Class 3"
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div className="space-y-2 min-w-0 flex-1">
+                      <div className="flex flex-wrap gap-1.5 items-center">
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-orange-100 text-orange-800 px-2 py-0.5 rounded-md">
+                          Class 3
+                        </span>
+                        <span className="text-[10px] font-bold bg-stone-200 text-slate-700 px-2 py-0.5 rounded-md">
+                          Savi Series
+                        </span>
+                      </div>
+                      <h4 className="font-serif font-black text-base text-slate-900 leading-snug line-clamp-2">
+                        Savi Kannada Class 3 Digital Edition
+                      </h4>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-lg font-black text-slate-900">₹199</span>
+                        <span className="text-xs text-slate-400 line-through">₹280</span>
+                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                          Price Pending
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Savi Kannada Class 3 with parallel English notes, poem meanings, and step-by-step solved textbook exercises.
+                  </p>
+
+                  <div className="space-y-2.5 pt-2 border-t border-stone-200">
+                    <Link
+                      href="/reader/savi-kannada-class-3-digital?preview=true"
+                      className="w-full min-h-[42px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-xs cursor-pointer"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>Read Free Pages in E-Reader</span>
+                    </Link>
+
+                    <Link
+                      href="/books/savi-kannada-class-3"
+                      className="w-full min-h-[40px] inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 text-slate-600" />
+                      <span>Order Printed Book (₹280)</span>
+                    </Link>
+                  </div>
                 </div>
 
               </div>

@@ -110,6 +110,8 @@ export interface DigitalBook {
   tableOfContents: DigitalBookChapter[];
   badge?: string;
   isFreePreviewPages: number; // how many pages are free (e.g. 5)
+  isPriceConfirmed?: boolean;
+  isComingSoon?: boolean;
   rating: number;
   reviewCount: number;
   author: string;

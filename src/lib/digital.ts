@@ -108,8 +108,8 @@ export async function getLiveDigitalBookBySlug(slug: string): Promise<DigitalBoo
       return getDigitalBookBySlug(slug) || null;
     }
 
-    // Database responded normally and found no active book with this slug
-    return null;
+    // If not yet seeded in DB, fallback to static digitalBooksData catalog
+    return getDigitalBookBySlug(slug) || null;
   } catch (err: any) {
     console.error(`Fatal error in getLiveDigitalBookBySlug for "${slug}":`, err.message);
     return getDigitalBookBySlug(slug) || null;

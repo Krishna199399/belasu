@@ -1,10 +1,10 @@
 import { DigitalBook } from '@/types';
 
 /**
- * Temporary hold flag while Class 6 PDF is being prepared (~1 week).
- * Set to FALSE when PDF is uploaded to restore immediately.
+ * Digital catalog activation flag.
+ * Set to false now that Class 6 PDF is ready to be loaded.
  */
-export const HIDE_DIGITAL_CLASS_6 = true;
+export const HIDE_DIGITAL_CLASS_6 = false;
 
 export const CLASS_6_DIGITAL_BOOK: DigitalBook = {
   id: 'dbook-6-kn-01',
@@ -19,6 +19,8 @@ export const CLASS_6_DIGITAL_BOOK: DigitalBook = {
   coverImage: '/digital/class-6-siri/cover.jpeg',
   totalPages: 180,
   isFreePreviewPages: 5,
+  isPriceConfirmed: true,
+  isComingSoon: false,
   rating: 4.8,
   reviewCount: 142,
   author: 'Belesu Academic Team',
@@ -34,7 +36,73 @@ export const CLASS_6_DIGITAL_BOOK: DigitalBook = {
   tableOfContents: [],
 };
 
-export const DIGITAL_BOOKS_DATA: DigitalBook[] = [CLASS_6_DIGITAL_BOOK];
+export const SAVI_4_DIGITAL_BOOK: DigitalBook = {
+  id: 'dbook-4-savi-01',
+  slug: 'savi-kannada-class-4-digital',
+  title: 'Savi Kannada Class 4 — Digital Guidebook (Web Reader Edition)',
+  subject: 'Kannada',
+  gradeClass: 4,
+  sku: 'SD4-SAVI',
+  price: 199,
+  originalPrice: 280,
+  badge: 'Print & Digital',
+  coverImage: '/covers/savi-4.png',
+  totalPages: 180,
+  isFreePreviewPages: 5,
+  isPriceConfirmed: false, // Visible with placeholder; buy button staged pending client confirmation
+  isComingSoon: true,
+  rating: 4.9,
+  reviewCount: 156,
+  author: 'Belesu Academic Team',
+  language: 'Kannada with English Translations',
+  description:
+    'Savi Kannada Class 4 digital edition with line-by-line English translations, syllable pronunciation guides, and solved textbook exercises. Read instantly on Belesu Web Reader.',
+  features: [
+    'Line-by-line English translations for all lessons',
+    'Poem breakdowns with word-by-word meanings',
+    'Full solved textbook exercise question bank',
+    'Instant access on Mobile, Tablet, and Desktop',
+    'Read anytime in Belesu Web Reader',
+  ],
+  tableOfContents: [],
+};
+
+export const SAVI_3_DIGITAL_BOOK: DigitalBook = {
+  id: 'dbook-3-savi-01',
+  slug: 'savi-kannada-class-3-digital',
+  title: 'Savi Kannada Class 3 — Digital Guidebook (Web Reader Edition)',
+  subject: 'Kannada',
+  gradeClass: 3,
+  sku: 'SD3-SAVI',
+  price: 199,
+  originalPrice: 280,
+  badge: 'Print & Digital',
+  coverImage: '/covers/savi-3.png',
+  totalPages: 160,
+  isFreePreviewPages: 5,
+  isPriceConfirmed: false, // Visible with placeholder; buy button staged pending client confirmation
+  isComingSoon: true,
+  rating: 4.9,
+  reviewCount: 138,
+  author: 'Belesu Academic Team',
+  language: 'Kannada with English Translations',
+  description:
+    'Savi Kannada Class 3 digital edition with parallel English translations, poem explanations, and solved textbook questions. Available for instant online reading.',
+  features: [
+    'Complete syllabus and unit translations in English',
+    'Poetry translation with English notes',
+    'Solved exercise questions and answers',
+    'Instant access across all devices',
+    'Read anytime in Belesu Web Reader',
+  ],
+  tableOfContents: [],
+};
+
+export const DIGITAL_BOOKS_DATA: DigitalBook[] = [
+  CLASS_6_DIGITAL_BOOK,
+  SAVI_4_DIGITAL_BOOK,
+  SAVI_3_DIGITAL_BOOK,
+];
 
 // Preserved for upcoming launch as new books are completed
 export const UPCOMING_DIGITAL_BOOKS_DATA: DigitalBook[] = [
@@ -206,7 +274,10 @@ export const UPCOMING_DIGITAL_BOOKS_DATA: DigitalBook[] = [
 ];
 
 export function getDigitalBookBySlug(slug: string): DigitalBook | undefined {
-  return DIGITAL_BOOKS_DATA.find((b) => b.slug === slug) || UPCOMING_DIGITAL_BOOKS_DATA.find((b) => b.slug === slug);
+  return (
+    DIGITAL_BOOKS_DATA.find((b) => b.slug === slug || b.id === slug || `${b.slug}-digital` === slug || b.slug.replace(/-digital$/, '') === slug) ||
+    UPCOMING_DIGITAL_BOOKS_DATA.find((b) => b.slug === slug || b.id === slug)
+  );
 }
 
 export function getDigitalBooksByGrade(grade: number): DigitalBook[] {
@@ -217,6 +288,6 @@ export function getDigitalBooksBySubject(subject: string): DigitalBook[] {
   return DIGITAL_BOOKS_DATA.filter((b) => b.subject === subject);
 }
 
-export const DIGITAL_GRADES = [6] as const;
+export const DIGITAL_GRADES = [3, 4, 6] as const;
 export const DIGITAL_SUBJECTS = ['Kannada'] as const;
 export const digitalBooks = DIGITAL_BOOKS_DATA;
