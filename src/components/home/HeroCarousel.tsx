@@ -249,13 +249,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               Guidebooks
             </h1>
 
-            {/* 3. Subtitle Paragraph */}
-            <p className="text-slate-600 text-sm sm:text-base lg:text-[17px] leading-relaxed max-w-xl font-normal">
+            {/* 3. Subtitle Paragraph (Desktop Left Column) */}
+            <p className="hidden lg:block text-slate-600 text-sm sm:text-base lg:text-[17px] leading-relaxed max-w-xl font-normal">
               Belesu Guidebooks help students from Class 1–6 read, pronounce and understand Kannada easily with clear English translation.
             </p>
 
-            {/* 4. 4 Feature Cards (Single Horizontal Row) */}
-            <div className="grid grid-cols-4 gap-1.5 xs:gap-2 sm:gap-3 w-full max-w-xl pt-1">
+            {/* 4. 4 Feature Cards (Desktop Left Column) */}
+            <div className="hidden lg:grid grid-cols-4 gap-1.5 xs:gap-2 sm:gap-3 w-full max-w-xl pt-1">
               {/* Feature 1 */}
               <div className="bg-white/95 border border-stone-200/90 rounded-xl sm:rounded-2xl p-2 sm:p-3 text-center shadow-xs flex flex-col items-center justify-center gap-1 sm:gap-1.5 min-w-0 transition-transform hover:-translate-y-0.5">
                 <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea580c]" />
@@ -463,26 +463,70 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
         </div>
 
         {/* ========================================================
-            MOBILE ACTION BUTTONS (Stacked below the stage on mobile)
+            MOBILE SEQUENCE (Stacked below the comparison stage on mobile):
+            1. CTAs ➔ 2. Subtitle Paragraph ➔ 3. 4 Feature Cards
            ======================================================== */}
-        <div className="lg:hidden flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-2.5 w-full max-w-sm mx-auto mt-4">
-          <Link
-            href="#series-deck"
-            onClick={scrollToSeriesDeck}
-            className="animate-cta-glow inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-sm shadow-lg shadow-orange-500/25 active:scale-95 transition-all text-center cursor-pointer"
-          >
-            <ShoppingBag className="w-4 h-4 text-white" />
-            <span>Buy Guidebooks Now</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+        <div className="lg:hidden flex flex-col items-center w-full max-w-xl mx-auto mt-4 space-y-4 px-2">
+          {/* 1. Mobile Action Buttons */}
+          <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-2.5 w-full max-w-sm mx-auto">
+            <Link
+              href="#series-deck"
+              onClick={scrollToSeriesDeck}
+              className="animate-cta-glow inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-sm shadow-lg shadow-orange-500/25 active:scale-95 transition-all text-center cursor-pointer"
+            >
+              <ShoppingBag className="w-4 h-4 text-white" />
+              <span>Buy Guidebooks Now</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
 
-          <Link
-            href="/books"
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-xs active:scale-95 transition-all text-center cursor-pointer"
-          >
-            <BookOpen className="w-4 h-4 text-slate-700" />
-            <span>Explore All Books</span>
-          </Link>
+            <Link
+              href="/books"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-xs active:scale-95 transition-all text-center cursor-pointer"
+            >
+              <BookOpen className="w-4 h-4 text-slate-700" />
+              <span>Explore All Books</span>
+            </Link>
+          </div>
+
+          {/* 2. Mobile Subtitle Paragraph */}
+          <p className="text-slate-600 text-sm leading-relaxed text-center max-w-md mx-auto font-normal px-2">
+            Belesu Guidebooks help students from Class 1–6 read, pronounce and understand Kannada easily with clear English translation.
+          </p>
+
+          {/* 3. Mobile 4 Feature Cards */}
+          <div className="grid grid-cols-4 gap-1.5 xs:gap-2 w-full max-w-md mx-auto pt-1">
+            {/* Feature 1 */}
+            <div className="bg-white/95 border border-stone-200/90 rounded-xl p-2 text-center shadow-xs flex flex-col items-center justify-center gap-1 min-w-0">
+              <BookOpen className="w-4 h-4 text-[#ea580c]" />
+              <span className="text-[10px] xs:text-[11px] font-bold text-slate-800 leading-tight">
+                Easy <br /> Pronunciation
+              </span>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="bg-white/95 border border-stone-200/90 rounded-xl p-2 text-center shadow-xs flex flex-col items-center justify-center gap-1 min-w-0">
+              <Languages className="w-4 h-4 text-[#ea580c]" />
+              <span className="text-[10px] xs:text-[11px] font-bold text-slate-800 leading-tight">
+                Meaningful <br /> English Translation
+              </span>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-white/95 border border-stone-200/90 rounded-xl p-2 text-center shadow-xs flex flex-col items-center justify-center gap-1 min-w-0">
+              <Lightbulb className="w-4 h-4 text-[#ea580c]" />
+              <span className="text-[9.5px] xs:text-[10.5px] font-bold text-slate-800 leading-tight">
+                Synopsis of Lesson <br /> in English
+              </span>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="bg-white/95 border border-stone-200/90 rounded-xl p-2 text-center shadow-xs flex flex-col items-center justify-center gap-1 min-w-0">
+              <TrendingUp className="w-4 h-4 text-[#ea580c]" />
+              <span className="text-[9.5px] xs:text-[10.5px] font-bold text-slate-800 leading-tight">
+                All Exercises in <br /> English Translation
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* ========================================================
