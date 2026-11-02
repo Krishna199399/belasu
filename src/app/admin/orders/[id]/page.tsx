@@ -8,17 +8,24 @@ export default async function OrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const cleanId = decodeURIComponent(id || '').trim();
   const supabase = createAdminClient();
 
-  // Try fetching by UUID or by order_number
-  let query = supabase.from('orders').select('*, order_items(*)').eq('id', id);
-  let { data: order } = await query.maybeSingle();
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanId);
+  let order = null;
 
+  // Try fetching by UUID if valid
+  if (isUuid) {
+    const { data } = await supabase.from('orders').select('*, order_items(*)').eq('id', cleanId).maybeSingle();
+    order = data;
+  }
+
+  // Otherwise or fallback: fetch by order_number
   if (!order) {
     const res = await supabase
       .from('orders')
       .select('*, order_items(*)')
-      .eq('order_number', id)
+      .eq('order_number', cleanId)
       .maybeSingle();
     order = res.data;
   }

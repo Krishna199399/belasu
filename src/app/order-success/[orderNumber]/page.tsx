@@ -78,7 +78,8 @@ export default function OrderSuccessPage({
   params: Promise<{ orderNumber: string }>;
 }) {
   const resolvedParams = use(params);
-  const orderNumber = resolvedParams.orderNumber;
+  const rawOrderNumber = resolvedParams.orderNumber;
+  const orderNumber = decodeURIComponent(rawOrderNumber || '').trim();
   const router = useRouter();
 
   const [order, setOrder] = useState<OrderData | null>(null);
@@ -87,11 +88,29 @@ export default function OrderSuccessPage({
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchOrder() {
       try {
         setLoading(true);
-        const res = await fetch(`/api/orders/${encodeURIComponent(orderNumber)}`);
-        const data = await res.json();
+
+        const fetchDetails = async () => {
+          const res = await fetch(`/api/orders/${encodeURIComponent(orderNumber)}`, {
+            cache: 'no-store',
+          });
+          return await res.json();
+        };
+
+        let data = await fetchDetails();
+
+        // If order was just placed, retry once after 1.2s to handle any replication delay
+        if (!data.success && (!data.order || data.error === 'Order not found')) {
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+          if (!isMounted) return;
+          data = await fetchDetails();
+        }
+
+        if (!isMounted) return;
 
         if (data.success && data.order) {
           setOrder(data.order);
@@ -99,16 +118,26 @@ export default function OrderSuccessPage({
           setError(data.error || 'Unable to find order details');
         }
       } catch (err) {
+        if (!isMounted) return;
         console.error('Failed to load order:', err);
         setError('Network error while loading order details');
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
     if (orderNumber) {
       fetchOrder();
+    } else {
+      setLoading(false);
+      setError('Order number is missing');
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [orderNumber]);
 
   const handleCopyOrderNumber = () => {
@@ -132,6 +161,10 @@ export default function OrderSuccessPage({
   }
 
   if (error || !order) {
+    const errorWaUrl = `https://wa.me/919606636804?text=${encodeURIComponent(
+      `Hi Belesu, I placed an order (#${orderNumber || 'Unknown'}), but the confirmation details are pending. Please help verify.`
+    )}`;
+
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div className="text-center space-y-5 max-w-md w-full bg-white p-8 rounded-3xl border border-slate-200 shadow-xl">
@@ -139,10 +172,15 @@ export default function OrderSuccessPage({
             <ShoppingBag className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Order Information</h2>
+            <h2 className="text-xl font-bold text-slate-900">Order Confirmation</h2>
             <p className="text-xs text-slate-600 mt-2">
               {error || `Order #${orderNumber} could not be retrieved directly.`}
             </p>
+            {orderNumber && (
+              <p className="text-xs font-mono font-bold text-amber-700 mt-1">
+                Ref: #{orderNumber}
+              </p>
+            )}
           </div>
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <Link
@@ -157,6 +195,17 @@ export default function OrderSuccessPage({
             >
               View My Account
             </Link>
+          </div>
+          <div className="pt-2 border-t border-slate-100">
+            <a
+              href={errorWaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-emerald-700 hover:text-emerald-800 font-bold transition hover:underline"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-600" />
+              <span>Need help? Chat with WhatsApp Support</span>
+            </a>
           </div>
         </div>
       </div>

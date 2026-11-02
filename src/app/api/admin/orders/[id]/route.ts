@@ -13,22 +13,30 @@ export async function GET(
 
   try {
     const { id } = await params;
+    const cleanId = decodeURIComponent(id || '').trim();
     const supabase = createAdminClient();
 
-    // Fetch order by id or by order_number
-    let query = supabase
-      .from('orders')
-      .select('*, order_items(*)')
-      .eq('id', id);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanId);
+    let order = null;
+    let error = null;
 
-    let { data: order, error } = await query.maybeSingle();
-
-    if (!order) {
-      // Try by order_number (e.g. BLS-10001)
+    // Fetch order by id (if UUID) or by order_number
+    if (isUuid) {
       const res = await supabase
         .from('orders')
         .select('*, order_items(*)')
-        .eq('order_number', id)
+        .eq('id', cleanId)
+        .maybeSingle();
+      order = res.data;
+      error = res.error;
+    }
+
+    if (!order) {
+      // Try by order_number (e.g. 23401 or BLS-10001)
+      const res = await supabase
+        .from('orders')
+        .select('*, order_items(*)')
+        .eq('order_number', cleanId)
         .maybeSingle();
       order = res.data;
       error = res.error;
