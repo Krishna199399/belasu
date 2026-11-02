@@ -8,6 +8,19 @@ export interface OrderItemEmailData {
   sku?: string;
 }
 
+export interface OrderAddressData {
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  email?: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  state?: string;
+  postcode?: string;
+}
+
 export interface OrderEmailPayload {
   orderNumber: string;
   orderDate?: string;
@@ -21,20 +34,8 @@ export interface OrderEmailPayload {
   paymentMethod?: string;
   paymentId?: string;
   razorpayOrderId?: string;
-  shippingAddress?: {
-    address1?: string;
-    address2?: string;
-    city?: string;
-    state?: string;
-    postcode?: string;
-  } | null;
-  billingAddress?: {
-    address1?: string;
-    address2?: string;
-    city?: string;
-    state?: string;
-    postcode?: string;
-  } | null;
+  shippingAddress?: OrderAddressData | null;
+  billingAddress?: OrderAddressData | null;
   isDigitalOnly?: boolean;
 }
 
@@ -66,8 +67,70 @@ function getTransporter() {
 }
 
 /**
+ * Renders an address card matching the Belesu Delivery Address Card UI (Image 1)
+ */
+function formatAddressCardHtml(
+  addr: OrderAddressData | null | undefined,
+  fallbackName: string,
+  fallbackPhone?: string,
+  fallbackEmail?: string
+): string {
+  const recipientName =
+    addr?.name ||
+    [addr?.firstName, addr?.lastName].filter(Boolean).join(' ').trim() ||
+    fallbackName ||
+    'Customer';
+  const address1 = addr?.address1?.trim() || '';
+  const address2 = addr?.address2?.trim() || '';
+  const city = addr?.city?.trim() || '';
+  const state = addr?.state?.trim() || '';
+  const postcode = addr?.postcode?.trim() || '';
+  const phone = addr?.phone?.trim() || fallbackPhone?.trim() || '';
+  const email = addr?.email?.trim() || fallbackEmail?.trim() || '';
+
+  // Compact Indian postal format: City, State - PIN
+  let cityStatePin = '';
+  if (city && state) {
+    cityStatePin = `${city}, ${state}`;
+  } else {
+    cityStatePin = city || state;
+  }
+  if (postcode) {
+    cityStatePin = cityStatePin ? `${cityStatePin} - <strong>${postcode}</strong>` : `PIN: <strong>${postcode}</strong>`;
+  }
+
+  return `
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; text-align: left; box-sizing: border-box;">
+      <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 8px; line-height: 130%;">
+        ${recipientName}
+      </div>
+      ${address1 ? `
+      <div style="font-size: 13px; color: #334155; line-height: 150%; margin-bottom: 6px;">
+        ${address1}
+      </div>` : ''}
+      ${address2 ? `
+      <div style="font-size: 13px; color: #334155; line-height: 150%; margin-bottom: 6px;">
+        ${address2}
+      </div>` : ''}
+      ${cityStatePin ? `
+      <div style="font-size: 13px; color: #334155; line-height: 150%; margin-bottom: 8px;">
+        ${cityStatePin}
+      </div>` : ''}
+      ${phone ? `
+      <div style="font-size: 13px; font-weight: 700; color: #0f172a; padding-top: 6px; border-top: 1px solid #e2e8f0; margin-top: 6px;">
+        📞 <a href="tel:${phone}" style="color: #0f172a; text-decoration: none;">${phone}</a>
+      </div>` : ''}
+      ${email ? `
+      <div style="font-size: 12px; color: #64748b; padding-top: 4px;">
+        ✉️ <a href="mailto:${email}" style="color: #64748b; text-decoration: none;">${email}</a>
+      </div>` : ''}
+    </div>
+  `;
+}
+
+/**
  * Builds the HTML content for the order notification email
- * Styled to match the classic WooCommerce "New Order" notification email
+ * Styled to match the classic WooCommerce "New Order" notification email with modern Delivery Card UI
  */
 export function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNotice = true): string {
   const dateObj = payload.orderDate ? new Date(payload.orderDate) : new Date();
@@ -95,55 +158,29 @@ export function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNo
     )
     .join('');
 
-  const shipAddr = payload.shippingAddress;
-  const shippingLines = shipAddr
-    ? [
-        shipAddr.address1,
-        shipAddr.address2,
-        shipAddr.city,
-        shipAddr.state,
-        shipAddr.postcode,
-      ].filter(Boolean)
-    : [];
-
-  const billAddr = payload.billingAddress || payload.shippingAddress;
-  const billingLines = billAddr
-    ? [
-        billAddr.address1,
-        billAddr.address2,
-        billAddr.city,
-        billAddr.state,
-        billAddr.postcode,
-      ].filter(Boolean)
-    : [];
-
   const shippingAddressHtml = payload.isDigitalOnly
     ? `
-      <div style="line-height: 160%;">
-        <strong>${payload.customerName}</strong><br/>
-        <span style="color: #166534; font-weight: bold;">Digital E-Reader Instant Access</span><br/>
-        No physical shipping required.<br/>
-        ${payload.customerPhone ? `<a href="tel:${payload.customerPhone}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerPhone}</a><br/>` : ''}
-        ${payload.customerEmail ? `<a href="mailto:${payload.customerEmail}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerEmail}</a>` : ''}
+      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; text-align: left; box-sizing: border-box;">
+        <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">${payload.customerName}</div>
+        <div style="color: #166534; font-weight: 700; font-size: 13px; margin-bottom: 4px;">💻 Digital E-Reader Instant Access</div>
+        <div style="color: #64748b; font-size: 12px; margin-bottom: 8px;">No physical shipping required. Access available in your Belesu account.</div>
+        ${payload.customerPhone ? `<div style="font-size: 13px; font-weight: 700; color: #0f172a; padding-top: 6px; border-top: 1px solid #e2e8f0;">📞 ${payload.customerPhone}</div>` : ''}
+        ${payload.customerEmail ? `<div style="font-size: 12px; color: #64748b; padding-top: 4px;">✉️ ${payload.customerEmail}</div>` : ''}
       </div>
     `
-    : `
-      <div style="line-height: 160%;">
-        <strong>${payload.customerName}</strong><br/>
-        ${shippingLines.length > 0 ? `${shippingLines.join('<br/>')}<br/>` : ''}
-        ${payload.customerPhone ? `<a href="tel:${payload.customerPhone}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerPhone}</a><br/>` : ''}
-        ${payload.customerEmail ? `<a href="mailto:${payload.customerEmail}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerEmail}</a>` : ''}
-      </div>
-    `;
+    : formatAddressCardHtml(
+        payload.shippingAddress,
+        payload.customerName,
+        payload.customerPhone,
+        payload.customerEmail
+      );
 
-  const billingAddressHtml = `
-    <div style="line-height: 160%;">
-      <strong>${payload.customerName}</strong><br/>
-      ${billingLines.length > 0 ? `${billingLines.join('<br/>')}<br/>` : ''}
-      ${payload.customerPhone ? `<a href="tel:${payload.customerPhone}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerPhone}</a><br/>` : ''}
-      ${payload.customerEmail ? `<a href="mailto:${payload.customerEmail}" style="color: #7f1ae5; text-decoration: underline;">${payload.customerEmail}</a>` : ''}
-    </div>
-  `;
+  const billingAddressHtml = formatAddressCardHtml(
+    payload.billingAddress || payload.shippingAddress,
+    payload.customerName,
+    payload.customerPhone,
+    payload.customerEmail
+  );
 
   const headingText = isAdminNotice
     ? `New Order: #${payload.orderNumber}`
@@ -239,20 +276,16 @@ export function buildOrderNotificationHtml(payload: OrderEmailPayload, isAdminNo
       <table cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
         <tr>
           <td style="width: 48%; vertical-align: top; padding-right: 2%;">
-            <h2 style="color: #7f1ae5; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 130%; margin: 0 0 10px 0;">
-              Billing address
+            <h2 style="color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 130%; margin: 0 0 10px 0;">
+              Billing Address
             </h2>
-            <div style="border: 1px solid #e5e5e5; padding: 12px; font-size: 13px; color: #636363; font-style: normal;">
-              ${billingAddressHtml}
-            </div>
+            ${billingAddressHtml}
           </td>
           <td style="width: 48%; vertical-align: top; padding-left: 2%;">
-            <h2 style="color: #7f1ae5; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 130%; margin: 0 0 10px 0;">
-              Shipping address
+            <h2 style="color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 130%; margin: 0 0 10px 0;">
+              Delivery Address
             </h2>
-            <div style="border: 1px solid #e5e5e5; padding: 12px; font-size: 13px; color: #636363; font-style: normal;">
-              ${shippingAddressHtml}
-            </div>
+            ${shippingAddressHtml}
           </td>
         </tr>
       </table>
