@@ -34,6 +34,7 @@ interface ComparisonSlide {
   belesuTitle: string;
   belesuCoverImg: string;
   tagline: string;
+  bgImg: string;
 }
 
 const COMPARISON_SLIDES: ComparisonSlide[] = [
@@ -48,6 +49,7 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuTitle: 'Savi Kannada Class 2',
     belesuCoverImg: '/covers/savi-2.png',
     tagline: 'Matches Karnataka State Syllabus Line-by-Line',
+    bgImg: '/background5.png',
   },
   // Slide 1: Class 3
   {
@@ -60,6 +62,7 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuTitle: 'Savi Kannada Class 3',
     belesuCoverImg: '/covers/savi-3.png',
     tagline: 'Kannada sentence structure simplified with English keys',
+    bgImg: '/2.png',
   },
   // Slide 2: Class 1
   {
@@ -72,6 +75,7 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuTitle: 'Savi Kannada Class 1',
     belesuCoverImg: '/covers/savi-1.png',
     tagline: 'English alphabet pronunciation & foundational vocabulary',
+    bgImg: '/slider-image.png',
   },
   // Slide 3: Class 4
   {
@@ -84,6 +88,7 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuTitle: 'Savi Kannada Class 4',
     belesuCoverImg: '/covers/savi-4.png',
     tagline: 'Ottakshara tutorials, poem meanings & solved exercises',
+    bgImg: '/3.png',
   },
   // Slide 4: Class 5
   {
@@ -96,6 +101,7 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuTitle: 'Siri Kannada Class 5',
     belesuCoverImg: '/covers/siri-5.png',
     tagline: 'Formal letter writing, literature history & model papers',
+    bgImg: '/slider-960-x-760-px.jpg',
   },
 ];
 
@@ -201,9 +207,25 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
         }
       `}</style>
 
+      {/* Synchronized Multi-Image Scenic Background with Smooth Cross-Fade */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+        {COMPARISON_SLIDES.map((slide, idx) => (
+          <img
+            key={slide.id}
+            src={slide.bgImg}
+            alt={slide.belesuTitle}
+            className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700 ease-in-out pointer-events-none ${
+              idx === currentSlide ? 'opacity-85' : 'opacity-0'
+            }`}
+          />
+        ))}
+        {/* Soft Light Gradient Overlay for Crystal-Clear Text Contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-[#fefbf6]/50 to-[#fff8ee]/75 pointer-events-none" />
+      </div>
+
       {/* Ambient Decorative Accents */}
-      <div className="absolute top-0 left-0 w-28 h-28 sm:w-44 sm:h-44 bg-gradient-to-br from-emerald-100/40 via-amber-100/20 to-transparent rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute top-10 right-0 w-48 h-48 sm:w-72 sm:h-72 bg-gradient-to-bl from-amber-200/30 via-orange-100/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-0 w-28 h-28 sm:w-44 sm:h-44 bg-gradient-to-br from-emerald-100/40 via-amber-100/20 to-transparent rounded-full blur-2xl pointer-events-none z-0" />
+      <div className="absolute top-10 right-0 w-48 h-48 sm:w-72 sm:h-72 bg-gradient-to-bl from-amber-200/30 via-orange-100/20 to-transparent rounded-full blur-3xl pointer-events-none z-0" />
 
       {/* Main Container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-4">
@@ -217,16 +239,16 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
              ======================================================== */}
           <div className="lg:col-span-6 xl:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left space-y-3.5 sm:space-y-4">
             
-            {/* 1. Top Authority Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#fffbeb] border border-[#fde68a] text-[#78350f] font-bold px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs shadow-2xs">
-              <span className="text-sm">🏆</span>
-              <span>Government Recognized &amp; Award-Winning Initiative</span>
+            {/* 1. Top Badge */}
+            <div className="inline-flex items-center gap-2 bg-[#fffbeb] border border-[#fde68a] text-[#78350f] font-bold px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs tracking-wider uppercase shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span>KANNADA MATHADI, KANNADA BELESI</span>
             </div>
 
             {/* 2. Main Headline */}
-            <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-[3.25rem] font-black text-slate-900 tracking-tight leading-[1.12]">
-              Kannada Textbooks <br className="hidden sm:inline" />
-              with <span className="text-[#ea580c]">English Support</span>
+            <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-[3.15rem] font-serif font-bold text-slate-900 tracking-tight leading-[1.15]">
+              Kannada to English Translated Academic <br className="hidden sm:inline" />
+              Guidebooks
             </h1>
 
             {/* 3. Subtitle Paragraph */}
