@@ -1,153 +1,387 @@
 'use client';
 
-import React from 'react';
-import { PARENT_REVIEWS } from '@/data/mockData';
-import { Star, Quote, CheckCircle2, ArrowRight, ShieldCheck, Sparkles, Heart } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import {
+  Star,
+  Users,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  ShieldCheck,
+  Heart,
+  GraduationCap,
+} from 'lucide-react';
+import { PARENT_REVIEWS } from '@/data/mockData';
 import { ParentReview } from '@/types';
 
+// Helper to extract clean book/series tag
+function getSeriesTag(bookTitle?: string): string {
+  if (!bookTitle) return 'Kannada Guide';
+  if (bookTitle.includes('Savi')) return 'Savi Kannada';
+  if (bookTitle.includes('Kali')) return 'Kali Kannada';
+  if (bookTitle.includes('Tili')) return 'Tili Kannada';
+  if (bookTitle.includes('Siri')) return 'Siri Kannada';
+  return bookTitle.split('English')[0].trim() || 'Kannada Guide';
+}
+
+// Single Review Card component matching user's design 1:1
 function ReviewCard({ review }: { review: ParentReview }) {
-  // Extract initials for visual avatar
   const initials = review.parentName
+    .replace('Dr. ', '')
+    .trim()
     .split(' ')
     .map((n) => n[0])
     .slice(0, 2)
     .join('')
     .toUpperCase();
 
+  const city = review.location.split(',')[0].trim();
+
   return (
-    <div className="w-[270px] sm:w-[320px] md:w-[350px] shrink-0 bg-white/95 backdrop-blur-xs p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-amber-200/70 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between hover:-translate-y-0.5 mx-2 sm:mx-2.5 select-none group">
+    <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#FDE68A] p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full">
       <div>
-        {/* Rating, Verified Pill & Date */}
-        <div className="flex items-center justify-between gap-2 mb-2.5">
-          <div className="flex items-center gap-0.5">
-            {Array.from({ length: review.rating }).map((_, i) => (
-              <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+        {/* Rating & Verified Pill */}
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="flex items-center gap-1">
+            {Array.from({ length: review.rating || 5 }).map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
             ))}
           </div>
-          <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
-            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-[#ECFDF5] px-2.5 py-0.5 rounded-full border border-[#A7F3D0]">
+            <svg
+              className="w-3.5 h-3.5 text-emerald-600"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
             <span>Verified Parent</span>
           </div>
         </div>
 
-        {/* Quote Icon & Review Text */}
-        <div className="relative mb-3">
-          <Quote className="w-5 h-5 text-amber-300/60 mb-1" />
-          <p className="text-xs text-slate-800 leading-relaxed font-normal">
-            &ldquo;{review.reviewText}&rdquo;
-          </p>
+        {/* Decorative Quote Mark */}
+        <div className="text-amber-400 font-serif font-black text-2xl sm:text-3xl leading-none mb-1 select-none">
+          ““
         </div>
+
+        {/* Review Text */}
+        <p className="text-[13px] sm:text-sm text-slate-800 leading-relaxed font-normal mb-5">
+          &ldquo;{review.reviewText}&rdquo;
+        </p>
       </div>
 
-      {/* Reviewer Details & Series Tag */}
-      <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white font-bold text-[11px] flex items-center justify-center shrink-0 shadow-2xs">
+      {/* Author Footer */}
+      <div className="pt-3.5 border-t border-stone-100 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#EA580C] text-white font-bold text-xs sm:text-sm flex items-center justify-center shrink-0 shadow-2xs">
             {initials}
           </div>
           <div className="min-w-0">
-            <h4 className="font-bold text-slate-900 text-xs flex items-center gap-1 truncate">
+            <h4 className="font-bold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 truncate">
               <span className="truncate">{review.parentName}</span>
-              <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+              <svg
+                className="w-3.5 h-3.5 text-emerald-600 shrink-0 fill-emerald-100"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
             </h4>
-            <p className="text-[10px] text-slate-500 truncate">
-              {review.childGrade} • {review.location}
+            <p className="text-[10px] sm:text-xs text-slate-500 truncate">
+              {review.childGrade} • {city}
             </p>
           </div>
         </div>
 
-        {review.bookTitle && (
-          <span className="text-[9px] font-bold text-amber-900 bg-amber-100/80 border border-amber-200/80 px-1.5 py-0.5 rounded shrink-0 max-w-[110px] truncate text-right">
-            {review.bookTitle.split('English')[0].trim() || review.bookTitle}
-          </span>
-        )}
+        {/* Series Badge */}
+        <span className="text-[10px] sm:text-[11px] font-semibold text-amber-900 bg-[#FEF3C7] border border-[#FDE68A] px-2.5 py-1 rounded-md shrink-0">
+          {getSeriesTag(review.bookTitle)}
+        </span>
       </div>
     </div>
   );
 }
 
 export const ParentFeedbackSection: React.FC = () => {
-  // Single row of reviews duplicated for a seamless 100% infinite marquee loop
-  const marqueeReviews = [...PARENT_REVIEWS, ...PARENT_REVIEWS];
+  // Put Dr. Archana Rao first so initial view matches user reference screenshot 1:1, followed by all real reviews
+  const allReviews: ParentReview[] = [
+    ...PARENT_REVIEWS.filter((r) => r.parentName.includes('Archana')),
+    ...PARENT_REVIEWS.filter((r) => !r.parentName.includes('Archana')),
+  ];
+
+  // Mobile carousel state (1 card visible at a time, 4 dots)
+  const mobileReviews = allReviews.slice(0, 4);
+  const [mobileIndex, setMobileIndex] = useState(0);
+
+  // Desktop carousel state (3 cards visible at a time)
+  // Group into pages of 3: Page 0 (0,1,2), Page 1 (3,4,5), Page 2 (6,7 + 0)
+  const desktopPages: ParentReview[][] = [
+    allReviews.slice(0, 3),
+    allReviews.slice(3, 6),
+    [...allReviews.slice(6, 8), allReviews[0]],
+  ];
+  const [desktopIndex, setDesktopIndex] = useState(0);
+
+  // Touch swipe support for mobile
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    const diff = touchStartX.current - touchEndX.current;
+    if (diff > 50) {
+      // Swiped left -> next
+      setMobileIndex((prev) => (prev + 1) % mobileReviews.length);
+    } else if (diff < -50) {
+      // Swiped right -> prev
+      setMobileIndex((prev) => (prev - 1 + mobileReviews.length) % mobileReviews.length);
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
+  const handleDesktopPrev = () => {
+    setDesktopIndex((prev) => (prev - 1 + desktopPages.length) % desktopPages.length);
+  };
+
+  const handleDesktopNext = () => {
+    setDesktopIndex((prev) => (prev + 1) % desktopPages.length);
+  };
 
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-gradient-to-b from-amber-50/60 via-amber-50/30 to-white border-b border-stone-200 relative overflow-hidden">
-      
-      {/* Container for Header matching Belesu - Contents.md verbatim */}
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 mb-5 sm:mb-6">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
-          <div className="max-w-2xl space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 text-[11px] font-bold uppercase tracking-wider shadow-2xs">
-              <Sparkles className="w-3 h-3 text-amber-600" />
-              <span>Parent Experiences</span>
-            </div>
+    <section className="relative py-6 sm:py-8 lg:py-10 bg-gradient-to-b from-[#FFFDF9] via-[#FFFBF2] to-[#FFF8EA] border-b border-amber-100/70 overflow-hidden">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* ══════════════════════════════════════════════════════════════════
+            HEADER (Clean, Centered, Elegant with Radiant Rays & Accent)
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="text-center max-w-2xl mx-auto space-y-2 mb-5 sm:mb-6">
+          {/* Top Pill Badge */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#FFF8E7] border border-[#FDE68A] text-[#B45309] text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-2xs">
+            <Users className="w-3.5 h-3.5 text-amber-600" />
+            <span>Parent Experiences</span>
+          </div>
 
-            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
-              What Parents Say About Belesu
+          {/* Heading with Decorative Radiant Rays & Curved Wave Underline */}
+          <div className="flex items-center justify-center gap-2.5 sm:gap-3 pt-0.5">
+            {/* Left Radiant Rays */}
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 shrink-0 select-none"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <line x1="3" y1="12" x2="9" y2="12" />
+              <line x1="5" y1="5" x2="10" y2="9" />
+              <line x1="5" y1="19" x2="10" y2="15" />
+            </svg>
+
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight relative inline-block">
+              <span>What Parents Say</span>{' '}
+              <span className="relative inline-block whitespace-nowrap">
+                About Belesu
+                {/* Curved decorative underline */}
+                <svg
+                  className="absolute -bottom-1 left-0 w-full h-2 text-amber-400 select-none"
+                  viewBox="0 0 100 8"
+                  fill="none"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M1 5.5C25 2 75 2 99 5.5"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
             </h2>
 
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-              Read feedback from parents about their experiences with Belesu guidebooks.
-            </p>
+            {/* Right Radiant Rays */}
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 shrink-0 select-none"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <line x1="21" y1="12" x2="15" y2="12" />
+              <line x1="19" y1="5" x2="14" y2="9" />
+              <line x1="19" y1="19" x2="14" y2="15" />
+            </svg>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-            {/* Social Proof Metric Pill */}
-            <div className="hidden lg:flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-amber-200 shadow-2xs text-xs">
-              <div className="flex items-center text-amber-500">
+          {/* Subtitle */}
+          <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal max-w-xl mx-auto">
+            Real feedback from parents who are using Belesu guidebooks for their child&apos;s learning.
+          </p>
+
+          {/* Social Proof Rating Metric Pill */}
+          <div className="pt-1">
+            <div className="inline-flex items-center gap-2.5 bg-white px-4 py-1.5 rounded-full border border-amber-200/90 shadow-2xs">
+              <div className="flex items-center gap-1 text-amber-500">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                <span className="font-bold text-slate-900 ml-1">4.9 / 5.0</span>
+                <span className="font-black text-slate-900 text-xs sm:text-sm">4.9 / 5.0</span>
               </div>
-              <span className="text-slate-300">•</span>
-              <span className="text-slate-600 font-medium text-[11px]">500+ Happy Families</span>
+              <span className="text-stone-300">|</span>
+              <span className="text-slate-600 font-medium text-[11px] sm:text-xs">
+                500+ Happy Families
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            MOBILE VIEW: Single Card with Touch Swipe & 4 Dots
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="block md:hidden max-w-sm mx-auto">
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="transition-all duration-300 ease-out"
+          >
+            <ReviewCard review={mobileReviews[mobileIndex]} />
+          </div>
+
+          {/* 4 Pagination Dots */}
+          <div className="flex items-center justify-center gap-2 mt-4 mb-5">
+            {mobileReviews.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setMobileIndex(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={`transition-all duration-200 rounded-full cursor-pointer ${
+                  mobileIndex === idx
+                    ? 'w-5 h-2 bg-[#EA580C]'
+                    : 'w-2 h-2 bg-slate-300 hover:bg-slate-400'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            DESKTOP VIEW: 3-Card Carousel with Side Navigation Arrows
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="hidden md:block max-w-5xl mx-auto relative">
+          {/* Navigation Arrows */}
+          <button
+            onClick={handleDesktopPrev}
+            aria-label="Previous reviews"
+            className="absolute -left-5 lg:-left-7 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white border border-amber-200 text-slate-700 hover:bg-amber-50 hover:text-amber-800 shadow-sm flex items-center justify-center transition cursor-pointer active:scale-95"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={handleDesktopNext}
+            aria-label="Next reviews"
+            className="absolute -right-5 lg:-right-7 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white border border-amber-200 text-slate-700 hover:bg-amber-50 hover:text-amber-800 shadow-sm flex items-center justify-center transition cursor-pointer active:scale-95"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          {/* 3 Review Cards Grid */}
+          <div className="grid grid-cols-3 gap-4 lg:gap-5">
+            {desktopPages[desktopIndex].map((review, idx) => (
+              <ReviewCard key={`${review.id}-${idx}`} review={review} />
+            ))}
+          </div>
+
+          {/* Desktop Pagination Dots */}
+          <div className="flex items-center justify-center gap-2 mt-5 mb-6">
+            {desktopPages.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setDesktopIndex(idx)}
+                aria-label={`Go to page ${idx + 1}`}
+                className={`transition-all duration-200 rounded-full cursor-pointer ${
+                  desktopIndex === idx
+                    ? 'w-6 h-2 bg-[#EA580C]'
+                    : 'w-2 h-2 bg-slate-300 hover:bg-slate-400'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            CTA BUTTON: Centered Dark Navy Pill Button
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="flex justify-center mb-6 sm:mb-7">
+          <Link
+            href="/reviews"
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-[#0B1B3D] hover:bg-[#152B5A] text-white font-bold text-xs sm:text-sm shadow-md transition-all duration-200 hover:shadow-lg active:scale-95 group cursor-pointer"
+          >
+            <span>Read More Parent Reviews</span>
+            <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            BOTTOM TRUST BADGES: 3-Item Trust Bar with Dividers
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="max-w-3xl mx-auto pt-3 border-t border-amber-200/50">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+            {/* Badge 1: Verified Purchases */}
+            <div className="flex flex-col items-center justify-center pr-2 border-r border-stone-200/80">
+              <ShieldCheck className="w-5 h-5 text-emerald-600 mb-1" />
+              <p className="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">
+                100% Verified
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 leading-tight">
+                Parent Purchases
+              </p>
             </div>
 
-            {/* CTA matching home page.md verbatim */}
-            <Link
-              href="/reviews"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-amber-600 text-white font-bold text-xs shadow-xs transition active:scale-95 group cursor-pointer min-h-[44px]"
-            >
-              <span>Read Parent Reviews</span>
-              <ArrowRight className="w-3.5 h-3.5 text-amber-400 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            {/* Badge 2: Trusted Families */}
+            <div className="flex flex-col items-center justify-center px-2 border-r border-stone-200/80">
+              <Heart className="w-5 h-5 text-rose-500 fill-rose-500 mb-1" />
+              <p className="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">
+                Trusted by
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 leading-tight">
+                500+ Families
+              </p>
+            </div>
+
+            {/* Badge 3: Karnataka School Syllabus Aligned */}
+            <div className="flex flex-col items-center justify-center pl-2">
+              <GraduationCap className="w-5 h-5 text-amber-500 mb-1" />
+              <p className="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">
+                Karnataka School
+              </p>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 leading-tight">
+                Syllabus Aligned
+              </p>
+              <p className="text-[9px] sm:text-[10px] text-slate-400 leading-tight">
+                (Classes 1–10)
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          INFINITE MARQUEE SHOWCASE (SINGLE ROW WITH EDGE GRADIENT MASKS)
-      ══════════════════════════════════════════════════════════════════════ */}
-      <div className="relative overflow-hidden pause-hover py-1">
-        
-        {/* Left & Right Soft Blur Fade Masks */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-16 md:w-32 bg-gradient-to-r from-amber-50/95 via-amber-50/60 to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-16 md:w-32 bg-gradient-to-l from-amber-50/95 via-amber-50/60 to-transparent z-10" />
-
-        {/* Single Row: Smooth scrolling left */}
-        <div className="flex animate-marquee-left">
-          {marqueeReviews.map((review, idx) => (
-            <ReviewCard key={`single-row-${review.id}-${idx}`} review={review} />
-          ))}
-        </div>
 
       </div>
-
-      {/* Bottom Subtle Trust Ribbon */}
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 mt-4 sm:mt-5">
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-slate-500 font-medium text-center">
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> 100% Verified Parent Purchases
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> Trusted by Non-Kannadiga Families Across Karnataka
-          </span>
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> Karnataka School Textbook Aligned (Classes 1–10)
-          </span>
-        </div>
-      </div>
-
     </section>
   );
 };
