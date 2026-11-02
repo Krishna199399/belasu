@@ -1,46 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { getAuthUser } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase';
 
-// Mock database - In production, replace with actual database calls
-// Use global storage to persist across requests
-if (typeof global !== 'undefined') {
-  if (!(global as any).mockAddresses) {
-    (global as any).mockAddresses = new Map<string, any[]>();
-  }
-}
-
-const mockAddresses = (global as any).mockAddresses as Map<string, any[]>;
-
-// Helper to get user from session
-async function getUserFromSession(request: NextRequest) {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get('belesu_session');
-  
-  if (!sessionCookie) {
-    return null;
-  }
-
-  try {
-    const sessionData = JSON.parse(decodeURIComponent(sessionCookie.value));
-    return sessionData;
-  } catch {
-    return null;
-  }
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // POST - Set default address
 export async function POST(request: NextRequest) {
   try {
-    const user = await getUserFromSession(request);
-    
-    if (!user) {
+    const authUser = await getAuthUser();
+    if (!authUser) {
       return NextResponse.json(
         { success: false, error: 'Authentication required' },
         { status: 401 }
       );
     }
 
-    const { addressId } = await request.json();
+    const body = await request.json();
+    const addressId = body?.addressId;
 
     if (!addressId) {
       return NextResponse.json(
@@ -49,37 +26,64 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userAddresses = mockAddresses.get(user.id) || [];
-    const addressIndex = userAddresses.findIndex(a => a.id === addressId);
+    const supabase = createAdminClient();
 
-    if (addressIndex === -1) {
+    // 1. Verify address exists and belongs to the authenticated user
+    const { data: targetAddress, error: findError } = await supabase
+      .from('addresses')
+      .select('id')
+      .eq('id', addressId)
+      .eq('user_id', authUser.userId)
+      .maybeSingle();
+
+    if (findError || !targetAddress) {
       return NextResponse.json(
-        { success: false, error: 'Address not found' },
+        { success: false, error: 'Address not found or does not belong to you' },
         { status: 404 }
       );
     }
 
-    // Unset all other default addresses
-    userAddresses.forEach(addr => {
-      addr.isDefault = false;
-    });
+    // 2. Clear default flag from all other addresses belonging to this user
+    const { error: resetError } = await supabase
+      .from('addresses')
+      .update({ is_default: false })
+      .eq('user_id', authUser.userId);
 
-    // Set new default
-    userAddresses[addressIndex].isDefault = true;
-    userAddresses[addressIndex].updatedAt = new Date().toISOString();
+    if (resetError) {
+      console.error('[addresses/set-default] Error resetting defaults:', resetError);
+      return NextResponse.json(
+        { success: false, error: 'Failed to reset default addresses' },
+        { status: 500 }
+      );
+    }
 
-    mockAddresses.set(user.id, userAddresses);
+    // 3. Mark the selected address as default
+    const { data: updatedAddress, error: updateError } = await supabase
+      .from('addresses')
+      .update({
+        is_default: true,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', addressId)
+      .eq('user_id', authUser.userId)
+      .select()
+      .single();
 
-    // In production: Update in database
-    // await db.addresses.updateMany({ where: { userId: user.id }, data: { isDefault: false } });
-    // await db.addresses.update({ where: { id: addressId }, data: { isDefault: true } });
+    if (updateError) {
+      console.error('[addresses/set-default] Error setting default:', updateError);
+      return NextResponse.json(
+        { success: false, error: 'Failed to set default address' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Default address updated successfully',
+      address: updatedAddress,
     });
   } catch (error) {
-    console.error('Set default address error:', error);
+    console.error('[addresses/set-default] Unexpected error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to set default address' },
       { status: 500 }

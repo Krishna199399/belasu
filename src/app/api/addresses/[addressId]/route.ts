@@ -50,6 +50,14 @@ export async function PATCH(
     if (updates.label !== undefined) updatePayload.label = updates.label;
     if (updates.isDefault !== undefined) updatePayload.is_default = updates.isDefault;
 
+    // If setting as default, clear default flag from other addresses
+    if (updates.isDefault === true) {
+      await supabase
+        .from('addresses')
+        .update({ is_default: false })
+        .eq('user_id', authUser.userId);
+    }
+
     const { data: updated, error: updateError } = await supabase
       .from('addresses')
       .update(updatePayload)
