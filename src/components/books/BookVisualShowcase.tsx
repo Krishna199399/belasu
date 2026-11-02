@@ -30,7 +30,7 @@ export const BookVisualShowcase: React.FC<BookVisualShowcaseProps> = ({
   categoryName,
   showBreadcrumb = false,
 }) => {
-  // Build items list: Cover image + Sample Pages + optional Govt Textbook cover
+  // Build items list: Belesu Book Cover + Belesu Inside Sample Pages only
   const items: GalleryItem[] = [
     {
       id: 'cover',
@@ -45,16 +45,6 @@ export const BookVisualShowcase: React.FC<BookVisualShowcaseProps> = ({
       isSamplePage: true,
       samplePageIndex: idx,
     })),
-    ...(book.karnatakaTextbookCover
-      ? [
-          {
-            id: 'karnataka-govt',
-            title: 'Karnataka State Textbook Aligned',
-            imageUrl: book.karnatakaTextbookCover,
-            isSamplePage: false,
-          },
-        ]
-      : []),
   ];
 
   const [selectedIndex, setSelectedIndex] = useState(0);
