@@ -49,14 +49,14 @@ const tenets: BrandTenet[] = [
 
 export const WhyChooseBelesu: React.FC = () => {
   return (
-    <section className="relative py-10 sm:py-14 lg:py-18 bg-gradient-to-b from-[#FFFDF9] via-[#FFFBF2] to-[#FFF8EA] border-b border-amber-100/70 overflow-hidden">
-      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="relative py-6 sm:py-8 lg:py-10 bg-gradient-to-b from-[#FFFDF9] via-[#FFFBF2] to-[#FFF8EA] border-b border-amber-100/70 overflow-hidden">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Header matching Belesu mobile & desktop reference verbatim */}
-        <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-7 sm:mb-10">
+        {/* Header (Compact spacing) */}
+        <div className="text-center max-w-2xl mx-auto space-y-1.5 mb-4 sm:mb-6">
           {/* Top Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFF8E7] border border-[#FDE68A] text-[#B45309] text-[11px] sm:text-xs font-black uppercase tracking-wider shadow-2xs">
-            <svg className="w-3.5 h-3.5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#FFF8E7] border border-[#FDE68A] text-[#B45309] text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-2xs">
+            <svg className="w-3 h-3 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="5" r="2" />
               <circle cx="5" cy="18" r="2" />
               <circle cx="19" cy="18" r="2" />
@@ -68,20 +68,20 @@ export const WhyChooseBelesu: React.FC = () => {
           </div>
 
           {/* Heading with Decorative Radiant Rays */}
-          <div className="flex items-center justify-center gap-3 sm:gap-4 pt-1">
+          <div className="flex items-center justify-center gap-2.5 sm:gap-3 pt-0.5">
             {/* Left Rays */}
-            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0 select-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 shrink-0 select-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="3" y1="12" x2="9" y2="12" />
               <line x1="5" y1="5" x2="10" y2="9" />
               <line x1="5" y1="19" x2="10" y2="15" />
             </svg>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-black text-slate-900 tracking-tight leading-tight">
               Why Belesu?
             </h2>
 
             {/* Right Rays */}
-            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0 select-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 shrink-0 select-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="21" y1="12" x2="15" y2="12" />
               <line x1="19" y1="5" x2="14" y2="9" />
               <line x1="19" y1="19" x2="14" y2="15" />
@@ -89,41 +89,41 @@ export const WhyChooseBelesu: React.FC = () => {
           </div>
 
           {/* Subtitle verbatim */}
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal max-w-xl mx-auto pt-0.5">
+          <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal max-w-xl mx-auto">
             Belesu helps make academic Kannada easier to understand through English-translated learning resources for students and families.
           </p>
         </div>
 
-        {/* 4 Cards Grid: 1 column on Mobile, 2x2 Balanced Grid on Desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5 max-w-5xl mx-auto">
+        {/* 4 Cards Grid (Tight & Compact 2x2 layout) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5 max-w-4xl mx-auto">
           {tenets.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div
                 key={idx}
-                className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 lg:p-6 border border-amber-100/90 shadow-2xs hover:shadow-md hover:border-amber-300 transition-all duration-300 flex items-center justify-between gap-3 sm:gap-4 group"
+                className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-amber-100/90 shadow-2xs hover:shadow-xs hover:border-amber-300 transition-all duration-200 flex items-center justify-between gap-2.5 sm:gap-3.5 group"
               >
                 {/* Left Icon Container */}
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#FFFBEB] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 group-hover:bg-amber-100 transition-transform duration-200">
-                  <Icon className="w-5 h-5 text-amber-700" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#FFFBEB] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 group-hover:bg-amber-100 transition-transform duration-200">
+                  <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-700" />
                 </div>
 
                 {/* Middle Content */}
                 <div className="flex-1 min-w-0 pr-1">
-                  <h3 className="text-sm sm:text-base font-serif font-black text-slate-900 leading-snug mb-1 group-hover:text-amber-900 transition-colors">
+                  <h3 className="text-xs sm:text-sm font-serif font-black text-slate-900 leading-snug mb-0.5 group-hover:text-amber-900 transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">
+                  <p className="text-[11px] sm:text-xs text-slate-600 leading-normal sm:leading-relaxed font-normal">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Right Thematic Illustration */}
-                <div className="shrink-0 w-20 sm:w-24 lg:w-28 flex items-center justify-end">
+                <div className="shrink-0 w-16 sm:w-20 flex items-center justify-end">
                   <img
                     src={item.illustration}
                     alt={item.illustrationAlt}
-                    className="w-full max-h-16 sm:max-h-20 lg:max-h-24 object-contain select-none group-hover:scale-105 transition-transform duration-200"
+                    className="w-full max-h-12 sm:max-h-14 lg:max-h-16 object-contain select-none group-hover:scale-105 transition-transform duration-200"
                     loading="lazy"
                   />
                 </div>
@@ -132,14 +132,14 @@ export const WhyChooseBelesu: React.FC = () => {
           })}
         </div>
 
-        {/* Bottom CTA Button verbatim */}
-        <div className="text-center pt-8 sm:pt-10">
+        {/* Bottom CTA Button verbatim (Compact) */}
+        <div className="text-center pt-5 sm:pt-6">
           <Link
             href="/about"
-            className="inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3 sm:py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-sm sm:text-base rounded-full shadow-lg shadow-orange-500/25 hover:shadow-orange-500/35 transition-all transform active:scale-95"
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-md shadow-orange-500/25 hover:shadow-orange-500/35 transition-all transform active:scale-95"
           >
             <span>About Belesu</span>
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
           </Link>
         </div>
 
