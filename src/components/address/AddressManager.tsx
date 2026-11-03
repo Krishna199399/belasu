@@ -60,6 +60,12 @@ export default function AddressManager({
     try {
       if (editingAddress) {
         await updateAddress(editingAddress.id, addressData);
+        if (mode === 'select' && onSelectAddress) {
+          onSelectAddress({
+            ...editingAddress,
+            ...addressData,
+          } as Address);
+        }
       } else {
         // Ensure all required fields are present for new address
         const completeAddressData = {
@@ -79,7 +85,10 @@ export default function AddressManager({
           label: '',
           isDefault: false,
         };
-        await addAddress(completeAddressData);
+        const newAddress = await addAddress(completeAddressData);
+        if (mode === 'select' && onSelectAddress && newAddress) {
+          onSelectAddress(newAddress);
+        }
       }
       setShowForm(false);
       setEditingAddress(null);
