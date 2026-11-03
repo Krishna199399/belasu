@@ -21,28 +21,9 @@ export async function GET() {
   try {
     const supabase = createAdminClient();
 
-    // 1. Fetch sales aggregation from order_items
-    const { data: orderItems } = await supabase
-      .from('order_items')
-      .select('product_id, item_sku, quantity, item_total');
-
-    const salesBySku: Record<string, { unitsSold: number; totalRevenue: number }> = {};
-    const salesById: Record<string, { unitsSold: number; totalRevenue: number }> = {};
-
-    (orderItems || []).forEach((item) => {
-      const qty = item.quantity || 1;
-      const rev = Number(item.item_total) || 0;
-      if (item.item_sku) {
-        if (!salesBySku[item.item_sku]) salesBySku[item.item_sku] = { unitsSold: 0, totalRevenue: 0 };
-        salesBySku[item.item_sku].unitsSold += qty;
-        salesBySku[item.item_sku].totalRevenue += rev;
-      }
-      if (item.product_id) {
-        if (!salesById[item.product_id]) salesById[item.product_id] = { unitsSold: 0, totalRevenue: 0 };
-        salesById[item.product_id].unitsSold += qty;
-        salesById[item.product_id].totalRevenue += rev;
-      }
-    });
+    // 1. Fetch sales aggregation from order_items across all history
+    const { getAggregatedOrderItemSales } = await import('@/lib/adminAnalytics');
+    const { salesBySku, salesById } = await getAggregatedOrderItemSales();
 
     // 2. Fetch books from Supabase digital_books table
     let books: DigitalBook[] = [];

@@ -39,33 +39,17 @@ export async function getPhysicalInventory(): Promise<{
 }> {
   const supabase = createAdminClient();
 
-  // 1. Fetch sales count from order_items
-  const salesBySku: Record<string, { unitsSold: number; revenue: number }> = {};
-  const salesById: Record<string, { unitsSold: number; revenue: number }> = {};
+  // 1. Fetch sales count from order_items across all history
+  let salesBySku: Record<string, { unitsSold: number; revenue: number }> = {};
+  let salesById: Record<string, { unitsSold: number; revenue: number }> = {};
 
   try {
-    const { data: orderItems } = await supabase
-      .from('order_items')
-      .select('product_id, item_sku, quantity, item_total, item_type');
-
-    (orderItems || []).forEach((item) => {
-      if (item.item_type === 'hard_copy' || item.item_type === 'physical' || !item.item_type) {
-        const qty = item.quantity || 1;
-        const rev = Number(item.item_total) || 0;
-        if (item.item_sku) {
-          if (!salesBySku[item.item_sku]) salesBySku[item.item_sku] = { unitsSold: 0, revenue: 0 };
-          salesBySku[item.item_sku].unitsSold += qty;
-          salesBySku[item.item_sku].revenue += rev;
-        }
-        if (item.product_id) {
-          if (!salesById[item.product_id]) salesById[item.product_id] = { unitsSold: 0, revenue: 0 };
-          salesById[item.product_id].unitsSold += qty;
-          salesById[item.product_id].revenue += rev;
-        }
-      }
-    });
+    const { getAggregatedOrderItemSales } = await import('@/lib/adminAnalytics');
+    const aggregated = await getAggregatedOrderItemSales();
+    salesBySku = aggregated.salesBySku as any;
+    salesById = aggregated.salesById as any;
   } catch (err) {
-    console.warn('Could not query order_items for sales:', err);
+    console.warn('Could not query aggregated order_items for sales:', err);
   }
 
   // 2. Query hard_copy_inventory (with fallback to physical_inventory)
