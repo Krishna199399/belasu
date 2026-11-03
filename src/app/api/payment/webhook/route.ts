@@ -86,13 +86,25 @@ export async function POST(request: NextRequest) {
     // ─── 2. Payment Failed ──────────────────────────────────────────────────
     if (event === 'payment.failed') {
       const paymentEntity = payload.payload?.payment?.entity;
+      const failedRazorpayOrderId = paymentEntity?.order_id;
+
       console.warn('[Razorpay Webhook] Payment failed on gateway:', {
         paymentId: paymentEntity?.id,
-        orderId: paymentEntity?.order_id,
+        orderId: failedRazorpayOrderId,
         errorCode: paymentEntity?.error_code,
         errorDescription: paymentEntity?.error_description,
         contact: paymentEntity?.contact,
       });
+
+      // Mark any pre-created order record as Failed in DB
+      if (failedRazorpayOrderId) {
+        const supabase = createAdminClient();
+        await supabase
+          .from('orders')
+          .update({ order_status: 'Failed', payment_status: 'Failed' })
+          .eq('razorpay_order_id', failedRazorpayOrderId);
+        console.log(`[Razorpay Webhook] Marked order as Failed for razorpay_order_id ${failedRazorpayOrderId}`);
+      }
     }
 
     // ─── 3. Refund Processed ────────────────────────────────────────────────

@@ -84,6 +84,26 @@ export async function POST(request: NextRequest) {
 
     const supabase = createAdminClient();
 
+    // 0. Idempotency guard — prevent duplicate orders for same payment
+    if (razorpay_payment_id) {
+      const { data: existingOrder } = await supabase
+        .from('orders')
+        .select('id, order_number')
+        .eq('razorpay_payment_id', razorpay_payment_id)
+        .maybeSingle();
+
+      if (existingOrder) {
+        console.log(`[digital/purchase] Duplicate call — order already exists for payment ${razorpay_payment_id}:`, existingOrder.order_number);
+        return Response.json({
+          success: true,
+          message: 'Purchase already recorded',
+          orderId: existingOrder.id,
+          orderNumber: existingOrder.order_number,
+          bookId,
+        });
+      }
+    }
+
     // 1. Fetch book details from database or static fallback
     let book: DigitalBookRecord | null = null;
     const { data: dbBook } = await supabase
