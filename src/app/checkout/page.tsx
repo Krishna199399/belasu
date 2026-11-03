@@ -58,7 +58,6 @@ export default function CheckoutPage() {
   const physicalItems = getPhysicalItems();
   const digitalItems = getDigitalItems();
 
-  // Resolve active shipping address (user selection or default from profile)
   const defaultAddress = user?.addresses?.find((a) => a.isDefault) || user?.addresses?.[0] || null;
   const currentAddress = selectedAddress || defaultAddress;
 
@@ -211,6 +210,12 @@ export default function CheckoutPage() {
           items: cart.length,
           hasPhysical: hasPhysicalBooks(),
           hasDigital: hasDigitalBooks(),
+          shipping_address_id: currentAddress?.id || '',
+          shipping_fee: String(shippingFee || 48),
+          customer_phone: currentAddress?.phone || digitalPhone.trim() || user?.phone || '',
+          customer_email: currentAddress?.email || digitalEmail.trim() || user?.email || '',
+          customer_name: (currentAddress ? `${currentAddress.firstName} ${currentAddress.lastName}`.trim() : digitalName.trim()) || user?.name || '',
+          items_summary: cart.map(i => `${i.product.sku || i.product.id}:${i.quantity || 1}`).join(',').slice(0, 250),
         },
         prefill: {
           name: (currentAddress ? `${currentAddress.firstName} ${currentAddress.lastName}`.trim() : digitalName.trim()) || user?.name || '',

@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { amount, currency = 'INR', receipt } = await request.json();
+    const { amount, currency = 'INR', receipt, notes = {} } = await request.json();
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
@@ -25,13 +25,14 @@ export async function POST(request: NextRequest) {
     // Create Razorpay instance
     const razorpay = createRazorpayInstance();
 
-    // Create Razorpay order
+    // Create Razorpay order with attached customer and order metadata for webhooks
     const options = {
       amount: Math.round(amount * 100), // Convert to paise
       currency,
       receipt: receipt || `order_${Date.now()}`,
       notes: {
         user_id: authUser.userId,
+        ...notes,
       },
     };
 

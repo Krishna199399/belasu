@@ -53,6 +53,7 @@ export function useRazorpay({ onSuccess, onFailure, onDismiss }: UseRazorpayOpti
           amount,
           currency: 'INR',
           receipt: `receipt_${Date.now()}`,
+          notes,
         }),
       });
 

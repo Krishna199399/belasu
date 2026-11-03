@@ -52,6 +52,40 @@ export async function POST(request: NextRequest) {
 
     const supabase = createAdminClient();
 
+    // Idempotency check: if order was already fulfilled by Razorpay webhook
+    if (razorpayOrderId || paymentId) {
+      let idempQuery = supabase.from('orders').select('*');
+      if (razorpayOrderId && paymentId) {
+        idempQuery = idempQuery.or(`razorpay_order_id.eq.${razorpayOrderId},razorpay_payment_id.eq.${paymentId}`);
+      } else if (razorpayOrderId) {
+        idempQuery = idempQuery.eq('razorpay_order_id', razorpayOrderId);
+      } else if (paymentId) {
+        idempQuery = idempQuery.eq('razorpay_payment_id', paymentId);
+      }
+
+      const { data: existingOrders } = await idempQuery;
+      if (existingOrders && existingOrders.length > 0) {
+        const existing = existingOrders[0];
+        console.log(`[orders/create] Idempotent hit: Order #${existing.order_number} already fulfilled`);
+        return NextResponse.json({
+          success: true,
+          order: {
+            id: existing.id,
+            orderNumber: existing.order_number,
+            status: existing.order_status,
+            date: existing.order_date,
+            subtotal: existing.order_subtotal_amount,
+            shipping: existing.order_shipping_amount,
+            tax: existing.order_total_tax_amount,
+            total: existing.order_total_amount,
+            hasPhysical: existing.has_physical_books,
+            hasDigital: existing.has_digital_books,
+          },
+          alreadyProcessed: true,
+        });
+      }
+    }
+
     // Validation
     if (!items || items.length === 0) {
       return NextResponse.json(
