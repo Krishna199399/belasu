@@ -81,11 +81,43 @@ export function resolveItemsFromSummary(itemsSummary?: string): FulfillOrderItem
   return items;
 }
 
+// In-flight mutex locks mapped by razorpayOrderId or paymentId to prevent concurrent executions
+const inFlightFulfillments = new Map<string, Promise<any>>();
+
 /**
- * Centralized, idempotent order fulfillment logic.
- * Safely callable by BOTH the browser checkout flow AND Razorpay server webhooks.
+ * Centralized, idempotent order fulfillment logic with in-flight mutex lock.
+ * Safely callable by BOTH the browser checkout flow AND Razorpay server webhooks concurrently.
  */
 export async function fulfillOrder(params: FulfillOrderParams) {
+  const lockKey = params.razorpayOrderId || params.paymentId;
+
+  if (lockKey) {
+    const existingPromise = inFlightFulfillments.get(lockKey);
+    if (existingPromise) {
+      console.log(`[fulfillOrder] Concurrency lock hit for ${lockKey}. Awaiting existing in-flight execution...`);
+      return existingPromise;
+    }
+  }
+
+  const promise = (async () => {
+    return await executeFulfillment(params);
+  })();
+
+  if (lockKey) {
+    inFlightFulfillments.set(lockKey, promise);
+  }
+
+  try {
+    return await promise;
+  } finally {
+    if (lockKey) {
+      // Retain resolved promise in memory for 15 seconds to safely absorb any trailing webhooks or duplicate requests
+      setTimeout(() => inFlightFulfillments.delete(lockKey), 15000);
+    }
+  }
+}
+
+async function executeFulfillment(params: FulfillOrderParams) {
   const supabase = createAdminClient();
 
   const {
@@ -227,6 +259,30 @@ export async function fulfillOrder(params: FulfillOrderParams) {
   const shippingAmount = hasPhysical ? shippingFee : 0;
   const taxAmount = 0;
   const totalAmount = subtotal + shippingAmount + taxAmount;
+
+  // Double-check DB right before generating order number & inserting
+  if (razorpayOrderId || paymentId) {
+    let recheckQuery = supabase.from('orders').select('*');
+    if (razorpayOrderId && paymentId) {
+      recheckQuery = recheckQuery.or(`razorpay_order_id.eq.${razorpayOrderId},razorpay_payment_id.eq.${paymentId}`);
+    } else if (razorpayOrderId) {
+      recheckQuery = recheckQuery.eq('razorpay_order_id', razorpayOrderId);
+    } else if (paymentId) {
+      recheckQuery = recheckQuery.eq('razorpay_payment_id', paymentId);
+    }
+
+    const { data: doubleCheck } = await recheckQuery;
+    if (doubleCheck && doubleCheck.length > 0) {
+      const existing = doubleCheck[0];
+      console.log(`[fulfillOrder] Pre-insert double-check hit: Order #${existing.order_number}`);
+      return {
+        success: true,
+        order: existing,
+        orderNumber: existing.order_number,
+        alreadyProcessed: true,
+      };
+    }
+  }
 
   // 7. Generate order number
   const { data: orderNumData } = await supabase.rpc('generate_order_number');
