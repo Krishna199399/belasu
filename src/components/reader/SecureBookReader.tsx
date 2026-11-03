@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DigitalBook } from '@/types';
 import { ReaderSidebar } from './ReaderSidebar';
 import { ReaderToolbar } from './ReaderToolbar';
-import { Lock, ShieldAlert, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Lock, ShieldAlert, ChevronLeft, ChevronRight, BookOpen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
 interface SecureBookReaderProps {
@@ -19,12 +19,14 @@ const PROGRESS_SAVE_DEBOUNCE_MS = 3000;
 export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: SecureBookReaderProps) {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [pageImageUrl, setPageImageUrl] = useState<string | null>(null);
+  const [secondPageImageUrl, setSecondPageImageUrl] = useState<string | null>(null);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isBlurred, setIsBlurred] = useState(false);
   const [devToolsDetected, setDevToolsDetected] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [zoom, setZoom] = useState(1.0);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false); // Default: Warm Paper Mode (#F8F6F2)
+  const [viewMode, setViewMode] = useState<'single' | 'double'>('single');
   const [isDemoMode, setIsDemoMode] = useState(false);
 
   const progressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -34,12 +36,31 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
 
   const maxPage = isOwned ? book.totalPages : book.isFreePreviewPages;
 
-  // On larger screens (desktop), open sidebar by default
+  // Handle responsive view mode: disable double mode on mobile / tablet screens
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
-      setSidebarOpen(true);
-    }
-  }, []);
+    const handleResize = () => {
+      if (window.innerWidth < 1024 && viewMode === 'double') {
+        setViewMode('single');
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewMode]);
+
+  const goToPage = useCallback((page: number) => {
+    const clamped = Math.max(1, Math.min(page, maxPage));
+    setCurrentPage(clamped);
+  }, [maxPage]);
+
+  const handlePrev = useCallback(() => {
+    const step = viewMode === 'double' ? 2 : 1;
+    goToPage(currentPage - step);
+  }, [currentPage, viewMode, goToPage]);
+
+  const handleNext = useCallback(() => {
+    const step = viewMode === 'double' ? 2 : 1;
+    goToPage(currentPage + step);
+  }, [currentPage, viewMode, goToPage]);
 
   // ── Touch swipe navigation for mobile readers ─────────────────────────────
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -53,18 +74,29 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
     const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
     if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
       if (deltaX < 0) {
-        goToPage(currentPage + 1);
+        handleNext();
       } else {
-        goToPage(currentPage - 1);
+        handlePrev();
       }
     }
     touchStartXRef.current = null;
     touchStartYRef.current = null;
   };
 
-  // ── DRM: Block all keyboard shortcuts ─────────────────────────────────────
+  // ── Keyboard Navigation (Allow Left/Right arrows, block DRM print/copy) ────
   useEffect(() => {
-    const blockKeys = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Allow navigation arrows
+      if (e.key === 'ArrowLeft') {
+        handlePrev();
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        handleNext();
+        return;
+      }
+
+      // DRM: Block shortcuts for copy, print, save, devtools
       const blocked = [
         e.key === 'PrintScreen',
         (e.ctrlKey || e.metaKey) && ['s', 'p', 'u', 'a', 'c', 'v'].includes(e.key.toLowerCase()),
@@ -76,16 +108,14 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
         e.stopPropagation();
       }
     };
-    window.addEventListener('keydown', blockKeys, true);
-    return () => window.removeEventListener('keydown', blockKeys, true);
-  }, []);
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [handlePrev, handleNext]);
 
   // ── DRM: Blur page when tab is hidden / screen recording detected ─────────
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.hidden) {
-        setIsBlurred(true);
-      }
+      if (document.hidden) setIsBlurred(true);
     };
     const handleFocus = () => setIsBlurred(false);
     const handleBlur = () => setIsBlurred(true);
@@ -124,11 +154,10 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
   const fetchPage = useCallback(async (page: number) => {
     setIsPageLoading(true);
     setPageImageUrl(null);
+    setSecondPageImageUrl(null);
     try {
       const isPreview = !isOwned;
-      const res = await fetch(
-        `/api/reader/page?bookId=${book.id}&page=${page}&preview=${isPreview}`
-      );
+      const res = await fetch(`/api/reader/page?bookId=${book.id}&page=${page}&preview=${isPreview}`);
       const data = await res.json();
       if (data.isDemoMode) {
         setIsDemoMode(true);
@@ -137,12 +166,21 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
         setIsDemoMode(false);
         setPageImageUrl(data.url);
       }
+
+      // If in double page mode, fetch the adjacent page
+      if (viewMode === 'double' && page + 1 <= maxPage) {
+        const res2 = await fetch(`/api/reader/page?bookId=${book.id}&page=${page + 1}&preview=${isPreview}`);
+        const data2 = await res2.json();
+        if (data2.url) {
+          setSecondPageImageUrl(data2.url);
+        }
+      }
     } catch {
       console.error('Failed to load page');
     } finally {
       setIsPageLoading(false);
     }
-  }, [book.id, isOwned]);
+  }, [book.id, isOwned, viewMode, maxPage]);
 
   useEffect(() => {
     fetchPage(currentPage);
@@ -177,190 +215,327 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
     return () => { if (progressTimerRef.current) clearTimeout(progressTimerRef.current); };
   }, [currentPage, isOwned, book.id]);
 
-  const goToPage = useCallback((page: number) => {
-    const clamped = Math.max(1, Math.min(page, maxPage));
-    setCurrentPage(clamped);
-  }, [maxPage]);
-
   const isLastFreePageReached = !isOwned && currentPage >= book.isFreePreviewPages;
+
+  // Active chapter lookup for footer label
+  const activeChapter = book.tableOfContents && book.tableOfContents.length > 0
+    ? book.tableOfContents.find((ch, i) =>
+        currentPage >= ch.startPage &&
+        (i === book.tableOfContents.length - 1 || currentPage < book.tableOfContents[i + 1].startPage)
+      )?.chapter || `Page ${currentPage}`
+    : `Page ${currentPage}`;
 
   return (
     <div
-      className={`flex flex-col h-screen overflow-hidden ${darkMode ? 'bg-amber-50' : 'bg-slate-950'}`}
+      className={`flex flex-col h-screen overflow-hidden transition-colors duration-200 ${
+        darkMode ? 'bg-[#0F172A] text-white' : 'bg-[#F8F6F2] text-slate-900'
+      }`}
       style={{ userSelect: 'none', WebkitUserSelect: 'none' } as React.CSSProperties}
     >
-      {/* Toolbar */}
+      {/* ── Top Header Toolbar ── */}
       <ReaderToolbar
         bookTitle={book.title}
+        bookSlug={book.slug}
         currentPage={currentPage}
         totalPages={maxPage}
         zoom={zoom}
         darkMode={darkMode}
         sidebarOpen={sidebarOpen}
-        onPrev={() => goToPage(currentPage - 1)}
-        onNext={() => goToPage(currentPage + 1)}
-        onZoomIn={() => setZoom((z) => Math.min(z + 0.1, 2))}
-        onZoomOut={() => setZoom((z) => Math.max(z - 0.1, 0.6))}
+        viewMode={viewMode}
+        onPrev={handlePrev}
+        onNext={handleNext}
+        onZoomIn={() => setZoom((z) => Math.min(z + 0.1, 1.8))}
+        onZoomOut={() => setZoom((z) => Math.max(z - 0.1, 0.7))}
         onToggleDark={() => setDarkMode((d) => !d)}
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
+        onToggleViewMode={() => setViewMode((m) => (m === 'single' ? 'double' : 'single'))}
         onPageInput={goToPage}
       />
 
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Mobile Drawer Backdrop */}
+        {/* Mobile / Tablet Drawer Backdrop */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-30 md:hidden"
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
-        {/* Sidebar: Drawer on mobile, column on desktop */}
+        {/* Sidebar: Slide-over on mobile/tablet, collapsible column on desktop */}
         <div
-          className={`fixed md:relative inset-y-0 left-0 z-40 transition-transform duration-300 md:transition-none h-full ${
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full md:hidden'
+          className={`fixed lg:relative inset-y-0 left-0 z-40 transition-transform duration-300 h-full ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:hidden'
           }`}
         >
           <ReaderSidebar
             book={book}
             currentPage={currentPage}
             isOwned={isOwned}
+            darkMode={darkMode}
             freePreviewPages={book.isFreePreviewPages}
             onPageJump={goToPage}
             onClose={() => setSidebarOpen(false)}
           />
         </div>
 
-        {/* Reader Area */}
+        {/* ── Main Book Reading Viewport ── */}
         <main
-          className="flex-1 overflow-auto flex items-start justify-center p-2 sm:p-4 md:p-6 relative touch-scroll"
+          className="flex-1 overflow-auto flex flex-col items-center justify-between p-3 sm:p-6 md:p-8 relative touch-scroll"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {/* DevTools Blur Overlay */}
+          {/* DevTools Security Overlay */}
           {devToolsDetected && (
             <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl z-50 flex items-center justify-center p-4">
               <div className="text-center space-y-4">
                 <ShieldAlert className="w-12 h-12 sm:w-14 sm:h-14 text-amber-400 mx-auto" />
                 <h3 className="text-white font-black text-lg sm:text-xl">Developer Tools Detected</h3>
-                <p className="text-slate-400 text-xs sm:text-sm max-w-xs mx-auto">Please close developer tools to continue reading. This content is protected.</p>
+                <p className="text-slate-400 text-xs sm:text-sm max-w-xs mx-auto">
+                  Please close developer tools to continue reading. This academic content is protected.
+                </p>
               </div>
             </div>
           )}
 
-          {/* Tab Switch Blur */}
+          {/* Tab Switch Blur Overlay */}
           {isBlurred && !devToolsDetected && (
             <div
-              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl z-40 flex items-center justify-center cursor-pointer p-4"
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-md z-40 flex items-center justify-center cursor-pointer p-4"
               onClick={() => setIsBlurred(false)}
             >
-              <div className="text-center space-y-3">
+              <div className="text-center space-y-3 bg-white/10 p-6 rounded-2xl border border-white/20">
                 <Lock className="w-10 h-10 text-amber-400 mx-auto" />
-                <p className="text-white font-bold text-sm">Click anywhere to continue reading</p>
+                <p className="text-white font-bold text-sm">Click anywhere to resume reading</p>
               </div>
             </div>
           )}
 
-          {/* Page Content */}
+          {/* ── Left Margin Flip Arrow (Desktop) ── */}
+          <button
+            type="button"
+            onClick={handlePrev}
+            disabled={currentPage <= 1}
+            aria-label="Previous page"
+            className="hidden md:flex absolute left-3 lg:left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 lg:w-12 lg:h-12 rounded-full items-center justify-center transition-all cursor-pointer shadow-md bg-white/90 hover:bg-white text-slate-700 hover:text-amber-600 border border-stone-200 disabled:opacity-0 disabled:pointer-events-none hover:scale-105 active:scale-95"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          {/* ── Right Margin Flip Arrow (Desktop) ── */}
+          <button
+            type="button"
+            onClick={handleNext}
+            disabled={currentPage >= maxPage}
+            aria-label="Next page"
+            className="hidden md:flex absolute right-3 lg:right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 lg:w-12 lg:h-12 rounded-full items-center justify-center transition-all cursor-pointer shadow-md bg-white/90 hover:bg-white text-slate-700 hover:text-amber-600 border border-stone-200 disabled:opacity-0 disabled:pointer-events-none hover:scale-105 active:scale-95"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          {/* ── Page Canvas Container ── */}
           <div
             style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s ease' }}
-            className="relative w-full max-w-[680px] mx-auto pb-20"
+            className={`w-full mx-auto my-auto flex justify-center items-center pb-6 transition-all ${
+              viewMode === 'double' ? 'max-w-[1240px]' : 'max-w-[760px]'
+            }`}
           >
             {isPageLoading ? (
               <div
-                className={`w-full max-w-[680px] h-[550px] sm:h-[800px] md:h-[900px] rounded-2xl flex items-center justify-center ${darkMode ? 'bg-amber-100' : 'bg-slate-800'}`}
+                className={`w-full max-w-[720px] aspect-[1/1.3] rounded-2xl flex items-center justify-center shadow-lg border ${
+                  darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-stone-200'
+                }`}
               >
                 <div className="text-center space-y-3">
                   <div className="w-10 h-10 border-2 border-amber-500/40 border-t-amber-500 rounded-full animate-spin mx-auto" />
-                  <p className="text-xs sm:text-sm text-slate-400">Loading page {currentPage}...</p>
+                  <p className={`text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Loading page {currentPage}...
+                  </p>
                 </div>
               </div>
             ) : isDemoMode ? (
-              /* Demo Mode — shows placeholder when no book images uploaded yet */
+              /* ── High-Fidelity Paper Preview Sheet (Until PDF is uploaded) ── */
               <div
-                className={`w-full max-w-[680px] min-h-[550px] sm:min-h-[800px] rounded-2xl shadow-2xl relative overflow-hidden flex flex-col ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
+                className={`w-full rounded-2xl shadow-xl border overflow-hidden transition-all duration-200 ${
+                  darkMode
+                    ? 'bg-slate-900 border-slate-800'
+                    : 'bg-white border-stone-200 shadow-stone-300/40'
+                } ${viewMode === 'double' ? 'grid grid-cols-2 divide-x divide-stone-200' : 'max-w-[720px]'}`}
                 onDragStart={(e) => e.preventDefault()}
               >
-                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 md:p-16 text-center gap-4 sm:gap-6">
-                  <div className="text-5xl sm:text-7xl">📖</div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-black text-slate-900 leading-snug">{book.title}</h3>
-                    <p className="text-slate-500 text-xs sm:text-sm mt-1 sm:mt-2">Page {currentPage} of {book.totalPages}</p>
-                  </div>
-                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 text-xs sm:text-sm text-amber-800 text-left max-w-sm">
-                    <p className="font-black mb-1.5">📚 Demo Mode</p>
-                    <p>Book pages will appear here once uploaded to Supabase Storage. The reader and all DRM protections are fully active.</p>
-                  </div>
-                  {/* Demo page content */}
-                  <div className="w-full border border-slate-200 rounded-xl p-4 sm:p-6 text-left space-y-3">
-                    <h4 className="font-black text-slate-800 text-xs sm:text-sm">{book.tableOfContents.find((ch, i) =>
-                      currentPage >= ch.startPage && (i === book.tableOfContents.length - 1 || currentPage < book.tableOfContents[i + 1].startPage)
-                    )?.chapter || `Page ${currentPage}`}</h4>
+                {/* Page Left (Current Page) */}
+                <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px]">
+                  <div className="space-y-6">
+                    {/* Page Header */}
+                    <div className="flex items-center justify-between border-b pb-3 border-stone-200 text-xs text-slate-500">
+                      <span className="font-serif font-bold text-slate-800">{book.title}</span>
+                      <span className="font-mono font-bold">Page {currentPage}</span>
+                    </div>
+
+                    {/* Chapter Title Badge */}
                     <div className="space-y-2">
-                      {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className={`h-2.5 sm:h-3 rounded-full bg-slate-200 ${i % 3 === 0 ? 'w-3/4' : i % 3 === 1 ? 'w-full' : 'w-5/6'}`} />
-                      ))}
+                      <span className="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-md">
+                        {activeChapter}
+                      </span>
+                      <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900 leading-snug">
+                        {book.title}
+                      </h3>
+                    </div>
+
+                    {/* Notice card */}
+                    <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 space-y-1.5">
+                      <div className="flex items-center gap-1.5 font-bold">
+                        <Sparkles className="w-4 h-4 text-amber-600" />
+                        <span>PDF Conversion Ready</span>
+                      </div>
+                      <p className="leading-relaxed text-amber-900">
+                        When the PDF file is uploaded, crisp high-resolution textbook pages with Kannada script and English translations will display here seamlessly.
+                      </p>
+                    </div>
+
+                    {/* Sample Page Skeleton Structure */}
+                    <div className="space-y-3 pt-2">
+                      <div className="h-3 bg-stone-100 rounded-md w-3/4" />
+                      <div className="h-2.5 bg-stone-100 rounded-md w-full" />
+                      <div className="h-2.5 bg-stone-100 rounded-md w-5/6" />
+                      <div className="h-2.5 bg-stone-100 rounded-md w-4/5" />
+                      <div className="h-2.5 bg-stone-100 rounded-md w-full" />
                     </div>
                   </div>
+
+                  {/* Page Footer */}
+                  <div className="pt-6 border-t border-stone-200 flex items-center justify-between text-xs text-slate-400">
+                    <span>Belesu Academic Karnataka</span>
+                    <span>{currentPage}</span>
+                  </div>
                 </div>
+
+                {/* Page Right (Only in Two-Page Spread Mode) */}
+                {viewMode === 'double' && (
+                  <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px] bg-stone-50/30">
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between border-b pb-3 border-stone-200 text-xs text-slate-500">
+                        <span className="font-mono font-bold">Page {currentPage + 1}</span>
+                        <span className="font-serif font-bold text-slate-800">English Translation</span>
+                      </div>
+
+                      <div className="space-y-3 pt-4">
+                        <div className="h-3 bg-stone-200/70 rounded-md w-1/2" />
+                        <div className="h-2.5 bg-stone-100 rounded-md w-full" />
+                        <div className="h-2.5 bg-stone-100 rounded-md w-5/6" />
+                        <div className="h-2.5 bg-stone-100 rounded-md w-full" />
+                        <div className="h-2.5 bg-stone-100 rounded-md w-4/5" />
+                        <div className="h-2.5 bg-stone-100 rounded-md w-3/4" />
+                      </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-stone-200 flex items-center justify-between text-xs text-slate-400">
+                      <span>Solved Textbook Questions</span>
+                      <span>{currentPage + 1}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : pageImageUrl ? (
-              /* Real Page Image from Supabase */
+              /* ── Real Book Page Image ── */
               <div
-                className={`relative rounded-2xl shadow-2xl overflow-hidden w-full max-w-[680px] ${darkMode ? 'bg-amber-50' : 'bg-white'}`}
+                className={`w-full rounded-2xl shadow-xl overflow-hidden transition-all duration-200 ${
+                  viewMode === 'double' && secondPageImageUrl
+                    ? 'grid grid-cols-2 divide-x divide-stone-200 bg-white shadow-stone-300/40 border border-stone-200'
+                    : 'max-w-[720px] bg-white shadow-stone-300/40 border border-stone-200'
+                }`}
                 onDragStart={(e) => e.preventDefault()}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={pageImageUrl}
-                  alt={`Page ${currentPage}`}
-                  draggable={false}
-                  className="w-full max-w-[680px] block"
-                  onContextMenu={(e) => e.preventDefault()}
-                  style={{ userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' } as React.CSSProperties}
-                />
+                {/* Single / Left Page */}
+                <div className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={pageImageUrl}
+                    alt={`Page ${currentPage}`}
+                    draggable={false}
+                    className="w-full h-auto block select-none pointer-events-none"
+                    onContextMenu={(e) => e.preventDefault()}
+                  />
+                </div>
+
+                {/* Right Page (Two-Page Spread) */}
+                {viewMode === 'double' && secondPageImageUrl && (
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={secondPageImageUrl}
+                      alt={`Page ${currentPage + 1}`}
+                      draggable={false}
+                      className="w-full h-auto block select-none pointer-events-none"
+                      onContextMenu={(e) => e.preventDefault()}
+                    />
+                  </div>
+                )}
               </div>
             ) : null}
 
-            {/* Purchase prompt at preview boundary */}
+            {/* Preview Boundary Overlay */}
             {isLastFreePageReached && (
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent rounded-2xl flex items-end justify-center pb-8 sm:pb-12">
-                <div className="text-center space-y-3 sm:space-y-4 px-4 sm:px-8">
-                  <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400 mx-auto" />
-                  <h3 className="text-white font-black text-base sm:text-lg">Free Preview Ended</h3>
-                  <p className="text-slate-300 text-xs sm:text-sm">Purchase this book to read all {book.totalPages} pages</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent rounded-2xl flex items-end justify-center pb-8 sm:pb-12 z-30">
+                <div className="text-center space-y-3 sm:space-y-4 px-4 sm:px-8 max-w-md">
+                  <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30">
+                    <Lock className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-white font-serif font-black text-lg sm:text-xl">
+                    Free Preview Reached
+                  </h3>
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                    You have previewed the first {book.isFreePreviewPages} pages. Unlock full lifetime access to read all {book.totalPages} pages.
+                  </p>
                   <Link
                     href={`/digital/${book.slug}/purchase`}
-                    className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black px-5 sm:px-6 py-3 rounded-xl text-xs sm:text-sm transition min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-3 rounded-xl text-xs sm:text-sm transition shadow-lg min-h-[44px] cursor-pointer"
                   >
-                    Buy for ₹{book.price} — Unlock All Pages
+                    <span>Unlock Full Book for ₹{book.price}</span>
                   </Link>
                 </div>
               </div>
             )}
           </div>
-        </main>
 
-        {/* Bottom page nav (mobile friendly) */}
-        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 bg-slate-900/90 backdrop-blur border border-slate-700/60 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 shadow-xl pb-safe z-20">
-          <button
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage <= 1}
-            className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-30 transition cursor-pointer"
-            aria-label="Previous page"
+          {/* ── Sleek Docked Footer Scrubber (Does not cover page content) ── */}
+          <footer
+            className={`w-full max-w-4xl mx-auto rounded-2xl px-4 py-2.5 sm:py-3 border flex flex-col sm:flex-row items-center justify-between gap-2.5 select-none shrink-0 transition-colors ${
+              darkMode
+                ? 'bg-slate-900/95 border-slate-800 text-white'
+                : 'bg-white/95 border-stone-200 text-slate-800 shadow-sm'
+            }`}
           >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <span className="text-white text-xs sm:text-sm font-bold font-mono px-1">{currentPage} / {maxPage}</span>
-          <button
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage >= maxPage}
-            className="min-w-[40px] min-h-[40px] flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-30 transition cursor-pointer"
-            aria-label="Next page"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
+            {/* Active Chapter Label */}
+            <div className="flex items-center gap-2 min-w-0 max-w-full sm:max-w-[280px]">
+              <BookOpen className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span className="text-xs font-bold truncate text-slate-700">
+                {activeChapter}
+              </span>
+            </div>
+
+            {/* Slider Scrubber */}
+            <div className="flex-1 w-full sm:max-w-xs flex items-center gap-2.5">
+              <input
+                type="range"
+                min={1}
+                max={maxPage}
+                value={currentPage}
+                onChange={(e) => goToPage(Number(e.target.value))}
+                className="w-full accent-amber-500 cursor-pointer h-1.5 bg-stone-200 rounded-lg"
+                aria-label="Page slider scrubber"
+              />
+            </div>
+
+            {/* Page Count Meta */}
+            <div className="flex items-center gap-2 text-xs font-mono font-bold text-slate-600 shrink-0">
+              <span>Page {currentPage} of {maxPage}</span>
+              <span className="text-stone-300">|</span>
+              <span className="text-amber-600 font-sans">
+                {Math.round((currentPage / maxPage) * 100)}%
+              </span>
+            </div>
+          </footer>
+        </main>
       </div>
     </div>
   );

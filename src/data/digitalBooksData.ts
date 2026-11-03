@@ -33,7 +33,17 @@ export const CLASS_6_DIGITAL_BOOK: DigitalBook = {
     'Solved textbook exercises and model answers',
     'Chapter summaries in Kannada and English',
   ],
-  tableOfContents: [],
+  tableOfContents: [
+    { chapter: 'Curriculum Index & Syllabus Overview', startPage: 1 },
+    { chapter: 'ಪಾಠ ೧: ಬೆಳಗು ಜಾತ್ರೆ (Prose Translation & Meanings)', startPage: 6 },
+    { chapter: 'ಪಾಠ ೨: ಧನ್ಯವಾದಗಳು (Lesson Notes & English Translation)', startPage: 24 },
+    { chapter: 'ಪಾಠ ೩: ಸಿದ್ದಗಂಗೆಯ ಶ್ರೀಗಳು (Biography & Analysis)', startPage: 42 },
+    { chapter: 'ಪದ್ಯ ೪: ಕೃಷ್ಣನ ಪದ್ಯಗಳು (Poetry Breakdown)', startPage: 60 },
+    { chapter: 'ಪಾಠ ೫: ಸ್ವಾತಂತ್ರ್ಯ ಹೋರಾಟಗಾರರು (History & Glossary)', startPage: 78 },
+    { chapter: 'ಪಾಠ ೬: ಪರಿಸರ ಸಂರಕ್ಷಣೆ (Ecology & Vocabulary)', startPage: 96 },
+    { chapter: 'ವ್ಯಾಕರಣ: ಸಂಧಿ, ಸಮಾಸ ಮತ್ತು ವ್ಯಾಕರಣಾಂಶಗಳು (Grammar Rules)', startPage: 120 },
+    { chapter: 'ಪಠ್ಯಪುಸ್ತಕ ಮಾದರಿ ಪ್ರಶ್ನೋತ್ತರಗಳು (Complete Model Answers)', startPage: 148 },
+  ],
 };
 
 export const SAVI_4_DIGITAL_BOOK: DigitalBook = {
@@ -64,7 +74,18 @@ export const SAVI_4_DIGITAL_BOOK: DigitalBook = {
     'Instant access on Mobile, Tablet, and Desktop',
     'Read anytime in Belesu Web Reader',
   ],
-  tableOfContents: [],
+  tableOfContents: [
+    { chapter: 'Curriculum Index & Lesson Plan', startPage: 1 },
+    { chapter: 'ಪಾಠ ೧: ಕನ್ನಡ ನಾಡು ನುಡಿ (Kannada Land & Language)', startPage: 6 },
+    { chapter: 'ಪಾಠ ೨: ನಾಯಿ ಮತ್ತು ತೋಳ (The Dog and The Wolf)', startPage: 22 },
+    { chapter: 'ಪಾಠ ೩: ವೀರ ಮಹಿಳೆ ಕಿತ್ತೂರು ಚೆನ್ನಮ್ಮ (Queen Chennamma)', startPage: 40 },
+    { chapter: 'ಪದ್ಯ ೪: ಗಿಡ ಮರಗಳ ಗೆಳೆತನ (Trees Friendship - Poem)', startPage: 58 },
+    { chapter: 'ಪಾಠ ೫: ಸಿರಿಗನ್ನಡಂ ಗೆಲ್ಗೆ (Glory of Kannada)', startPage: 74 },
+    { chapter: 'ಪಾಠ ೬: ಬುದ್ಧನ ಕರುಣೆ (Compassion of Buddha)', startPage: 92 },
+    { chapter: 'ಪದ್ಯ ೭: ಮಕ್ಕಳ ಕನಸು (Children Dreams - Poem)', startPage: 110 },
+    { chapter: 'ವ್ಯಾಕರಣ ಮತ್ತು ಭಾಷಾಭ್ಯಾಸ (Grammar & Language Practice)', startPage: 130 },
+    { chapter: 'ಮಾದರಿ ಪ್ರಶ್ನೋತ್ತರಗಳು (Solved Exercise Solutions)', startPage: 154 },
+  ],
 };
 
 export const SAVI_3_DIGITAL_BOOK: DigitalBook = {
@@ -95,7 +116,17 @@ export const SAVI_3_DIGITAL_BOOK: DigitalBook = {
     'Instant access across all devices',
     'Read anytime in Belesu Web Reader',
   ],
-  tableOfContents: [],
+  tableOfContents: [
+    { chapter: 'Curriculum Index & Table of Contents', startPage: 1 },
+    { chapter: 'ಪಾಠ ೧: ನಾವೆಲ್ಲರೂ ಒಂದೇ (We Are All One)', startPage: 6 },
+    { chapter: 'ಪಾಠ ೨: ಕಾಡಿನ ಹಬ್ಬ (The Forest Festival)', startPage: 20 },
+    { chapter: 'ಪದ್ಯ ೩: ಅಮ್ಮ (Mother - Poem Translation & Notes)', startPage: 38 },
+    { chapter: 'ಪಾಠ ೪: ಬುದ್ಧಿವಂತ ಕಾಗೆ (The Clever Crow)', startPage: 54 },
+    { chapter: 'ಪಾಠ ೫: ಹಬ್ಬ ಹರಿದಿನಗಳು (Festivals of Karnataka)', startPage: 72 },
+    { chapter: 'ಪಾಠ ೬: ಸತ್ಯವಂತ ಬಾಲಕ (The Honest Boy)', startPage: 90 },
+    { chapter: 'ಗುಣಿಂತಗಳು ಮತ್ತು ವ್ಯಾಕರಣ (Gunintagalu & Simple Grammar)', startPage: 108 },
+    { chapter: 'ಅಭ್ಯಾಸ ಪ್ರಶ್ನೆಗಳು ಮತ್ತು ಉತ್ತರಗಳು (Exercise Solutions)', startPage: 132 },
+  ],
 };
 
 export const DIGITAL_BOOKS_DATA: DigitalBook[] = [
