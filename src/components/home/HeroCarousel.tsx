@@ -35,38 +35,16 @@ interface ComparisonSlide {
   belesuCoverImg: string;
   tagline: string;
   bgImg: string;
+  seriesTrack: 'SaviSiri' | 'KaliTili';
+  gradeClass: number;
 }
 
 const COMPARISON_SLIDES: ComparisonSlide[] = [
-  // Slide 0: Class 2 - Featured match from reference image!
+  // ----------------------------------------------------
+  // Track 1: Savi & Siri (1st Language) - Classes 1 to 5
+  // ----------------------------------------------------
   {
-    id: 'class-2',
-    classNameLabel: 'Class 2',
-    badge: 'RECOMMENDED',
-    govtTitle: 'Govt Savi Kannada Class 2',
-    govtCoverImg: '/government-covers/savi-2.jpg',
-    belesuBookId: '15849',
-    belesuTitle: 'Savi Kannada Class 2',
-    belesuCoverImg: '/covers/savi-2.png',
-    tagline: 'Matches Karnataka State Syllabus Line-by-Line',
-    bgImg: '/background5.png',
-  },
-  // Slide 1: Class 3
-  {
-    id: 'class-3',
-    classNameLabel: 'Class 3',
-    badge: 'POPULAR',
-    govtTitle: 'Govt Savi Kannada Class 3',
-    govtCoverImg: '/government-covers/savi-3.jpg',
-    belesuBookId: '16142',
-    belesuTitle: 'Savi Kannada Class 3',
-    belesuCoverImg: '/covers/savi-3.png',
-    tagline: 'Kannada sentence structure simplified with English keys',
-    bgImg: '/2.png',
-  },
-  // Slide 2: Class 1
-  {
-    id: 'class-1',
+    id: 'savi-1',
     classNameLabel: 'Class 1',
     badge: 'BEGINNER FRIENDLY',
     govtTitle: 'Govt Savi Kannada Class 1',
@@ -76,10 +54,39 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuCoverImg: '/covers/savi-1.png',
     tagline: 'English alphabet pronunciation & foundational vocabulary',
     bgImg: '/slider-image.png',
+    seriesTrack: 'SaviSiri',
+    gradeClass: 1,
   },
-  // Slide 3: Class 4
   {
-    id: 'class-4',
+    id: 'savi-2',
+    classNameLabel: 'Class 2',
+    badge: 'RECOMMENDED',
+    govtTitle: 'Govt Savi Kannada Class 2',
+    govtCoverImg: '/government-covers/savi-2.jpg',
+    belesuBookId: '15849',
+    belesuTitle: 'Savi Kannada Class 2',
+    belesuCoverImg: '/covers/savi-2.png',
+    tagline: 'Matches Karnataka State Syllabus Line-by-Line',
+    bgImg: '/background5.png',
+    seriesTrack: 'SaviSiri',
+    gradeClass: 2,
+  },
+  {
+    id: 'savi-3',
+    classNameLabel: 'Class 3',
+    badge: 'POPULAR',
+    govtTitle: 'Govt Savi Kannada Class 3',
+    govtCoverImg: '/government-covers/savi-3.jpg',
+    belesuBookId: '16142',
+    belesuTitle: 'Savi Kannada Class 3',
+    belesuCoverImg: '/covers/savi-3.png',
+    tagline: 'Kannada sentence structure simplified with English keys',
+    bgImg: '/2.png',
+    seriesTrack: 'SaviSiri',
+    gradeClass: 3,
+  },
+  {
+    id: 'savi-4',
     classNameLabel: 'Class 4',
     badge: 'BESTSELLER',
     govtTitle: 'Govt Savi Kannada Class 4',
@@ -89,10 +96,11 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuCoverImg: '/covers/savi-4.png',
     tagline: 'Ottakshara tutorials, poem meanings & solved exercises',
     bgImg: '/3.png',
+    seriesTrack: 'SaviSiri',
+    gradeClass: 4,
   },
-  // Slide 4: Class 5
   {
-    id: 'class-5',
+    id: 'siri-5',
     classNameLabel: 'Class 5',
     badge: 'BOARD SPECIAL',
     govtTitle: 'Govt Siri Kannada Class 5',
@@ -102,6 +110,82 @@ const COMPARISON_SLIDES: ComparisonSlide[] = [
     belesuCoverImg: '/covers/siri-5.png',
     tagline: 'Formal letter writing, literature history & model papers',
     bgImg: '/slider-960-x-760-px.jpg',
+    seriesTrack: 'SaviSiri',
+    gradeClass: 5,
+  },
+
+  // ----------------------------------------------------
+  // Track 2: Kali & Tili (2nd Language) - Classes 1 to 5
+  // ----------------------------------------------------
+  {
+    id: 'kali-1',
+    classNameLabel: 'Class 1',
+    badge: 'NEW EDITION',
+    govtTitle: 'Govt Kali Kannada Class 1',
+    govtCoverImg: '/government-covers/kali-1.jpg',
+    belesuBookId: '19570',
+    belesuTitle: 'Kali Kannada Class 1',
+    belesuCoverImg: '/covers/kali-1.png',
+    tagline: 'Foundational alphabet tracing, phonetics & basic vocabulary',
+    bgImg: '/slider-image.png',
+    seriesTrack: 'KaliTili',
+    gradeClass: 1,
+  },
+  {
+    id: 'kali-2',
+    classNameLabel: 'Class 2',
+    badge: 'RECOMMENDED',
+    govtTitle: 'Govt Kali Kannada Class 2',
+    govtCoverImg: '/government-covers/kali-2.jpg',
+    belesuBookId: '19577',
+    belesuTitle: 'Kali Kannada Class 2',
+    belesuCoverImg: '/covers/kali-2.png',
+    tagline: 'Story lessons, moral rhymes & step-by-step English translation',
+    bgImg: '/background5.png',
+    seriesTrack: 'KaliTili',
+    gradeClass: 2,
+  },
+  {
+    id: 'kali-3',
+    classNameLabel: 'Class 3',
+    badge: 'POPULAR',
+    govtTitle: 'Govt Kali Kannada Class 3',
+    govtCoverImg: '/government-covers/kali-3.jpg',
+    belesuBookId: '19571',
+    belesuTitle: 'Kali Kannada Class 3',
+    belesuCoverImg: '/covers/kali-3.png',
+    tagline: 'Passage breakdown, advanced ottakshara guide & solved exams',
+    bgImg: '/2.png',
+    seriesTrack: 'KaliTili',
+    gradeClass: 3,
+  },
+  {
+    id: 'kali-4',
+    classNameLabel: 'Class 4',
+    badge: 'ESSENTIAL',
+    govtTitle: 'Govt Kali Kannada Class 4',
+    govtCoverImg: '/government-covers/kali-4.jpg',
+    belesuBookId: '19757',
+    belesuTitle: 'Kali Kannada Class 4',
+    belesuCoverImg: '/covers/kali-4.png',
+    tagline: 'Full chapter text with parallel English & complete answer keys',
+    bgImg: '/3.png',
+    seriesTrack: 'KaliTili',
+    gradeClass: 4,
+  },
+  {
+    id: 'tili-5',
+    classNameLabel: 'Class 5',
+    badge: 'BESTSELLER',
+    govtTitle: 'Govt Tili Kannada Class 5',
+    govtCoverImg: '/government-covers/tili-5.jpg',
+    belesuBookId: '20049',
+    belesuTitle: 'Tili Kannada Class 5',
+    belesuCoverImg: '/covers/tili-5.png',
+    tagline: 'Grammar masterclass, literature history & exam performance',
+    bgImg: '/slider-960-x-760-px.jpg',
+    seriesTrack: 'KaliTili',
+    gradeClass: 5,
   },
 ];
 
@@ -164,6 +248,19 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
     }
   };
 
+  const handleTrackSwitch = (track: 'SaviSiri' | 'KaliTili') => {
+    if (activeSlide.seriesTrack === track) return;
+    const targetIdx = COMPARISON_SLIDES.findIndex(
+      (s) => s.seriesTrack === track && s.gradeClass === activeSlide.gradeClass
+    );
+    if (targetIdx !== -1) {
+      setCurrentSlide(targetIdx);
+    } else {
+      const fallbackIdx = COMPARISON_SLIDES.findIndex((s) => s.seriesTrack === track);
+      if (fallbackIdx !== -1) setCurrentSlide(fallbackIdx);
+    }
+  };
+
   const scrollToSeriesDeck = (e: React.MouseEvent) => {
     const el = document.getElementById('series-deck');
     if (el) {
@@ -177,6 +274,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
       className="relative w-full bg-gradient-to-b from-[#fefbf6] via-[#fffdf9] to-[#fff8ee] text-slate-900 overflow-hidden select-none"
     >
       <style jsx>{`
@@ -322,6 +421,43 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             {/* Ambient Warm Glow */}
             <div className="absolute inset-0 bg-gradient-to-t from-amber-200/25 via-orange-100/20 to-transparent rounded-3xl blur-2xl pointer-events-none" />
 
+            {/* Curriculum Track Switcher: Savi & Siri (1st Lang) vs Kali & Tili (2nd Lang) */}
+            <div className="mb-2 sm:mb-3 flex items-center gap-1 sm:gap-1.5 p-1 bg-white/95 backdrop-blur-xs rounded-full border border-amber-200 shadow-xs z-20">
+              <button
+                type="button"
+                onClick={() => handleTrackSwitch('SaviSiri')}
+                className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activeSlide.seriesTrack === 'SaviSiri'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                }`}
+              >
+                <span>Savi &amp; Siri</span>
+                <span className={`text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.2 rounded-full ${
+                  activeSlide.seriesTrack === 'SaviSiri' ? 'bg-white/25 text-white' : 'bg-stone-200/80 text-stone-700'
+                }`}>
+                  1st Lang
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleTrackSwitch('KaliTili')}
+                className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activeSlide.seriesTrack === 'KaliTili'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                }`}
+              >
+                <span>Kali &amp; Tili</span>
+                <span className={`text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.2 rounded-full ${
+                  activeSlide.seriesTrack === 'KaliTili' ? 'bg-white/25 text-white' : 'bg-stone-200/80 text-stone-700'
+                }`}>
+                  2nd Lang
+                </span>
+              </button>
+            </div>
+
             {/* Comparison Stage Container */}
             <div className="relative w-full max-w-[500px] xs:max-w-[560px] sm:max-w-[640px] lg:max-w-[720px] flex flex-col items-center justify-center">
               
@@ -422,20 +558,28 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
                   <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
 
-                {/* Dots */}
-                {COMPARISON_SLIDES.map((s, idx) => (
-                  <button
-                    key={`dot-${s.id}`}
-                    type="button"
-                    onClick={() => setCurrentSlide(idx)}
-                    className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      currentSlide === idx
-                        ? 'w-7 sm:w-8 bg-gradient-to-r from-orange-500 to-amber-500 shadow-sm'
-                        : 'w-2 sm:w-2.5 bg-stone-300 hover:bg-stone-400'
-                    }`}
-                    aria-label={`Show ${s.classNameLabel}`}
-                  />
-                ))}
+                {/* 5 Class Dots for Active Track (Classes 1 to 5) */}
+                {[1, 2, 3, 4, 5].map((grade) => {
+                  const isCurrent = activeSlide.gradeClass === grade;
+                  return (
+                    <button
+                      key={`dot-grade-${grade}`}
+                      type="button"
+                      onClick={() => {
+                        const targetIdx = COMPARISON_SLIDES.findIndex(
+                          (s) => s.seriesTrack === activeSlide.seriesTrack && s.gradeClass === grade
+                        );
+                        if (targetIdx !== -1) setCurrentSlide(targetIdx);
+                      }}
+                      className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                        isCurrent
+                          ? 'w-7 sm:w-8 bg-gradient-to-r from-orange-500 to-amber-500 shadow-sm'
+                          : 'w-2 sm:w-2.5 bg-stone-300 hover:bg-stone-400'
+                      }`}
+                      aria-label={`Show Class ${grade}`}
+                    />
+                  );
+                })}
 
                 {/* Next Arrow */}
                 <button
