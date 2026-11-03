@@ -125,8 +125,8 @@ export const Navbar: React.FC = () => {
   const saviBooks = [
     { label: 'Class 1 · Savi Kannada', href: '/books/savi-kannada-class-1/' },
     { label: 'Class 2 · Savi Kannada', href: '/books/savi-kannada-class-2/' },
-    { label: 'Class 3 · Savi Kannada', href: '/books/savi-kannada-class-3/' },
-    { label: 'Class 4 · Savi Kannada', href: '/books/savi-kannada-class-4/' },
+    { label: 'Class 3 · Savi Kannada', href: '/books/savi-kannada-class-3/', badge: 'Print + Digital' },
+    { label: 'Class 4 · Savi Kannada', href: '/books/savi-kannada-class-4/', badge: 'Print + Digital' },
   ];
 
   const kaliBooks = [
@@ -139,6 +139,37 @@ export const Navbar: React.FC = () => {
   const class5Books = [
     { label: 'Class 5 · Siri Kannada', href: '/books/siri-kannada-english-translated-guidebook-class-5/' },
     { label: 'Class 5 · Tili Kannada', href: '/books/tili-kannada-english-translated-innovative-guidebook-class-5/' },
+  ];
+
+  const digitalNavBooks = [
+    {
+      title: 'Class 3 Savi Digital Edition',
+      subtitle: '₹280 • Instant Web Reader',
+      href: '/books/savi-kannada-class-3?format=digital',
+      badge: 'Available',
+      badgeColor: 'bg-emerald-100 text-emerald-800',
+    },
+    {
+      title: 'Class 4 Savi Digital Edition',
+      subtitle: '₹290 • Instant Web Reader',
+      href: '/books/savi-kannada-class-4?format=digital',
+      badge: 'Available',
+      badgeColor: 'bg-emerald-100 text-emerald-800',
+    },
+    {
+      title: 'Class 6 Digital Guidebook',
+      subtitle: '₹295 • Official Web Edition',
+      href: '/digital/kannada-class-6-guide/',
+      badge: 'Available',
+      badgeColor: 'bg-emerald-100 text-emerald-800',
+    },
+    {
+      title: 'Classes 7–10 Digital',
+      subtitle: 'Curriculum Roadmap',
+      href: '/digital/',
+      badge: 'Coming Soon',
+      badgeColor: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+    },
   ];
 
   const spokenBooks = [
@@ -212,7 +243,7 @@ export const Navbar: React.FC = () => {
                         onMouseEnter={handlePurchaseMouseEnter}
                         onMouseLeave={handlePurchaseMouseLeave}
                       >
-                        <div className="w-[780px] bg-white rounded-2xl shadow-2xl border border-stone-200 py-5">
+                        <div className="w-[820px] bg-white rounded-2xl shadow-2xl border border-stone-200 py-5">
                         <div className="grid grid-cols-3 gap-6 px-6">
                           
                           {/* Column 1: Savi Series */}
@@ -236,8 +267,15 @@ export const Navbar: React.FC = () => {
                                   onClick={() => setPurchaseDropdownOpen(false)}
                                   className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-800 rounded-lg transition group"
                                 >
-                                  <span>{book.label}</span>
-                                  <span className="text-slate-300 group-hover:text-amber-600 transition">→</span>
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className="truncate">{book.label}</span>
+                                    {book.badge && (
+                                      <span className="text-[8.5px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300/80 px-1.5 py-0.2 rounded-full whitespace-nowrap">
+                                        Dual
+                                      </span>
+                                    )}
+                                  </div>
+                                  <span className="text-slate-300 group-hover:text-amber-600 transition shrink-0">→</span>
                                 </Link>
                               ))}
                             </div>
@@ -300,7 +338,7 @@ export const Navbar: React.FC = () => {
                               </div>
                             </div>
 
-                            {/* Digital Books (Temporarily hidden until Class 6 PDF release next week) */}
+                            {/* Digital Books (Classes 3, 4, 6 Web Reader) */}
                             {!HIDE_DIGITAL_CLASS_6 && (
                               <div className="pt-1">
                                 <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-stone-200">
@@ -310,38 +348,29 @@ export const Navbar: React.FC = () => {
                                       Digital Books
                                     </div>
                                     <div className="text-[11px] text-indigo-600 font-medium">
-                                      Classes 6–10 · Web Reader
+                                      Classes 3, 4, 6 · Web Reader
                                     </div>
                                   </div>
                                 </div>
                                 <div className="space-y-1">
-                                  <Link
-                                    href="/digital/kannada-class-6-guide/"
-                                    onClick={() => setPurchaseDropdownOpen(false)}
-                                    className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group border border-transparent hover:border-indigo-100"
-                                  >
-                                    <div>
-                                      <span className="font-bold text-slate-900 block">Class 6 Digital Guidebook</span>
-                                      <span className="text-[10px] text-slate-500">Official Web Edition</span>
-                                    </div>
-                                    <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
-                                      Available
-                                    </span>
-                                  </Link>
-
-                                  <Link
-                                    href="/digital/"
-                                    onClick={() => setPurchaseDropdownOpen(false)}
-                                    className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group"
-                                  >
-                                    <div>
-                                      <span className="block">Classes 7–10 Digital</span>
-                                      <span className="text-[10px] text-slate-400">Curriculum Roadmap</span>
-                                    </div>
-                                    <span className="text-[9px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.5 rounded">
-                                      Coming Soon
-                                    </span>
-                                  </Link>
+                                  {digitalNavBooks.map((dBook) => (
+                                    <Link
+                                      key={dBook.href}
+                                      href={dBook.href}
+                                      onClick={() => setPurchaseDropdownOpen(false)}
+                                      className="flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition group border border-transparent hover:border-indigo-100"
+                                    >
+                                      <div>
+                                        <span className="font-bold text-slate-900 block">{dBook.title}</span>
+                                        <span className="text-[10px] text-slate-500">{dBook.subtitle}</span>
+                                      </div>
+                                      <span
+                                        className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${dBook.badgeColor}`}
+                                      >
+                                        {dBook.badge}
+                                      </span>
+                                    </Link>
+                                  ))}
                                 </div>
                               </div>
                             )}
@@ -349,7 +378,7 @@ export const Navbar: React.FC = () => {
 
                         </div>
 
-                        {/* Bottom: Browse All Books Button */}
+                        {/* Bottom: Browse All Books & Digital Platform Buttons */}
                         <div className="border-t border-stone-200 mt-4 pt-3 px-6 flex items-center justify-between text-xs">
                           <Link
                             href="/books/"
@@ -357,6 +386,15 @@ export const Navbar: React.FC = () => {
                             className="flex items-center gap-1.5 font-black text-amber-700 hover:text-amber-800 transition py-1"
                           >
                             <span>Browse All Books Catalog (10 Books)</span>
+                            <span>→</span>
+                          </Link>
+
+                          <Link
+                            href="/digital/"
+                            onClick={() => setPurchaseDropdownOpen(false)}
+                            className="flex items-center gap-1.5 font-black text-indigo-700 hover:text-indigo-800 transition py-1"
+                          >
+                            <span>Explore Digital Editions</span>
                             <span>→</span>
                           </Link>
                         </div>
@@ -623,9 +661,14 @@ export const Navbar: React.FC = () => {
                                   key={book.href}
                                   href={book.href}
                                   onClick={() => setMobileMenuOpen(false)}
-                                  className="block px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition min-h-[40px] flex items-center"
+                                  className="px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition min-h-[40px] flex items-center justify-between"
                                 >
-                                  {book.label}
+                                  <span>{book.label}</span>
+                                  {book.badge && (
+                                    <span className="text-[8.5px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300/80 px-1.5 py-0.2 rounded-full">
+                                      Dual
+                                    </span>
+                                  )}
                                 </Link>
                               ))}
                             </div>
@@ -691,30 +734,32 @@ export const Navbar: React.FC = () => {
                             </div>
                           </div>
 
-                          {/* Digital Books (Temporarily hidden until Class 6 PDF release next week) */}
+                          {/* Digital Books (Classes 3, 4, 6 Web Reader) */}
                           {!HIDE_DIGITAL_CLASS_6 && (
                             <div className="pt-1 border-t border-stone-100">
                               <div className="flex items-center gap-1.5 px-2 py-1 text-xs font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 rounded-md mb-1.5">
                                 <span>💻</span>
-                                <span>Digital Books (Classes 6–10)</span>
+                                <span>Digital Books (Classes 3, 4, 6)</span>
                               </div>
                               <div className="space-y-1 pl-1">
-                                <Link
-                                  href="/digital/kannada-class-6-guide/"
-                                  onClick={() => setMobileMenuOpen(false)}
-                                  className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold text-indigo-900 bg-indigo-50/70 hover:bg-indigo-100 transition min-h-[40px]"
-                                >
-                                  <span>Class 6 Digital Guidebook</span>
-                                  <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-black">Available</span>
-                                </Link>
-                                <Link
-                                  href="/digital/"
-                                  onClick={() => setMobileMenuOpen(false)}
-                                  className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-bold text-indigo-700 hover:bg-indigo-50 transition min-h-[40px]"
-                                >
-                                  <span>Browse Digital Platform</span>
-                                  <span className="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded-full font-black">NEW</span>
-                                </Link>
+                                {digitalNavBooks.map((dBook) => (
+                                  <Link
+                                    key={`mobile-${dBook.href}`}
+                                    href={dBook.href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-800 bg-indigo-50/40 hover:bg-indigo-100 transition min-h-[40px]"
+                                  >
+                                    <div>
+                                      <span className="font-bold text-slate-900 block">{dBook.title}</span>
+                                      <span className="text-[10px] text-slate-500">{dBook.subtitle}</span>
+                                    </div>
+                                    <span
+                                      className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${dBook.badgeColor}`}
+                                    >
+                                      {dBook.badge}
+                                    </span>
+                                  </Link>
+                                ))}
                               </div>
                             </div>
                           )}
