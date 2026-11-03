@@ -8,6 +8,7 @@ interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
   sendOtp: (phone: string, name?: string) => Promise<{ success: boolean; message?: string; reqId?: string; error?: string }>;
+  retryOtp: (phone: string, retryChannel?: '12' | '11') => Promise<{ success: boolean; message?: string; reqId?: string; error?: string }>;
   verifyOtp: (phone: string, otp: string, name?: string, reqId?: string) => Promise<{ success: boolean; error?: string; user?: any }>;
   loginWithMsg91Token: (phone: string, accessToken: string, name?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
@@ -95,6 +96,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, name }),
+    });
+    return res.json();
+  }, []);
+
+  const retryOtp = useCallback(async (phone: string, retryChannel: '12' | '11' = '12') => {
+    const res = await fetch('/api/auth/retry-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, retryChannel }),
     });
     return res.json();
   }, []);
@@ -275,6 +285,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user, 
       isLoading, 
       sendOtp, 
+      retryOtp,
       verifyOtp, 
       loginWithMsg91Token,
       logout, 

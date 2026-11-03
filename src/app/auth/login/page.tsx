@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { loadMsg91OtpScript } from '@/lib/msg91';
 import {
   Phone,
   ShieldCheck,
@@ -23,7 +22,7 @@ type Step = 'phone' | 'otp';
 
 export default function LoginPage({ searchParams }: { searchParams: Promise<{ redirect?: string }> }) {
   const { redirect: redirectTo } = use(searchParams);
-  const { sendOtp, verifyOtp, loginWithMsg91Token, user } = useAuth();
+  const { sendOtp, retryOtp, verifyOtp, user } = useAuth();
   const router = useRouter();
 
   const [step, setStep] = useState<Step>('phone');
@@ -32,28 +31,13 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successNotice, setSuccessNotice] = useState('');
   const [devMessage, setDevMessage] = useState('');
   const [resendCountdown, setResendCountdown] = useState(0);
-  const [otpMethod, setOtpMethod] = useState<'msg91' | 'fallback'>('msg91');
   const [reqId, setReqId] = useState<string>('');
 
   const otpInputRef = useRef<HTMLInputElement>(null);
-  const phoneRef = useRef(phone);
-  const nameRef = useRef(name);
-  const reqIdRef = useRef(reqId);
   const hasLoggedInRef = useRef(false);
-
-  useEffect(() => {
-    phoneRef.current = phone;
-  }, [phone]);
-
-  useEffect(() => {
-    nameRef.current = name;
-  }, [name]);
-
-  useEffect(() => {
-    reqIdRef.current = reqId;
-  }, [reqId]);
 
   // Restore state if Mobile Safari reloaded when switching to WhatsApp
   useEffect(() => {
@@ -63,10 +47,10 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
       const savedReqId = sessionStorage.getItem('belasu_otp_reqId');
       const savedStep = sessionStorage.getItem('belasu_auth_step');
 
-      if (savedPhone && !phone) setPhone(savedPhone);
-      if (savedName && !name) setName(savedName);
-      if (savedReqId && !reqId) setReqId(savedReqId);
-      if (savedStep === 'otp' && step === 'phone') setStep('otp');
+      if (savedPhone) setPhone(savedPhone);
+      if (savedName) setName(savedName);
+      if (savedReqId) setReqId(savedReqId);
+      if (savedStep === 'otp') setStep('otp');
     } catch {}
   }, []);
 
@@ -76,34 +60,6 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
       router.replace(redirectTo || '/library');
     }
   }, [user, redirectTo, router]);
-
-  // Pre-load MSG91 OTP Widget Script
-  useEffect(() => {
-    loadMsg91OtpScript(
-      async (data: unknown) => {
-        if (hasLoggedInRef.current) return;
-        const resData = data as Record<string, unknown>;
-        const accessToken = (resData?.['access-token'] || resData?.message || resData?.token || data) as string;
-        if (accessToken && typeof accessToken === 'string') {
-          hasLoggedInRef.current = true;
-          setIsLoading(true);
-          const currentPhone = phoneRef.current;
-          const currentName = nameRef.current;
-          const result = await loginWithMsg91Token(currentPhone, accessToken, currentName.trim());
-          setIsLoading(false);
-          if (result.success) {
-            router.replace(redirectTo || '/library');
-          } else {
-            hasLoggedInRef.current = false;
-            setError(result.error || 'Login verification failed. Please try again.');
-          }
-        }
-      },
-      (err: unknown) => {
-        console.warn('[MSG91] Widget script notification:', err);
-      }
-    );
-  }, [loginWithMsg91Token, redirectTo, router]);
 
   // Handle Resend countdown timer
   useEffect(() => {
@@ -125,36 +81,19 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     }
   }, [step]);
 
-  const fallbackSendOtp = useCallback(async () => {
-    setOtpMethod('fallback');
+  // Clear state when switching phone number
+  const handleResetToPhone = useCallback(() => {
+    setStep('phone');
+    setOtp('');
+    setError('');
+    setSuccessNotice('');
+    setReqId('');
+    setResendCountdown(0);
     try {
-      const result = await sendOtp(phone, name.trim());
-      setIsLoading(false);
-
-      if (result.success) {
-        setStep('otp');
-        setResendCountdown(30);
-        if (result.reqId) {
-          setReqId(result.reqId);
-          try {
-            sessionStorage.setItem('belasu_otp_reqId', result.reqId);
-            sessionStorage.setItem('belasu_auth_phone', phone);
-            sessionStorage.setItem('belasu_auth_name', name.trim());
-            sessionStorage.setItem('belasu_auth_step', 'otp');
-          } catch {}
-        }
-        if (result.message?.includes('[DEV MODE]')) {
-          setDevMessage(result.message);
-        }
-      } else {
-        setError(result.error || 'Failed to send WhatsApp verification code. Please try again.');
-      }
-    } catch (e: unknown) {
-      setIsLoading(false);
-      const errMsg = e instanceof Error ? e.message : 'Network error sending WhatsApp OTP. Please try again.';
-      setError(errMsg);
-    }
-  }, [phone, name, sendOtp]);
+      sessionStorage.removeItem('belasu_otp_reqId');
+      sessionStorage.removeItem('belasu_auth_step');
+    } catch {}
+  }, []);
 
   if (user) return null;
 
@@ -168,179 +107,101 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
       return;
     }
     setError('');
+    setSuccessNotice('');
     setIsLoading(true);
     setDevMessage('');
 
-    const fullPhone = `91${phone}`;
+    try {
+      const result = await sendOtp(phone, name.trim());
+      setIsLoading(false);
 
-    // Primary: MSG91 Widget (Configured with Default Channel 12: WHATSAPP)
-    if (typeof window.sendOtp === 'function') {
-      try {
-        window.sendOtp(
-          fullPhone,
-          (res: unknown) => {
-            console.log('[MSG91] WhatsApp OTP sent successfully:', res);
-            setIsLoading(false);
-            setStep('otp');
-            setResendCountdown(30);
-            setOtpMethod('msg91');
-            const resData = res as Record<string, any>;
-            const returnedReqId = resData?.message || resData?.reqId || '';
-            if (returnedReqId) {
-              setReqId(returnedReqId);
-              try {
-                sessionStorage.setItem('belasu_otp_reqId', returnedReqId);
-              } catch {}
-            }
-            try {
-              sessionStorage.setItem('belasu_auth_phone', phone);
-              sessionStorage.setItem('belasu_auth_name', name.trim());
-              sessionStorage.setItem('belasu_auth_step', 'otp');
-            } catch {}
-          },
-          (err: unknown) => {
-            const errorObj = err as { message?: string; data?: { message?: string } };
-            const errMsg =
-              errorObj?.data?.message ||
-              errorObj?.message ||
-              'Failed to send OTP via MSG91 WhatsApp. Switching to fallback...';
-            console.warn('[MSG91] sendOtp warning:', errMsg);
-            fallbackSendOtp();
-          }
-        );
-        return;
-      } catch (e) {
-        console.warn('[MSG91] Exception in sendOtp, falling back:', e);
+      if (result.success) {
+        setStep('otp');
+        setResendCountdown(30);
+        if (result.reqId) {
+          setReqId(result.reqId);
+          try {
+            sessionStorage.setItem('belasu_otp_reqId', result.reqId);
+          } catch {}
+        }
+        try {
+          sessionStorage.setItem('belasu_auth_phone', phone);
+          sessionStorage.setItem('belasu_auth_name', name.trim());
+          sessionStorage.setItem('belasu_auth_step', 'otp');
+        } catch {}
+
+        if (result.message?.includes('[DEV MODE]')) {
+          setDevMessage(result.message);
+        }
+      } else {
+        setError(result.error || 'Failed to send WhatsApp verification code. Please try again.');
       }
+    } catch (e: unknown) {
+      setIsLoading(false);
+      const errMsg = e instanceof Error ? e.message : 'Network error sending WhatsApp OTP. Please try again.';
+      setError(errMsg);
     }
-
-    // Fallback if widget script is unavailable or blocked
-    fallbackSendOtp();
   };
 
-  const handleResendOtp = () => {
-    const retryOtpFn = typeof window !== 'undefined' ? window.retryOtp : undefined;
-    if (otpMethod === 'msg91' && typeof retryOtpFn === 'function') {
-      setIsLoading(true);
-      // Channel 12 = WhatsApp
-      retryOtpFn(
-        '12',
-        () => {
-          setIsLoading(false);
-          setResendCountdown(30);
-        },
-        (err12: unknown) => {
-          console.warn('[MSG91] WhatsApp retry failed, attempting SMS retry (channel 11):', err12);
-          // Fallback to Channel 11 = SMS
-          retryOtpFn(
-            '11',
-            () => {
-              setIsLoading(false);
-              setResendCountdown(30);
-            },
-            () => {
-              setIsLoading(false);
-              fallbackSendOtp();
-            }
-          );
+  const handleResendOtp = async (channel: '12' | '11' = '12') => {
+    if (isLoading) return;
+    setIsLoading(true);
+    setError('');
+    setSuccessNotice('');
+
+    try {
+      const result = await retryOtp(phone, channel);
+      setIsLoading(false);
+
+      if (result.success) {
+        setResendCountdown(30);
+        if (result.reqId) {
+          setReqId(result.reqId);
+          try {
+            sessionStorage.setItem('belasu_otp_reqId', result.reqId);
+          } catch {}
         }
-      );
-    } else {
-      fallbackSendOtp();
+        setSuccessNotice(channel === '11' ? 'SMS code sent successfully!' : 'WhatsApp code resent successfully!');
+      } else {
+        setError(result.error || 'Failed to resend verification code. Please try again.');
+      }
+    } catch (e: unknown) {
+      setIsLoading(false);
+      const errMsg = e instanceof Error ? e.message : 'Network error resending verification code.';
+      setError(errMsg);
     }
   };
 
   const handleVerifyOtp = async () => {
     if (otp.length < 4 || otp.length > 6) {
-      setError('Please enter the verification code');
+      setError('Please enter the 6-digit verification code');
       return;
     }
     setError('');
+    setSuccessNotice('');
     setIsLoading(true);
 
-    const activeReqId = reqId || reqIdRef.current || (typeof window !== 'undefined' ? sessionStorage.getItem('belasu_otp_reqId') : '') || '';
+    const activeReqId = reqId || (typeof window !== 'undefined' ? sessionStorage.getItem('belasu_otp_reqId') : '') || '';
 
-    // First attempt: If MSG91 client widget is active and has verifyOtp function
-    if (otpMethod === 'msg91' && typeof window.verifyOtp === 'function') {
-      try {
-        window.verifyOtp(
-          otp,
-          async (res: unknown) => {
-            if (hasLoggedInRef.current) return;
-            hasLoggedInRef.current = true;
-            console.log('[MSG91] verifyOtp success response:', res);
-            const resData = res as Record<string, unknown>;
-            const accessToken = (resData?.['access-token'] || resData?.message || resData?.token || res) as string;
-
-            const result = await loginWithMsg91Token(phone, accessToken, name.trim());
-            setIsLoading(false);
-
-            if (result.success) {
-              try {
-                sessionStorage.removeItem('belasu_otp_reqId');
-                sessionStorage.removeItem('belasu_auth_step');
-              } catch {}
-              router.replace(redirectTo || '/library');
-            } else {
-              hasLoggedInRef.current = false;
-              setError(result.error || 'Authentication failed. Please try again.');
-            }
-          },
-          async (err: unknown) => {
-            console.warn('[MSG91] Client verifyOtp failed, verifying with server API...', err);
-            // Seamless server fallback with activeReqId
-            try {
-              const fallbackResult = await verifyOtp(phone, otp, name.trim(), activeReqId);
-              if (fallbackResult.success) {
-                setIsLoading(false);
-                try {
-                  sessionStorage.removeItem('belasu_otp_reqId');
-                  sessionStorage.removeItem('belasu_auth_step');
-                } catch {}
-                router.replace(redirectTo || '/library');
-                return;
-              } else {
-                setIsLoading(false);
-                setError(fallbackResult.error || 'Incorrect OTP. Please check and try again.');
-                return;
-              }
-            } catch (fallbackErr) {
-              console.error('Server fallback verify error:', fallbackErr);
-            }
-
-            setIsLoading(false);
-            const errorObj = err as { message?: string; data?: { message?: string } };
-            const errMsg =
-              errorObj?.data?.message ||
-              errorObj?.message ||
-              'Incorrect verification code. Please check and try again.';
-            setError(errMsg);
-          },
-          activeReqId
-        );
-        return;
-      } catch (e) {
-        console.warn('[MSG91] Exception in client verifyOtp, trying server verification:', e);
-      }
-    }
-
-    // Direct server verification (handles mobile tab switching, Safari background wake, and fallback mode)
     try {
       const result = await verifyOtp(phone, otp, name.trim(), activeReqId);
       setIsLoading(false);
 
       if (result.success) {
+        hasLoggedInRef.current = true;
         try {
           sessionStorage.removeItem('belasu_otp_reqId');
           sessionStorage.removeItem('belasu_auth_step');
+          sessionStorage.removeItem('belasu_auth_phone');
+          sessionStorage.removeItem('belasu_auth_name');
         } catch {}
         router.replace(redirectTo || '/library');
       } else {
-        setError(result.error || 'Invalid verification code. Please check and try again.');
+        setError(result.error || 'Incorrect verification code. Please check and try again.');
       }
     } catch (e: unknown) {
       setIsLoading(false);
-      const errMsg = e instanceof Error ? e.message : 'Verification failed. Please try again.';
+      const errMsg = e instanceof Error ? e.message : 'Verification failed. Please check your connection and try again.';
       setError(errMsg);
     }
   };
@@ -537,17 +398,21 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                       </div>
                     )}
 
+                    {/* Success notification banner */}
+                    {successNotice && (
+                      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                        <span>{successNotice}</span>
+                      </div>
+                    )}
+
                     {/* 4 to 6-Digit OTP Input */}
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
                         <span>Enter 6-Digit WhatsApp Code</span>
                         <button
                           type="button"
-                          onClick={() => {
-                            setStep('phone');
-                            setOtp('');
-                            setError('');
-                          }}
+                          onClick={handleResetToPhone}
                           className="text-[11px] font-semibold text-amber-700 hover:text-amber-800 hover:underline cursor-pointer"
                         >
                           Change Number
@@ -605,7 +470,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                         <div className="flex flex-wrap items-center justify-center gap-3">
                           <button
                             type="button"
-                            onClick={() => handleResendOtp()}
+                            onClick={() => handleResendOtp('12')}
                             disabled={isLoading}
                             className="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
                           >
@@ -617,24 +482,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
 
                           <button
                             type="button"
-                            onClick={() => {
-                              if (typeof window !== 'undefined' && typeof window.retryOtp === 'function') {
-                                setIsLoading(true);
-                                window.retryOtp(
-                                  '11',
-                                  () => {
-                                    setIsLoading(false);
-                                    setResendCountdown(30);
-                                  },
-                                  () => {
-                                    setIsLoading(false);
-                                    fallbackSendOtp();
-                                  }
-                                );
-                              } else {
-                                fallbackSendOtp();
-                              }
-                            }}
+                            onClick={() => handleResendOtp('11')}
                             disabled={isLoading}
                             className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-slate-800 transition cursor-pointer"
                           >
@@ -645,11 +493,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
 
                       <button
                         type="button"
-                        onClick={() => {
-                          setStep('phone');
-                          setOtp('');
-                          setError('');
-                        }}
+                        onClick={handleResetToPhone}
                         className="inline-flex items-center gap-1 text-slate-500 hover:text-slate-800 font-medium transition cursor-pointer"
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
@@ -660,33 +504,36 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                 )}
               </div>
 
-              {/* Card Footer: Terms, Privacy, Support */}
-              <div className="mt-6 pt-5 border-t border-stone-100 space-y-2 text-center text-xs text-slate-500">
-                <p>
-                  By signing in, you agree to Belesu&apos;s{' '}
-                  <Link href="/policies/terms" className="font-semibold text-slate-700 hover:text-amber-700 underline transition">
-                    Terms of Use
-                  </Link>{' '}
-                  and{' '}
-                  <Link href="/policies/privacy" className="font-semibold text-slate-700 hover:text-amber-700 underline transition">
-                    Privacy Policy
-                  </Link>.
-                </p>
-
-                <div className="pt-1">
-                  <a
-                    href="https://wa.me/919606636804?text=Hello%20Belesu%20Support,%20I%20need%20assistance%20logging%20in%20to%20my%20account."
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 hover:text-emerald-800 transition"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" />
-                    <span>Need help? Chat with WhatsApp Support</span>
-                  </a>
-                </div>
-              </div>
             </div>
+
+            {/* Terms and Privacy Footer Note */}
+            <p className="mt-6 text-center text-xs text-slate-500">
+              By signing in, you agree to Belesu&apos;s{' '}
+              <Link href="/terms-and-conditions" className="text-amber-700 hover:underline">
+                Terms of Use
+              </Link>{' '}
+              and{' '}
+              <Link href="/privacy-policy" className="text-amber-700 hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+
+            {/* Direct Support WhatsApp Link */}
+            <div className="mt-3 text-center">
+              <a
+                href="https://wa.me/918105829199?text=Hi%2C%20I%20need%20help%20logging%20into%20Belesu%20Bookstore"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-emerald-800 font-semibold hover:text-emerald-900 transition"
+              >
+                <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Need help? Chat with WhatsApp Support</span>
+              </a>
+            </div>
+
           </div>
+
         </div>
       </div>
     </div>

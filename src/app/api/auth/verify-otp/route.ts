@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
-import { signToken, buildAuthCookieHeader, getFullUserProfile } from '@/lib/auth';
+import { signToken, buildAuthCookieHeader, getFullUserProfile, isPhoneAdmin } from '@/lib/auth';
 
 const DEV_OTP = '123456';
 const IS_DEV = process.env.NODE_ENV !== 'production';
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient();
 
     // 1. Fetch stored OTP record
-    const { data: otpRecord, error: fetchErr } = await supabase
+    const { data: otpRecord } = await supabase
       .from('otps')
       .select('*')
       .eq('phone', cleanPhone)
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     const tokenAuth = process.env.NEXT_PUBLIC_MSG91_TOKEN_AUTH || '586335TnpNGKx14of6ae675f2P1';
 
     let isVerified = false;
+    let failureReason: string | null = null;
 
     // Check A: Dev mode fallback code 123456
     if (IS_DEV && cleanOtp === DEV_OTP) {
@@ -74,6 +75,8 @@ export async function POST(request: NextRequest) {
           (msg91Res.ok && msg91Data.status !== 'fail' && msg91Data.type !== 'error')
         ) {
           isVerified = true;
+        } else {
+          failureReason = msg91Data.message || null;
         }
       } catch (msgErr) {
         console.error('[verify-otp] MSG91 verify API error:', msgErr);
@@ -81,27 +84,50 @@ export async function POST(request: NextRequest) {
     }
 
     if (!isVerified) {
-      return Response.json({ success: false, error: 'Incorrect OTP. Please try again.' }, { status: 400 });
+      return Response.json(
+        {
+          success: false,
+          error: failureReason || 'Incorrect verification code. Please check and try again.',
+        },
+        { status: 400 }
+      );
     }
 
     // 4. Delete used OTP from otps table
     await supabase.from('otps').delete().eq('phone', cleanPhone);
 
-    // 5. Upsert user (auto-register if first time)
-    const displayName = name || otpRecord?.name || `User_${cleanPhone.slice(-4)}`;
-    const { data: user, error: userErr } = await supabase
+    // 5. Upsert user (preserving existing customer names)
+    const { data: existingUser } = await supabase
       .from('users')
-      .upsert({ phone: cleanPhone, name: displayName }, { onConflict: 'phone' })
-      .select()
-      .single();
+      .select('*')
+      .eq('phone', cleanPhone)
+      .maybeSingle();
 
-    if (userErr || !user) {
-      console.error('User upsert error:', userErr);
-      return Response.json({ success: false, error: 'Failed to create user account.' }, { status: 500 });
+    let user = existingUser;
+    if (!user) {
+      const displayName = (name && name.trim()) || otpRecord?.name || `User_${cleanPhone.slice(-4)}`;
+      const { data: newUser, error: createErr } = await supabase
+        .from('users')
+        .insert({ phone: cleanPhone, name: displayName })
+        .select()
+        .single();
+
+      if (createErr || !newUser) {
+        console.error('User creation error:', createErr);
+        return Response.json({ success: false, error: 'Failed to create user account.' }, { status: 500 });
+      }
+      user = newUser;
+    } else if (name && name.trim() && (!user.name || user.name.startsWith('User_'))) {
+      const { data: updatedUser } = await supabase
+        .from('users')
+        .update({ name: name.trim() })
+        .eq('id', user.id)
+        .select()
+        .single();
+      if (updatedUser) user = updatedUser;
     }
 
-    // 6. Issue JWT
-    const { isPhoneAdmin } = await import('@/lib/auth');
+    // 6. Issue JWT & session cookie
     const isAdmin = Boolean((user as any).is_admin || isPhoneAdmin(user.phone, user.name));
     const token = await signToken({ userId: user.id, phone: user.phone, name: user.name, isAdmin });
 
