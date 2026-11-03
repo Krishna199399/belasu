@@ -248,19 +248,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
     }
   };
 
-  const handleTrackSwitch = (track: 'SaviSiri' | 'KaliTili') => {
-    if (activeSlide.seriesTrack === track) return;
-    const targetIdx = COMPARISON_SLIDES.findIndex(
-      (s) => s.seriesTrack === track && s.gradeClass === activeSlide.gradeClass
-    );
-    if (targetIdx !== -1) {
-      setCurrentSlide(targetIdx);
-    } else {
-      const fallbackIdx = COMPARISON_SLIDES.findIndex((s) => s.seriesTrack === track);
-      if (fallbackIdx !== -1) setCurrentSlide(fallbackIdx);
-    }
-  };
-
   const scrollToSeriesDeck = (e: React.MouseEvent) => {
     const el = document.getElementById('series-deck');
     if (el) {
@@ -421,43 +408,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             {/* Ambient Warm Glow */}
             <div className="absolute inset-0 bg-gradient-to-t from-amber-200/25 via-orange-100/20 to-transparent rounded-3xl blur-2xl pointer-events-none" />
 
-            {/* Curriculum Track Switcher: Savi & Siri (1st Lang) vs Kali & Tili (2nd Lang) */}
-            <div className="mb-2 sm:mb-3 flex items-center gap-1 sm:gap-1.5 p-1 bg-white/95 backdrop-blur-xs rounded-full border border-amber-200 shadow-xs z-20">
-              <button
-                type="button"
-                onClick={() => handleTrackSwitch('SaviSiri')}
-                className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeSlide.seriesTrack === 'SaviSiri'
-                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs'
-                    : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-                }`}
-              >
-                <span>Savi &amp; Siri</span>
-                <span className={`text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.2 rounded-full ${
-                  activeSlide.seriesTrack === 'SaviSiri' ? 'bg-white/25 text-white' : 'bg-stone-200/80 text-stone-700'
-                }`}>
-                  1st Lang
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleTrackSwitch('KaliTili')}
-                className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeSlide.seriesTrack === 'KaliTili'
-                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs'
-                    : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-                }`}
-              >
-                <span>Kali &amp; Tili</span>
-                <span className={`text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.2 rounded-full ${
-                  activeSlide.seriesTrack === 'KaliTili' ? 'bg-white/25 text-white' : 'bg-stone-200/80 text-stone-700'
-                }`}>
-                  2nd Lang
-                </span>
-              </button>
-            </div>
-
             {/* Comparison Stage Container */}
             <div className="relative w-full max-w-[500px] xs:max-w-[560px] sm:max-w-[640px] lg:max-w-[720px] flex flex-col items-center justify-center">
               
@@ -558,28 +508,20 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
                   <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
 
-                {/* 5 Class Dots for Active Track (Classes 1 to 5) */}
-                {[1, 2, 3, 4, 5].map((grade) => {
-                  const isCurrent = activeSlide.gradeClass === grade;
-                  return (
-                    <button
-                      key={`dot-grade-${grade}`}
-                      type="button"
-                      onClick={() => {
-                        const targetIdx = COMPARISON_SLIDES.findIndex(
-                          (s) => s.seriesTrack === activeSlide.seriesTrack && s.gradeClass === grade
-                        );
-                        if (targetIdx !== -1) setCurrentSlide(targetIdx);
-                      }}
-                      className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                        isCurrent
-                          ? 'w-7 sm:w-8 bg-gradient-to-r from-orange-500 to-amber-500 shadow-sm'
-                          : 'w-2 sm:w-2.5 bg-stone-300 hover:bg-stone-400'
-                      }`}
-                      aria-label={`Show Class ${grade}`}
-                    />
-                  );
-                })}
+                {/* Comparison Slide Dots (10 Books: Savi 1–4, Siri 5, Kali 1–4, Tili 5) */}
+                {COMPARISON_SLIDES.map((s, idx) => (
+                  <button
+                    key={`dot-${s.id}`}
+                    type="button"
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      currentSlide === idx
+                        ? 'w-7 sm:w-8 bg-gradient-to-r from-orange-500 to-amber-500 shadow-sm'
+                        : 'w-2 sm:w-2.5 bg-stone-300 hover:bg-stone-400'
+                    }`}
+                    aria-label={`Show ${s.belesuTitle}`}
+                  />
+                ))}
 
                 {/* Next Arrow */}
                 <button
