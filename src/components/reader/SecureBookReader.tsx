@@ -5,6 +5,7 @@ import { DigitalBook } from '@/types';
 import { ReaderSidebar } from './ReaderSidebar';
 import { ReaderToolbar } from './ReaderToolbar';
 import { PageWatermark } from './PageWatermark';
+import { SecurePageCanvas } from './SecurePageCanvas';
 import { Lock, ShieldAlert, ChevronLeft, ChevronRight, BookOpen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -243,6 +244,25 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
       window.removeEventListener('touchmove', handleWindowTouch);
     };
   }, [triggerScreenshotProtection]);
+
+  // ── Lock down canvas export methods (toDataURL / toBlob) against scraper extensions ──
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const origToDataURL = HTMLCanvasElement.prototype.toDataURL;
+    const origToBlob = HTMLCanvasElement.prototype.toBlob;
+
+    HTMLCanvasElement.prototype.toDataURL = function () {
+      return 'data:image/png;base64,';
+    };
+    HTMLCanvasElement.prototype.toBlob = function (callback: BlobCallback) {
+      callback(new Blob([], { type: 'image/png' }));
+    };
+
+    return () => {
+      HTMLCanvasElement.prototype.toDataURL = origToDataURL;
+      HTMLCanvasElement.prototype.toBlob = origToBlob;
+    };
+  }, []);
 
   // ── Fetch signed page image URL ───────────────────────────────────────────
   const fetchPage = useCallback(async (page: number) => {
@@ -571,15 +591,11 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
               >
                 {/* Single / Left Page */}
                 <div className="relative overflow-hidden select-none drm-protected-container">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={pageImageUrl}
-                    alt={`Page ${currentPage}`}
-                    draggable={false}
-                    className="w-full h-auto block select-none pointer-events-none drm-protected-container"
-                    style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
-                    translate="no"
-                    onContextMenu={(e) => e.preventDefault()}
+                  <SecurePageCanvas
+                    imageUrl={pageImageUrl}
+                    pageNumber={currentPage}
+                    userPhone={userPhone}
+                    darkMode={darkMode}
                   />
                   {/* Transparent Anti-Inspect Decoy Shield */}
                   <div
@@ -591,22 +607,18 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                     }}
                     onDragStart={(e) => e.preventDefault()}
                   />
-                  {/* Indelible Dynamic User Security Watermark */}
+                  {/* Indelible Dynamic User Security Watermark (DOM Layer) */}
                   <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                 </div>
 
                 {/* Right Page (Two-Page Spread) */}
                 {viewMode === 'double' && secondPageImageUrl && (
                   <div className="relative overflow-hidden select-none drm-protected-container">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={secondPageImageUrl}
-                      alt={`Page ${currentPage + 1}`}
-                      draggable={false}
-                      className="w-full h-auto block select-none pointer-events-none drm-protected-container"
-                      style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
-                      translate="no"
-                      onContextMenu={(e) => e.preventDefault()}
+                    <SecurePageCanvas
+                      imageUrl={secondPageImageUrl}
+                      pageNumber={currentPage + 1}
+                      userPhone={userPhone}
+                      darkMode={darkMode}
                     />
                     {/* Transparent Anti-Inspect Decoy Shield */}
                     <div
@@ -618,7 +630,7 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                       }}
                       onDragStart={(e) => e.preventDefault()}
                     />
-                    {/* Indelible Dynamic User Security Watermark */}
+                    {/* Indelible Dynamic User Security Watermark (DOM Layer) */}
                     <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                   </div>
                 )}
