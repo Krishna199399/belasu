@@ -279,8 +279,8 @@ export default function SaviClass3Client() {
                   <span className="text-xs font-bold text-indigo-700 bg-indigo-100/70 border border-indigo-200 px-3 py-1 rounded-full">
                     ⚡ Instant Digital Access
                   </span>
-                  <span className="text-xs font-medium text-slate-500">
-                    (Official Price Confirmation in Progress)
+                  <span className="text-xs font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                    ✓ Official Price Confirmed
                   </span>
                 </div>
               )}
@@ -343,19 +343,22 @@ export default function SaviClass3Client() {
                   <>
                     <button
                       type="button"
-                      disabled
-                      title="Price confirmation pending with publisher. Full instant checkout will activate once confirmed."
-                      className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 flex items-center justify-center gap-2 text-xs sm:text-sm uppercase tracking-wider cursor-not-allowed opacity-90"
+                      onClick={() => {
+                        addToCart(digitalBook, 'digital', 1);
+                        toast.success(`Added ${digitalBook.title} to cart`);
+                        openCart();
+                      }}
+                      className="flex-1 min-h-[48px] py-4 px-6 rounded-xl font-black text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
                     >
-                      <Lock className="w-4 h-4 text-indigo-600" />
-                      <span>Digital Edition Launching Soon — Price Pending</span>
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>Buy Digital Edition | ₹{digitalBook.price}</span>
                     </button>
 
                     <Link
                       href={`/reader/${digitalBook.slug}?preview=true`}
-                      className="min-h-[48px] py-4 px-6 rounded-xl font-black text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm cursor-pointer whitespace-nowrap"
+                      className="min-h-[48px] py-4 px-6 rounded-xl font-bold text-indigo-900 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 shadow-2xs hover:shadow-sm transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm cursor-pointer whitespace-nowrap"
                     >
-                      <BookOpen className="w-4 h-4" />
+                      <BookOpen className="w-4 h-4 text-indigo-600" />
                       <span>Read Free Pages in E-Reader →</span>
                     </Link>
                   </>

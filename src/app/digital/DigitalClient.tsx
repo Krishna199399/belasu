@@ -304,10 +304,10 @@ export default function DigitalClient() {
                         Savi Kannada Class 4 Digital Edition
                       </h4>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-lg font-black text-slate-900">₹199</span>
-                        <span className="text-xs text-slate-400 line-through">₹280</span>
-                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                          Price Pending
+                        <span className="text-lg font-black text-slate-900">₹290</span>
+                        <span className="text-xs text-slate-400 line-through">₹340</span>
+                        <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                          Official Price
                         </span>
                       </div>
                     </div>
@@ -359,10 +359,10 @@ export default function DigitalClient() {
                         Savi Kannada Class 3 Digital Edition
                       </h4>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-lg font-black text-slate-900">₹199</span>
-                        <span className="text-xs text-slate-400 line-through">₹280</span>
-                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                          Price Pending
+                        <span className="text-lg font-black text-slate-900">₹280</span>
+                        <span className="text-xs text-slate-400 line-through">₹330</span>
+                        <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                          Official Price
                         </span>
                       </div>
                     </div>
