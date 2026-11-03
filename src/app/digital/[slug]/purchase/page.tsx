@@ -119,6 +119,10 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
       console.error('Payment failure or dismissal:', err);
       setIsProcessing(false);
     },
+    onDismiss: () => {
+      console.log('Payment modal dismissed by user');
+      setIsProcessing(false);
+    },
   });
 
   if (loadingBook) {

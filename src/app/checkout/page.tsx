@@ -69,10 +69,42 @@ export default function CheckoutPage() {
       await createOrder(response.razorpay_payment_id, response.razorpay_order_id);
     },
     onFailure: (error) => {
-      console.error('Payment failed:', error);
+      console.error('Payment failed or cancelled:', error);
+      setIsProcessing(false);
+    },
+    onDismiss: () => {
+      console.log('Payment modal closed by user');
       setIsProcessing(false);
     },
   });
+
+  // Auto-reset isProcessing if user cancels or closes the gateway modal / tab
+  useEffect(() => {
+    if (!isProcessing) return;
+
+    const handleFocus = () => {
+      setTimeout(() => {
+        const hasRazorpay = document.querySelector('iframe.razorpay-checkout-frame') || document.querySelector('.razorpay-container');
+        if (!hasRazorpay) {
+          setIsProcessing(false);
+        }
+      }, 800);
+    };
+
+    // Safety timeout: Never stay stuck in isProcessing if modal was closed or orphaned
+    const timeout = setTimeout(() => {
+      const hasRazorpay = document.querySelector('iframe.razorpay-checkout-frame') || document.querySelector('.razorpay-container');
+      if (!hasRazorpay) {
+        setIsProcessing(false);
+      }
+    }, 30000);
+
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      clearTimeout(timeout);
+    };
+  }, [isProcessing]);
 
   // Redirect if cart is empty (unless routing to dedicated order success page)
   useEffect(() => {

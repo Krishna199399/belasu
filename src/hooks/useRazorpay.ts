@@ -8,9 +8,10 @@ import toast from 'react-hot-toast';
 interface UseRazorpayOptions {
   onSuccess?: (response: RazorpayResponse) => void;
   onFailure?: (error: unknown) => void;
+  onDismiss?: () => void;
 }
 
-export function useRazorpay({ onSuccess, onFailure }: UseRazorpayOptions = {}) {
+export function useRazorpay({ onSuccess, onFailure, onDismiss }: UseRazorpayOptions = {}) {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
@@ -106,13 +107,26 @@ export function useRazorpay({ onSuccess, onFailure }: UseRazorpayOptions = {}) {
           ondismiss: () => {
             setLoading(false);
             toast.error('Payment cancelled');
+            onDismiss?.();
+            onFailure?.(new Error('Payment cancelled by user'));
           },
         },
       };
 
       // Open Razorpay checkout
-      const razorpayConstructor = (window as unknown as { Razorpay: new (opts: RazorpayOptions) => { open: () => void } }).Razorpay;
+      const razorpayConstructor = (window as unknown as { Razorpay: new (opts: RazorpayOptions) => { open: () => void; on?: (event: string, handler: (res: any) => void) => void } }).Razorpay;
       const razorpay = new razorpayConstructor(options);
+
+      if (typeof razorpay.on === 'function') {
+        razorpay.on('payment.failed', (failResponse: any) => {
+          console.error('Razorpay payment failed:', failResponse?.error);
+          setLoading(false);
+          const msg = failResponse?.error?.description || 'Payment failed. Please try again.';
+          toast.error(msg);
+          onFailure?.(failResponse?.error || new Error(msg));
+        });
+      }
+
       razorpay.open();
 
     } catch (error: unknown) {
@@ -123,7 +137,7 @@ export function useRazorpay({ onSuccess, onFailure }: UseRazorpayOptions = {}) {
     } finally {
       setLoading(false);
     }
-  }, [user, onSuccess, onFailure]);
+  }, [user, onSuccess, onFailure, onDismiss]);
 
   return {
     initiatePayment,
