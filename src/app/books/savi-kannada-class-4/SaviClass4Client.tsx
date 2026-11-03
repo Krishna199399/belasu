@@ -23,14 +23,26 @@ import {
   Lock,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { BookProduct } from '@/types';
 import toast from 'react-hot-toast';
 
 export default function SaviClass4Client() {
   const { addToCart, openCart } = useCart();
+  const searchParams = useSearchParams();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [selectedFormat, setSelectedFormat] = useState<'physical' | 'digital'>('physical');
+
+  // Synchronize format from URL parameters (?format=digital or #digital)
+  useEffect(() => {
+    const formatParam = searchParams?.get('format');
+    if (formatParam === 'digital' || (typeof window !== 'undefined' && window.location.hash === '#digital')) {
+      setSelectedFormat('digital');
+    } else if (formatParam === 'physical' || (typeof window !== 'undefined' && window.location.hash === '#physical')) {
+      setSelectedFormat('physical');
+    }
+  }, [searchParams]);
 
   // Class 4 book data
   const [book, setBook] = useState<BookProduct>(BOOKS_DATA[3]);
@@ -236,7 +248,7 @@ export default function SaviClass4Client() {
                       <span className="text-base font-black text-slate-900">₹{digitalBook.price}</span>
                     </div>
                     <p className="text-[11px] text-slate-500 leading-snug">
-                      Instant E-Reader on Mobile & PC • Price confirmation pending
+                      Instant E-Reader on Mobile & PC • Lifetime Access
                     </p>
                   </button>
                 </div>
@@ -539,8 +551,26 @@ export default function SaviClass4Client() {
 
       {/* Mobile Sticky Bottom Purchase Bar */}
       <MobileBookStickyBar
-        book={book}
-        onAddToCart={handleAddToCart}
+        book={
+          selectedFormat === 'digital'
+            ? {
+                ...book,
+                price: digitalBook.price,
+                stockQuantity: 999,
+                inStock: true,
+                title: digitalBook.title,
+              }
+            : book
+        }
+        onAddToCart={() => {
+          if (selectedFormat === 'digital') {
+            addToCart(digitalBook, 'digital', 1);
+            toast.success(`Added ${digitalBook.title} to cart`);
+            openCart();
+          } else {
+            handleAddToCart();
+          }
+        }}
         onPreview={() => setIsPreviewOpen(true)}
       />
 

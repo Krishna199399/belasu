@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import SaviClass4Client from './SaviClass4Client';
 
@@ -18,5 +19,9 @@ export const metadata: Metadata = {
 };
 
 export default function SaviClass4Page() {
-  return <SaviClass4Client />;
+  return (
+    <Suspense fallback={null}>
+      <SaviClass4Client />
+    </Suspense>
+  );
 }

@@ -20,6 +20,7 @@ import {
   CheckCircle,
   HelpCircle,
   Phone,
+  ShoppingBag,
 } from 'lucide-react';
 
 export default function DigitalClient() {
@@ -275,7 +276,7 @@ export default function DigitalClient() {
                   Savi Kannada Primary Digital Editions
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  Preview free pages directly in our browser reader now. Digital checkout launching shortly alongside hard copies.
+                  Read free preview pages or order lifetime access instantly in our browser reader.
                 </p>
               </div>
 
@@ -327,11 +328,11 @@ export default function DigitalClient() {
                     </Link>
 
                     <Link
-                      href="/books/savi-kannada-class-4"
+                      href="/books/savi-kannada-class-4?format=digital"
                       className="w-full min-h-[40px] inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer"
                     >
-                      <BookOpen className="w-3.5 h-3.5 text-slate-600" />
-                      <span>Order Printed Book (₹280)</span>
+                      <ShoppingBag className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Order Digital Book (₹290)</span>
                     </Link>
                   </div>
                 </div>
@@ -382,11 +383,11 @@ export default function DigitalClient() {
                     </Link>
 
                     <Link
-                      href="/books/savi-kannada-class-3"
+                      href="/books/savi-kannada-class-3?format=digital"
                       className="w-full min-h-[40px] inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer"
                     >
-                      <BookOpen className="w-3.5 h-3.5 text-slate-600" />
-                      <span>Order Printed Book (₹280)</span>
+                      <ShoppingBag className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Order Digital Book (₹280)</span>
                     </Link>
                   </div>
                 </div>

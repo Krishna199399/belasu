@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import SaviClass3Client from './SaviClass3Client';
 
@@ -18,5 +19,9 @@ export const metadata: Metadata = {
 };
 
 export default function SaviClass3Page() {
-  return <SaviClass3Client />;
+  return (
+    <Suspense fallback={null}>
+      <SaviClass3Client />
+    </Suspense>
+  );
 }
