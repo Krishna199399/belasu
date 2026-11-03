@@ -26,6 +26,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Lesson 4: Solved Textbook Exercises & Worksheets'
     ],
     coverImage: '/covers/savi-1.png',
+    karnatakaTextbookCover: '/government-covers/savi-1.jpg',
+    karnatakaTextbookPart2Cover: '/government-covers/savi-1-part2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -82,6 +84,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Chapter 4: Class 2 Exercise Answer Key'
     ],
     coverImage: '/covers/savi-2.png',
+    karnatakaTextbookCover: '/government-covers/savi-2.jpg',
+    karnatakaTextbookPart2Cover: '/government-covers/savi-2-part2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -138,6 +142,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Lesson 4: Model Examination Papers'
     ],
     coverImage: '/covers/savi-3.png',
+    karnatakaTextbookCover: '/government-covers/savi-3.jpg',
+    karnatakaTextbookPart2Cover: '/government-covers/savi-3-part2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -194,6 +200,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Unit 4: Question & Answer Bank'
     ],
     coverImage: '/covers/savi-4.png',
+    karnatakaTextbookCover: '/government-covers/savi-4.jpg',
+    karnatakaTextbookPart2Cover: '/government-covers/savi-4-part2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -250,6 +258,7 @@ export const BOOKS_DATA: BookProduct[] = [
       'Module 4: Exercise Workbook'
     ],
     coverImage: '/covers/kali-1.png',
+    karnatakaTextbookCover: '/government-covers/kali-1.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -306,6 +315,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Part 4: Textbook Solved Answers'
     ],
     coverImage: '/covers/kali-2.png',
+    karnatakaTextbookCover: '/government-covers/kali-2.jpg',
+    karnatakaTextbookPart2Cover: '/government-covers/kali-2-part2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -362,6 +373,7 @@ export const BOOKS_DATA: BookProduct[] = [
       'Unit 4: Exam Solved Questions'
     ],
     coverImage: '/covers/kali-3.png',
+    karnatakaTextbookCover: '/government-covers/kali-3.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -418,6 +430,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Chapter 4: Question & Answer Solutions'
     ],
     coverImage: '/covers/kali-4.png',
+    karnatakaTextbookCover: '/government-covers/kali-4.jpg',
+    karnatakaTextbookPart2Cover: '/government-covers/kali-4-part2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -474,6 +488,8 @@ export const BOOKS_DATA: BookProduct[] = [
       'Unit 4: Solved Model Test Papers'
     ],
     coverImage: '/covers/siri-5.png',
+    karnatakaTextbookCover: '/government-covers/siri-5.jpg',
+    karnatakaTextbookPart2Cover: '/government-covers/siri-5-part2.jpg',
     samplePages: [
       {
         pageNumber: 1,
@@ -530,6 +546,7 @@ export const BOOKS_DATA: BookProduct[] = [
       'Lesson 4: Comprehensive Answer Key'
     ],
     coverImage: '/covers/tili-5.png',
+    karnatakaTextbookCover: '/government-covers/tili-5.jpg',
     samplePages: [
       {
         pageNumber: 1,

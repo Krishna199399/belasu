@@ -10,11 +10,13 @@ import {
   CheckCircle2,
   X,
   ZoomIn,
+  Scale,
 } from 'lucide-react';
 import Link from 'next/link';
 import { BookSeries, BookProduct } from '@/types';
 import { BOOKS_DATA } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
+import { GovernmentBookCompareModal } from '@/components/home/GovernmentBookCompareModal';
 import toast from 'react-hot-toast';
 
 type CurriculumTrack = 'SaviSiri' | 'KaliTili';
@@ -30,8 +32,12 @@ export const QuickLookBookSection: React.FC = () => {
   const [selectedSeries, setSelectedSeries] = useState<BookSeries>('Savi');
   const [selectedClass, setSelectedClass] = useState<number>(1);
 
+  // Government book comparison modal state
+  const [showCompareModal, setShowCompareModal] = useState<boolean>(false);
+
   // Lightbox preview modal state
   const [modalItem, setModalItem] = useState<{
+    id: string;
     title: string;
     tag: string;
     imageUrl: string;
@@ -121,21 +127,29 @@ export const QuickLookBookSection: React.FC = () => {
     if (activeBook.karnatakaTextbookCover) {
       items.push({
         id: 'govt-1',
-        title: `${activeBook.series} Kannada Class ${activeBook.gradeClass} (Part 1)`,
-        tag: activeBook.karnatakaTextbookPart2Cover ? 'Main Textbook Part 1' : 'Main Textbook',
+        title: `${activeBook.series} Kannada Class ${activeBook.gradeClass} ${activeBook.karnatakaTextbookPart2Cover ? '(Part 1)' : '(Govt Textbook)'}`,
+        tag: activeBook.karnatakaTextbookPart2Cover ? 'Govt Textbook Part 1' : 'Govt State Textbook',
         imageUrl: activeBook.karnatakaTextbookCover,
         pillStyle: 'bg-[#ecfdf5] border border-[#a7f3d0] text-[#065f46]',
       });
     }
 
-    // 2. Govt Part 2 (or fallback to Belesu / second scan)
+    // 2. Govt Part 2 (or Side-by-Side Comparison Card if Part 2 not published)
     if (activeBook.karnatakaTextbookPart2Cover) {
       items.push({
         id: 'govt-2',
         title: `${activeBook.series} Kannada Class ${activeBook.gradeClass} (Part 2)`,
-        tag: 'Main Textbook Part 2',
+        tag: 'Govt Textbook Part 2',
         imageUrl: activeBook.karnatakaTextbookPart2Cover,
         pillStyle: 'bg-[#ecfdf5] border border-[#a7f3d0] text-[#065f46]',
+      });
+    } else if (activeBook.karnatakaTextbookCover) {
+      items.push({
+        id: 'govt-compare',
+        title: 'Government Textbook vs Belesu Guidebook Comparison',
+        tag: 'Compare Govt vs Belesu',
+        imageUrl: '/kannada-textbook-comparison.jpg',
+        pillStyle: 'bg-[#eff6ff] border border-[#bfdbfe] text-[#1e40af] font-bold',
       });
     }
 
@@ -265,6 +279,15 @@ export const QuickLookBookSection: React.FC = () => {
             <h3 className="font-serif font-black text-slate-900 text-base sm:text-lg">
               {`${activeBook.series} Kannada Class ${activeBook.gradeClass} Guidebook`}
             </h3>
+            <button
+              type="button"
+              onClick={() => setShowCompareModal(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-800 text-xs font-bold hover:bg-emerald-100/90 transition cursor-pointer shadow-2xs group"
+              title="Compare Karnataka Government Textbook with Belesu Bilingual Guidebook"
+            >
+              <Scale className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
+              <span>Compare Govt vs Belesu</span>
+            </button>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#dcfce7] border border-[#bbf7d0] text-[#166534] text-xs font-bold">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               <span>Matches Govt. Syllabus</span>
@@ -322,7 +345,13 @@ export const QuickLookBookSection: React.FC = () => {
             {galleryItems.map((item) => (
               <div
                 key={item.id}
-                onClick={() => setModalItem(item)}
+                onClick={() => {
+                  if (item.id === 'govt-compare') {
+                    setShowCompareModal(true);
+                  } else {
+                    setModalItem(item);
+                  }
+                }}
                 className="group cursor-pointer flex flex-col items-center transition-transform hover:-translate-y-1 duration-200"
                 title={`Click to preview: ${item.title}`}
               >
@@ -450,14 +479,29 @@ export const QuickLookBookSection: React.FC = () => {
                   {modalItem.tag}
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={() => setModalItem(null)}
-                className="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
-                aria-label="Close Preview"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setModalItem(null);
+                    setShowCompareModal(true);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold transition cursor-pointer shadow-2xs"
+                  title="Open side-by-side comparison"
+                >
+                  <Scale className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="hidden xs:inline">Compare with Govt</span>
+                  <span className="xs:hidden">Compare</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalItem(null)}
+                  className="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
+                  aria-label="Close Preview"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* High-Res Image View */}
@@ -489,6 +533,14 @@ export const QuickLookBookSection: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* ── 7. Interactive Government Book Comparison Modal ── */}
+      <GovernmentBookCompareModal
+        book={activeBook}
+        isOpen={showCompareModal}
+        onClose={() => setShowCompareModal(false)}
+        onAddToCart={handleAddToCart}
+      />
 
     </section>
   );
