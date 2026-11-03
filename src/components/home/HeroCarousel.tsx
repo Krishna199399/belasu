@@ -637,7 +637,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             </div>
             <div className="text-xs sm:text-[13px] font-bold text-slate-800 leading-snug">
               Savi (Class 1–4) | Kali (Class 1–4) <br className="hidden sm:inline" />
-              Siri (Class 5–10) | Tili (Class 5–10)
+              Siri (Class 5–6) | Tili (Class 5–6)
             </div>
           </div>
 
