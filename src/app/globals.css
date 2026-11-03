@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
-/* ── DRM: Disable printing globally ─────────────────────────── */
+/* ── DRM: Disable printing & print-to-PDF globally ─────────── */
 @media print {
-  body {
+  html, body, #__next, main, div, img, svg {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 }
 

@@ -1,43 +1,48 @@
 'use client';
 
+import React from 'react';
+
 interface PageWatermarkProps {
   userPhone: string;
+  darkMode?: boolean;
 }
 
-export function PageWatermark({ userPhone }: PageWatermarkProps) {
-  const now = new Date().toLocaleDateString('en-IN');
-  const text = `${userPhone} · Belesu Confidential · ${now}`;
+export function PageWatermark({ userPhone, darkMode = false }: PageWatermarkProps) {
+  const displayId = userPhone && userPhone !== 'Anonymous' ? userPhone : 'Belesu Student';
+  const text = `${displayId} • Protected by Belesu DRM • Do Not Copy`;
+
+  // Dense 7x4 staggered diagonal repeating watermark matrix
+  const rows = [6, 20, 34, 48, 62, 76, 90];
+  const cols = [-15, 20, 55, 90];
 
   return (
     <div
-      className="absolute inset-0 pointer-events-none select-none overflow-hidden z-20"
+      className="absolute inset-0 pointer-events-none select-none overflow-hidden z-25"
       aria-hidden="true"
+      style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
     >
-      {/* Multiple rotated watermark instances at different positions */}
-      {[
-        { top: '15%', left: '-10%', opacity: 0.08 },
-        { top: '40%', left: '20%', opacity: 0.10 },
-        { top: '65%', left: '-5%', opacity: 0.08 },
-        { top: '20%', left: '50%', opacity: 0.09 },
-        { top: '75%', left: '40%', opacity: 0.08 },
-      ].map((pos, i) => (
-        <div
-          key={i}
-          className="absolute whitespace-nowrap font-black text-slate-900"
-          style={{
-            top: pos.top,
-            left: pos.left,
-            opacity: pos.opacity,
-            transform: 'rotate(-35deg)',
-            fontSize: '14px',
-            letterSpacing: '0.05em',
-            userSelect: 'none',
-            WebkitUserSelect: 'none',
-          }}
-        >
-          {text}
-        </div>
-      ))}
+      {rows.map((top, rIdx) =>
+        cols.map((left, cIdx) => (
+          <div
+            key={`${rIdx}-${cIdx}`}
+            className={`absolute whitespace-nowrap font-mono font-bold tracking-wider ${
+              darkMode ? 'text-white/20' : 'text-slate-900/18'
+            }`}
+            style={{
+              top: `${top}%`,
+              left: `${left + (rIdx % 2 === 0 ? 0 : 15)}%`,
+              transform: 'rotate(-28deg)',
+              fontSize: '11px',
+              letterSpacing: '0.05em',
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              textShadow: darkMode ? '0 0 2px rgba(0,0,0,0.8)' : '0 0 1px rgba(255,255,255,0.7)',
+            }}
+          >
+            {text}
+          </div>
+        ))
+      )}
     </div>
   );
 }

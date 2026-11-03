@@ -4,8 +4,10 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DigitalBook } from '@/types';
 import { ReaderSidebar } from './ReaderSidebar';
 import { ReaderToolbar } from './ReaderToolbar';
+import { PageWatermark } from './PageWatermark';
 import { Lock, ShieldAlert, ChevronLeft, ChevronRight, BookOpen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 interface SecureBookReaderProps {
   book: DigitalBook;
@@ -22,6 +24,7 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
   const [secondPageImageUrl, setSecondPageImageUrl] = useState<string | null>(null);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isBlurred, setIsBlurred] = useState(false);
+  const [isScreenshotBlocked, setIsScreenshotBlocked] = useState(false);
   const [devToolsDetected, setDevToolsDetected] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [zoom, setZoom] = useState(1.0);
@@ -83,9 +86,34 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
     touchStartYRef.current = null;
   };
 
-  // ── Keyboard Navigation (Allow Left/Right arrows, block DRM print/copy) ────
+  // ── Anti-Screenshot Emergency Blackout & Clipboard Scrambler ─────────────
+  const triggerScreenshotProtection = useCallback(() => {
+    setIsScreenshotBlocked(true);
+
+    // Immediately scramble system clipboard if user pressed PrintScreen
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(
+          `[PROTECTED CONTENT] Belesu Digital Guidebook — Screenshots and unauthorized copying are strictly prohibited. Registered account: ${userPhone}`
+        );
+      }
+    } catch {
+      // Ignore clipboard permission blocks
+    }
+
+    toast.error('Screenshots and screen capture are strictly prohibited.', {
+      id: 'drm-screenshot-alert',
+      duration: 3500,
+    });
+
+    setTimeout(() => {
+      setIsScreenshotBlocked(false);
+    }, 2000);
+  }, [userPhone]);
+
+  // ── Keyboard Navigation & Anti-Screenshot Hotkey Interceptors ─────────────
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyEvents = (e: KeyboardEvent) => {
       // Allow navigation arrows
       if (e.key === 'ArrowLeft') {
         handlePrev();
@@ -96,9 +124,20 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
         return;
       }
 
-      // DRM: Block shortcuts for copy, print, save, devtools
+      // Detect PrintScreen or Snipping Tool shortcuts (Win+Shift+S, Cmd+Shift+3/4)
+      if (
+        e.key === 'PrintScreen' ||
+        e.code === 'PrintScreen' ||
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key.toLowerCase() === 's' || e.code === 'KeyS'))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerScreenshotProtection();
+        return;
+      }
+
+      // DRM: Block shortcuts for copy, print, save, devtools, inspect
       const blocked = [
-        e.key === 'PrintScreen',
         (e.ctrlKey || e.metaKey) && ['s', 'p', 'u', 'a', 'c', 'v'].includes(e.key.toLowerCase()),
         e.key === 'F12',
         e.key === 'F11',
@@ -106,13 +145,35 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
       if (blocked.some(Boolean)) {
         e.preventDefault();
         e.stopPropagation();
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+          triggerScreenshotProtection();
+        }
       }
     };
-    window.addEventListener('keydown', handleKeyDown, true);
-    return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, [handlePrev, handleNext]);
 
-  // ── DRM: Blur page when tab is hidden / screen recording detected ─────────
+    const handleCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+      if (e.clipboardData) {
+        e.clipboardData.setData(
+          'text/plain',
+          `[PROTECTED CONTENT] Belesu Digital Guidebook. Content copying is disabled. Account: ${userPhone}`
+        );
+      }
+      triggerScreenshotProtection();
+    };
+
+    window.addEventListener('keydown', handleKeyEvents, true);
+    window.addEventListener('keyup', handleKeyEvents, true);
+    window.addEventListener('copy', handleCopy, true);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyEvents, true);
+      window.removeEventListener('keyup', handleKeyEvents, true);
+      window.removeEventListener('copy', handleCopy, true);
+    };
+  }, [handlePrev, handleNext, triggerScreenshotProtection, userPhone]);
+
+  // ── DRM: Complete Opaque Blackout on Window Blur (Snipping Tool & Alt-Tab) ─
   useEffect(() => {
     const handleVisibility = () => {
       if (document.hidden) setIsBlurred(true);
@@ -278,7 +339,7 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
         >
           {/* DevTools Security Overlay */}
           {devToolsDetected && (
-            <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-[#0B0F17] z-50 flex items-center justify-center p-4 select-none">
               <div className="text-center space-y-4">
                 <ShieldAlert className="w-12 h-12 sm:w-14 sm:h-14 text-amber-400 mx-auto" />
                 <h3 className="text-white font-black text-lg sm:text-xl">Developer Tools Detected</h3>
@@ -289,15 +350,42 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
             </div>
           )}
 
-          {/* Tab Switch Blur Overlay */}
-          {isBlurred && !devToolsDetected && (
+          {/* Screenshot Intercept Alert Overlay */}
+          {isScreenshotBlocked && (
+            <div className="absolute inset-0 bg-[#0B0F17] z-50 flex items-center justify-center p-4 select-none animate-in fade-in duration-100">
+              <div className="text-center space-y-3 bg-rose-950/60 border border-rose-500/40 p-6 sm:p-8 rounded-3xl max-w-md shadow-2xl">
+                <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/40">
+                  <ShieldAlert className="w-8 h-8" />
+                </div>
+                <h3 className="text-white font-black text-lg">⚠️ Screenshot Blocked</h3>
+                <p className="text-slate-300 text-xs leading-relaxed">
+                  Screenshots and screen capture are strictly prohibited. Your registered account details (<span className="font-mono text-amber-400 font-bold">{userPhone}</span>) are permanently watermarked on this reader session.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* 100% Solid Opaque Blackout Overlay on Window Blur (Snipping Tool & Background Tabs) */}
+          {isBlurred && !devToolsDetected && !isScreenshotBlocked && (
             <div
-              className="absolute inset-0 bg-slate-950/80 backdrop-blur-md z-40 flex items-center justify-center cursor-pointer p-4"
+              className="absolute inset-0 bg-[#0B0F17] z-40 flex items-center justify-center cursor-pointer p-4 select-none"
               onClick={() => setIsBlurred(false)}
             >
-              <div className="text-center space-y-3 bg-white/10 p-6 rounded-2xl border border-white/20">
-                <Lock className="w-10 h-10 text-amber-400 mx-auto" />
-                <p className="text-white font-bold text-sm">Click anywhere to resume reading</p>
+              <div className="text-center space-y-3 bg-white/5 p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl max-w-sm mx-auto">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-400">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <h4 className="text-white font-bold text-base">Reading Paused</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Page content is concealed while window is unfocused to protect copyright.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsBlurred(false)}
+                  className="mt-2 px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition cursor-pointer"
+                >
+                  Click to Resume Reading
+                </button>
               </div>
             </div>
           )}
@@ -328,8 +416,8 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
           <div
             style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.2s ease' }}
             className={`w-full mx-auto my-auto flex justify-center items-center pb-6 transition-all ${
-              viewMode === 'double' ? 'max-w-[1240px]' : 'max-w-[760px]'
-            }`}
+              isBlurred || devToolsDetected || isScreenshotBlocked ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            } ${viewMode === 'double' ? 'max-w-[1240px]' : 'max-w-[760px]'}`}
           >
             {isPageLoading ? (
               <div
@@ -355,7 +443,8 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                 onDragStart={(e) => e.preventDefault()}
               >
                 {/* Page Left (Current Page) */}
-                <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px]">
+                <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px] relative overflow-hidden">
+                  <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                   <div className="space-y-6">
                     {/* Page Header */}
                     <div className="flex items-center justify-between border-b pb-3 border-stone-200 text-xs text-slate-500">
@@ -403,7 +492,8 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
 
                 {/* Page Right (Only in Two-Page Spread Mode) */}
                 {viewMode === 'double' && (
-                  <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px] bg-stone-50/30">
+                  <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px] bg-stone-50/30 relative overflow-hidden">
+                    <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                     <div className="space-y-6">
                       <div className="flex items-center justify-between border-b pb-3 border-stone-200 text-xs text-slate-500">
                         <span className="font-mono font-bold">Page {currentPage + 1}</span>
@@ -428,17 +518,21 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                 )}
               </div>
             ) : pageImageUrl ? (
-              /* ── Real Book Page Image ── */
+              /* ── Real Book Page Image with Anti-Screenshot Decoy Shield & Indelible Watermark ── */
               <div
-                className={`w-full rounded-2xl shadow-xl overflow-hidden transition-all duration-200 ${
+                className={`w-full rounded-2xl shadow-xl overflow-hidden transition-all duration-200 select-none relative ${
                   viewMode === 'double' && secondPageImageUrl
                     ? 'grid grid-cols-2 divide-x divide-stone-200 bg-white shadow-stone-300/40 border border-stone-200'
                     : 'max-w-[720px] bg-white shadow-stone-300/40 border border-stone-200'
                 }`}
                 onDragStart={(e) => e.preventDefault()}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  toast.error('Downloads and right-click are disabled for protected digital books.');
+                }}
               >
                 {/* Single / Left Page */}
-                <div className="relative">
+                <div className="relative overflow-hidden select-none">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={pageImageUrl}
@@ -447,11 +541,22 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                     className="w-full h-auto block select-none pointer-events-none"
                     onContextMenu={(e) => e.preventDefault()}
                   />
+                  {/* Transparent Anti-Inspect Decoy Shield */}
+                  <div
+                    className="absolute inset-0 z-20 cursor-default"
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      toast.error('Right-click is disabled on protected digital content.');
+                    }}
+                    onDragStart={(e) => e.preventDefault()}
+                  />
+                  {/* Indelible Dynamic User Security Watermark */}
+                  <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                 </div>
 
                 {/* Right Page (Two-Page Spread) */}
                 {viewMode === 'double' && secondPageImageUrl && (
-                  <div className="relative">
+                  <div className="relative overflow-hidden select-none">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={secondPageImageUrl}
@@ -460,6 +565,17 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                       className="w-full h-auto block select-none pointer-events-none"
                       onContextMenu={(e) => e.preventDefault()}
                     />
+                    {/* Transparent Anti-Inspect Decoy Shield */}
+                    <div
+                      className="absolute inset-0 z-20 cursor-default"
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        toast.error('Right-click is disabled on protected digital content.');
+                      }}
+                      onDragStart={(e) => e.preventDefault()}
+                    />
+                    {/* Indelible Dynamic User Security Watermark */}
+                    <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                   </div>
                 )}
               </div>
