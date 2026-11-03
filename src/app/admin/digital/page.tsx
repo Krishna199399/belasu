@@ -1000,19 +1000,63 @@ export default function AdminDigitalPage() {
                     />
 
                     {!pdfFile ? (
-                      <label htmlFor="pdf-upload-input" className="cursor-pointer block space-y-2">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto shadow-xs">
-                          <FileUp className="w-6 h-6" />
+                      <div className="space-y-4">
+                        <label htmlFor="pdf-upload-input" className="cursor-pointer block space-y-2">
+                          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto shadow-xs">
+                            <FileUp className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <span className="text-sm font-bold text-slate-800 block">
+                              Click to select or drop Book PDF
+                            </span>
+                            <span className="text-xs text-slate-400 block mt-0.5">
+                              Standard PDF format (.pdf) • Automatically renders each page to DRM WebP
+                            </span>
+                          </div>
+                        </label>
+
+                        {/* Quick-Load Preset Buttons */}
+                        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-center gap-2">
+                          <span className="text-[11px] font-bold text-slate-500">Quick Select:</span>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                toast.loading('Loading Class 4 PDF...', { id: 'pdf-load' });
+                                const res = await fetch('/pdf/Class4_Savi_Kannada.pdf');
+                                if (!res.ok) throw new Error('Class4 PDF not found');
+                                const blob = await res.blob();
+                                const file = new File([blob], 'Class4_Savi_Kannada.pdf', { type: 'application/pdf' });
+                                handlePdfSelected(file);
+                              } catch (e: any) {
+                                toast.error('Failed to load Class 4 PDF: ' + e.message, { id: 'pdf-load' });
+                              }
+                            }}
+                            className="px-3 py-1.5 text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl transition cursor-pointer shadow-2xs"
+                          >
+                            ⚡ Class4_Savi_Kannada.pdf (117 pages)
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                toast.loading('Loading Class 6 PDF...', { id: 'pdf-load' });
+                                const res = await fetch('/pdf/Class6_Kannada.pdf');
+                                if (!res.ok) throw new Error('Class6 PDF not found');
+                                const blob = await res.blob();
+                                const file = new File([blob], 'Class6_Kannada.pdf', { type: 'application/pdf' });
+                                handlePdfSelected(file);
+                              } catch (e: any) {
+                                toast.error('Failed to load Class 6 PDF: ' + e.message, { id: 'pdf-load' });
+                              }
+                            }}
+                            className="px-3 py-1.5 text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 rounded-xl transition cursor-pointer shadow-2xs"
+                          >
+                            ⚡ Class6_Kannada.pdf (166 pages)
+                          </button>
                         </div>
-                        <div>
-                          <span className="text-sm font-bold text-slate-800 block">
-                            Click to select or drop Book PDF
-                          </span>
-                          <span className="text-xs text-slate-400 block mt-0.5">
-                            Standard PDF format (.pdf) • Automatically renders each page to DRM WebP
-                          </span>
-                        </div>
-                      </label>
+                      </div>
                     ) : (
                       <div className="space-y-4 text-left">
                         <div className="flex items-center justify-between bg-stone-50 p-3.5 rounded-xl border border-stone-200">

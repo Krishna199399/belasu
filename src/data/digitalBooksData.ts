@@ -17,7 +17,7 @@ export const CLASS_6_DIGITAL_BOOK: DigitalBook = {
   originalPrice: 349,
   badge: 'Bestseller',
   coverImage: '/digital/class-6-siri/cover.jpeg',
-  totalPages: 180,
+  totalPages: 166,
   isFreePreviewPages: 5,
   isPriceConfirmed: true,
   isComingSoon: false,
@@ -57,7 +57,7 @@ export const SAVI_4_DIGITAL_BOOK: DigitalBook = {
   originalPrice: 280,
   badge: 'Print & Digital',
   coverImage: '/covers/savi-4.png',
-  totalPages: 180,
+  totalPages: 117,
   isFreePreviewPages: 5,
   isPriceConfirmed: false, // Visible with placeholder; buy button staged pending client confirmation
   isComingSoon: true,
