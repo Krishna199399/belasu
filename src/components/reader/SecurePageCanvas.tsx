@@ -47,28 +47,8 @@ export function SecurePageCanvas({
       canvas.height = height;
       setAspectRatio(height / width);
 
-      // 1. Draw page textbook page
+      // 1. Draw crisp textbook page cleanly
       ctx.drawImage(img, 0, 0, width, height);
-
-      // 2. Indelibly burn student identity watermark directly into pixel buffer
-      const displayId = userPhone && userPhone !== 'Anonymous' ? userPhone : 'Belesu Student';
-      const watermarkText = `${displayId} • Belesu DRM Protected • Do Not Copy`;
-
-      ctx.save();
-      const fontSize = Math.max(14, Math.round(width / 45));
-      ctx.font = `bold ${fontSize}px monospace`;
-      ctx.fillStyle = darkMode ? 'rgba(255, 255, 255, 0.16)' : 'rgba(15, 23, 42, 0.14)';
-      ctx.rotate((-26 * Math.PI) / 180);
-
-      const stepY = fontSize * 7;
-      const stepX = fontSize * 24;
-
-      for (let y = -height; y < height * 2; y += stepY) {
-        for (let x = -width; x < width * 2; x += stepX) {
-          ctx.fillText(watermarkText, x, y);
-        }
-      }
-      ctx.restore();
 
       setIsLoaded(true);
     };
@@ -118,3 +98,4 @@ export function SecurePageCanvas({
     </div>
   );
 }
+

@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DigitalBook } from '@/types';
 import { ReaderSidebar } from './ReaderSidebar';
 import { ReaderToolbar } from './ReaderToolbar';
-import { PageWatermark } from './PageWatermark';
 import { SecurePageCanvas } from './SecurePageCanvas';
 import { Lock, ShieldAlert, ChevronLeft, ChevronRight, BookOpen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
@@ -502,7 +501,6 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
               >
                 {/* Page Left (Current Page) */}
                 <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px] relative overflow-hidden">
-                  <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                   <div className="space-y-6">
                     {/* Page Header */}
                     <div className="flex items-center justify-between border-b pb-3 border-stone-200 text-xs text-slate-500">
@@ -551,7 +549,6 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                 {/* Page Right (Only in Two-Page Spread Mode) */}
                 {viewMode === 'double' && (
                   <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-between min-h-[580px] sm:min-h-[780px] bg-stone-50/30 relative overflow-hidden">
-                    <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                     <div className="space-y-6">
                       <div className="flex items-center justify-between border-b pb-3 border-stone-200 text-xs text-slate-500">
                         <span className="font-mono font-bold">Page {currentPage + 1}</span>
@@ -607,8 +604,6 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                     }}
                     onDragStart={(e) => e.preventDefault()}
                   />
-                  {/* Indelible Dynamic User Security Watermark (DOM Layer) */}
-                  <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                 </div>
 
                 {/* Right Page (Two-Page Spread) */}
@@ -630,8 +625,6 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                       }}
                       onDragStart={(e) => e.preventDefault()}
                     />
-                    {/* Indelible Dynamic User Security Watermark (DOM Layer) */}
-                    <PageWatermark userPhone={userPhone} darkMode={darkMode} />
                   </div>
                 )}
               </div>
