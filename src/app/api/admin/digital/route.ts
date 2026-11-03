@@ -274,6 +274,32 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
+    // Clean up dangling references from user accounts
+    try {
+      const { data: usersWithBook } = await supabase
+        .from('users')
+        .select('id, purchased_books');
+
+      if (Array.isArray(usersWithBook)) {
+        for (const u of usersWithBook) {
+          const digital = u.purchased_books?.digital;
+          if (Array.isArray(digital) && digital.includes(id)) {
+            await supabase
+              .from('users')
+              .update({
+                purchased_books: {
+                  ...u.purchased_books,
+                  digital: digital.filter((b: string) => b !== id),
+                },
+              })
+              .eq('id', u.id);
+          }
+        }
+      }
+    } catch (cleanupErr) {
+      console.warn('Non-fatal error cleaning up purchased_books on book deletion:', cleanupErr);
+    }
+
     return Response.json({
       success: true,
       message: 'Digital book removed successfully',

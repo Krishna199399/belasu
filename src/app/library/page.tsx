@@ -15,9 +15,14 @@ interface ProgressMap {
 }
 
 export default function LibraryPage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, refreshUser } = useAuth();
   const router = useRouter();
   const [progressMap, setProgressMap] = useState<ProgressMap>({});
+
+  // Ensure latest purchased_books state on mount
+  useEffect(() => {
+    refreshUser();
+  }, [refreshUser]);
 
   useEffect(() => {
     if (!isLoading && !user) router.replace('/auth/login?redirect=/library');
@@ -37,7 +42,11 @@ export default function LibraryPage() {
   }, []);
 
   const ownedBooks: DigitalBook[] = user
-    ? allBooks.filter((b) => user.purchasedBooks?.digital?.includes(b.id))
+    ? allBooks.filter(
+        (b) =>
+          user.purchasedBooks?.digital?.includes(b.id) ||
+          user.purchasedBooks?.digital?.includes(b.slug)
+      )
     : [];
 
   // Load reading progress for each owned book

@@ -30,6 +30,7 @@ function ProfileContent() {
     emailOptIn: true,
     smsOptIn: true,
   });
+  const [digitalCatalog, setDigitalCatalog] = useState<any[]>([]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -37,12 +38,30 @@ function ProfileContent() {
     }
   }, [user, authLoading, router]);
 
-  // Ensure fresh user addresses and profile details on mount
+  // Always refresh user on mount to guarantee fresh purchased_books and addresses
   useEffect(() => {
-    if (user && (!user.addresses || user.addresses.length === 0)) {
-      refreshUser();
-    }
-  }, [user, refreshUser]);
+    refreshUser();
+  }, [refreshUser]);
+
+  // Load live digital catalog for the Library tab
+  useEffect(() => {
+    fetch('/api/digital/books', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.books)) {
+          setDigitalCatalog(data.books);
+        }
+      })
+      .catch((err) => console.error('Failed to load digital catalog for profile:', err));
+  }, []);
+
+  const ownedDigitalBooks = user
+    ? digitalCatalog.filter(
+        (b) =>
+          user.purchasedBooks?.digital?.includes(b.id) ||
+          user.purchasedBooks?.digital?.includes(b.slug)
+      )
+    : [];
 
   useEffect(() => {
     if (user) {
@@ -300,22 +319,95 @@ function ProfileContent() {
 
             {/* Library Tab */}
             {activeTab === 'library' && (
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">My Digital Library</h2>
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-                  <BookOpen className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Your Digital Books</h3>
-                  <p className="text-blue-800 mb-4">
-                    You have {user.purchasedBooks?.digital?.length || 0} digital book{user.purchasedBooks?.digital?.length !== 1 ? 's' : ''} in your library.
-                  </p>
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">My Digital Library</h2>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Online browser access for your purchased digital guidebooks.
+                    </p>
+                  </div>
                   <Link
                     href="/library"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition w-fit"
                   >
-                    <BookOpen className="w-5 h-5" />
-                    Go to Full Library
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Open Full Library Page</span>
                   </Link>
                 </div>
+
+                {ownedDigitalBooks.length === 0 ? (
+                  <div className="bg-stone-50 border border-stone-200 rounded-2xl p-8 text-center max-w-lg mx-auto space-y-3">
+                    <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mx-auto text-2xl">
+                      📚
+                    </div>
+                    <h3 className="text-base font-bold text-slate-900">No Digital Books in Your Library</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      You currently don&apos;t have any active digital guidebooks unlocked. Browse our catalog to read instant English-translated guides.
+                    </p>
+                    <div className="pt-2">
+                      <Link
+                        href="/digital"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-xs"
+                      >
+                        <BookOpen className="w-4 h-4" />
+                        <span>Browse Digital Books</span>
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <BookOpen className="w-5 h-5 text-amber-700" />
+                        <div>
+                          <p className="text-xs font-bold text-amber-950">
+                            {ownedDigitalBooks.length} Digital Book{ownedDigitalBooks.length !== 1 ? 's' : ''} Active
+                          </p>
+                          <p className="text-[11px] text-amber-800">
+                            Instant reading available directly in your web browser.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {ownedDigitalBooks.map((book) => (
+                        <div
+                          key={book.id}
+                          className="bg-white border border-gray-200 rounded-xl p-4 hover:border-amber-400 transition shadow-xs flex flex-col justify-between gap-3"
+                        >
+                          <div>
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                                Class {book.gradeClass}
+                              </span>
+                              <span className="text-[10px] font-semibold text-gray-500">
+                                {book.subject}
+                              </span>
+                            </div>
+                            <h4 className="font-bold text-sm text-slate-900 leading-snug line-clamp-2">
+                              {book.title}
+                            </h4>
+                          </div>
+
+                          <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                            <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
+                              ✓ Lifetime Access
+                            </span>
+                            <Link
+                              href={`/reader/${book.slug}`}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition shadow-xs"
+                            >
+                              <span>Read Now</span>
+                              <BookOpen className="w-3 h-3" />
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

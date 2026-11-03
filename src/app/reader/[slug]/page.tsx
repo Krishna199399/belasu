@@ -62,8 +62,8 @@ export default async function ReaderPage({
       .single();
 
     const books = user?.purchased_books;
-    const digitalOwned  = (books?.digital  ?? []).includes(book.id);
-    const physicalOwned = (books?.physical ?? []).includes(book.id);
+    const digitalOwned  = (books?.digital  ?? []).includes(book.id) || (books?.digital ?? []).includes(book.slug);
+    const physicalOwned = (books?.physical ?? []).includes(book.id) || (books?.physical ?? []).includes(book.slug);
     isOwned = digitalOwned || physicalOwned;
 
     // If not preview and not owned → redirect to purchase

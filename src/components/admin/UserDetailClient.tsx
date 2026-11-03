@@ -81,6 +81,13 @@ export const UserDetailClient: React.FC<{ initialUser: UserData }> = ({
   const [updatingBookId, setUpdatingBookId] = useState<string | null>(null);
 
   const toggleBookAccess = async (bookId: string, currentOwned: boolean) => {
+    if (currentOwned) {
+      const confirmed = window.confirm(
+        'Are you sure you want to delete this digital book from this user\'s purchase? It will immediately disappear from their library and profile.'
+      );
+      if (!confirmed) return;
+    }
+
     setUpdatingBookId(bookId);
     const action = currentOwned ? 'revoke_digital' : 'grant_digital';
 
@@ -100,8 +107,8 @@ export const UserDetailClient: React.FC<{ initialUser: UserData }> = ({
         }));
         toast.success(
           currentOwned
-            ? 'Access revoked successfully'
-            : 'Access granted successfully!'
+            ? 'Digital book removed from user library'
+            : 'Digital book access granted!'
         );
         router.refresh();
       } else {
@@ -204,7 +211,7 @@ export const UserDetailClient: React.FC<{ initialUser: UserData }> = ({
               </h3>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Click &quot;Grant Access&quot; to instantly unlock digital guidebooks for this student without requiring payment.
+              Manage digital guidebooks for this student. Deleting a book immediately removes it from their library and profile.
             </p>
           </div>
           <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full w-fit">
@@ -251,7 +258,7 @@ export const UserDetailClient: React.FC<{ initialUser: UserData }> = ({
                   <button
                     onClick={() => toggleBookAccess(book.id, book.isOwned)}
                     disabled={isProcessing}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer ${
                       book.isOwned
                         ? 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
                         : 'bg-indigo-600 text-white hover:bg-indigo-500'
@@ -259,8 +266,8 @@ export const UserDetailClient: React.FC<{ initialUser: UserData }> = ({
                   >
                     {book.isOwned ? (
                       <>
-                        <Lock className="w-3.5 h-3.5" />
-                        <span>{isProcessing ? 'Revoking...' : 'Revoke Access'}</span>
+                        <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                        <span>{isProcessing ? 'Removing...' : 'Delete from Library'}</span>
                       </>
                     ) : (
                       <>

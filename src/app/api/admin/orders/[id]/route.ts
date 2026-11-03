@@ -118,6 +118,61 @@ export async function PATCH(
 
     if (error) throw error;
 
+    // Synchronize digital book access if order is cancelled or refunded
+    if (data && data.user_id && Array.isArray(data.order_items)) {
+      const digitalProductIds = data.order_items
+        .filter((item: any) => item.item_type === 'digital' && item.product_id)
+        .map((item: any) => item.product_id);
+
+      if (digitalProductIds.length > 0) {
+        const { data: userRecord } = await supabase
+          .from('users')
+          .select('purchased_books')
+          .eq('id', data.user_id)
+          .maybeSingle();
+
+        if (userRecord) {
+          const currentBooks = userRecord.purchased_books || { physical: [], digital: [] };
+          let digitalList: string[] = Array.isArray(currentBooks.digital) ? [...currentBooks.digital] : [];
+
+          const shouldRevoke =
+            order_status === 'Cancelled' ||
+            payment_status === 'Refunded' ||
+            payment_status === 'Failed';
+
+          const shouldGrant =
+            order_status === 'Completed' ||
+            payment_status === 'Paid';
+
+          if (shouldRevoke) {
+            digitalList = digitalList.filter((b) => !digitalProductIds.includes(b));
+            await supabase
+              .from('users')
+              .update({
+                purchased_books: {
+                  ...currentBooks,
+                  digital: digitalList,
+                },
+              })
+              .eq('id', data.user_id);
+          } else if (shouldGrant) {
+            digitalProductIds.forEach((pid: string) => {
+              if (!digitalList.includes(pid)) digitalList.push(pid);
+            });
+            await supabase
+              .from('users')
+              .update({
+                purchased_books: {
+                  ...currentBooks,
+                  digital: digitalList,
+                },
+              })
+              .eq('id', data.user_id);
+          }
+        }
+      }
+    }
+
     return Response.json({
       success: true,
       order: data,

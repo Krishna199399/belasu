@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      const res = await fetch('/api/auth/me');
+      const res = await fetch('/api/auth/me', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let isMounted = true;
     const fetchInitialUser = async () => {
       try {
-        const res = await fetch('/api/auth/me');
+        const res = await fetch('/api/auth/me', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (isMounted) setUser(data.user);
@@ -65,8 +65,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     fetchInitialUser();
 
+    // Revalidate user profile on tab focus / visibility change without loading spinner
+    const handleTabRevalidation = () => {
+      fetch('/api/auth/me', { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (isMounted && data && data.user) {
+            setUser(data.user);
+          }
+        })
+        .catch(() => {});
+    };
+
+    window.addEventListener('focus', handleTabRevalidation);
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') handleTabRevalidation();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
       isMounted = false;
+      window.removeEventListener('focus', handleTabRevalidation);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
 

@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { requireAdmin } from '@/lib/adminAuth';
 import { createAdminClient } from '@/lib/supabase';
 import { isPhoneAdmin } from '@/lib/auth';
-import { digitalBooks } from '@/data/digitalBooksData';
+import { getAllActiveDigitalBooks } from '@/lib/digital';
 
 export async function GET(
   request: NextRequest,
@@ -49,9 +49,12 @@ export async function GET(
       .select('*')
       .eq('user_id', user.id);
 
-    // 5. Build enriched digital book list with ownership status
+    // 5. Build enriched digital book list with live Supabase database digital_books
+    const allDigitalBooks = await getAllActiveDigitalBooks();
     const digitalList = (user.purchased_books?.digital || []) as string[];
-    const ownedDigitalBooks = digitalBooks.filter((b: any) => digitalList.includes(b.id));
+    const ownedDigitalBooks = allDigitalBooks.filter((b: any) => 
+      digitalList.includes(b.id) || (b.slug && digitalList.includes(b.slug))
+    );
 
     const isAdmin = Boolean((user as any).is_admin || isPhoneAdmin(user.phone));
 
@@ -64,12 +67,13 @@ export async function GET(
         orders: orders || [],
         readProgress: readProgress || [],
         ownedDigitalBooks,
-        availableDigitalBooks: digitalBooks.map((b: any) => ({
+        availableDigitalBooks: allDigitalBooks.map((b: any) => ({
           id: b.id,
+          slug: b.slug,
           title: b.title,
           gradeClass: b.gradeClass,
           subject: b.subject,
-          isOwned: digitalList.includes(b.id),
+          isOwned: digitalList.includes(b.id) || (b.slug && digitalList.includes(b.slug)),
         })),
       },
     });
@@ -115,7 +119,7 @@ export async function PATCH(
     if (name !== undefined) updates.name = name;
     if (email !== undefined) updates.email = email;
 
-    // Handle digital book access grant or revoke
+    // Handle digital book access grant or revoke/delete
     if (action === 'grant_digital' && bookId) {
       if (!digitalBooksList.includes(bookId)) {
         digitalBooksList.push(bookId);
@@ -124,8 +128,12 @@ export async function PATCH(
         physical: physicalBooksList,
         digital: digitalBooksList,
       };
-    } else if (action === 'revoke_digital' && bookId) {
-      digitalBooksList = digitalBooksList.filter((b) => b !== bookId);
+    } else if ((action === 'revoke_digital' || action === 'delete_digital_purchase') && bookId) {
+      const allDigitalBooks = await getAllActiveDigitalBooks();
+      const targetBook = allDigitalBooks.find((b) => b.id === bookId || b.slug === bookId);
+      const targetSlug = targetBook?.slug;
+
+      digitalBooksList = digitalBooksList.filter((b) => b !== bookId && b !== targetSlug);
       updates.purchased_books = {
         physical: physicalBooksList,
         digital: digitalBooksList,
@@ -148,7 +156,11 @@ export async function PATCH(
     return Response.json({
       success: true,
       user: updatedUser,
-      message: action ? `Book access successfully updated` : 'User profile updated',
+      message: action === 'revoke_digital' || action === 'delete_digital_purchase'
+        ? 'Digital book removed from user account'
+        : action === 'grant_digital'
+        ? 'Digital book access granted'
+        : 'User profile updated',
     });
   } catch (err: any) {
     console.error('Admin user update error:', err);

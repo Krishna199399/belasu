@@ -56,7 +56,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify Razorpay HMAC signature if secret is configured
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const keySecret = (
+      process.env.RAZORPAY_KEY_SECRET ||
+      process.env.RAZORPAY_SECRET ||
+      ''
+    ).trim();
     if (keySecret) {
       if (!razorpay_signature) {
         return Response.json(
