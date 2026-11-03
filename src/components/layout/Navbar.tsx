@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  if (rawPathname?.startsWith('/admin')) {
+  if (rawPathname?.startsWith('/admin') || rawPathname?.startsWith('/reader')) {
     return null;
   }
 
