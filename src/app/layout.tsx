@@ -67,6 +67,17 @@ export const metadata: Metadata = {
     title: 'Kannada Guidebooks for Academic Learning | Belesu',
     description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
     site: '@kannadabelesu'
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   }
 };
 
