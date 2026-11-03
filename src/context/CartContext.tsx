@@ -57,12 +57,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const toggleCart = () => setIsOpen((prev) => !prev);
 
   const addToCart = (product: BookProduct | DigitalBook, productType: ProductType, quantity: number = 1) => {
-    // Check temporary hold on digital books while PDF is prepared
-    if (productType === 'digital') {
-      toast.error('Digital books are currently being updated with new PDFs and will be available next week.');
-      return;
-    }
-
     // Check out of stock for physical books
     if (productType === 'physical') {
       const book = product as BookProduct;
@@ -75,6 +69,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCart((prevCart) => {
       const existingIndex = prevCart.findIndex((item) => item.product.id === product.id);
       if (existingIndex > -1) {
+        // Digital books are single lifetime licenses
+        if (productType === 'digital') {
+          toast('This digital book is already in your cart', { icon: 'ℹ️' });
+          return prevCart;
+        }
         const updated = [...prevCart];
         updated[existingIndex].quantity += quantity;
         return updated;
