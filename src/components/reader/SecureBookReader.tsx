@@ -206,10 +206,34 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
     };
   }, []);
 
-  // ── DRM: DevTools detection via window resize trick ──────────────────────
+  // ── DRM: DevTools detection via window resize trick (Desktop only) ───────
   useEffect(() => {
-    const THRESHOLD = 160;
+    // Mobile browsers (iOS Safari, Android Chrome) have large URL address bars,
+    // bottom navigation toolbars, home indicators, and notches/Dynamic Islands,
+    // where window.outerHeight - window.innerHeight is naturally 180px–220px.
+    // In addition, mobile browsers do not support dockable in-browser DevTools panels.
+    // Never run window dimension checks on mobile/touch devices to prevent false positives.
+    const isMobileOrTouchDevice = () => {
+      if (typeof window === 'undefined') return true;
+      const ua = navigator.userAgent || '';
+      const isMobileUA = /iPhone|iPad|iPod|Android|Mobile|Tablet/i.test(ua);
+      const isTouch = (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || 'ontouchstart' in window;
+      const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      const isSmallScreen = window.innerWidth < 1024;
+      return isMobileUA || (isTouch && isSmallScreen) || (isCoarsePointer && isSmallScreen);
+    };
+
+    if (isMobileOrTouchDevice()) {
+      setDevToolsDetected(false);
+      return;
+    }
+
+    const THRESHOLD = 240;
     const check = () => {
+      if (isMobileOrTouchDevice()) {
+        setDevToolsDetected(false);
+        return;
+      }
       const widthDiff = window.outerWidth - window.innerWidth;
       const heightDiff = window.outerHeight - window.innerHeight;
       setDevToolsDetected(widthDiff > THRESHOLD || heightDiff > THRESHOLD);
