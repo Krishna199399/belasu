@@ -7,8 +7,8 @@ import { AuthUser, Address } from '@/types';
 interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
-  sendOtp: (phone: string, name?: string) => Promise<{ success: boolean; message?: string; error?: string }>;
-  verifyOtp: (phone: string, otp: string, name?: string) => Promise<{ success: boolean; error?: string }>;
+  sendOtp: (phone: string, name?: string) => Promise<{ success: boolean; message?: string; reqId?: string; error?: string }>;
+  verifyOtp: (phone: string, otp: string, name?: string, reqId?: string) => Promise<{ success: boolean; error?: string; user?: any }>;
   loginWithMsg91Token: (phone: string, accessToken: string, name?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -99,11 +99,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return res.json();
   }, []);
 
-  const verifyOtp = useCallback(async (phone: string, otp: string, name?: string) => {
+  const verifyOtp = useCallback(async (phone: string, otp: string, name?: string, reqId?: string) => {
     const res = await fetch('/api/auth/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, otp, name }),
+      body: JSON.stringify({ phone, otp, name, reqId }),
     });
     const data = await res.json();
     if (data.success) {

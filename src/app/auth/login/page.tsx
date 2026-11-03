@@ -35,10 +35,12 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   const [devMessage, setDevMessage] = useState('');
   const [resendCountdown, setResendCountdown] = useState(0);
   const [otpMethod, setOtpMethod] = useState<'msg91' | 'fallback'>('msg91');
+  const [reqId, setReqId] = useState<string>('');
 
   const otpInputRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef(phone);
   const nameRef = useRef(name);
+  const reqIdRef = useRef(reqId);
   const hasLoggedInRef = useRef(false);
 
   useEffect(() => {
@@ -48,6 +50,25 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   useEffect(() => {
     nameRef.current = name;
   }, [name]);
+
+  useEffect(() => {
+    reqIdRef.current = reqId;
+  }, [reqId]);
+
+  // Restore state if Mobile Safari reloaded when switching to WhatsApp
+  useEffect(() => {
+    try {
+      const savedPhone = sessionStorage.getItem('belasu_auth_phone');
+      const savedName = sessionStorage.getItem('belasu_auth_name');
+      const savedReqId = sessionStorage.getItem('belasu_otp_reqId');
+      const savedStep = sessionStorage.getItem('belasu_auth_step');
+
+      if (savedPhone && !phone) setPhone(savedPhone);
+      if (savedName && !name) setName(savedName);
+      if (savedReqId && !reqId) setReqId(savedReqId);
+      if (savedStep === 'otp' && step === 'phone') setStep('otp');
+    } catch {}
+  }, []);
 
   // Auto-redirect if already logged in
   useEffect(() => {
@@ -113,6 +134,15 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
       if (result.success) {
         setStep('otp');
         setResendCountdown(30);
+        if (result.reqId) {
+          setReqId(result.reqId);
+          try {
+            sessionStorage.setItem('belasu_otp_reqId', result.reqId);
+            sessionStorage.setItem('belasu_auth_phone', phone);
+            sessionStorage.setItem('belasu_auth_name', name.trim());
+            sessionStorage.setItem('belasu_auth_step', 'otp');
+          } catch {}
+        }
         if (result.message?.includes('[DEV MODE]')) {
           setDevMessage(result.message);
         }
@@ -154,6 +184,19 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
             setStep('otp');
             setResendCountdown(30);
             setOtpMethod('msg91');
+            const resData = res as Record<string, any>;
+            const returnedReqId = resData?.message || resData?.reqId || '';
+            if (returnedReqId) {
+              setReqId(returnedReqId);
+              try {
+                sessionStorage.setItem('belasu_otp_reqId', returnedReqId);
+              } catch {}
+            }
+            try {
+              sessionStorage.setItem('belasu_auth_phone', phone);
+              sessionStorage.setItem('belasu_auth_name', name.trim());
+              sessionStorage.setItem('belasu_auth_step', 'otp');
+            } catch {}
           },
           (err: unknown) => {
             const errorObj = err as { message?: string; data?: { message?: string } };
@@ -215,6 +258,9 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     setError('');
     setIsLoading(true);
 
+    const activeReqId = reqId || reqIdRef.current || (typeof window !== 'undefined' ? sessionStorage.getItem('belasu_otp_reqId') : '') || '';
+
+    // First attempt: If MSG91 client widget is active and has verifyOtp function
     if (otpMethod === 'msg91' && typeof window.verifyOtp === 'function') {
       try {
         window.verifyOtp(
@@ -230,6 +276,10 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
             setIsLoading(false);
 
             if (result.success) {
+              try {
+                sessionStorage.removeItem('belasu_otp_reqId');
+                sessionStorage.removeItem('belasu_auth_step');
+              } catch {}
               router.replace(redirectTo || '/library');
             } else {
               hasLoggedInRef.current = false;
@@ -237,15 +287,26 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
             }
           },
           async (err: unknown) => {
-            // Attempt server-side verification in case of dev mode fallback code
+            console.warn('[MSG91] Client verifyOtp failed, verifying with server API...', err);
+            // Seamless server fallback with activeReqId
             try {
-              const fallbackResult = await verifyOtp(phone, otp, name.trim());
+              const fallbackResult = await verifyOtp(phone, otp, name.trim(), activeReqId);
               if (fallbackResult.success) {
                 setIsLoading(false);
+                try {
+                  sessionStorage.removeItem('belasu_otp_reqId');
+                  sessionStorage.removeItem('belasu_auth_step');
+                } catch {}
                 router.replace(redirectTo || '/library');
                 return;
+              } else {
+                setIsLoading(false);
+                setError(fallbackResult.error || 'Incorrect OTP. Please check and try again.');
+                return;
               }
-            } catch {}
+            } catch (fallbackErr) {
+              console.error('Server fallback verify error:', fallbackErr);
+            }
 
             setIsLoading(false);
             const errorObj = err as { message?: string; data?: { message?: string } };
@@ -254,20 +315,25 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
               errorObj?.message ||
               'Incorrect verification code. Please check and try again.';
             setError(errMsg);
-          }
+          },
+          activeReqId
         );
         return;
       } catch (e) {
-        console.warn('[MSG91] Exception in verifyOtp, trying fallback:', e);
+        console.warn('[MSG91] Exception in client verifyOtp, trying server verification:', e);
       }
     }
 
-    // Fallback / Dev mode verification
+    // Direct server verification (handles mobile tab switching, Safari background wake, and fallback mode)
     try {
-      const result = await verifyOtp(phone, otp, name.trim());
+      const result = await verifyOtp(phone, otp, name.trim(), activeReqId);
       setIsLoading(false);
 
       if (result.success) {
+        try {
+          sessionStorage.removeItem('belasu_otp_reqId');
+          sessionStorage.removeItem('belasu_auth_step');
+        } catch {}
         router.replace(redirectTo || '/library');
       } else {
         setError(result.error || 'Invalid verification code. Please check and try again.');

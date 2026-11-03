@@ -2,45 +2,96 @@ import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
 import { signToken, buildAuthCookieHeader, getFullUserProfile } from '@/lib/auth';
 
+const DEV_OTP = '123456';
+const IS_DEV = process.env.NODE_ENV !== 'production';
+
 export async function POST(request: NextRequest) {
   try {
-    const { phone, otp, name } = await request.json();
+    const { phone, otp, name, reqId } = await request.json();
 
     if (!phone || !otp) {
       return Response.json({ success: false, error: 'Phone and OTP are required' }, { status: 400 });
     }
 
+    const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+    const cleanOtp = String(otp).trim();
     const supabase = createAdminClient();
 
-    // 1. Fetch stored OTP
+    // 1. Fetch stored OTP record
     const { data: otpRecord, error: fetchErr } = await supabase
       .from('otps')
       .select('*')
-      .eq('phone', phone)
-      .single();
+      .eq('phone', cleanPhone)
+      .maybeSingle();
 
-    if (fetchErr || !otpRecord) {
-      return Response.json({ success: false, error: 'OTP not found. Please request a new one.' }, { status: 400 });
+    // 2. Check expiry if record exists
+    if (otpRecord && otpRecord.expires_at) {
+      if (new Date(otpRecord.expires_at) < new Date()) {
+        return Response.json({ success: false, error: 'OTP has expired. Please request a new one.' }, { status: 400 });
+      }
     }
 
-    // 2. Check expiry
-    if (new Date(otpRecord.expires_at) < new Date()) {
-      return Response.json({ success: false, error: 'OTP has expired. Please request a new one.' }, { status: 400 });
+    const authKey = process.env.MSG91_AUTH_KEY || '586335A5gpZuvFpB6ae66a79P1';
+    const widgetId = process.env.NEXT_PUBLIC_MSG91_WIDGET_ID || '366a45776b7a393936333337';
+    const tokenAuth = process.env.NEXT_PUBLIC_MSG91_TOKEN_AUTH || '586335TnpNGKx14of6ae675f2P1';
+
+    let isVerified = false;
+
+    // Check A: Dev mode fallback code 123456
+    if (IS_DEV && cleanOtp === DEV_OTP) {
+      isVerified = true;
     }
 
-    // 3. Verify OTP
-    if (otpRecord.otp_code !== otp) {
+    // Check B: Direct code match with stored code (if raw code was stored)
+    if (!isVerified && otpRecord?.otp_code && otpRecord.otp_code === cleanOtp) {
+      isVerified = true;
+    }
+
+    // Check C: Official MSG91 Widget OTP verification
+    const targetReqId = reqId || otpRecord?.otp_code;
+    if (!isVerified && targetReqId) {
+      try {
+        const msg91Res = await fetch('https://control.msg91.com/api/v5/widget/verifyOtp', {
+          method: 'POST',
+          headers: {
+            'authkey': authKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            widgetId,
+            tokenAuth,
+            otp: cleanOtp,
+            reqId: String(targetReqId).trim(),
+          }),
+        });
+
+        const msg91Data = await msg91Res.json();
+        console.log(`[verify-otp] MSG91 verify result for 91${cleanPhone}:`, msg91Data);
+
+        if (
+          msg91Data.type === 'success' ||
+          msg91Data.message === 'OTP verified successfully' ||
+          (msg91Res.ok && msg91Data.status !== 'fail' && msg91Data.type !== 'error')
+        ) {
+          isVerified = true;
+        }
+      } catch (msgErr) {
+        console.error('[verify-otp] MSG91 verify API error:', msgErr);
+      }
+    }
+
+    if (!isVerified) {
       return Response.json({ success: false, error: 'Incorrect OTP. Please try again.' }, { status: 400 });
     }
 
-    // 4. Delete used OTP
-    await supabase.from('otps').delete().eq('phone', phone);
+    // 4. Delete used OTP from otps table
+    await supabase.from('otps').delete().eq('phone', cleanPhone);
 
     // 5. Upsert user (auto-register if first time)
-    const displayName = name || otpRecord.name || `User_${phone.slice(-4)}`;
+    const displayName = name || otpRecord?.name || `User_${cleanPhone.slice(-4)}`;
     const { data: user, error: userErr } = await supabase
       .from('users')
-      .upsert({ phone, name: displayName }, { onConflict: 'phone' })
+      .upsert({ phone: cleanPhone, name: displayName }, { onConflict: 'phone' })
       .select()
       .single();
 

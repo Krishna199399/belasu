@@ -51,14 +51,14 @@ export async function POST(request: NextRequest) {
       msg91Error = fetchErr instanceof Error ? fetchErr.message : 'Network error';
     }
 
-    // Upsert record in Supabase (for fallback / record keeping)
-    const otp = IS_DEV ? DEV_OTP : String(Math.floor(100000 + Math.random() * 900000));
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 min
+    // Upsert record in Supabase (saving reqId for server-side verification)
+    const storedCode = msg91ReqId || (IS_DEV ? DEV_OTP : String(Math.floor(100000 + Math.random() * 900000)));
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes matching MSG91 WhatsApp OTP
 
     const supabase = createAdminClient();
     await supabase
       .from('otps')
-      .upsert({ phone: cleanPhone, otp_code: otp, expires_at: expiresAt, name: name || null }, { onConflict: 'phone' });
+      .upsert({ phone: cleanPhone, otp_code: storedCode, expires_at: expiresAt, name: name || null }, { onConflict: 'phone' });
 
     if (msg91Success) {
       return Response.json({
@@ -69,10 +69,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (IS_DEV) {
-      console.log(`[DEV MODE] OTP for ${cleanPhone}: ${otp}`);
+      console.log(`[DEV MODE] OTP for ${cleanPhone}: ${storedCode}`);
       return Response.json({
         success: true,
-        message: `[DEV MODE] OTP: ${otp}`,
+        message: `[DEV MODE] OTP: ${storedCode}`,
       });
     }
 

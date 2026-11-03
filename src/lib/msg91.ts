@@ -23,7 +23,8 @@ declare global {
     verifyOtp?: (
       otp: string,
       success?: (data: unknown) => void,
-      failure?: (err: unknown) => void
+      failure?: (err: unknown) => void,
+      requestId?: string
     ) => void;
   }
 }
