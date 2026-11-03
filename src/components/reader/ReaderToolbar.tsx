@@ -13,6 +13,7 @@ import {
   BookOpen,
   FileText,
   ArrowLeft,
+  LayoutGrid,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -86,7 +87,7 @@ export function ReaderToolbar({
 
         <div className={`h-4 w-px ${darkMode ? 'bg-slate-800' : 'bg-stone-200'}`} />
 
-        {/* Contents Toggle */}
+        {/* Thumbnails Toggle */}
         <button
           type="button"
           onClick={onToggleSidebar}
@@ -97,11 +98,11 @@ export function ReaderToolbar({
               ? 'text-slate-300 hover:text-white hover:bg-slate-800'
               : 'text-slate-700 hover:text-slate-950 hover:bg-stone-100'
           }`}
-          title={sidebarOpen ? 'Close Contents' : 'Open Contents & Thumbnails'}
-          aria-label={sidebarOpen ? 'Close Contents' : 'Open Contents & Thumbnails'}
+          title={sidebarOpen ? 'Close Thumbnails' : 'Open Page Thumbnails'}
+          aria-label={sidebarOpen ? 'Close Thumbnails' : 'Open Page Thumbnails'}
         >
-          {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          <span className="hidden md:inline">Contents</span>
+          {sidebarOpen ? <X className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
+          <span className="hidden md:inline">Thumbnails</span>
         </button>
 
         {/* Book Title */}

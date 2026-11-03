@@ -217,14 +217,6 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
 
   const isLastFreePageReached = !isOwned && currentPage >= book.isFreePreviewPages;
 
-  // Active chapter lookup for footer label
-  const activeChapter = book.tableOfContents && book.tableOfContents.length > 0
-    ? book.tableOfContents.find((ch, i) =>
-        currentPage >= ch.startPage &&
-        (i === book.tableOfContents.length - 1 || currentPage < book.tableOfContents[i + 1].startPage)
-      )?.chapter || `Page ${currentPage}`
-    : `Page ${currentPage}`;
-
   return (
     <div
       className={`flex flex-col h-screen overflow-hidden transition-colors duration-200 ${
@@ -371,10 +363,10 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                       <span className="font-mono font-bold">Page {currentPage}</span>
                     </div>
 
-                    {/* Chapter Title Badge */}
+                    {/* Book Series Badge */}
                     <div className="space-y-2">
                       <span className="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-md">
-                        {activeChapter}
+                        Class {book.gradeClass} · {book.subject}
                       </span>
                       <h3 className="text-xl sm:text-2xl font-serif font-black text-slate-900 leading-snug">
                         {book.title}
@@ -505,11 +497,11 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                 : 'bg-white/95 border-stone-200 text-slate-800 shadow-sm'
             }`}
           >
-            {/* Active Chapter Label */}
+            {/* Book Info Label */}
             <div className="flex items-center gap-2 min-w-0 max-w-full sm:max-w-[280px]">
-              <BookOpen className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
               <span className="text-xs font-bold truncate text-slate-700">
-                {activeChapter}
+                {book.title}
               </span>
             </div>
 
