@@ -14,6 +14,19 @@ export async function POST(request: NextRequest) {
     const widgetId = process.env.NEXT_PUBLIC_MSG91_WIDGET_ID || '366a45776b7a393936333337';
     const tokenAuth = process.env.NEXT_PUBLIC_MSG91_TOKEN_AUTH || '586335TnpNGKx14of6ae675f2P1';
 
+    // Forward real client IP so MSG91 tracks per-user, not per-server IP
+    const clientIp =
+      request.headers.get('x-real-ip') ||
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('cf-connecting-ip') ||
+      '';
+
+    const apiHeaders: Record<string, string> = {
+      'authkey': authKey,
+      'Content-Type': 'application/json',
+    };
+    if (clientIp) apiHeaders['X-Forwarded-For'] = clientIp;
+
     const supabase = createAdminClient();
     const { data: otpRecord } = await supabase
       .from('otps')
@@ -31,10 +44,7 @@ export async function POST(request: NextRequest) {
       try {
         const retryRes = await fetch('https://control.msg91.com/api/v5/widget/retryOtp', {
           method: 'POST',
-          headers: {
-            'authkey': authKey,
-            'Content-Type': 'application/json',
-          },
+          headers: apiHeaders,
           body: JSON.stringify({
             widgetId,
             tokenAuth,
@@ -44,7 +54,8 @@ export async function POST(request: NextRequest) {
         });
 
         const retryData = await retryRes.json();
-        if (retryData.type === 'success' || retryRes.ok) {
+        const isRetryBlocked = String(retryData.message).toLowerCase().includes('ipblocked');
+        if (!isRetryBlocked && (retryData.type === 'success' || retryRes.ok)) {
           success = true;
           newReqId = retryData.message || existingReqId;
           console.log(`[retry-otp] Successfully retried channel ${retryChannel} for 91${cleanPhone}, reqId: ${newReqId}`);
@@ -61,10 +72,7 @@ export async function POST(request: NextRequest) {
       try {
         const sendRes = await fetch('https://control.msg91.com/api/v5/widget/sendOtp', {
           method: 'POST',
-          headers: {
-            'authkey': authKey,
-            'Content-Type': 'application/json',
-          },
+          headers: apiHeaders,
           body: JSON.stringify({
             widgetId,
             tokenAuth,
@@ -73,12 +81,15 @@ export async function POST(request: NextRequest) {
         });
 
         const sendData = await sendRes.json();
-        if (sendData.type === 'success' || sendRes.ok) {
+        const isSendBlocked = String(sendData.message).toLowerCase().includes('ipblocked');
+        if (!isSendBlocked && (sendData.type === 'success' || sendRes.ok)) {
           success = true;
           newReqId = sendData.message || null;
           console.log(`[retry-otp] Fresh sendOtp dispatched for 91${cleanPhone}, reqId: ${newReqId}`);
         } else {
-          errorMessage = sendData.message || 'Failed to dispatch verification code';
+          errorMessage = isSendBlocked
+            ? 'Too many OTP requests from this device. Please wait a few minutes.'
+            : (sendData.message || 'Failed to dispatch verification code');
         }
       } catch (fetchErr) {
         errorMessage = fetchErr instanceof Error ? fetchErr.message : 'Network error';
@@ -113,3 +124,4 @@ export async function POST(request: NextRequest) {
     return Response.json({ success: false, error: 'Server error' }, { status: 500 });
   }
 }
+

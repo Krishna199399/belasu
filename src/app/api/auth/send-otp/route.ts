@@ -22,14 +22,24 @@ export async function POST(request: NextRequest) {
     let msg91ReqId: string | null = null;
     let msg91Error: string | null = null;
 
+    // Forward real client IP so MSG91 tracks each user's IP, not the shared server IP
+    const clientIp =
+      request.headers.get('x-real-ip') ||
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('cf-connecting-ip') ||
+      '';
+
     // Dispatch WhatsApp OTP directly via MSG91 Widget API (Default Channel 12: WHATSAPP)
     try {
+      const sendHeaders: Record<string, string> = {
+        'authkey': authKey,
+        'Content-Type': 'application/json',
+      };
+      if (clientIp) sendHeaders['X-Forwarded-For'] = clientIp;
+
       const msg91Res = await fetch('https://control.msg91.com/api/v5/widget/sendOtp', {
         method: 'POST',
-        headers: {
-          'authkey': authKey,
-          'Content-Type': 'application/json',
-        },
+        headers: sendHeaders,
         body: JSON.stringify({
           widgetId,
           tokenAuth,
@@ -38,12 +48,22 @@ export async function POST(request: NextRequest) {
       });
 
       const msg91Data = await msg91Res.json();
-      if (msg91Data.type === 'success' || msg91Res.ok) {
+
+      // Detect IP block - MSG91 returns message="IPBlocked" even with type="success"
+      const isIpBlocked =
+        String(msg91Data.message).toLowerCase().includes('ipblocked') ||
+        String(msg91Data.message).toLowerCase().includes('ip blocked') ||
+        String(msg91Data.message).toLowerCase().includes('ip_blocked');
+
+      if (!isIpBlocked && (msg91Data.type === 'success' || msg91Res.ok)) {
         msg91Success = true;
         msg91ReqId = msg91Data.message || null;
-        console.log(`[MSG91] WhatsApp OTP dispatched to 91${cleanPhone}, reqId: ${msg91ReqId}`);
+        console.log(`[MSG91] WhatsApp OTP dispatched to 91${cleanPhone}, reqId: ${msg91ReqId}, clientIp: ${clientIp || 'not forwarded'}`);
       } else {
-        msg91Error = msg91Data.message || 'MSG91 send failed';
+        const isIpBlockedOnFailure = String(msg91Data.message).toLowerCase().includes('ipblocked');
+        msg91Error = isIpBlockedOnFailure
+          ? 'Too many OTP requests from this device. Please wait a few minutes and try again.'
+          : (msg91Data.message || 'MSG91 send failed');
         console.warn('[MSG91 sendOtp API] Failed:', msg91Data);
       }
     } catch (fetchErr) {
