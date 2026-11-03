@@ -72,6 +72,10 @@ export default function AddressManager({
           postcode: addressData.postcode!,
           phone: addressData.phone!,
           email: addressData.email!,
+          houseNo: addressData.houseNo,
+          street: addressData.street,
+          area: addressData.area,
+          landmark: addressData.landmark,
           label: '',
           isDefault: false,
         };

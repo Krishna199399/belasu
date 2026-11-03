@@ -152,6 +152,12 @@ export interface Address {
   phone: string;
   email?: string;
   
+  // Granular delivery address fields
+  houseNo?: string;
+  street?: string;
+  area?: string;
+  landmark?: string;
+  
   // New features
   label?: string; // "Home", "Office", "Parents House", etc.
   isDefault: boolean;
