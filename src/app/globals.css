@@ -9,6 +9,22 @@
   }
 }
 
+/* ── Mobile & Desktop DRM Protections ───────────────────────── */
+.drm-protected-container {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.drm-protected-container img {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  pointer-events: none !important;
+  -webkit-user-drag: none !important;
+}
+
 @layer base {
   :root {
     --font-heading: var(--font-outfit), system-ui, sans-serif;

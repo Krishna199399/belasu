@@ -65,10 +65,24 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
     goToPage(currentPage + step);
   }, [currentPage, viewMode, goToPage]);
 
-  // ── Touch swipe navigation for mobile readers ─────────────────────────────
+  // ── Touch swipe navigation & Mobile 3-Finger Screenshot Blocker ───────────
   const handleTouchStart = (e: React.TouchEvent) => {
+    // Intercept 3-finger swipe screenshot (Android MIUI / ColorOS / OxygenOS / Realme / OneUI)
+    if (e.touches.length >= 3) {
+      e.preventDefault();
+      triggerScreenshotProtection();
+      return;
+    }
     touchStartXRef.current = e.touches[0].clientX;
     touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    // Continuous multi-touch detection during swipe
+    if (e.touches.length >= 3) {
+      e.preventDefault();
+      triggerScreenshotProtection();
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -211,6 +225,25 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
     return () => document.removeEventListener('contextmenu', block);
   }, []);
 
+  // ── Mobile Touch DRM: Intercept multi-finger gestures & long-press callouts ─
+  useEffect(() => {
+    const handleWindowTouch = (e: TouchEvent) => {
+      // 3 or more touch points triggers multi-finger screenshot on Android
+      if (e.touches && e.touches.length >= 3) {
+        e.preventDefault();
+        triggerScreenshotProtection();
+      }
+    };
+
+    window.addEventListener('touchstart', handleWindowTouch, { passive: false });
+    window.addEventListener('touchmove', handleWindowTouch, { passive: false });
+
+    return () => {
+      window.removeEventListener('touchstart', handleWindowTouch);
+      window.removeEventListener('touchmove', handleWindowTouch);
+    };
+  }, [triggerScreenshotProtection]);
+
   // ── Fetch signed page image URL ───────────────────────────────────────────
   const fetchPage = useCallback(async (page: number) => {
     setIsPageLoading(true);
@@ -280,10 +313,14 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
 
   return (
     <div
-      className={`flex flex-col h-screen overflow-hidden transition-colors duration-200 ${
+      className={`flex flex-col h-screen overflow-hidden transition-colors duration-200 drm-protected-container select-none ${
         darkMode ? 'bg-[#0F172A] text-white' : 'bg-[#F8F6F2] text-slate-900'
       }`}
-      style={{ userSelect: 'none', WebkitUserSelect: 'none' } as React.CSSProperties}
+      style={{
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+      } as React.CSSProperties}
     >
       {/* ── Top Header Toolbar ── */}
       <ReaderToolbar
@@ -333,8 +370,9 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
 
         {/* ── Main Book Reading Viewport ── */}
         <main
-          className="flex-1 overflow-auto flex flex-col items-center justify-between p-3 sm:p-6 md:p-8 relative touch-scroll"
+          className="flex-1 overflow-auto flex flex-col items-center justify-between p-3 sm:p-6 md:p-8 relative touch-scroll drm-protected-container select-none"
           onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
           {/* DevTools Security Overlay */}
@@ -532,18 +570,21 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                 }}
               >
                 {/* Single / Left Page */}
-                <div className="relative overflow-hidden select-none">
+                <div className="relative overflow-hidden select-none drm-protected-container">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={pageImageUrl}
                     alt={`Page ${currentPage}`}
                     draggable={false}
-                    className="w-full h-auto block select-none pointer-events-none"
+                    className="w-full h-auto block select-none pointer-events-none drm-protected-container"
+                    style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
+                    translate="no"
                     onContextMenu={(e) => e.preventDefault()}
                   />
                   {/* Transparent Anti-Inspect Decoy Shield */}
                   <div
-                    className="absolute inset-0 z-20 cursor-default"
+                    className="absolute inset-0 z-20 cursor-default select-none"
+                    style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
                     onContextMenu={(e) => {
                       e.preventDefault();
                       toast.error('Right-click is disabled on protected digital content.');
@@ -556,18 +597,21 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
 
                 {/* Right Page (Two-Page Spread) */}
                 {viewMode === 'double' && secondPageImageUrl && (
-                  <div className="relative overflow-hidden select-none">
+                  <div className="relative overflow-hidden select-none drm-protected-container">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={secondPageImageUrl}
                       alt={`Page ${currentPage + 1}`}
                       draggable={false}
-                      className="w-full h-auto block select-none pointer-events-none"
+                      className="w-full h-auto block select-none pointer-events-none drm-protected-container"
+                      style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
+                      translate="no"
                       onContextMenu={(e) => e.preventDefault()}
                     />
                     {/* Transparent Anti-Inspect Decoy Shield */}
                     <div
-                      className="absolute inset-0 z-20 cursor-default"
+                      className="absolute inset-0 z-20 cursor-default select-none"
+                      style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
                       onContextMenu={(e) => {
                         e.preventDefault();
                         toast.error('Right-click is disabled on protected digital content.');
