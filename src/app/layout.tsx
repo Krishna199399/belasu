@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Outfit, Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   title: 'Kannada Guidebooks for Academic Learning | Belesu',
-  description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
+  description: 'Explore Belesu\u2019s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
   keywords: [
     'Kannada guidebooks',
     'Kannada guidebooks for school students',
@@ -46,9 +47,12 @@ export const metadata: Metadata = {
     'Kannada Mathadi, Kannada Belesi'
   ],
   authors: [{ name: 'Belesu Academic Publishers' }],
+  verification: {
+    google: 'KTbE4qfPPdmrYxcfks5H0w-IZEeuii_mcODO0DVNIdk',
+  },
   openGraph: {
     title: 'Kannada Guidebooks for Academic Learning | Belesu',
-    description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
+    description: 'Explore Belesu\u2019s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
     url: 'https://belesu.in',
     siteName: 'Belesu',
     images: [
@@ -65,7 +69,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Kannada Guidebooks for Academic Learning | Belesu',
-    description: 'Explore Belesu’s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
+    description: 'Explore Belesu\u2019s English-translated Kannada academic guidebooks for school students, with lesson explanations, pronunciation support, and exercise guidance.',
     site: '@kannadabelesu'
   },
   icons: {
@@ -81,6 +85,8 @@ export const metadata: Metadata = {
   }
 };
 
+const GA_ID = 'G-WB71YM43BL';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -89,6 +95,20 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-stone-50 text-slate-900 selection:bg-amber-200 selection:text-amber-950">
+        {/* Google Analytics 4 */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
+
         <AuthProvider>
           <CartProvider>
             <Navbar />
