@@ -127,13 +127,20 @@ export default function VideosMediaPage() {
     },
     {
       id: 2,
+      src: '/social impacts/elevate-winner.jpg',
+      alt: 'Receiving ELEVATE Winner Award from Shri Priyank Kharge, Minister for IT & BT, Govt of Karnataka',
+      caption: 'ELEVATE Winner Award Presentation with IT & BT Minister Shri Priyank Kharge',
+      tag: 'ELEVATE Winner',
+    },
+    {
+      id: 3,
       src: '/social impacts/4.jpeg',
       alt: 'Best Kannada Language Initiative Startup Bangalore Award',
       caption: 'Best Kannada Language Initiative Startup Award',
       tag: 'Excellence Award',
     },
     {
-      id: 3,
+      id: 4,
       src: '/social impacts/5.jpeg',
       alt: 'Shri Tejasvi Surya (MP Bengaluru South) unveiling A Destination to Speak Kannada with Roopa Sanjiv P',
       caption: 'Official Book Unveiling with Shri Tejasvi Surya (MP Bengaluru South)',
@@ -239,7 +246,7 @@ export default function VideosMediaPage() {
           {/* Subtitle */}
           <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-relaxed mb-6 font-normal">
             {activeTab === 'videos' && 'Watch classroom walkthroughs, parent-child study routines, and book demonstrations.'}
-            {activeTab === 'social-impact' && 'State leadership recognitions, excellence awards, and community impact gallery.'}
+            {activeTab === 'social-impact' && 'State leadership recognitions, ELEVATE winner honors, and community impact gallery.'}
             {activeTab === 'csr' && 'Partnering with enterprises and institutions to sponsor Kannada literacy for underserved classrooms across Karnataka.'}
           </p>
 
