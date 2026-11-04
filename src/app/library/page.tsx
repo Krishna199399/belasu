@@ -8,7 +8,8 @@ import { useRouter } from 'next/navigation';
 import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
 import { DigitalBook } from '@/types';
 import Link from 'next/link';
-import { BookOpen, Clock, ArrowRight, BookMarked, Sparkles } from 'lucide-react';
+import { BookOpen, Clock, ArrowRight, BookMarked, Sparkles, Printer } from 'lucide-react';
+import { PrintBookModal } from '@/components/library/PrintBookModal';
 
 interface ProgressMap {
   [bookId: string]: number;
@@ -18,6 +19,7 @@ export default function LibraryPage() {
   const { user, isLoading, refreshUser } = useAuth();
   const router = useRouter();
   const [progressMap, setProgressMap] = useState<ProgressMap>({});
+  const [printingBook, setPrintingBook] = useState<DigitalBook | null>(null);
 
   // Ensure latest purchased_books state on mount
   useEffect(() => {
@@ -216,14 +218,27 @@ export default function LibraryPage() {
                         </div>
                       </div>
 
-                      <Link
-                        href={`/reader/${book.slug}`}
-                        className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-xl text-sm shadow-xs transition active:scale-98 cursor-pointer"
-                      >
-                        <BookOpen className="w-4 h-4" />
-                        {lastPage > 1 ? `Continue Reading (p.${lastPage})` : 'Start Reading'}
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
+                      <div className="flex flex-col sm:flex-row items-center gap-2">
+                        <Link
+                          href={`/reader/${book.slug}`}
+                          className="flex-1 w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-3 rounded-xl text-xs sm:text-sm shadow-xs transition active:scale-98 cursor-pointer"
+                        >
+                          <BookOpen className="w-4 h-4 shrink-0" />
+                          <span className="truncate">{lastPage > 1 ? `Continue (p.${lastPage})` : 'Start Reading'}</span>
+                          <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() => setPrintingBook(book)}
+                          className="w-full sm:w-auto min-h-[44px] px-3.5 inline-flex items-center justify-center gap-1.5 bg-stone-100 hover:bg-stone-200 active:scale-95 text-slate-800 font-bold py-2.5 rounded-xl text-xs border border-stone-200 transition cursor-pointer shrink-0"
+                          title={`Print ${book.title}`}
+                          aria-label={`Print ${book.title}`}
+                        >
+                          <Printer className="w-4 h-4 text-slate-600" />
+                          <span>Print</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -232,6 +247,13 @@ export default function LibraryPage() {
           </div>
         )}
       </div>
+
+      {/* Print Book Modal Dialog */}
+      <PrintBookModal
+        book={printingBook}
+        isOpen={!!printingBook}
+        onClose={() => setPrintingBook(null)}
+      />
     </div>
   );
 }
