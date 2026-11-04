@@ -19,7 +19,7 @@ export const VideoReelsSection: React.FC = () => {
   const [activeVideo, setActiveVideo] = useState<VideoReelItem | null>(null);
   const [videoError, setVideoError] = useState(false);
 
-  // Exact 3 Video Items preserving 100% of user content
+  // 3 Official Belesu Video Reels
   const videoItems: VideoReelItem[] = [
     {
       id: 'v1',
@@ -27,9 +27,9 @@ export const VideoReelsSection: React.FC = () => {
       description:
         'Discover how English-translated Kannada learning resources can help parents follow school lessons and support academic learning at home.',
       tag: 'PARENT SUPPORT',
-      duration: '0:45',
+      duration: '0:48',
       thumbnailUrl: '/videos/reel-1.jpg',
-      videoUrl: '/videos/reel-1.mp4',
+      videoUrl: '/videos/video%201.mp4',
     },
     {
       id: 'v2',
@@ -37,9 +37,9 @@ export const VideoReelsSection: React.FC = () => {
       description:
         'See how translated content and lesson guidance appear in a guidebook, helping you understand the learning format before choosing a book.',
       tag: 'LESSON PREVIEW',
-      duration: '1:10',
+      duration: '0:41',
       thumbnailUrl: '/videos/reel-2.jpg',
-      videoUrl: '/videos/reel-2.mp4',
+      videoUrl: '/videos/video%202.mp4',
     },
     {
       id: 'v3',
@@ -47,9 +47,9 @@ export const VideoReelsSection: React.FC = () => {
       description:
         'Explore authentic parent experiences and feedback to learn how Belesu resources are used to support Kannada learning at home.',
       tag: 'FAMILY STORIES',
-      duration: '0:55',
+      duration: '0:39',
       thumbnailUrl: '/videos/reel-3.jpg',
-      videoUrl: '/videos/reel-3.mp4',
+      videoUrl: '/videos/video%203.mp4',
     },
   ];
 
@@ -137,8 +137,8 @@ export const VideoReelsSection: React.FC = () => {
               onClick={() => handleOpenVideo(video)}
               className="bg-white rounded-2xl border border-[#FDE68A] p-3 sm:p-3.5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer hover:-translate-y-0.5 select-none"
             >
-              {/* Thumbnail Container with Play Overlay & Duration Badge */}
-              <div className="relative aspect-[16/8.5] rounded-xl overflow-hidden bg-amber-100/40 mb-2.5 shadow-2xs">
+              {/* Thumbnail Container with Play Overlay & Duration Badge (9:16 Vertical Reel Fit) */}
+              <div className="relative aspect-[9/16] max-h-[360px] sm:max-h-[400px] rounded-xl overflow-hidden bg-slate-950 mb-2.5 shadow-2xs flex items-center justify-center">
                 <img
                   src={video.thumbnailUrl}
                   alt={video.title}
@@ -147,13 +147,13 @@ export const VideoReelsSection: React.FC = () => {
 
                 {/* Centered Translucent Play Button */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 text-slate-900 shadow-md flex items-center justify-center group-hover:scale-110 group-hover:bg-[#EA580C] group-hover:text-white transition-all duration-200">
-                    <Play className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current ml-0.5" />
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/95 text-slate-900 shadow-md flex items-center justify-center group-hover:scale-110 group-hover:bg-[#EA580C] group-hover:text-white transition-all duration-200">
+                    <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current ml-0.5" />
                   </div>
                 </div>
 
                 {/* Duration Badge (Bottom-Right) */}
-                <div className="absolute bottom-1.5 right-1.5 bg-black/80 backdrop-blur-xs text-white text-[10px] font-mono px-1.5 py-0.5 rounded font-bold">
+                <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-0.5 rounded font-bold">
                   {video.duration}
                 </div>
               </div>
@@ -208,11 +208,11 @@ export const VideoReelsSection: React.FC = () => {
           onClick={() => setActiveVideo(null)}
         >
           <div
-            className="relative w-full max-w-2xl bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-stone-800"
+            className="relative w-full max-w-sm sm:max-w-md bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-stone-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-3 sm:p-4 bg-slate-900/90 border-b border-stone-800 flex items-center justify-between gap-3">
+            <div className="p-3 sm:p-4 bg-slate-900/95 border-b border-stone-800 flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
                   {activeVideo.tag} • {activeVideo.duration}
@@ -230,8 +230,8 @@ export const VideoReelsSection: React.FC = () => {
               </button>
             </div>
 
-            {/* Video Viewport / Graceful Fallback Handler */}
-            <div className="relative aspect-video bg-black flex items-center justify-center">
+            {/* Video Viewport / Graceful Fallback Handler — 9:16 Vertical Reel Aspect Ratio */}
+            <div className="relative aspect-[9/16] max-h-[75vh] sm:max-h-[80vh] bg-black flex items-center justify-center">
               {videoError ? (
                 <div className="p-6 text-center max-w-md mx-auto space-y-3">
                   <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-1">
@@ -271,7 +271,7 @@ export const VideoReelsSection: React.FC = () => {
                   autoPlay
                   playsInline
                   onError={() => setVideoError(true)}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain bg-black"
                 />
               )}
             </div>

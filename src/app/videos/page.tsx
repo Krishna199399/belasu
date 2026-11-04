@@ -62,57 +62,27 @@ export default function VideosMediaPage() {
   const extendedVideos = [
     {
       id: 'v1',
-      title: 'Student Struggle Before Belesu',
-      description: 'Understanding the gap students face in Grade 3rd to 8th Kannada reading skills.',
-      videoUrl: 'https://belesu.in/wp-content/uploads/2025/07/Belesu-Ad-Reel1.mp4',
-      thumbnailUrl: '/mother-and-child.png',
-      badgeText: 'BEFORE:',
-      duration: '0:22'
+      title: 'How Belesu Helps Non-Kannada-Speaking Parents',
+      description: 'Discover how English-translated Kannada learning resources can help parents follow school lessons and support academic learning at home.',
+      videoUrl: '/videos/video%201.mp4',
+      badgeText: 'PARENT SUPPORT',
+      duration: '0:48'
     },
     {
       id: 'v2',
-      title: 'Mother & Child Daily Study Routine',
-      description: 'How non-Kannadiga mothers guide their children effortlessly using Belesu translated guidebooks.',
-      videoUrl: 'https://belesu.in/wp-content/uploads/2025/07/Belesu-Ad-Reel2.mp4',
-      thumbnailUrl: '/mother-and-child.png',
-      badgeText: 'AFTER:',
-      duration: '0:21'
+      title: 'Explore a Sample Kannada Lesson',
+      description: 'See how translated content and lesson guidance appear in a guidebook, helping you understand the learning format before choosing a book.',
+      videoUrl: '/videos/video%202.mp4',
+      badgeText: 'LESSON PREVIEW',
+      duration: '0:41'
     },
     {
       id: 'v3',
-      title: 'Parent-Teacher Ecosystem & Exam Prep',
-      description: 'Building student confidence for reading, writing, and speaking in 1 academic year.',
-      videoUrl: 'https://belesu.in/wp-content/uploads/2025/07/Belesu-Ad-Reel3.mp4',
-      thumbnailUrl: '/mother-and-child.png',
-      badgeText: 'SUCCESS:',
-      duration: '0:48'
-    },
-    {
-      id: 'v4',
-      title: 'Savi Kannada Class 1 to 4 Walkthrough',
-      description: 'Line-by-line English translation breakdown of Savi Kannada stories & poems.',
-      videoUrl: 'https://belesu.in/wp-content/uploads/2025/07/Belesu-Ad-Reel1.mp4',
-      thumbnailUrl: '/Savi-Class1-CoverPage.png',
-      badgeText: 'CLASSROOM:',
-      duration: '0:22'
-    },
-    {
-      id: 'v5',
-      title: 'Kali Kannada Beginner Series Demo',
-      description: 'Phonetic script practice and word-by-word pronunciation guide.',
-      videoUrl: 'https://belesu.in/wp-content/uploads/2025/07/Belesu-Ad-Reel2.mp4',
-      thumbnailUrl: '/savi-kannada-1st-1stpart.png',
-      badgeText: 'TUTORIAL:',
-      duration: '0:21'
-    },
-    {
-      id: 'v6',
-      title: 'Siri & Tili Class 5 Solved Exercises',
-      description: 'Grammar rules, essay writing templates, and solved model exam question papers.',
-      videoUrl: 'https://belesu.in/wp-content/uploads/2025/07/Belesu-Ad-Reel3.mp4',
-      thumbnailUrl: '/SV-5-2.png',
-      badgeText: 'EXAM PREP:',
-      duration: '0:48'
+      title: 'Hear From Parents and Families',
+      description: 'Explore authentic parent experiences and feedback to learn how Belesu resources are used to support Kannada learning at home.',
+      videoUrl: '/videos/video%203.mp4',
+      badgeText: 'FAMILY STORIES',
+      duration: '0:39'
     }
   ];
 
@@ -268,7 +238,7 @@ export default function VideosMediaPage() {
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
                 activeTab === 'videos' ? 'bg-amber-700 text-amber-100' : 'bg-stone-300 text-slate-700'
               }`}>
-                6
+                {extendedVideos.length}
               </span>
             </button>
 
@@ -322,48 +292,51 @@ export default function VideosMediaPage() {
         <section className="py-12 sm:py-16">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
             
-            {/* Video Gallery 3-Column Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
+            {/* Video Gallery: Responsive 9:16 Vertical Reel Grid (Mobile 1-col, Desktop 3-col) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
               {extendedVideos.map((video) => (
                 <div
                   key={video.id}
-                  className="bg-white rounded-2xl border border-stone-200 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group"
+                  className="bg-white rounded-3xl border border-amber-200/90 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group max-w-sm sm:max-w-md md:max-w-none mx-auto w-full"
                 >
-                  {/* Video Player */}
-                  <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
+                  {/* Video Player — 9:16 Vertical Reel Aspect Ratio */}
+                  <div className="relative aspect-[9/16] bg-black flex items-center justify-center overflow-hidden">
                     <video
                       src={video.videoUrl}
                       controls
-                      poster={video.thumbnailUrl}
-                      className="w-full h-full object-cover"
+                      playsInline
                       preload="metadata"
+                      className="w-full h-full object-contain bg-black"
                     />
                     
                     {/* Overlay Badge */}
                     {video.badgeText && (
-                      <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-slate-900 font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-md shadow-xs border border-stone-200">
+                      <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-slate-900 font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-md shadow-xs border border-stone-200 pointer-events-none">
                         {video.badgeText}
                       </div>
                     )}
 
                     {/* Belesu Watermark Overlay */}
                     <div className="absolute top-3 right-3 opacity-90 pointer-events-none">
-                      <span className="text-[11px] font-black text-amber-400 bg-slate-950/80 px-2.5 py-1 rounded-md">
+                      <span className="text-[10px] font-black text-amber-400 bg-slate-950/80 px-2 py-0.5 rounded-md">
                         Belesu • +91 96066 36804
                       </span>
                     </div>
                   </div>
 
                   {/* Video Info */}
-                  <div className="p-6 space-y-2.5 bg-stone-50/50 flex-1 flex flex-col justify-between">
+                  <div className="p-4 sm:p-5 space-y-2 bg-stone-50/70 flex-1 flex flex-col justify-between border-t border-stone-100">
                     <div>
-                      <div className="flex items-center justify-between text-xs font-bold text-amber-800 mb-1.5">
+                      <div className="flex items-center justify-between text-xs font-bold text-amber-800 mb-1">
                         <span className="uppercase tracking-wider">Duration: {video.duration}</span>
+                        <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
+                          9:16 HD Reel
+                        </span>
                       </div>
-                      <h3 className="font-bold text-slate-900 text-base leading-snug font-serif">
+                      <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug font-serif">
                         {video.title}
                       </h3>
-                      <p className="text-xs text-slate-600 leading-relaxed mt-1.5">
+                      <p className="text-xs text-slate-600 leading-relaxed mt-1">
                         {video.description}
                       </p>
                     </div>

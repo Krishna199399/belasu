@@ -42,4 +42,7 @@ next-env.d.ts
 
 .vercel
 
+# Large media binaries (>100MB blocked by GitHub)
+public/videos/*.mp4
+
 *.xlsx
