@@ -228,6 +228,7 @@ export default function LibraryPage() {
                           <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                         </Link>
 
+                        {/* PRINT BUTTON — hidden pending client approval; uncomment to enable
                         <button
                           type="button"
                           onClick={() => setPrintingBook(book)}
@@ -238,6 +239,7 @@ export default function LibraryPage() {
                           <Printer className="w-4 h-4 text-slate-600" />
                           <span>Print</span>
                         </button>
+                        */}
                       </div>
                     </div>
                   </div>

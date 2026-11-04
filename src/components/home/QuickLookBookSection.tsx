@@ -144,13 +144,7 @@ export const QuickLookBookSection: React.FC = () => {
         pillStyle: 'bg-[#ecfdf5] border border-[#a7f3d0] text-[#065f46]',
       });
     } else if (activeBook.karnatakaTextbookCover) {
-      items.push({
-        id: 'govt-compare',
-        title: 'Government Textbook vs Belesu Guidebook Comparison',
-        tag: 'Compare Govt vs Belesu',
-        imageUrl: '/kannada-textbook-comparison.jpg',
-        pillStyle: 'bg-[#eff6ff] border border-[#bfdbfe] text-[#1e40af] font-bold',
-      });
+      // Compare Govt vs Belesu image removed — not shown in gallery
     }
 
     // 3. Belesu Guidebook Front Cover
@@ -279,15 +273,7 @@ export const QuickLookBookSection: React.FC = () => {
             <h3 className="font-serif font-black text-slate-900 text-base sm:text-lg">
               {`${activeBook.series} Kannada Class ${activeBook.gradeClass} Guidebook`}
             </h3>
-            <button
-              type="button"
-              onClick={() => setShowCompareModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300 hover:border-emerald-400 text-emerald-800 text-xs font-bold hover:bg-emerald-100/90 transition cursor-pointer shadow-2xs group"
-              title="Compare Karnataka Government Textbook with Belesu Bilingual Guidebook"
-            >
-              <Scale className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
-              <span>Compare Govt vs Belesu</span>
-            </button>
+            {/* Compare Govt vs Belesu button removed */}
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#dcfce7] border border-[#bbf7d0] text-[#166534] text-xs font-bold">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               <span>Matches Govt. Syllabus</span>
