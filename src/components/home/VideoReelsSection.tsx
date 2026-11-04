@@ -19,15 +19,52 @@ export const VideoReelsSection: React.FC = () => {
   const [activeVideo, setActiveVideo] = useState<VideoReelItem | null>(null);
   const [videoError, setVideoError] = useState(false);
 
-  // Prevent background website from scrolling when video modal is open
+  // Bulletproof background freeze: locks body + html scroll completely on mobile & desktop
   useEffect(() => {
-    if (activeVideo) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
+    if (!activeVideo) return;
+
+    const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+    const originalBodyPosition = document.body.style.position;
+    const originalBodyTop = document.body.style.top;
+    const originalBodyLeft = document.body.style.left;
+    const originalBodyRight = document.body.style.right;
+    const originalBodyWidth = document.body.style.width;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalBodyPaddingRight = document.body.style.paddingRight;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalHtmlOverscroll = document.documentElement.style.overscrollBehavior;
+
+    // Compensate for scrollbar disappearing on desktop to avoid layout shift
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
+
+    // Freeze body & html in place at current scroll position
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.overscrollBehavior = 'none';
+
+    return () => {
+      // Revert styles
+      document.body.style.position = originalBodyPosition;
+      document.body.style.top = originalBodyTop;
+      document.body.style.left = originalBodyLeft;
+      document.body.style.right = originalBodyRight;
+      document.body.style.width = originalBodyWidth;
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.paddingRight = originalBodyPaddingRight;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.documentElement.style.overscrollBehavior = originalHtmlOverscroll;
+
+      // Restore scroll position seamlessly
+      window.scrollTo(0, scrollY);
+    };
   }, [activeVideo]);
 
   // 3 Official Belesu Video Reels
@@ -211,75 +248,74 @@ export const VideoReelsSection: React.FC = () => {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          RESILIENT VIDEO MODAL (With Automatic WhatsApp Fallback)
+          RESILIENT VIDEO MODAL: 9:16 Vertical Reel Player (Zero Side Bars)
       ══════════════════════════════════════════════════════════════════ */}
       {activeVideo && (
         <div
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 touch-none overscroll-contain animate-in fade-in duration-200"
           onClick={() => setActiveVideo(null)}
         >
+          {/* Reel Card Container: Exactly 9:16 aspect ratio matching the video */}
           <div
-            className="relative flex flex-col bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-stone-800 max-h-[92vh] w-fit max-w-[95vw] mx-auto animate-in zoom-in-95 duration-200"
+            className="relative aspect-[9/16] max-h-[86vh] sm:max-h-[90vh] w-auto max-w-[95vw] bg-black rounded-3xl overflow-hidden shadow-2xl border border-stone-800 flex items-center justify-center mx-auto animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-slate-900/95 border-b border-stone-800 flex items-center justify-between gap-3 shrink-0">
+            {/* Top Gradient Overlay with Title & Close Button (Overlaid so it never stretches the card) */}
+            <div className="absolute top-0 inset-x-0 z-20 bg-gradient-to-b from-black/85 via-black/40 to-transparent p-3.5 sm:p-4 flex items-start justify-between gap-3 pointer-events-auto">
               <div className="min-w-0 pr-2">
-                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block drop-shadow-sm">
                   {activeVideo.tag} • {activeVideo.duration}
                 </span>
-                <h4 className="text-white font-bold text-xs sm:text-sm truncate">
+                <h4 className="text-white font-bold text-xs sm:text-sm truncate drop-shadow-sm">
                   {activeVideo.title}
                 </h4>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveVideo(null)}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
+                className="w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center transition cursor-pointer shrink-0 border border-white/20 backdrop-blur-xs"
                 aria-label="Close video"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Video Viewport: exact 9:16 vertical reel sizing */}
-            <div className="relative flex items-center justify-center bg-black overflow-hidden">
-              {videoError ? (
-                <div className="p-6 text-center max-w-xs sm:max-w-sm mx-auto space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-1">
-                    <Video className="w-6 h-6" />
-                  </div>
-                  <h5 className="text-white font-bold text-sm sm:text-base">
-                    Video Walkthrough Available
-                  </h5>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    This video demonstration is being optimized for high-speed streaming. You can watch the full demonstration instantly via WhatsApp!
-                  </p>
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
-                    <a
-                      href={`https://wa.me/919606636804?text=Hi%2C%20please%20share%20the%20video%3A%20${encodeURIComponent(
-                        activeVideo.title
-                      )}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5 fill-current" />
-                      <span>Request on WhatsApp</span>
-                    </a>
-                  </div>
+            {/* Video Viewport / Graceful Fallback Handler */}
+            {videoError ? (
+              <div className="p-6 text-center max-w-xs mx-auto space-y-3 z-10">
+                <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-1">
+                  <Video className="w-6 h-6" />
                 </div>
-              ) : (
-                <video
-                  src={activeVideo.videoUrl}
-                  controls
-                  autoPlay
-                  playsInline
-                  onError={() => setVideoError(true)}
-                  className="max-h-[72vh] sm:max-h-[78vh] w-auto aspect-[9/16] object-contain block mx-auto bg-black"
-                />
-              )}
-            </div>
+                <h5 className="text-white font-bold text-sm sm:text-base">
+                  Video Walkthrough Available
+                </h5>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  This video demonstration is being optimized for high-speed streaming. You can watch the full demonstration instantly via WhatsApp!
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+                  <a
+                    href={`https://wa.me/919606636804?text=Hi%2C%20please%20share%20the%20video%3A%20${encodeURIComponent(
+                      activeVideo.title
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                    <span>Request on WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <video
+                src={activeVideo.videoUrl}
+                controls
+                autoPlay
+                playsInline
+                onError={() => setVideoError(true)}
+                className="w-full h-full object-contain bg-black"
+              />
+            )}
           </div>
         </div>
       )}
