@@ -20,6 +20,7 @@ import {
   Check,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { generateInvoiceHtml } from '@/lib/invoiceGenerator';
 
 interface OrderItem {
   id: string;
@@ -147,7 +148,51 @@ export const OrderDetailClient: React.FC<{ initialOrder: OrderData }> = ({
   };
 
   const handlePrint = () => {
-    window.print();
+    try {
+      const invoiceHtml = generateInvoiceHtml(order);
+
+      // Create an isolated hidden iframe — immune to parent global CSS DRM print blockers
+      const iframe = document.createElement('iframe');
+      iframe.style.cssText =
+        'position:fixed;top:0;left:0;width:0;height:0;border:0;opacity:0;pointer-events:none;';
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow?.document;
+      if (!doc) {
+        toast.error('Unable to initialize invoice print window');
+        return;
+      }
+
+      doc.open();
+      doc.write(invoiceHtml);
+      doc.close();
+
+      iframe.onload = () => {
+        setTimeout(() => {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        }, 250);
+      };
+
+      // Clean up iframe after print dialog completes
+      const handleAfterPrint = () => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+        window.removeEventListener('afterprint', handleAfterPrint);
+      };
+      window.addEventListener('afterprint', handleAfterPrint);
+
+      // Safety timeout: remove iframe after 5 minutes if afterprint doesn't fire
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+      }, 300_000);
+    } catch (err) {
+      console.error('Invoice print error:', err);
+      toast.error('Failed to prepare invoice for printing');
+    }
   };
 
   const cleanPhone = order.billing_phone.replace(/^\+91/, '').trim();
