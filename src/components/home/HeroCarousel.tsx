@@ -336,7 +336,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             </h1>
 
             {/* 3. Subtitle Paragraph (Desktop Left Column) */}
-            <p className="hidden lg:block text-slate-600 text-sm sm:text-base lg:text-[17px] leading-relaxed max-w-xl font-normal">
+            <p className="hidden lg:block text-slate-900 font-semibold text-sm sm:text-base lg:text-[17px] leading-relaxed max-w-xl drop-shadow-sm">
               Belesu Guidebooks help students from Class 1–6 read, pronounce and understand Kannada easily with clear English translation.
             </p>
 
@@ -575,7 +575,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
           </div>
 
           {/* 2. Mobile Subtitle Paragraph */}
-          <p className="text-slate-600 text-sm leading-relaxed text-center max-w-md mx-auto font-normal px-2">
+          <p className="text-slate-900 font-semibold text-sm leading-relaxed text-center max-w-md mx-auto px-2 drop-shadow-sm">
             Belesu Guidebooks help students from Class 1–6 read, pronounce and understand Kannada easily with clear English translation.
           </p>
 
