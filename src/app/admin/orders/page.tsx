@@ -182,10 +182,6 @@ export default function AdminOrdersPage() {
 
   const statusTabs = [
     { label: 'All', value: 'all' },
-    { label: 'Pending', value: 'Pending' },
-    { label: 'Processing', value: 'Processing' },
-    { label: 'Shipped', value: 'Shipped' },
-    { label: 'Delivered', value: 'Delivered' },
     { label: 'Completed', value: 'Completed' },
     { label: 'Cancelled', value: 'Cancelled' },
   ];
