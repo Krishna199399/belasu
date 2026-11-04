@@ -415,3 +415,4 @@ export function generateInvoiceHtml(order: InvoiceOrderData): string {
 </body>
 </html>`;
 }
+

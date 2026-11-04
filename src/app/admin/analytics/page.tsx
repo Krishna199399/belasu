@@ -89,8 +89,26 @@ export default function AdminAnalyticsPage() {
   }, []);
 
   const totalFormatCount = stats.physicalCount + stats.digitalCount;
-  const physicalPercent = totalFormatCount > 0 ? Math.round((stats.physicalCount / totalFormatCount) * 100) : 99;
-  const digitalPercent = totalFormatCount > 0 ? Math.round((stats.digitalCount / totalFormatCount) * 100) : 1;
+  
+  // Format percentages cleanly (e.g. 0.1% / 99.9% instead of 0% / 100% when non-zero orders exist)
+  const formatPercent = (count: number, total: number) => {
+    if (total === 0 || count === 0) return '0%';
+    const pct = (count / total) * 100;
+    if (pct < 1) return `${pct.toFixed(1)}%`;
+    if (pct > 99 && pct < 100) return `${pct.toFixed(1)}%`;
+    return `${Math.round(pct)}%`;
+  };
+
+  const physicalPercentText = formatPercent(stats.physicalCount, totalFormatCount);
+  const digitalPercentText = formatPercent(stats.digitalCount, totalFormatCount);
+
+  // Minimum visible bar width (2%) so non-zero orders are visually represented
+  const physicalBarWidth = stats.physicalCount > 0
+    ? Math.min(100, Math.max(2, (stats.physicalCount / (totalFormatCount || 1)) * 100))
+    : 0;
+  const digitalBarWidth = stats.digitalCount > 0
+    ? Math.min(100, Math.max(2, (stats.digitalCount / (totalFormatCount || 1)) * 100))
+    : 0;
 
   const aov = stats.totalOrders > 0 ? Math.round(stats.totalRevenue / stats.totalOrders) : 0;
   const topCities = Object.entries(citySalesMap)
@@ -191,7 +209,7 @@ export default function AdminAnalyticsPage() {
                   Hard Copy Printed Guidebooks
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-medium text-slate-400">({physicalPercent}%)</span>
+                  <span className="text-[11px] font-medium text-slate-400">({physicalPercentText})</span>
                   <span>{stats.physicalCount} orders</span>
                 </span>
               </div>
@@ -199,7 +217,8 @@ export default function AdminAnalyticsPage() {
                 <div
                   className="bg-amber-500 h-3 rounded-full transition-all duration-500"
                   style={{
-                    width: `${physicalPercent}%`,
+                    width: `${physicalBarWidth}%`,
+                    minWidth: stats.physicalCount > 0 ? '8px' : '0px',
                   }}
                 />
               </div>
@@ -212,7 +231,7 @@ export default function AdminAnalyticsPage() {
                   Digital E-Reader Guidebooks
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-medium text-slate-400">({digitalPercent}%)</span>
+                  <span className="text-[11px] font-medium text-slate-400">({digitalPercentText})</span>
                   <span>{stats.digitalCount} orders</span>
                 </span>
               </div>
@@ -220,7 +239,8 @@ export default function AdminAnalyticsPage() {
                 <div
                   className="bg-indigo-600 h-3 rounded-full transition-all duration-500"
                   style={{
-                    width: `${digitalPercent}%`,
+                    width: `${digitalBarWidth}%`,
+                    minWidth: stats.digitalCount > 0 ? '8px' : '0px',
                   }}
                 />
               </div>
