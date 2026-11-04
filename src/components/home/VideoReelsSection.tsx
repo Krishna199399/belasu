@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Video, ArrowRight, Play, X, MessageCircle } from 'lucide-react';
@@ -18,6 +18,17 @@ interface VideoReelItem {
 export const VideoReelsSection: React.FC = () => {
   const [activeVideo, setActiveVideo] = useState<VideoReelItem | null>(null);
   const [videoError, setVideoError] = useState(false);
+
+  // Prevent background website from scrolling when video modal is open
+  useEffect(() => {
+    if (activeVideo) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [activeVideo]);
 
   // 3 Official Belesu Video Reels
   const videoItems: VideoReelItem[] = [
@@ -204,17 +215,17 @@ export const VideoReelsSection: React.FC = () => {
       ══════════════════════════════════════════════════════════════════ */}
       {activeVideo && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
           onClick={() => setActiveVideo(null)}
         >
           <div
-            className="relative w-full max-w-sm sm:max-w-md bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-stone-800"
+            className="relative flex flex-col bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-stone-800 max-h-[92vh] w-fit max-w-[95vw] mx-auto animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-3 sm:p-4 bg-slate-900/95 border-b border-stone-800 flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+            <div className="px-3.5 py-2.5 sm:px-4 sm:py-3 bg-slate-900/95 border-b border-stone-800 flex items-center justify-between gap-3 shrink-0">
+              <div className="min-w-0 pr-2">
+                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">
                   {activeVideo.tag} • {activeVideo.duration}
                 </span>
                 <h4 className="text-white font-bold text-xs sm:text-sm truncate">
@@ -222,18 +233,19 @@ export const VideoReelsSection: React.FC = () => {
                 </h4>
               </div>
               <button
+                type="button"
                 onClick={() => setActiveVideo(null)}
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
                 aria-label="Close video"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Video Viewport / Graceful Fallback Handler — 9:16 Vertical Reel Aspect Ratio */}
-            <div className="relative aspect-[9/16] max-h-[75vh] sm:max-h-[80vh] bg-black flex items-center justify-center">
+            {/* Video Viewport: exact 9:16 vertical reel sizing */}
+            <div className="relative flex items-center justify-center bg-black overflow-hidden">
               {videoError ? (
-                <div className="p-6 text-center max-w-md mx-auto space-y-3">
+                <div className="p-6 text-center max-w-xs sm:max-w-sm mx-auto space-y-3">
                   <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-1">
                     <Video className="w-6 h-6" />
                   </div>
@@ -255,13 +267,6 @@ export const VideoReelsSection: React.FC = () => {
                       <MessageCircle className="w-3.5 h-3.5 fill-current" />
                       <span>Request on WhatsApp</span>
                     </a>
-                    <Link
-                      href="/video-gallery/"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition"
-                      onClick={() => setActiveVideo(null)}
-                    >
-                      <span>View Video Gallery</span>
-                    </Link>
                   </div>
                 </div>
               ) : (
@@ -271,7 +276,7 @@ export const VideoReelsSection: React.FC = () => {
                   autoPlay
                   playsInline
                   onError={() => setVideoError(true)}
-                  className="w-full h-full object-contain bg-black"
+                  className="max-h-[72vh] sm:max-h-[78vh] w-auto aspect-[9/16] object-contain block mx-auto bg-black"
                 />
               )}
             </div>
