@@ -765,13 +765,17 @@ function BooksContent() {
                             </span>
                           </div>
 
-                          <div className="relative w-full h-48 sm:h-52 rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-100/30 to-teal-50 flex items-center justify-center p-2 mb-3 overflow-hidden">
+                          <Link
+                            href={`/digital/${digitalBookClass6.slug}`}
+                            className="relative w-full h-48 sm:h-52 rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-100/30 to-teal-50 flex items-center justify-center p-2 mb-3 overflow-hidden block"
+                            title={`View ${digitalBookClass6.title}`}
+                          >
                             <img
                               src="/digital/class-6-siri/cover.jpeg"
                               alt={digitalBookClass6.title}
                               className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
                             />
-                          </div>
+                          </Link>
 
                           <div className="mb-1">
                             <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700">
@@ -823,7 +827,11 @@ function BooksContent() {
                         className="bg-white rounded-2xl border border-stone-200 p-3 shadow-2xs flex items-center gap-3"
                       >
                         {/* Left: Thumbnail & Class Pill */}
-                        <div className="relative shrink-0 w-20 h-24 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5 overflow-hidden">
+                        <Link
+                          href={`/books/${book.slug}`}
+                          className="relative shrink-0 w-20 h-24 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5 overflow-hidden active:scale-95 transition-transform cursor-pointer"
+                          title={`View ${book.title}`}
+                        >
                           <span className="absolute top-1 left-1 z-10 text-[9px] font-bold text-amber-950 bg-amber-100/95 border border-amber-300 px-1 py-0.2 rounded">
                             {book.gradeClass > 0 ? `Class ${book.gradeClass}` : 'Special'}
                           </span>
@@ -832,7 +840,7 @@ function BooksContent() {
                             alt={book.title}
                             className="max-h-full max-w-full object-contain drop-shadow-2xs"
                           />
-                        </div>
+                        </Link>
 
                         {/* Right: Info & Actions */}
                         <div className="flex-1 min-w-0">
@@ -884,7 +892,11 @@ function BooksContent() {
                     {/* Mobile Digital Class 6 Card */}
                     {showDigitalClass6 && (
                       <div className="bg-white rounded-2xl border border-emerald-200 p-3 shadow-2xs flex items-center gap-3">
-                        <div className="relative shrink-0 w-20 h-24 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center p-1.5 overflow-hidden">
+                        <Link
+                          href={`/digital/${digitalBookClass6.slug}`}
+                          className="relative shrink-0 w-20 h-24 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center p-1.5 overflow-hidden active:scale-95 transition-transform cursor-pointer"
+                          title={`View ${digitalBookClass6.title}`}
+                        >
                           <span className="absolute top-1 left-1 z-10 text-[9px] font-bold text-emerald-950 bg-emerald-100/95 border border-emerald-300 px-1 py-0.2 rounded">
                             Class 6
                           </span>
@@ -893,7 +905,7 @@ function BooksContent() {
                             alt={digitalBookClass6.title}
                             className="max-h-full max-w-full object-contain drop-shadow-2xs"
                           />
-                        </div>
+                        </Link>
                         <div className="flex-1 min-w-0">
                           <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 block truncate">
                             SIRI KANNADA DIGITAL

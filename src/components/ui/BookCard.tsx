@@ -19,7 +19,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
   return (
     <div className="group relative bg-white rounded-2xl border border-slate-200/80 hover:border-amber-400 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
       {/* Class Badge */}
-      <div className="absolute top-3 left-3 z-10">
+      <div className="absolute top-3 left-3 z-10 pointer-events-none">
         <Badge variant="amber">
           {book.gradeClass > 0 ? `Class ${book.gradeClass}` : '23 Chapters'}
         </Badge>
@@ -27,7 +27,11 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
 
       <div className="p-4 sm:p-6 pb-3">
         {/* Book Cover Container */}
-        <div className="relative w-full h-48 sm:h-56 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3 mb-3.5 sm:mb-4 group-hover:bg-amber-50/40 transition-colors overflow-hidden">
+        <Link
+          href={`/books/${book.slug}/`}
+          className="relative w-full h-48 sm:h-56 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3 mb-3.5 sm:mb-4 group-hover:bg-amber-50/40 transition-colors overflow-hidden block cursor-pointer"
+          title={`View ${book.title}`}
+        >
           <img
             src={book.coverImage}
             alt={book.title}
@@ -39,12 +43,16 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onPreview }) => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onPreview(book)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onPreview(book);
+              }}
             >
               <Eye className="w-4 h-4" /> Preview
             </Button>
           </div>
-        </div>
+        </Link>
 
         {/* Series Tag */}
         <div className="mb-2">
