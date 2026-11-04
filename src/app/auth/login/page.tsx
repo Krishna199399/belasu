@@ -245,7 +245,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                 <img
                   src="/Belesu-logo1.png"
                   alt="Belesu Logo"
-                  className="h-12 sm:h-14 mx-auto object-contain"
+                  className="h-16 xs:h-20 sm:h-20 w-auto max-w-[280px] sm:max-w-xs mx-auto object-contain"
                 />
               </Link>
             </div>
@@ -269,7 +269,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500">
                     {step === 'phone'
-                      ? 'No password required. Enter your phone number for instant WhatsApp OTP.'
+                      ? 'Enter your phone number for instant WhatsApp OTP.'
                       : `Enter the 6-digit verification code sent to your WhatsApp on +91 ${phone}`}
                   </p>
                 </div>
