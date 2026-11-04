@@ -1,4 +1,6 @@
 import { createAdminClient } from '@/lib/supabase';
+import { BOOKS_DATA } from '@/data/mockData';
+import { digitalBooks } from '@/data/digitalBooksData';
 
 export interface AdminAnalyticsData {
   totalRevenue: number;
@@ -25,8 +27,8 @@ export interface AdminAnalyticsData {
 }
 
 export interface ItemSalesData {
-  salesBySku: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string }>;
-  salesById: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string }>;
+  salesBySku: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string; type?: string }>;
+  salesById: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string; type?: string }>;
   cachedAt: number;
 }
 
@@ -136,17 +138,66 @@ export async function getFullAdminStats(forceRefresh = false): Promise<AdminAnal
     }
   }
 
-  // 3. Get item sales data for top products
+  // 3. Compile all books (both physical and digital) merging master catalogs with live sales
   const itemSales = await getAggregatedOrderItemSales(forceRefresh);
-  const topSellingProducts = Object.values(itemSales.salesBySku)
-    .sort((a, b) => b.unitsSold - a.unitsSold)
-    .slice(0, 8)
-    .map((p) => ({
-      name: p.name || p.sku || 'Unknown Book',
-      sku: p.sku || 'N/A',
-      totalQty: p.unitsSold,
-      totalRevenue: p.totalRevenue,
-    }));
+  const productMap = new Map<string, {
+    name: string;
+    sku: string;
+    type: 'physical' | 'digital';
+    totalQty: number;
+    totalRevenue: number;
+  }>();
+
+  // 1. Seed physical books from catalog (so all physical books show, even with 0 sales)
+  for (const book of BOOKS_DATA) {
+    const sku = book.sku || book.id;
+    const sales = itemSales.salesBySku[sku] || (book.id ? itemSales.salesById[book.id] : undefined) || { unitsSold: 0, totalRevenue: 0 };
+    productMap.set(sku, {
+      name: sales.name || book.title,
+      sku: sku,
+      type: 'physical',
+      totalQty: sales.unitsSold,
+      totalRevenue: sales.totalRevenue,
+    });
+  }
+
+  // 2. Seed digital books from catalog (so all digital books show, even with 0 sales)
+  for (const book of digitalBooks) {
+    const sku = book.sku || book.id;
+    const sales = itemSales.salesBySku[sku] || (book.id ? itemSales.salesById[book.id] : undefined) || { unitsSold: 0, totalRevenue: 0 };
+    productMap.set(sku, {
+      name: sales.name || book.title,
+      sku: sku,
+      type: 'digital',
+      totalQty: sales.unitsSold,
+      totalRevenue: sales.totalRevenue,
+    });
+  }
+
+  // 3. Include any sold items in salesBySku not yet in the map (e.g. historical or custom SKUs)
+  for (const [sku, s] of Object.entries(itemSales.salesBySku)) {
+    if (!productMap.has(sku)) {
+      const isDigital = s.type === 'digital' || sku.startsWith('SD') || s.name?.toLowerCase().includes('digital');
+      productMap.set(sku, {
+        name: s.name || sku,
+        sku: sku,
+        type: isDigital ? 'digital' : 'physical',
+        totalQty: s.unitsSold,
+        totalRevenue: s.totalRevenue,
+      });
+    }
+  }
+
+  // 4. Sort: highest units sold first, then highest revenue, then alphabetically
+  const topSellingProducts = Array.from(productMap.values()).sort((a, b) => {
+    if (b.totalQty !== a.totalQty) {
+      return b.totalQty - a.totalQty;
+    }
+    if (b.totalRevenue !== a.totalRevenue) {
+      return b.totalRevenue - a.totalRevenue;
+    }
+    return a.name.localeCompare(b.name);
+  });
 
   cachedAnalytics = {
     totalRevenue,
@@ -183,8 +234,8 @@ export async function getAggregatedOrderItemSales(forceRefresh = false): Promise
   let from = 0;
   let hasMore = true;
 
-  const salesBySku: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string }> = {};
-  const salesById: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string }> = {};
+  const salesBySku: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string; type?: string }> = {};
+  const salesById: Record<string, { unitsSold: number; totalRevenue: number; name?: string; sku?: string; type?: string }> = {};
 
   while (hasMore) {
     const { data: chunk, error } = await supabase
@@ -209,6 +260,7 @@ export async function getAggregatedOrderItemSales(forceRefresh = false): Promise
               totalRevenue: 0,
               name: item.item_name,
               sku: item.item_sku,
+              type: item.item_type === 'digital' ? 'digital' : 'physical',
             };
           }
           salesBySku[item.item_sku].unitsSold += qty;
@@ -222,6 +274,7 @@ export async function getAggregatedOrderItemSales(forceRefresh = false): Promise
               totalRevenue: 0,
               name: item.item_name,
               sku: item.item_sku,
+              type: item.item_type === 'digital' ? 'digital' : 'physical',
             };
           }
           salesById[item.product_id].unitsSold += qty;

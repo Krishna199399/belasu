@@ -70,9 +70,9 @@ export default function AdminAnalyticsPage() {
             data.topSellingProducts.map((p: any) => ({
               name: p.name,
               sku: p.sku,
-              type: p.sku?.startsWith('SD') ? 'digital' : 'physical',
-              totalQty: p.totalQty,
-              totalRevenue: p.totalRevenue,
+              type: p.type || (p.sku?.startsWith('SD') ? 'digital' : 'physical'),
+              totalQty: p.totalQty || 0,
+              totalRevenue: p.totalRevenue || 0,
             }))
           );
         }
@@ -289,6 +289,9 @@ export default function AdminAnalyticsPage() {
               Lifetime Book Popularity & Units Sold Ranking
             </h3>
           </div>
+          <span className="text-xs text-slate-400 font-medium">
+            {topProducts.length} books in catalog
+          </span>
         </div>
 
         <div className="space-y-3">
@@ -296,26 +299,37 @@ export default function AdminAnalyticsPage() {
             <p className="text-xs text-slate-400 text-center py-4">No product sales yet.</p>
           ) : (
             topProducts.map((p, idx) => {
-              const pct = Math.max(10, Math.round((p.totalQty / maxProductQty) * 100));
+              const pct = p.totalQty > 0
+                ? Math.min(100, Math.max(2, Math.round((p.totalQty / maxProductQty) * 100)))
+                : 0;
               return (
                 <div key={idx} className="space-y-1.5">
                   <div className="flex justify-between text-xs">
-                    <span className="font-bold text-slate-800">
-                      {idx + 1}. {p.name}
-                      <span className="ml-2 font-normal text-slate-400 uppercase text-[10px]">
+                    <span className="font-bold text-slate-800 flex items-center flex-wrap gap-1.5">
+                      <span>{idx + 1}. {p.name}</span>
+                      <span
+                        className={`font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded transition-colors ${
+                          p.type === 'digital'
+                            ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                            : 'bg-slate-100 text-slate-500'
+                        }`}
+                      >
                         [{p.type || 'physical'}]
                       </span>
                     </span>
-                    <span className="font-bold text-slate-900">
+                    <span className="font-bold text-slate-900 shrink-0">
                       {p.totalQty} sold • {formatPrice(p.totalRevenue)}
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                     <div
-                      className={`h-2 rounded-full ${
+                      className={`h-2 rounded-full transition-all duration-500 ${
                         p.type === 'digital' ? 'bg-indigo-600' : 'bg-amber-500'
                       }`}
-                      style={{ width: `${pct}%` }}
+                      style={{
+                        width: `${pct}%`,
+                        minWidth: p.totalQty > 0 ? '6px' : '0px',
+                      }}
                     />
                   </div>
                 </div>
