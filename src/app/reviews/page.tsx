@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PARENT_REVIEWS } from '@/data/mockData';
 import { ParentReview } from '@/types';
-import { Star, CheckCircle, Quote, Send, ShieldCheck } from 'lucide-react';
+import { Star, CheckCircle, Quote, Send, ShieldCheck, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function ReviewsPage() {
   const [reviewsList, setReviewsList] = useState<ParentReview[]>(PARENT_REVIEWS);
@@ -16,35 +16,64 @@ export default function ReviewsPage() {
     isHuman: false,
   });
   const [submittedMessage, setSubmittedMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Load live approved reviews from database
+  useEffect(() => {
+    async function fetchReviews() {
+      try {
+        const res = await fetch('/api/reviews');
+        const data = await res.json();
+        if (data.success && Array.isArray(data.reviews)) {
+          setReviewsList(data.reviews);
+        }
+      } catch (err) {
+        console.error('Error fetching approved reviews:', err);
+      }
+    }
+    fetchReviews();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
+
     if (!formData.isHuman) {
-      alert('Please check the box to confirm you are human.');
+      setErrorMessage('Please check the box to confirm you are human.');
       return;
     }
 
-    const newReview: ParentReview = {
-      id: `r-${Date.now()}`,
-      parentName: formData.parentName,
-      location: formData.location || 'Karnataka',
-      childGrade: formData.childGrade,
-      rating: formData.rating,
-      reviewText: formData.reviewText,
-      date: 'Just now',
-      verifiedPurchase: true,
-    };
+    setIsSubmitting(true);
 
-    setReviewsList([newReview, ...reviewsList]);
-    setSubmittedMessage(true);
-    setFormData({
-      parentName: '',
-      location: '',
-      childGrade: 'Class 4 Parent',
-      rating: 5,
-      reviewText: '',
-      isHuman: false,
-    });
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to submit review.');
+      }
+
+      setSubmittedMessage(true);
+      setFormData({
+        parentName: '',
+        location: '',
+        childGrade: 'Class 4 Parent',
+        rating: 5,
+        reviewText: '',
+        isHuman: false,
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error submitting feedback. Please try again.';
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -121,7 +150,14 @@ export default function ReviewsPage() {
               {submittedMessage && (
                 <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-semibold text-emerald-800 flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                  <span>Thank you! Your feedback has been published successfully.</span>
+                  <span>Thank you! Your feedback has been submitted for review and will appear on this page once approved by our team.</span>
+                </div>
+              )}
+
+              {errorMessage && (
+                <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-xs font-semibold text-rose-800 flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0" />
+                  <span>{errorMessage}</span>
                 </div>
               )}
 
@@ -214,9 +250,20 @@ export default function ReviewsPage() {
 
                 <button
                   type="submit"
-                  className="w-full min-h-[48px] py-3.5 px-4 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition cursor-pointer active:scale-98"
+                  disabled={isSubmitting}
+                  className="w-full min-h-[48px] py-3.5 px-4 rounded-xl font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition cursor-pointer active:scale-98 disabled:opacity-60"
                 >
-                  <Send className="w-4 h-4" /> Submit Feedback
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Submitting Feedback...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Submit Feedback</span>
+                    </>
+                  )}
                 </button>
               </form>
             </div>

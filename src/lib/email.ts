@@ -436,3 +436,120 @@ export async function sendCustomerOrderReceipt(
   }
 }
 
+function escapeHtml(str: string): string {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+export interface ContactInquiryPayload {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+/**
+ * Sends an instant customer inquiry email to kannada@belesu.in via Nodemailer SMTP.
+ */
+export async function sendContactInquiryEmail(
+  payload: ContactInquiryPayload
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  try {
+    const transporter = getTransporter();
+    if (!transporter) {
+      return { success: false, error: 'SMTP transporter not configured' };
+    }
+
+    const senderEmail = process.env.SMTP_FROM || `"Belesu Contact System" <belesuckelp@gmail.com>`;
+    const recipientEmail = 'kannada@belesu.in';
+
+    const safeName = escapeHtml(payload.name);
+    const safeEmail = escapeHtml(payload.email);
+    const safePhone = escapeHtml(payload.phone);
+    const safeSubject = escapeHtml(payload.subject || 'General Inquiry');
+    const safeMessage = escapeHtml(payload.message);
+    const cleanPhoneDigits = safePhone.replace(/\D/g, '');
+
+    const emailHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f8fafc; margin: 0; padding: 24px; color: #1e293b; }
+    .container { max-width: 580px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+    .header { background: #0f172a; padding: 24px 32px; color: #ffffff; }
+    .header h2 { margin: 0; font-size: 20px; font-weight: 800; color: #f59e0b; }
+    .header p { margin: 4px 0 0; font-size: 13px; color: #94a3b8; }
+    .content { padding: 32px; }
+    .field { margin-bottom: 20px; }
+    .field-label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .field-value { font-size: 15px; font-weight: 600; color: #0f172a; }
+    .message-box { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px; font-size: 14px; line-height: 1.6; color: #334155; margin-top: 8px; white-space: pre-wrap; }
+    .footer { padding: 16px 32px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Belesu New Customer Inquiry</h2>
+      <p>Submitted via Website Contact Form • /contact</p>
+    </div>
+    <div class="content">
+      <div class="field">
+        <div class="field-label">Sender Name</div>
+        <div class="field-value">${safeName}</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Subject Category</div>
+        <div class="field-value" style="color: #d97706;">${safeSubject}</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Phone / WhatsApp Number</div>
+        <div class="field-value">
+          <a href="tel:${safePhone}" style="color: #0284c7; text-decoration: none;">${safePhone}</a>
+          ${cleanPhoneDigits ? `<span style="color: #94a3b8; font-size: 12px; margin-left: 8px;">(<a href="https://wa.me/91${cleanPhoneDigits}" style="color: #059669; text-decoration: none; font-weight: bold;">WhatsApp Chat</a>)</span>` : ''}
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Email Address</div>
+        <div class="field-value">
+          <a href="mailto:${safeEmail}" style="color: #0284c7; text-decoration: none;">${safeEmail}</a>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Message Content</div>
+        <div class="message-box">${safeMessage}</div>
+      </div>
+      <div style="margin-top: 24px; padding: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; font-size: 12px; color: #065f46;">
+        💡 <strong>Quick Action:</strong> Click <em>Reply</em> in your email client to directly email ${safeName} (${safeEmail}).
+      </div>
+    </div>
+    <div class="footer">
+      Belesu Academic Publishing • Sarjapur, Bengaluru • VTU Campus, Belagavi
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const info = await transporter.sendMail({
+      from: senderEmail,
+      to: recipientEmail,
+      replyTo: `"${payload.name}" <${payload.email}>`,
+      subject: `[Belesu Inquiry] ${payload.subject || 'Customer Message'}: From ${payload.name}`,
+      html: emailHtml,
+    });
+
+    console.log(`[email] Contact inquiry from ${payload.name} sent to ${recipientEmail} (msgId: ${info.messageId})`);
+    return { success: true, messageId: info.messageId };
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error(`[email] Failed to send contact inquiry email:`, errorMsg);
+    return { success: false, error: errorMsg };
+  }
+}
+

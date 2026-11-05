@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, MessageCircle, Send, CheckCircle2, Clock } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, Send, CheckCircle2, Clock, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -12,17 +12,42 @@ export default function ContactPage() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: 'Book Inquiry',
-      message: '',
-    });
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    setSubmitted(false);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to send message. Please try again.');
+      }
+
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: 'Book Inquiry',
+        message: '',
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error sending inquiry. Please try again or WhatsApp us.';
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -140,7 +165,14 @@ export default function ContactPage() {
               {submitted && (
                 <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-semibold text-emerald-800 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                  <span>Thank you! Your message has been sent successfully. We will contact you shortly.</span>
+                  <span>Thank you! Your message has been sent directly to our team at <strong>kannada@belesu.in</strong>. We will contact you shortly.</span>
+                </div>
+              )}
+
+              {errorMessage && (
+                <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-xs font-semibold text-rose-800 flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0" />
+                  <span>{errorMessage}</span>
                 </div>
               )}
 
@@ -213,9 +245,20 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
-                  className="w-full min-h-[48px] py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 text-sm transition cursor-pointer active:scale-98"
+                  disabled={isSubmitting}
+                  className="w-full min-h-[48px] py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 text-sm transition cursor-pointer active:scale-98 disabled:opacity-60"
                 >
-                  <Send className="w-4 h-4" /> Send Message
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Sending Message...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Send Message</span>
+                    </>
+                  )}
                 </button>
               </form>
             </div>
