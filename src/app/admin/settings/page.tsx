@@ -76,7 +76,7 @@ export default function AdminSettingsPage() {
             </div>
             <div>
               <span className="font-bold text-slate-900 text-sm block">Primary Administrator</span>
-              <span className="font-mono text-xs text-slate-600">📞 +91 8105829199</span>
+              <span className="font-mono text-xs text-slate-600">📞 +91 91481 55350</span>
             </div>
           </div>
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">

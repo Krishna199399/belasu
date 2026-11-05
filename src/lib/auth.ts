@@ -19,10 +19,10 @@ export interface AuthPayload {
 export function isPhoneAdmin(phone?: string | null, name?: string | null): boolean {
   if (name && name.toLowerCase().trim() === 'admin') return true;
   if (!phone) return false;
-  const adminPhones = (process.env.ADMIN_PHONES || '8105829199,1234567888')
+  const adminPhones = (process.env.ADMIN_PHONES || '9148155350,8105829199,1234567888')
     .split(',')
-    .map((p) => p.trim().replace(/^\+91/, ''));
-  const cleanPhone = phone.trim().replace(/^\+91/, '');
+    .map((p) => p.trim().replace(/^\+91/, '').replace(/\s+/g, ''));
+  const cleanPhone = phone.trim().replace(/^\+91/, '').replace(/\s+/g, '');
   return adminPhones.includes(cleanPhone);
 }
 

@@ -64,7 +64,7 @@ export default async function AdminLayout({
           </div>
 
           <div className="mt-6 pt-6 border-t border-slate-700/60 text-[11px] text-slate-400">
-            Authorized administrator phone: <span className="font-mono text-slate-400 font-semibold">8105829199</span>
+            Authorized administrator phone: <span className="font-mono text-slate-400 font-semibold">91481 55350</span>
           </div>
         </div>
       </div>
