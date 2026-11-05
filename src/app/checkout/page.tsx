@@ -63,9 +63,18 @@ export default function CheckoutPage() {
 
   // Razorpay hook
   const { initiatePayment, loading: paymentLoading } = useRazorpay({
-    onSuccess: async (response) => {
-      // Payment successful, create order
-      await createOrder(response.razorpay_payment_id, response.razorpay_order_id);
+    onSuccess: async (response, verifyData) => {
+      // If order was already created atomically in the verify step, route directly to order-success
+      if (verifyData?.orderNumber) {
+        setIsNavigatingToSuccess(true);
+        clearCart();
+        await refreshUser();
+        router.replace(`/order-success/${encodeURIComponent(verifyData.orderNumber)}`);
+        setIsProcessing(false);
+      } else {
+        // Fallback: create order if not yet fulfilled
+        await createOrder(response.razorpay_payment_id, response.razorpay_order_id);
+      }
     },
     onFailure: (error) => {
       console.error('Payment failed or cancelled:', error);
@@ -202,25 +211,48 @@ export default function CheckoutPage() {
     setIsProcessing(true);
 
     try {
-      // Initiate Razorpay online payment
+      const orderItems = cart.map(item => ({
+        id: item.product.id,
+        sku: item.product.sku,
+        title: item.product.title,
+        price: item.product.price,
+        quantity: item.quantity,
+        productType: item.productType,
+        slug: item.product.slug,
+      }));
+
+      const customerEmailVal = currentAddress?.email || digitalEmail.trim() || user?.email || '';
+      const customerPhoneVal = currentAddress?.phone || digitalPhone.trim() || user?.phone || '';
+      const customerNameVal = (currentAddress ? `${currentAddress.firstName} ${currentAddress.lastName}`.trim() : digitalName.trim()) || user?.name || '';
+
+      // Initiate Razorpay online payment with attached orderPayload for atomic verification-fulfillment
       await initiatePayment({
         amount: grandTotal,
         description: `Order for ${cart.length} item(s)`,
+        orderPayload: {
+          items: orderItems,
+          shippingAddressId: currentAddress?.id || null,
+          shippingFee,
+          customerEmail: customerEmailVal,
+          customerPhone: customerPhoneVal,
+          customerName: customerNameVal,
+          paymentMethod: 'Razorpay - Online Payment',
+        },
         notes: {
           items: cart.length,
           hasPhysical: hasPhysicalBooks(),
           hasDigital: hasDigitalBooks(),
           shipping_address_id: currentAddress?.id || '',
           shipping_fee: String(shippingFee || 48),
-          customer_phone: currentAddress?.phone || digitalPhone.trim() || user?.phone || '',
-          customer_email: currentAddress?.email || digitalEmail.trim() || user?.email || '',
-          customer_name: (currentAddress ? `${currentAddress.firstName} ${currentAddress.lastName}`.trim() : digitalName.trim()) || user?.name || '',
+          customer_phone: customerPhoneVal,
+          customer_email: customerEmailVal,
+          customer_name: customerNameVal,
           items_summary: cart.map(i => `${i.product.sku || i.product.id}:${i.quantity || 1}`).join(',').slice(0, 250),
         },
         prefill: {
-          name: (currentAddress ? `${currentAddress.firstName} ${currentAddress.lastName}`.trim() : digitalName.trim()) || user?.name || '',
-          email: currentAddress?.email || digitalEmail.trim() || user?.email || '',
-          contact: currentAddress?.phone || digitalPhone.trim() || user?.phone || '',
+          name: customerNameVal,
+          email: customerEmailVal,
+          contact: customerPhoneVal,
         },
       });
     } catch (error) {

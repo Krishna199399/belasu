@@ -104,8 +104,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const userData = user as unknown as Record<string, unknown>;
-    const isAdmin = Boolean(userData.is_admin || isPhoneAdmin(user.phone));
+    const isAdmin = isPhoneAdmin(user.phone);
 
     const token = await signToken({
       userId: user.id,

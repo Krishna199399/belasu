@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 6. Issue JWT & session cookie
-    const isAdmin = Boolean((user as any).is_admin || isPhoneAdmin(user.phone, user.name));
+    const isAdmin = isPhoneAdmin(user.phone);
     const token = await signToken({ userId: user.id, phone: user.phone, name: user.name, isAdmin });
 
     const profile = await getFullUserProfile(user.id);

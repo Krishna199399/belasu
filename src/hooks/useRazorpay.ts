@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 
 interface UseRazorpayOptions {
-  onSuccess?: (response: RazorpayResponse) => void;
+  onSuccess?: (response: RazorpayResponse, verifyData?: Record<string, any>) => void;
   onFailure?: (error: unknown) => void;
   onDismiss?: () => void;
 }
@@ -20,6 +20,7 @@ export function useRazorpay({ onSuccess, onFailure, onDismiss }: UseRazorpayOpti
     description,
     notes = {},
     prefill,
+    orderPayload,
   }: {
     amount: number;
     description: string;
@@ -29,6 +30,7 @@ export function useRazorpay({ onSuccess, onFailure, onDismiss }: UseRazorpayOpti
       email?: string;
       contact?: string;
     };
+    orderPayload?: Record<string, unknown>;
   }) => {
     if (!user) {
       toast.error('Please login to continue');
@@ -73,20 +75,25 @@ export function useRazorpay({ onSuccess, onFailure, onDismiss }: UseRazorpayOpti
         order_id: data.order.id,
         handler: async (paymentResponse: RazorpayResponse) => {
           try {
-            // Verify payment on server
+            // Verify payment and atomically fulfill order on server in the same request
+            const verifyPayload = {
+              ...paymentResponse,
+              ...(orderPayload || {}),
+            };
+
             const verifyResponse = await fetch('/api/payment/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(paymentResponse),
+              body: JSON.stringify(verifyPayload),
             });
 
             const verifyData = await verifyResponse.json();
 
             if (verifyData.success) {
               toast.success('Payment successful!');
-              onSuccess?.(paymentResponse);
+              onSuccess?.(paymentResponse, verifyData);
             } else {
-              throw new Error('Payment verification failed');
+              throw new Error(verifyData.error || 'Payment verification failed');
             }
           } catch (error: unknown) {
             console.error('Payment verification error:', error);

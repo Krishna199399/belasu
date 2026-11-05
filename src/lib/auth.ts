@@ -15,9 +15,8 @@ export interface AuthPayload {
   isAdmin?: boolean;
 }
 
-/** Check if a given phone number or account name is considered an admin */
-export function isPhoneAdmin(phone?: string | null, name?: string | null): boolean {
-  if (name && name.toLowerCase().trim() === 'admin') return true;
+/** Check if a given phone number is considered an admin strictly by matching ADMIN_PHONES */
+export function isPhoneAdmin(phone?: string | null): boolean {
   if (!phone) return false;
   const adminPhones = (process.env.ADMIN_PHONES || '9148155350,8105829199,1234567888')
     .split(',')
@@ -28,7 +27,7 @@ export function isPhoneAdmin(phone?: string | null, name?: string | null): boole
 
 /** Sign a JWT and return the token string */
 export async function signToken(payload: AuthPayload): Promise<string> {
-  const isAdmin = Boolean(payload.isAdmin || isPhoneAdmin(payload.phone, payload.name));
+  const isAdmin = isPhoneAdmin(payload.phone);
   return new SignJWT({ ...payload, isAdmin })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -41,8 +40,9 @@ export async function verifyToken(token: string): Promise<AuthPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     const authData = payload as unknown as AuthPayload;
-    if (authData && (authData.isAdmin || isPhoneAdmin(authData.phone, authData.name))) {
-      authData.isAdmin = true;
+    if (authData) {
+      // Re-evaluate admin status strictly by authorized phone number
+      authData.isAdmin = isPhoneAdmin(authData.phone);
     }
     return authData;
   } catch {
@@ -59,13 +59,14 @@ export async function getAuthUser(): Promise<AuthPayload | null> {
   if (!user) return null;
   return {
     ...user,
-    isAdmin: Boolean(user.isAdmin || isPhoneAdmin(user.phone, user.name)),
+    isAdmin: isPhoneAdmin(user.phone),
   };
 }
 
 /** Set the auth cookie in a Route Handler response */
 export function buildAuthCookieHeader(token: string): string {
-  return `${COOKIE_NAME}=${token}; HttpOnly; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+  const isSecure = process.env.NODE_ENV === 'production';
+  return `${COOKIE_NAME}=${token}; HttpOnly; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
 }
 
 /** Clear the auth cookie */
@@ -124,7 +125,7 @@ export async function getFullUserProfile(userId: string) {
     name: user.name,
     phone: user.phone,
     email: user.email || '',
-    isAdmin: Boolean((user as any).is_admin || isPhoneAdmin(user.phone, user.name)),
+    isAdmin: isPhoneAdmin(user.phone),
     purchasedBooks: user.purchased_books || { physical: [], digital: [] },
     addresses,
     defaultAddressId: defaultAddr?.id,
