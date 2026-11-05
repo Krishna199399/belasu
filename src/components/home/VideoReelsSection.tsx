@@ -183,10 +183,10 @@ export const VideoReelsSection: React.FC = () => {
             <div
               key={video.id}
               onClick={() => handleOpenVideo(video)}
-              className="bg-white rounded-2xl border border-[#FDE68A] p-3 sm:p-3.5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer hover:-translate-y-0.5 select-none"
+              className="bg-white rounded-2xl border border-[#FDE68A] p-3 sm:p-3.5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer hover:-translate-y-0.5 select-none w-full max-w-[320px] sm:max-w-[340px] md:max-w-none mx-auto"
             >
               {/* Thumbnail Container with Play Overlay & Duration Badge (9:16 Vertical Reel Fit) */}
-              <div className="relative aspect-[9/16] max-h-[360px] sm:max-h-[400px] rounded-xl overflow-hidden bg-slate-950 mb-2.5 shadow-2xs flex items-center justify-center">
+              <div className="relative w-full aspect-[9/16] rounded-xl overflow-hidden bg-slate-950 mb-2.5 shadow-2xs flex items-center justify-center mx-auto">
                 <img
                   src={video.thumbnailUrl}
                   alt={video.title}
