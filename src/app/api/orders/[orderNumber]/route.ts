@@ -130,8 +130,16 @@ export async function GET(
         totalAmount: order.order_total_amount,
 
         // Product flags
-        hasPhysicalBooks: order.has_physical_books,
-        hasDigitalBooks: order.has_digital_books,
+        hasPhysicalBooks: Boolean(
+          order.has_physical_books ||
+          order.has_hard_copy_books ||
+          (items && items.some((i: any) => i.item_type === 'physical')) ||
+          (order.order_shipping_amount && order.order_shipping_amount > 0)
+        ),
+        hasDigitalBooks: Boolean(
+          order.has_digital_books ||
+          (items && items.some((i: any) => i.item_type === 'digital'))
+        ),
 
         // Shipping address
         shipping: {

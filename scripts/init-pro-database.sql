@@ -247,10 +247,17 @@ CREATE TRIGGER trg_orders_updated_at
 CREATE OR REPLACE FUNCTION public.sync_order_format_flags()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
-  IF NEW.has_hard_copy_books IS NOT NULL THEN
-    NEW.has_physical_books := NEW.has_hard_copy_books;
+  -- Prefer whichever flag is explicitly TRUE
+  IF NEW.has_physical_books IS TRUE OR NEW.has_hard_copy_books IS TRUE THEN
+    NEW.has_physical_books := TRUE;
+    NEW.has_hard_copy_books := TRUE;
+  ELSIF NEW.has_physical_books IS FALSE AND NEW.has_hard_copy_books IS FALSE THEN
+    NEW.has_physical_books := FALSE;
+    NEW.has_hard_copy_books := FALSE;
   ELSIF NEW.has_physical_books IS NOT NULL THEN
     NEW.has_hard_copy_books := NEW.has_physical_books;
+  ELSIF NEW.has_hard_copy_books IS NOT NULL THEN
+    NEW.has_physical_books := NEW.has_hard_copy_books;
   END IF;
   RETURN NEW;
 END;

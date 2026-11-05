@@ -43,6 +43,7 @@ interface OrderData {
   order_shipping_amount: number;
   order_total_amount: number;
   has_physical_books: boolean;
+  has_hard_copy_books?: boolean;
   has_digital_books: boolean;
   shipping_method?: string;
   billing_first_name: string;
@@ -136,6 +137,18 @@ export const OrderDetailClient: React.FC<{ initialOrder: OrderData }> = ({
     order.shipping_postcode || order.billing_postcode || '';
   const shippingPhone = order.shipping_phone || order.billing_phone || '';
 
+  const hasPhysicalItems = order.order_items && order.order_items.some((i) => i.item_type === 'physical' || i.item_type === 'book');
+  const hasDigitalItems = order.order_items && order.order_items.some((i) => i.item_type === 'digital');
+
+  const hasPhysical = Boolean(
+    hasPhysicalItems ||
+    order.has_physical_books ||
+    order.has_hard_copy_books ||
+    (order.order_shipping_amount && order.order_shipping_amount > 0) ||
+    (order.shipping_method && order.shipping_method.toLowerCase().includes('flat')) ||
+    (!hasDigitalItems && order.shipping_address1 && order.shipping_address1 !== 'Digital Instant Delivery (Web Reader)')
+  );
+
   const fullShippingText = `Recipient: ${shippingName}\nPhone: ${shippingPhone}\nAddress: ${shippingAddress1}${
     shippingAddress2 ? `, ${shippingAddress2}` : ''
   }\nCity: ${shippingCity}, ${shippingState} - ${shippingPostcode}`;
@@ -149,7 +162,10 @@ export const OrderDetailClient: React.FC<{ initialOrder: OrderData }> = ({
 
   const handlePrint = () => {
     try {
-      const invoiceHtml = generateInvoiceHtml(order);
+      const invoiceHtml = generateInvoiceHtml({
+        ...order,
+        has_physical_books: hasPhysical,
+      });
 
       // Create an isolated hidden iframe — immune to parent global CSS DRM print blockers
       const iframe = document.createElement('iframe');
@@ -332,7 +348,7 @@ export const OrderDetailClient: React.FC<{ initialOrder: OrderData }> = ({
                 </p>
               </div>
               <div className="flex items-center gap-1.5">
-                {order.has_physical_books && (
+                {hasPhysical && (
                   <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
                     Hard Copy Books
                   </span>
@@ -418,7 +434,7 @@ export const OrderDetailClient: React.FC<{ initialOrder: OrderData }> = ({
           </div>
 
           {/* Courier & Shipping Tracking Updater */}
-          {order.has_physical_books && (
+          {hasPhysical && (
             <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-4">
               <div className="flex items-center gap-2">
                 <Truck className="w-5 h-5 text-indigo-600" />

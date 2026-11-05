@@ -332,6 +332,7 @@ async function executeFulfillment(params: FulfillOrderParams) {
       order_refund_amount: 0,
       order_total_amount: totalAmount,
 
+      has_hard_copy_books: hasPhysical,
       has_physical_books: hasPhysical,
       has_digital_books: hasDigital,
     })

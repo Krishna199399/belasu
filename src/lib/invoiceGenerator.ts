@@ -20,6 +20,7 @@ export interface InvoiceOrderData {
   order_shipping_amount: number;
   order_total_amount: number;
   has_physical_books?: boolean;
+  has_hard_copy_books?: boolean;
   has_digital_books?: boolean;
   shipping_method?: string;
   billing_first_name: string;
@@ -75,6 +76,18 @@ export function generateInvoiceHtml(order: InvoiceOrderData): string {
 
   const isPaid = order.payment_status?.toLowerCase() === 'paid';
   const items = order.order_items || [];
+  const hasPhysicalItems = items.some((i) => i.item_type === 'physical' || i.item_type === 'book');
+  const hasDigitalItems = items.some((i) => i.item_type === 'digital');
+
+  // Robust check: order is physical if it has physical items, explicit physical flags, or shipping fee > 0
+  const isPhysical = Boolean(
+    hasPhysicalItems ||
+    order.has_physical_books ||
+    order.has_hard_copy_books ||
+    (order.order_shipping_amount && order.order_shipping_amount > 0) ||
+    (order.shipping_method && order.shipping_method.toLowerCase().includes('flat')) ||
+    (!hasDigitalItems && order.shipping_address1 && order.shipping_address1 !== 'Digital Instant Delivery (Web Reader)')
+  );
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -324,7 +337,7 @@ export function generateInvoiceHtml(order: InvoiceOrderData): string {
 
       <div class="party-box">
         <h4>Shipping / Delivery Information</h4>
-        ${order.has_physical_books ? `
+        ${isPhysical ? `
           <div class="party-name">${shippingName}</div>
           ${order.shipping_phone ? `<div class="party-info">Phone: +91 ${order.shipping_phone}</div>` : ''}
           <div class="party-info">${shippingAddress}</div>
