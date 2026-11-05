@@ -172,10 +172,6 @@ export const Navbar: React.FC = () => {
     },
   ];
 
-  const spokenBooks = [
-    { label: 'A Destination to Speak Kannada', href: '/books/a-destination-to-speak-kannada/' },
-  ];
-
   interface NavLinkItem {
     label: string;
     href: string;
@@ -702,26 +698,6 @@ export const Navbar: React.FC = () => {
                             </div>
                             <div className="space-y-0.5 pl-1">
                               {class5Books.map((book) => (
-                                <Link
-                                  key={book.href}
-                                  href={book.href}
-                                  onClick={() => setMobileMenuOpen(false)}
-                                  className="block px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition min-h-[40px] flex items-center"
-                                >
-                                  {book.label}
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Spoken Kannada */}
-                          <div className="pt-1 border-t border-stone-100">
-                            <div className="flex items-center gap-1.5 px-2 py-1 text-xs font-black uppercase tracking-wider text-slate-800 bg-stone-100 rounded-md mb-1.5">
-                              <span>🗣️</span>
-                              <span>General / Spoken Kannada</span>
-                            </div>
-                            <div className="space-y-0.5 pl-1">
-                              {spokenBooks.map((book) => (
                                 <Link
                                   key={book.href}
                                   href={book.href}
