@@ -172,6 +172,10 @@ export function PrintBookModal({ book, isOpen, onClose }: PrintBookModalProps) {
     </body></html>`);
     doc.close();
 
+    // Reset modal state immediately so user is unblocked — iframe prints independently
+    setIsLoading(false);
+    onClose();
+
     // Wait for images to fully render inside the iframe before printing
     iframe.onload = () => {
       setTimeout(() => {
@@ -180,12 +184,11 @@ export function PrintBookModal({ book, isOpen, onClose }: PrintBookModalProps) {
       }, 300);
     };
 
-    // Clean up after print dialog closes
+    // Clean up iframe after print dialog closes (or after 5 min safety fallback)
     const cleanup = () => {
       if (document.body.contains(iframe)) {
         document.body.removeChild(iframe);
       }
-      setIsLoading(false);
       window.removeEventListener('afterprint', cleanup);
     };
     window.addEventListener('afterprint', cleanup);
@@ -195,7 +198,6 @@ export function PrintBookModal({ book, isOpen, onClose }: PrintBookModalProps) {
       if (document.body.contains(iframe)) {
         document.body.removeChild(iframe);
       }
-      setIsLoading(false);
     }, 300_000);
   };
 
@@ -230,7 +232,6 @@ export function PrintBookModal({ book, isOpen, onClose }: PrintBookModalProps) {
             <button
               type="button"
               onClick={handleCancel}
-              disabled={isLoading}
               className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-stone-100 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
