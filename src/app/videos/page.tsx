@@ -7,7 +7,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Video,
-  HeartHandshake,
   Building2,
   BookOpen,
   ChevronRight,
@@ -19,45 +18,24 @@ import {
   ShieldCheck,
   Award,
   X,
+  Camera,
+  HeartHandshake,
 } from 'lucide-react';
 
-type TabType = 'videos' | 'social-impact' | 'csr';
-
 export default function VideosMediaPage() {
-  const [activeTab, setActiveTab] = useState<TabType>(() => {
-    if (typeof window !== 'undefined') {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (hash === 'social-impact' || hash === 'social-impacts' || hash === 'gallery') return 'social-impact';
-      if (hash === 'csr') return 'csr';
-    }
-    return 'videos';
-  });
-
   const [selectedLightboxImage, setSelectedLightboxImage] = useState<{ src: string; caption: string } | null>(null);
 
-  // Listen to hash changes (e.g. back/forward navigation or hash links)
+  // Smooth scroll to section if URL contains hash (#videos, #gallery, #csr)
   useEffect(() => {
-    const handleHashChange = () => {
+    if (typeof window !== 'undefined' && window.location.hash) {
       const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (hash === 'social-impact' || hash === 'social-impacts' || hash === 'gallery') {
-        setActiveTab('social-impact');
-      } else if (hash === 'csr') {
-        setActiveTab('csr');
-      } else if (hash === 'videos' || hash === 'video') {
-        setActiveTab('videos');
+      const targetId = hash === 'social-impact' || hash === 'social-impacts' ? 'gallery' : hash;
+      const el = document.getElementById(targetId);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 150);
       }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab);
-    if (typeof window !== 'undefined') {
-      window.history.replaceState(null, '', `#${tab}`);
     }
-  };
+  }, []);
 
   const extendedVideos = [
     {
@@ -189,639 +167,608 @@ export default function VideosMediaPage() {
   ];
 
   return (
-    <div className="bg-white min-h-screen text-slate-900">
+    <div className="bg-white min-h-screen text-slate-900 scroll-smooth">
       
-      {/* ── 1. Page Header Banner & Tab Navigation ── */}
-      <section className="pt-10 pb-8 text-center bg-stone-50 border-b border-stone-200">
+      {/* ── 1. Page Header Banner (Clean, No Tab Buttons) ── */}
+      <section className="pt-12 pb-10 text-center bg-stone-50 border-b border-stone-200">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Breadcrumb */}
           <div className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">
             <Link href="/" className="hover:text-amber-700 transition">Home</Link>
             <span>•</span>
-            <span className="text-amber-800">
-              {activeTab === 'videos' && 'Videos'}
-              {activeTab === 'social-impact' && 'Gallery'}
-              {activeTab === 'csr' && 'CSR Initiatives'}
-            </span>
+            <span className="text-amber-800">Media, Gallery &amp; CSR</span>
           </div>
 
-          {/* Dynamic Page Title */}
+          {/* Unified Page Title */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-amber-900 tracking-tight mb-3">
-            {activeTab === 'videos' && 'Video Gallery'}
-            {activeTab === 'social-impact' && 'Gallery'}
-            {activeTab === 'csr' && 'Corporate Social Responsibility (CSR)'}
+            Video Gallery, Photos &amp; CSR Initiatives
           </h1>
 
           {/* Subtitle */}
-          <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-relaxed mb-6 font-normal">
-            {activeTab === 'videos' && 'Watch classroom walkthroughs, parent-child study routines, and book demonstrations.'}
-            {activeTab === 'social-impact' && 'State leadership recognitions, ELEVATE winner honors, and community impact gallery.'}
-            {activeTab === 'csr' && 'Partnering with enterprises and institutions to sponsor Kannada literacy for underserved classrooms across Karnataka.'}
+          <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+            Explore our video demonstrations, state leadership recognitions, and university-incubated educational outreach across Karnataka on a single page.
           </p>
 
-          {/* 3 Interactive Tabs */}
-          <div className="inline-flex flex-wrap items-center justify-center p-1.5 bg-stone-200/80 rounded-2xl gap-1.5 sm:gap-2 shadow-inner border border-stone-300 max-w-full">
-            
-            {/* Tab 1: Video */}
-            <button
-              type="button"
-              onClick={() => handleTabChange('videos')}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
-                activeTab === 'videos'
-                  ? 'bg-amber-800 text-white shadow-md'
-                  : 'bg-transparent text-slate-700 hover:text-amber-900 hover:bg-stone-300/60'
-              }`}
-            >
-              <Video className="w-4 h-4" />
-              <span>Video</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
-                activeTab === 'videos' ? 'bg-amber-700 text-amber-100' : 'bg-stone-300 text-slate-700'
-              }`}>
-                {extendedVideos.length}
-              </span>
-            </button>
+        </div>
+      </section>
 
-            {/* Tab 2: Gallery */}
-            <button
-              type="button"
-              onClick={() => handleTabChange('social-impact')}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
-                activeTab === 'social-impact'
-                  ? 'bg-amber-800 text-white shadow-md'
-                  : 'bg-transparent text-slate-700 hover:text-amber-900 hover:bg-stone-300/60'
-              }`}
-            >
-              <HeartHandshake className="w-4 h-4" />
-              <span>Gallery</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
-                activeTab === 'social-impact' ? 'bg-amber-700 text-amber-100' : 'bg-stone-300 text-slate-700'
-              }`}>
-                {socialImpactImages.length}
-              </span>
-            </button>
+      {/* ══════════════════════════════════════════════════════════════════════
+          SECTION 1: VIDEO GALLERY
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section id="videos" className="py-12 sm:py-16 scroll-mt-20">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          
+          {/* Section Heading */}
+          <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-[11px] font-black uppercase tracking-wider border border-amber-300">
+              <Video className="w-3.5 h-3.5" />
+              <span>Section 1 • Video Demonstrations</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-amber-950 tracking-tight">
+              Video Gallery
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              Watch classroom walkthroughs, parent-child study routines, and guidebook demonstrations.
+            </p>
+          </div>
 
-            {/* Tab 3: CSR */}
-            <button
-              type="button"
-              onClick={() => handleTabChange('csr')}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
-                activeTab === 'csr'
-                  ? 'bg-amber-800 text-white shadow-md'
-                  : 'bg-transparent text-slate-700 hover:text-amber-900 hover:bg-stone-300/60'
-              }`}
-            >
-              <Building2 className="w-4 h-4" />
-              <span>CSR</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
-                activeTab === 'csr' ? 'bg-amber-700 text-amber-100' : 'bg-stone-300 text-slate-700'
-              }`}>
-                VTU-VRIF
-              </span>
-            </button>
+          {/* Video Gallery: Responsive 9:16 Vertical Reel Grid (Mobile 1-col, Desktop 3-col) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+            {extendedVideos.map((video) => (
+              <div
+                key={video.id}
+                className="bg-white rounded-3xl border border-amber-200/90 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group max-w-sm sm:max-w-md md:max-w-none mx-auto w-full"
+              >
+                {/* Video Player — 9:16 Vertical Reel Aspect Ratio */}
+                <div className="relative aspect-[9/16] bg-black flex items-center justify-center overflow-hidden">
+                  <video
+                    src={video.videoUrl}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-full object-contain bg-black"
+                  />
+                  
+                  {/* Overlay Badge */}
+                  {video.badgeText && (
+                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-slate-900 font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-md shadow-xs border border-stone-200 pointer-events-none">
+                      {video.badgeText}
+                    </div>
+                  )}
 
+                  {/* Belesu Watermark Overlay */}
+                  <div className="absolute top-3 right-3 opacity-90 pointer-events-none">
+                    <span className="text-[10px] font-black text-amber-400 bg-slate-950/80 px-2 py-0.5 rounded-md">
+                      Belesu • +91 96066 36804
+                    </span>
+                  </div>
+                </div>
+
+                {/* Video Info */}
+                <div className="p-4 sm:p-5 space-y-2 bg-stone-50/70 flex-1 flex flex-col justify-between border-t border-stone-100">
+                  <div>
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-800 mb-1">
+                      <span className="uppercase tracking-wider">Duration: {video.duration}</span>
+                      <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
+                        9:16 HD Reel
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug font-serif">
+                      {video.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                      {video.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Videos Footer Help Card */}
+          <div className="mt-12 p-6 sm:p-8 bg-amber-50/60 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-5xl mx-auto">
+            <div className="space-y-1 text-center sm:text-left">
+              <h4 className="font-serif font-bold text-amber-950 text-lg sm:text-xl">
+                Looking for guidance on selecting the right guidebook?
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-700">
+                Our academic advisors help non-Kannadiga parents match textbooks to their school syllabus (Savi, Kali, Siri, Tili).
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+              <Link
+                href="/books/"
+                className="px-5 py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-sm"
+              >
+                Browse 11 Books
+              </Link>
+              <a
+                href="https://wa.me/919606636804?text=Hello%20Belesu%20Team%2C%20I%20watched%20your%20videos%20and%20need%20help%20choosing%20the%20right%20Kannada%20guidebook%20for%20my%20child."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-2.5 bg-white border border-stone-300 hover:border-amber-400 text-slate-800 hover:text-amber-900 rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-2xs"
+              >
+                WhatsApp Us
+              </a>
+            </div>
           </div>
 
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          TAB 1: VIDEO GALLERY
+          SECTION 2: PHOTO GALLERY
       ══════════════════════════════════════════════════════════════════════ */}
-      {activeTab === 'videos' && (
-        <section className="py-12 sm:py-16">
-          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-            
-            {/* Video Gallery: Responsive 9:16 Vertical Reel Grid (Mobile 1-col, Desktop 3-col) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
-              {extendedVideos.map((video) => (
-                <div
-                  key={video.id}
-                  className="bg-white rounded-3xl border border-amber-200/90 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group max-w-sm sm:max-w-md md:max-w-none mx-auto w-full"
-                >
-                  {/* Video Player — 9:16 Vertical Reel Aspect Ratio */}
-                  <div className="relative aspect-[9/16] bg-black flex items-center justify-center overflow-hidden">
-                    <video
-                      src={video.videoUrl}
-                      controls
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-full object-contain bg-black"
-                    />
-                    
-                    {/* Overlay Badge */}
-                    {video.badgeText && (
-                      <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-slate-900 font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-md shadow-xs border border-stone-200 pointer-events-none">
-                        {video.badgeText}
-                      </div>
-                    )}
+      <section id="gallery" className="py-12 sm:py-16 bg-stone-50/70 border-t border-stone-200 scroll-mt-20">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          
+          {/* Section Heading */}
+          <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-[11px] font-black uppercase tracking-wider border border-amber-300">
+              <Camera className="w-3.5 h-3.5" />
+              <span>Section 2 • Community Recognition &amp; Honors</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-amber-950 tracking-tight">
+              Photo Gallery
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              State leadership recognitions, ELEVATE winner honors, and community impact highlights.
+            </p>
+          </div>
 
-                    {/* Belesu Watermark Overlay */}
-                    <div className="absolute top-3 right-3 opacity-90 pointer-events-none">
-                      <span className="text-[10px] font-black text-amber-400 bg-slate-950/80 px-2 py-0.5 rounded-md">
-                        Belesu • +91 96066 36804
-                      </span>
+          {/* Photo Gallery Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {socialImpactImages.map((img) => (
+              <div
+                key={img.id}
+                onClick={() => setSelectedLightboxImage({ src: img.src, caption: img.caption })}
+                className="group relative bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400 transition-all duration-300 flex flex-col cursor-pointer"
+              >
+                <div className="relative aspect-[4/3] bg-stone-100 overflow-hidden flex items-center justify-center">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={800}
+                    height={600}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  {img.tag && (
+                    <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs">
+                      {img.tag}
                     </div>
-                  </div>
-
-                  {/* Video Info */}
-                  <div className="p-4 sm:p-5 space-y-2 bg-stone-50/70 flex-1 flex flex-col justify-between border-t border-stone-100">
-                    <div>
-                      <div className="flex items-center justify-between text-xs font-bold text-amber-800 mb-1">
-                        <span className="uppercase tracking-wider">Duration: {video.duration}</span>
-                        <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
-                          9:16 HD Reel
-                        </span>
-                      </div>
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug font-serif">
-                        {video.title}
-                      </h3>
-                      <p className="text-xs text-slate-600 leading-relaxed mt-1">
-                        {video.description}
-                      </p>
-                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                    <span className="text-[11px] font-bold text-white bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-md">
+                      Click to Expand Full Photo
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Videos Footer Help Card */}
-            <div className="mt-12 p-6 sm:p-8 bg-amber-50/60 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="space-y-1 text-center sm:text-left">
-                <h4 className="font-serif font-bold text-amber-950 text-lg sm:text-xl">
-                  Looking for guidance on selecting the right guidebook?
-                </h4>
-                <p className="text-xs sm:text-sm text-slate-700">
-                  Our academic advisors help non-Kannadiga parents match textbooks to their school syllabus (Savi, Kali, Siri, Tili).
-                </p>
+                <div className="p-3.5 bg-stone-50/70 border-t border-stone-100 flex items-center justify-between">
+                  <p className="text-xs font-bold text-slate-800 line-clamp-1">
+                    {img.caption}
+                  </p>
+                  <span className="text-[10px] font-black text-amber-700 uppercase ml-2 flex-shrink-0">
+                    #{img.id}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <Link
-                  href="/books/"
-                  className="px-5 py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-sm"
-                >
-                  Browse 11 Books
-                </Link>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          SECTION 3: CSR ACTIVITIES (VTU-VRIP)
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section id="csr" className="py-12 sm:py-16 border-t border-stone-200 scroll-mt-20">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+          
+          {/* Section Heading */}
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-black uppercase tracking-wider border border-emerald-300">
+              <HeartHandshake className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Section 3 • University-Incubated Outreach</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-amber-950 tracking-tight">
+              CSR Activities (VTU-VRIF)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              Partnering with enterprises and institutions to sponsor Kannada literacy for underserved classrooms across Karnataka.
+            </p>
+          </div>
+
+          {/* ── Featured CSR Spotlight Card: A Little Book Can Open a World of Possibilities ── */}
+          <div className="bg-white rounded-3xl border border-amber-200/90 shadow-sm overflow-hidden">
+            {/* Karnataka Red & Yellow Flag Accent Line */}
+            <div className="h-2.5 bg-gradient-to-r from-red-600 via-amber-400 to-yellow-400 w-full" />
+
+            <div className="p-6 sm:p-10 md:p-12 space-y-6">
+              
+              {/* Heading */}
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-950 text-xs font-bold uppercase tracking-wider">
+                  <span>❤️💛</span>
+                  <span>Karnataka Government Schools Initiative</span>
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-amber-950 tracking-tight leading-snug">
+                  ❤️💛 A Little Book Can Open a World of Possibilities.
+                </h3>
+              </div>
+
+              {/* Narrative Paragraphs */}
+              <div className="space-y-4 text-sm sm:text-base text-slate-700 leading-relaxed max-w-4xl font-normal">
+                <p className="font-semibold text-slate-900 text-base sm:text-lg">
+                  Every child deserves the opportunity to learn and speak Kannada with confidence, no matter where they come from.
+                </p>
+
+                <p>
+                  Through our Corporate Social Responsibility (CSR) initiative, we provide free English-translated Kannada guidebooks to students in Karnataka government schools. We aim to support children of families who move to Karnataka for work, including labourers and carpenters, by helping them understand Kannada and feel more connected to the language and culture of Karnataka.
+                </p>
+
+                <p>
+                  Our Founder and Director, <strong className="text-slate-900 font-bold">Roopa Sanjiv P</strong>, brings her experience in Kannada language teaching and research to this initiative, helping us address the challenges children face while learning Kannada.
+                </p>
+
+                <p>
+                  We believe that understanding a language builds more than knowledge. It builds confidence, connection, and a sense of belonging.
+                </p>
+
+                <div className="pt-2 text-base sm:text-lg font-serif font-bold text-amber-900 flex items-center gap-2">
+                  <span>❤️💛</span>
+                  <span>Speak Kannada. Help Kannada Flourish.</span>
+                </div>
+              </div>
+
+              {/* Hashtags */}
+              <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-stone-200">
+                {[
+                  '#Belesu',
+                  '#KannadaMathadiKannadaBelesi',
+                  '#KannadaLearning',
+                  '#CSR',
+                  '#SocialImpact'
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200/90 shadow-2xs"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* CSR Field Impact Photo Gallery */}
+              <div className="pt-8 border-t border-stone-200/80">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                  <div>
+                    <h4 className="font-serif font-bold text-xl sm:text-2xl text-slate-900">
+                      CSR Field Gallery (Karnataka Government Schools)
+                    </h4>
+                    <p className="text-xs sm:text-sm text-slate-600">
+                      Real on-ground photos from our free guidebook distribution drives in Karnataka government schools.
+                    </p>
+                  </div>
+                  <span className="self-start sm:self-auto text-[11px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                    {csrGalleryImages.length} Field Photos
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
+                  {csrGalleryImages.map((img) => (
+                    <div
+                      key={img.id}
+                      onClick={() => setSelectedLightboxImage({ src: img.src, caption: img.caption })}
+                      className="group relative bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400 transition-all duration-300 flex flex-col cursor-pointer"
+                    >
+                      <div className="relative aspect-[4/3] bg-stone-100 overflow-hidden flex items-center justify-center">
+                        <Image
+                          src={img.src}
+                          alt={img.alt}
+                          width={640}
+                          height={480}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {img.tag && (
+                          <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs">
+                            {img.tag}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                          <span className="text-[11px] font-bold text-white bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-md">
+                            Click to Expand Full Photo
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-3.5 bg-stone-50/70 border-t border-stone-100 flex items-center justify-between">
+                        <p className="text-xs font-bold text-slate-800 line-clamp-1">
+                          {img.caption}
+                        </p>
+                        <span className="text-[10px] font-black text-amber-700 uppercase">#{img.id}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* CSR Intro Hero */}
+          <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden border border-slate-800 shadow-xl">
+            <div className="relative z-10 max-w-2xl space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                <Award className="w-3.5 h-3.5" />
+                <span>Section 135 Compliant CSR Programs</span>
+              </div>
+              <h3 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
+                Empowering Regional Literacy &amp; Rural Classrooms
+              </h3>
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Corporates operating in Karnataka can channel their Corporate Social Responsibility (CSR) funds to provide bilingual Kannada guidebooks, digital reading devices, and teacher support kits to underserved rural and government schools.
+              </p>
+              <div className="pt-2 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
                 <a
-                  href="https://wa.me/919606636804?text=Hello%20Belesu%20Team%2C%20I%20watched%20your%20videos%20and%20need%20help%20choosing%20the%20right%20Kannada%20guidebook%20for%20my%20child."
+                  href="https://wa.me/919606636804?text=Hello%20Belesu%20CSR%20Desk%2C%20our%20organization%20would%20like%20to%20explore%20CSR%20partnerships%20for%20Karnataka%20schools."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-2.5 bg-white border border-stone-300 hover:border-amber-400 text-slate-800 hover:text-amber-900 rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-2xs"
+                  className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-3 bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md"
                 >
-                  WhatsApp Us
+                  Partner With Our CSR Desk
+                </a>
+                <a
+                  href="mailto:kannada@belesu.in?subject=CSR%20Partnership%20Proposal%20-%20CKelp%20Technologies"
+                  className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition border border-slate-700"
+                >
+                  Request CSR Proposal Deck
                 </a>
               </div>
             </div>
 
+            {/* Decorative Background Glow */}
+            <div className="absolute -bottom-16 -right-16 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
           </div>
-        </section>
-      )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          TAB 2: SOCIAL IMPACTS
-      ══════════════════════════════════════════════════════════════════════ */}
-      {activeTab === 'social-impact' && (
-        <section className="py-12 sm:py-16">
-          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {socialImpactImages.map((img) => (
-                <div
-                  key={img.id}
-                  onClick={() => setSelectedLightboxImage({ src: img.src, caption: img.caption })}
-                  className="group relative bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400 transition-all duration-300 flex flex-col cursor-pointer"
-                >
-                  <div className="relative aspect-[3/4] sm:aspect-[4/3] bg-stone-100 overflow-hidden flex items-center justify-center">
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      width={800}
-                      height={800}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    {img.tag && (
-                      <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs">
-                        {img.tag}
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                      <span className="text-[11px] font-bold text-white bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-md">
-                        Click to Expand Full Photo
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-3.5 bg-stone-50/70 border-t border-stone-100 flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-800 line-clamp-1">
-                      {img.caption}
-                    </p>
-                    <span className="text-[10px] font-black text-amber-700 uppercase ml-2 flex-shrink-0">
-                      #{img.id}
-                    </span>
-                  </div>
-                </div>
-              ))}
+          {/* 4 CSR Impact Focus Areas */}
+          <div className="space-y-6">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-xs font-bold text-amber-800 uppercase tracking-widest">
+                Key Intervention Areas
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900">
+                Where Your CSR Sponsorship Creates Lasting Change
+              </h3>
             </div>
-          </div>
-        </section>
-      )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          TAB 3: CSR INITIATIVES
-      ══════════════════════════════════════════════════════════════════════ */}
-      {activeTab === 'csr' && (
-        <section className="py-12 sm:py-16">
-          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            
-            {/* ── Featured CSR Spotlight Card: A Little Book Can Open a World of Possibilities ── */}
-            <div className="bg-white rounded-3xl border border-amber-200/90 shadow-sm overflow-hidden">
-              {/* Karnataka Red & Yellow Flag Accent Line */}
-              <div className="h-2.5 bg-gradient-to-r from-red-600 via-amber-400 to-yellow-400 w-full" />
-
-              <div className="p-6 sm:p-10 md:p-12 space-y-6">
-                
-                {/* Heading */}
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-950 text-xs font-bold uppercase tracking-wider">
-                    <span>❤️💛</span>
-                    <span>Karnataka Government Schools Initiative</span>
-                  </div>
-
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-black text-amber-950 tracking-tight leading-snug">
-                    ❤️💛 A Little Book Can Open a World of Possibilities.
-                  </h2>
-                </div>
-
-                {/* Narrative Paragraphs */}
-                <div className="space-y-4 text-sm sm:text-base text-slate-700 leading-relaxed max-w-4xl font-normal">
-                  <p className="font-semibold text-slate-900 text-base sm:text-lg">
-                    Every child deserves the opportunity to learn and speak Kannada with confidence, no matter where they come from.
-                  </p>
-
-                  <p>
-                    Through our Corporate Social Responsibility (CSR) initiative, we provide free English-translated Kannada guidebooks to students in Karnataka government schools. We aim to support children of families who move to Karnataka for work, including labourers and carpenters, by helping them understand Kannada and feel more connected to the language and culture of Karnataka.
-                  </p>
-
-                  <p>
-                    Our Founder and Director, <strong className="text-slate-900 font-bold">Roopa Sanjiv P</strong>, brings her experience in Kannada language teaching and research to this initiative, helping us address the challenges children face while learning Kannada.
-                  </p>
-
-                  <p>
-                    We believe that understanding a language builds more than knowledge. It builds confidence, connection, and a sense of belonging.
-                  </p>
-
-                  <div className="pt-2 text-base sm:text-lg font-serif font-bold text-amber-900 flex items-center gap-2">
-                    <span>❤️💛</span>
-                    <span>Speak Kannada. Help Kannada Flourish.</span>
-                  </div>
-                </div>
-
-                {/* Hashtags */}
-                <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-stone-200">
-                  {[
-                    '#Belesu',
-                    '#KannadaMathadiKannadaBelesi',
-                    '#KannadaLearning',
-                    '#CSR',
-                    '#SocialImpact'
-                  ].map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200/90 shadow-2xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* CSR Field Impact Photo Gallery */}
-                <div className="pt-8 border-t border-stone-200/80">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
-                    <div>
-                      <h3 className="font-serif font-bold text-xl sm:text-2xl text-slate-900">
-                        CSR Field Gallery (Karnataka Government Schools)
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-600">
-                        Real on-ground photos from our free guidebook distribution drives in Karnataka government schools.
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {csrFocusAreas.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="p-7 bg-white rounded-2xl border border-stone-200 shadow-xs hover:border-amber-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-800">
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-md bg-stone-100 text-slate-700 border border-stone-200">
+                          {item.highlight}
+                        </span>
+                      </div>
+                      <h4 className="font-serif font-bold text-lg text-slate-900">
+                        {item.title}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        {item.desc}
                       </p>
                     </div>
-                    <span className="self-start sm:self-auto text-[11px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                      {csrGalleryImages.length} Field Photos
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
-                    {csrGalleryImages.map((img) => (
-                      <div
-                        key={img.id}
-                        onClick={() => setSelectedLightboxImage({ src: img.src, caption: img.caption })}
-                        className="group relative bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400 transition-all duration-300 flex flex-col cursor-pointer"
-                      >
-                        <div className="relative aspect-[4/3] bg-stone-100 overflow-hidden flex items-center justify-center">
-                          <Image
-                            src={img.src}
-                            alt={img.alt}
-                            width={640}
-                            height={480}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          {img.tag && (
-                            <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-xs">
-                              {img.tag}
-                            </div>
-                          )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                            <span className="text-[11px] font-bold text-white bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-md">
-                              Click to Expand Full Photo
-                            </span>
-                          </div>
-                        </div>
-                        <div className="p-3.5 bg-stone-50/70 border-t border-stone-100 flex items-center justify-between">
-                          <p className="text-xs font-bold text-slate-800 line-clamp-1">
-                            {img.caption}
-                          </p>
-                          <span className="text-[10px] font-black text-amber-700 uppercase">#{img.id}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            {/* CSR Intro Hero */}
-            <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden border border-slate-800 shadow-xl">
-              <div className="relative z-10 max-w-2xl space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
-                  <Award className="w-3.5 h-3.5" />
-                  <span>Section 135 Compliant CSR Programs</span>
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-                  Empowering Regional Literacy &amp; Rural Classrooms
-                </h2>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  Corporates operating in Karnataka can channel their Corporate Social Responsibility (CSR) funds to provide bilingual Kannada guidebooks, digital reading devices, and teacher support kits to underserved rural and government schools.
-                </p>
-                <div className="pt-2 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
-                  <a
-                    href="https://wa.me/919606636804?text=Hello%20Belesu%20CSR%20Desk%2C%20our%20organization%20would%20like%20to%20explore%20CSR%20partnerships%20for%20Karnataka%20schools."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-3 bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md"
-                  >
-                    Partner With Our CSR Desk
-                  </a>
-                  <a
-                    href="mailto:kannada@belesu.in?subject=CSR%20Partnership%20Proposal%20-%20CKelp%20Technologies"
-                    className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition border border-slate-700"
-                  >
-                    Request CSR Proposal Deck
-                  </a>
-                </div>
-              </div>
-
-              {/* Decorative Background Glow */}
-              <div className="absolute -bottom-16 -right-16 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-            </div>
-
-            {/* 4 CSR Impact Focus Areas */}
-            <div className="space-y-6">
-              <div className="text-center max-w-2xl mx-auto space-y-2">
-                <span className="text-xs font-bold text-amber-800 uppercase tracking-widest">
-                  Key Intervention Areas
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900">
-                  Where Your CSR Sponsorship Creates Lasting Change
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {csrFocusAreas.map((item, idx) => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={idx}
-                      className="p-7 bg-white rounded-2xl border border-stone-200 shadow-xs hover:border-amber-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
-                    >
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-800">
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-md bg-stone-100 text-slate-700 border border-stone-200">
-                            {item.highlight}
-                          </span>
-                        </div>
-                        <h4 className="font-serif font-bold text-lg text-slate-900">
-                          {item.title}
-                        </h4>
-                        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                          {item.desc}
-                        </p>
-                      </div>
-                      <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-amber-800">
-                        <span>{item.stats}</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </div>
+                    <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-amber-800">
+                      <span>{item.stats}</span>
+                      <ChevronRight className="w-4 h-4" />
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Why Partner With Us: VTU-VRIF Backing & Institutional Credibility */}
+          <div className="bg-stone-50 rounded-3xl p-8 sm:p-10 border border-stone-200 space-y-8">
+            <div className="max-w-2xl space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
+                Institutional Integrity &amp; Governance
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900">
+                Backed by University Research &amp; Incubation
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Belesu is developed under <strong>CKelp Technologies Private Limited</strong>, an enterprise incubated at the Visvesvaraya Technological University (VTU) Research and Innovation Foundation (VRIF).
+              </p>
             </div>
 
-            {/* Why Partner With Us: VTU-VRIF Backing & Institutional Credibility */}
-            <div className="bg-stone-50 rounded-3xl p-8 sm:p-10 border border-stone-200 space-y-8">
-              <div className="max-w-2xl space-y-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-bold uppercase tracking-wider">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
-                  Institutional Integrity &amp; Governance
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900">
-                  Backed by University Research &amp; Incubation
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Belesu is developed under <strong>CKelp Technologies Private Limited</strong>, an enterprise incubated at the Visvesvaraya Technological University (VTU) Research and Innovation Foundation (VRIF).
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-2">
+                <div className="text-xs font-black uppercase tracking-wider text-amber-800">1. Audited Governance</div>
+                <h5 className="font-serif font-bold text-slate-900 text-base">Section 135 Compliance</h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Formal utilization certificates, verifiable recipient lists, and full financial transparency for your company’s audit and CSR disclosures.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-2">
-                  <div className="text-xs font-black uppercase tracking-wider text-amber-800">1. Audited Governance</div>
-                  <h5 className="font-serif font-bold text-slate-900 text-base">Section 135 Compliance</h5>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Formal utilization certificates, verifiable recipient lists, and full financial transparency for your company’s audit and CSR disclosures.
-                  </p>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-2">
-                  <div className="text-xs font-black uppercase tracking-wider text-amber-800">2. VTU Campus Incubation</div>
-                  <h5 className="font-serif font-bold text-slate-900 text-base">Academic Rigor &amp; Testing</h5>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Operated out of VRIF at Visvesvaraya Technological University Belgaum, ensuring all learning frameworks adhere to pedagogical benchmarks.
-                  </p>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-2">
-                  <div className="text-xs font-black uppercase tracking-wider text-amber-800">3. Direct Ground Impact</div>
-                  <h5 className="font-serif font-bold text-slate-900 text-base">Zero Middleman Overhead</h5>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Direct delivery of printed guidebooks, student practice materials, and teacher orientation directly into school classrooms.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* CSR Sponsorship Tiers */}
-            <div className="space-y-6">
-              <div className="text-center">
-                <h3 className="text-2xl font-serif font-bold text-slate-900">
-                  CSR Sponsorship Engagement Models
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                  Flexible participation structures designed for small, medium, and large corporate enterprises.
+              <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-2">
+                <div className="text-xs font-black uppercase tracking-wider text-amber-800">2. VTU Campus Incubation</div>
+                <h5 className="font-serif font-bold text-slate-900 text-base">Academic Rigor &amp; Testing</h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Operated out of VRIF at Visvesvaraya Technological University Belgaum, ensuring all learning frameworks adhere to pedagogical benchmarks.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-7 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <span className="text-[11px] font-black uppercase px-2.5 py-1 rounded bg-amber-50 text-amber-900 border border-amber-200">
-                      Tier 1: Classroom Kit
-                    </span>
-                    <h4 className="text-xl font-serif font-bold text-slate-900">
-                      Classroom Sponsor
-                    </h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Sponsor 25 to 50 primary students with full bilingual Kannada textbooks, phonetic charts, and writing workbooks.
-                    </p>
-                    <ul className="text-xs text-slate-700 space-y-1.5 pt-2">
-                      <li className="flex items-center gap-2">✓ Student textbook kits</li>
-                      <li className="flex items-center gap-2">✓ Quarterly progress check</li>
-                      <li className="flex items-center gap-2">✓ Co-branded donor labels</li>
-                    </ul>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-stone-100">
-                    <a
-                      href="https://wa.me/919606636804?text=Hello%20Belesu%2C%20we%20are%20interested%20in%20Tier%201%20Classroom%20Kit%20Sponsorship."
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-center py-2.5 px-4 bg-stone-100 hover:bg-amber-100 text-amber-950 font-bold text-xs uppercase tracking-wider rounded-xl transition"
-                    >
-                      Inquire for Tier 1
-                    </a>
-                  </div>
-                </div>
-
-                <div className="bg-amber-900 text-white p-7 rounded-2xl border border-amber-800 shadow-lg flex flex-col justify-between relative">
-                  <div className="absolute top-4 right-4 bg-amber-400 text-slate-950 text-[10px] font-black uppercase px-2 py-0.5 rounded">
-                    Popular
-                  </div>
-                  <div className="space-y-3">
-                    <span className="text-[11px] font-black uppercase px-2.5 py-1 rounded bg-amber-800 text-amber-200">
-                      Tier 2: School Adoption
-                    </span>
-                    <h4 className="text-xl font-serif font-bold text-white">
-                      Full School Program
-                    </h4>
-                    <p className="text-xs text-amber-100/80 leading-relaxed">
-                      Adopt an entire rural school’s primary section (Classes 1–5). Includes complete books, teacher kits, and digital reader licenses.
-                    </p>
-                    <ul className="text-xs text-amber-100 space-y-1.5 pt-2">
-                      <li className="flex items-center gap-2">✓ Entire school primary wing</li>
-                      <li className="flex items-center gap-2">✓ Educator workshops included</li>
-                      <li className="flex items-center gap-2">✓ CSR Audit &amp; Impact Report</li>
-                    </ul>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-amber-800/80">
-                    <a
-                      href="https://wa.me/919606636804?text=Hello%20Belesu%2C%20we%20are%20interested%20in%20Tier%202%20Full%20School%20Adoption%20Program."
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-center py-2.5 px-4 bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md"
-                    >
-                      Inquire for School Adoption
-                    </a>
-                  </div>
-                </div>
-
-                <div className="bg-white p-7 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <span className="text-[11px] font-black uppercase px-2.5 py-1 rounded bg-amber-50 text-amber-900 border border-amber-200">
-                      Tier 3: District / Taluk
-                    </span>
-                    <h4 className="text-xl font-serif font-bold text-slate-900">
-                      Regional Literacy Drive
-                    </h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Comprehensive corporate-backed educational drive across multiple taluks in Karnataka for large foundations and PSUs.
-                    </p>
-                    <ul className="text-xs text-slate-700 space-y-1.5 pt-2">
-                      <li className="flex items-center gap-2">✓ Multi-school district rollout</li>
-                      <li className="flex items-center gap-2">✓ Custom co-branded materials</li>
-                      <li className="flex items-center gap-2">✓ Complete executive audit deck</li>
-                    </ul>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-stone-100">
-                    <a
-                      href="mailto:kannada@belesu.in?subject=Tier%203%20Regional%20Literacy%20CSR%20Partnership"
-                      className="block text-center py-2.5 px-4 bg-stone-100 hover:bg-amber-100 text-amber-950 font-bold text-xs uppercase tracking-wider rounded-xl transition"
-                    >
-                      Connect with CSR Desk
-                    </a>
-                  </div>
-                </div>
+              <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-2">
+                <div className="text-xs font-black uppercase tracking-wider text-amber-800">3. Direct Ground Impact</div>
+                <h5 className="font-serif font-bold text-slate-900 text-base">Zero Middleman Overhead</h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Direct delivery of printed guidebooks, student practice materials, and teacher orientation directly into school classrooms.
+                </p>
               </div>
             </div>
+          </div>
 
-            {/* Direct CSR Contact Box */}
-            <div className="p-8 bg-stone-100 rounded-3xl border border-stone-300">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* CSR Sponsorship Tiers */}
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-serif font-bold text-slate-900">
+                CSR Sponsorship Engagement Models
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                Flexible participation structures designed for small, medium, and large corporate enterprises.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-7 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-amber-800" />
-                    <h4 className="font-serif font-bold text-slate-900 text-xl">
-                      CKELP TECHNOLOGIES PRIVATE LIMITED
-                    </h4>
-                  </div>
+                  <span className="text-[11px] font-black uppercase px-2.5 py-1 rounded bg-amber-50 text-amber-900 border border-amber-200">
+                    Tier 1: Classroom Kit
+                  </span>
+                  <h4 className="text-xl font-serif font-bold text-slate-900">
+                    Classroom Sponsor
+                  </h4>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    <strong>Registered Office:</strong> Deshpande Startups, Gokul Road, Next to Hubballi International Airport, Hubballi - 580027
+                    Sponsor 25 to 50 primary students with full bilingual Kannada textbooks, phonetic charts, and writing workbooks.
                   </p>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
-                  </p>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    <strong>Operations Office:</strong> VRIF, Visvesvaraya Technological University (VTU) Campus, Belgaum - 590018
-                  </p>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    <strong>Direct Hotline:</strong> +91 96066 36804 &nbsp;|&nbsp; <strong>Email:</strong> kannada@belesu.in
-                  </p>
+                  <ul className="text-xs text-slate-700 space-y-1.5 pt-2">
+                    <li className="flex items-center gap-2">✓ Student textbook kits</li>
+                    <li className="flex items-center gap-2">✓ Quarterly progress check</li>
+                    <li className="flex items-center gap-2">✓ Co-branded donor labels</li>
+                  </ul>
                 </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 md:justify-end">
+                <div className="mt-6 pt-4 border-t border-stone-100">
                   <a
-                    href="https://wa.me/919606636804?text=Hello%20Belesu%20CSR%20Desk%2C%20our%20CSR%20committee%20would%20like%20to%20discuss%20a%20partnership%20proposal."
+                    href="https://wa.me/919606636804?text=Hello%20Belesu%2C%20we%20are%20interested%20in%20Tier%201%20Classroom%20Kit%20Sponsorship."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md"
+                    className="block text-center py-2.5 px-4 bg-stone-100 hover:bg-amber-100 text-amber-950 font-bold text-xs uppercase tracking-wider rounded-xl transition"
                   >
-                    <Phone className="w-4 h-4" />
-                    WhatsApp CSR Desk
+                    Inquire for Tier 1
                   </a>
+                </div>
+              </div>
+
+              <div className="bg-amber-900 text-white p-7 rounded-2xl border border-amber-800 shadow-lg flex flex-col justify-between relative">
+                <div className="absolute top-4 right-4 bg-amber-400 text-slate-950 text-[10px] font-black uppercase px-2 py-0.5 rounded">
+                  Popular
+                </div>
+                <div className="space-y-3">
+                  <span className="text-[11px] font-black uppercase px-2.5 py-1 rounded bg-amber-800 text-amber-200">
+                    Tier 2: School Adoption
+                  </span>
+                  <h4 className="text-xl font-serif font-bold text-white">
+                    Full School Program
+                  </h4>
+                  <p className="text-xs text-amber-100/80 leading-relaxed">
+                    Adopt an entire rural school’s primary section (Classes 1–5). Includes complete books, teacher kits, and digital reader licenses.
+                  </p>
+                  <ul className="text-xs text-amber-100 space-y-1.5 pt-2">
+                    <li className="flex items-center gap-2">✓ Entire school primary wing</li>
+                    <li className="flex items-center gap-2">✓ Educator workshops included</li>
+                    <li className="flex items-center gap-2">✓ CSR Audit &amp; Impact Report</li>
+                  </ul>
+                </div>
+                <div className="mt-6 pt-4 border-t border-amber-800/80">
                   <a
-                    href="mailto:kannada@belesu.in?subject=CSR%20Partnership%20Discussion"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-stone-300 hover:border-amber-400 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-xs"
+                    href="https://wa.me/919606636804?text=Hello%20Belesu%2C%20we%20are%20interested%20in%20Tier%202%20Full%20School%20Adoption%20Program."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center py-2.5 px-4 bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md"
                   >
-                    <Mail className="w-4 h-4" />
-                    Email Proposal
+                    Inquire for School Adoption
+                  </a>
+                </div>
+              </div>
+
+              <div className="bg-white p-7 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between">
+                <div className="space-y-3">
+                  <span className="text-[11px] font-black uppercase px-2.5 py-1 rounded bg-amber-50 text-amber-900 border border-amber-200">
+                    Tier 3: District / Taluk
+                  </span>
+                  <h4 className="text-xl font-serif font-bold text-slate-900">
+                    Regional Literacy Drive
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Comprehensive corporate-backed educational drive across multiple taluks in Karnataka for large foundations and PSUs.
+                  </p>
+                  <ul className="text-xs text-slate-700 space-y-1.5 pt-2">
+                    <li className="flex items-center gap-2">✓ Multi-school district rollout</li>
+                    <li className="flex items-center gap-2">✓ Custom co-branded materials</li>
+                    <li className="flex items-center gap-2">✓ Complete executive audit deck</li>
+                  </ul>
+                </div>
+                <div className="mt-6 pt-4 border-t border-stone-100">
+                  <a
+                    href="mailto:kannada@belesu.in?subject=Tier%203%20Regional%20Literacy%20CSR%20Partnership"
+                    className="block text-center py-2.5 px-4 bg-stone-100 hover:bg-amber-100 text-amber-950 font-bold text-xs uppercase tracking-wider rounded-xl transition"
+                  >
+                    Connect with CSR Desk
                   </a>
                 </div>
               </div>
             </div>
-
           </div>
-        </section>
-      )}
 
-      {/* ── 3. Corporate Footer Card (Preserved) ── */}
+          {/* Direct CSR Contact Box */}
+          <div className="p-8 bg-stone-100 rounded-3xl border border-stone-300">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-amber-800" />
+                  <h4 className="font-serif font-bold text-slate-900 text-xl">
+                    CKELP TECHNOLOGIES PRIVATE LIMITED
+                  </h4>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  <strong>Registered Office:</strong> Deshpande Startups, Gokul Road, Next to Hubballi International Airport, Hubballi - 580027
+                </p>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
+                </p>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  <strong>Operations Office:</strong> VRIF, Visvesvaraya Technological University (VTU) Campus, Belgaum - 590018
+                </p>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  <strong>Direct Hotline:</strong> +91 96066 36804 &nbsp;|&nbsp; <strong>Email:</strong> kannada@belesu.in
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 md:justify-end">
+                <a
+                  href="https://wa.me/919606636804?text=Hello%20Belesu%20CSR%20Desk%2C%20our%20CSR%20committee%20would%20like%20to%20discuss%20a%20partnership%20proposal."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md"
+                >
+                  <Phone className="w-4 h-4" />
+                  WhatsApp CSR Desk
+                </a>
+                <a
+                  href="mailto:kannada@belesu.in?subject=CSR%20Partnership%20Discussion"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-stone-300 hover:border-amber-400 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-xs"
+                >
+                  <Mail className="w-4 h-4" />
+                  Email Proposal
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── 4. Corporate Footer Card (Preserved) ── */}
       <section className="py-12 bg-slate-900 text-white border-t border-slate-800">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
