@@ -375,24 +375,15 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
               </div>
             </div>
 
-            {/* 5. Dual Action Buttons (Desktop Left Column) */}
-            <div className="hidden lg:flex items-center gap-3 pt-2">
-              <Link
-                href="#series-deck"
-                onClick={scrollToSeriesDeck}
-                className="animate-cta-glow inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-              >
-                <ShoppingBag className="w-4 h-4 text-white" />
-                <span>Buy Guidebooks Now</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
+            {/* 5. Primary Action Button (Desktop Left Column) */}
+            <div className="hidden lg:flex items-center pt-2">
               <Link
                 href="/books/"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border border-slate-300 shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                className="animate-cta-glow inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group"
               >
-                <BookOpen className="w-4 h-4 text-slate-700" />
-                <span>Explore All Books</span>
+                <ShoppingBag className="w-4 h-4 text-white" />
+                <span>Explore and Buy Guidebooks</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
 
@@ -553,24 +544,15 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onPreview }) => {
             1. CTAs ➔ 2. Subtitle Paragraph ➔ 3. 4 Feature Cards
            ======================================================== */}
         <div className="lg:hidden flex flex-col items-center w-full max-w-xl mx-auto mt-4 space-y-4 px-2">
-          {/* 1. Mobile Action Buttons */}
-          <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-2.5 w-full max-w-sm mx-auto">
-            <Link
-              href="#series-deck"
-              onClick={scrollToSeriesDeck}
-              className="animate-cta-glow inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-sm shadow-lg shadow-orange-500/25 active:scale-95 transition-all text-center cursor-pointer"
-            >
-              <ShoppingBag className="w-4 h-4 text-white" />
-              <span>Buy Guidebooks Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-
+          {/* 1. Mobile Action Button */}
+          <div className="flex items-center justify-center w-full max-w-sm mx-auto">
             <Link
               href="/books/"
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-xs active:scale-95 transition-all text-center cursor-pointer"
+              className="animate-cta-glow inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-sm shadow-lg shadow-orange-500/25 active:scale-95 transition-all text-center cursor-pointer group"
             >
-              <BookOpen className="w-4 h-4 text-slate-700" />
-              <span>Explore All Books</span>
+              <ShoppingBag className="w-4 h-4 text-white" />
+              <span>Explore and Buy Guidebooks</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
 
