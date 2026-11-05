@@ -227,17 +227,19 @@ export default function LibraryPage() {
                           <span className="truncate">{lastPage > 1 ? `Continue Reading →` : 'Start Reading →'}</span>
                         </Link>
 
-                        {/* PRINT BUTTON — enabled by client approval */}
-                        <button
-                          type="button"
-                          onClick={() => setPrintingBook(book)}
-                          className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs sm:text-sm shadow-xs transition cursor-pointer"
-                          title={`Print ${book.title}`}
-                          aria-label={`Print ${book.title}`}
-                        >
-                          <Printer className="w-4 h-4 shrink-0" />
-                          <span>Print Book</span>
-                        </button>
+                        {/* PRINT BUTTON — enabled only for books that support printing (not Savi Class 3 or 4) */}
+                        {!['dbook-3-savi-01', 'dbook-4-savi-01'].includes(book.id) && (
+                          <button
+                            type="button"
+                            onClick={() => setPrintingBook(book)}
+                            className="w-full min-h-[44px] inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs sm:text-sm shadow-xs transition cursor-pointer"
+                            title={`Print ${book.title}`}
+                            aria-label={`Print ${book.title}`}
+                          >
+                            <Printer className="w-4 h-4 shrink-0" />
+                            <span>Print Book</span>
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
