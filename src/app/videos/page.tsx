@@ -783,6 +783,9 @@ export default function VideosMediaPage() {
                     </h4>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
+                    <strong>Registered Office:</strong> Deshpande Startups, Gokul Road, Next to Hubballi International Airport, Hubballi - 580027
+                  </p>
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
                   </p>
                   <p className="text-xs text-slate-600 leading-relaxed">
@@ -830,6 +833,9 @@ export default function VideosMediaPage() {
                   CKELP TECHNOLOGIES PRIVATE LIMITED
                 </h4>
               </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                <strong>Registered Office:</strong> Deshpande Startups, Gokul Road, Next to Hubballi International Airport, Hubballi - 580027
+              </p>
               <p className="text-xs text-slate-300 leading-relaxed">
                 <strong>Bangalore Office:</strong> #152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125
               </p>

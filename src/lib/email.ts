@@ -530,7 +530,7 @@ export async function sendContactInquiryEmail(
       </div>
     </div>
     <div class="footer">
-      Belesu Academic Publishing • Sarjapur, Bengaluru • VTU Campus, Belagavi
+      Belesu Academic Publishing • Deshpande Startups, Hubballi • Sarjapur, Bengaluru • VTU Campus, Belagavi
     </div>
   </div>
 </body>

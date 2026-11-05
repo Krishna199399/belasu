@@ -101,7 +101,17 @@ export default function ContactPage() {
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div>
-                    <strong className="block font-bold text-slate-900">Office Address:</strong>
+                    <strong className="block font-bold text-slate-900">Registered Office:</strong>
+                    <span>Deshpande Startups, Gokul Road, Next to Hubballi International Airport, Hubballi - 580027</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <strong className="block font-bold text-slate-900">Bangalore Office:</strong>
                     <span>#152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125</span>
                   </div>
                 </div>

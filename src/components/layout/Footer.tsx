@@ -322,7 +322,11 @@ export const Footer: React.FC = () => {
               {openSection === 'offices' && (
                 <div className="pl-6 pr-1 pb-4 pt-1 space-y-2 text-xs text-slate-600 animate-in fade-in duration-150">
                   <div className="space-y-0.5">
-                    <strong className="text-slate-800 block">Bangalore Registered Office:</strong>
+                    <strong className="text-slate-800 block">Registered Office:</strong>
+                    <p className="text-[11px] leading-relaxed">Deshpande Startups, Gokul Road, Next to Hubballi International Airport, Hubballi - 580027</p>
+                  </div>
+                  <div className="space-y-0.5 pt-1.5 border-t border-stone-200/50">
+                    <strong className="text-slate-800 block">Bangalore Office:</strong>
                     <p className="text-[11px] leading-relaxed">#152, Sarjapur - Bagalur Road, Sarjapur, Bangalore - 562125</p>
                   </div>
                   <div className="space-y-0.5 pt-1.5 border-t border-stone-200/50">
@@ -708,6 +712,12 @@ export const Footer: React.FC = () => {
               <div className="space-y-1.5 pt-1 border-t border-stone-200/60 text-[11px] text-slate-500">
                 <div className="text-[11px] font-bold text-slate-800 tracking-tight pb-0.5">
                   Belesu Offices: CKelp Technologies Pvt Ltd
+                </div>
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong className="text-slate-700">Registered Office:</strong> Deshpande Startups, Gokul Road, Next to Hubballi International Airport, Hubballi - 580027
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
