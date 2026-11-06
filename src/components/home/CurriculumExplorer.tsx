@@ -49,7 +49,7 @@ const DECK_SERIES: SeriesDeckConfig[] = [
     title: 'Savi Kannada | Classes 1–4',
     badge: 'CLASSES 1–4',
     grades: [1, 2, 3, 4],
-    defaultGrade: 4,
+    defaultGrade: 1,
     description: 'English-translated Kannada guidebooks for primary school students.',
     ctaText: 'Buy Book',
     theme: {
@@ -136,7 +136,7 @@ export const CurriculumExplorer: React.FC<CurriculumExplorerProps> = ({ onPrevie
 
   // Selected grade per series (for Savi & Kali multi-grade selector)
   const [selectedGrades, setSelectedGrades] = useState<Record<string, number>>({
-    Savi: 4,
+    Savi: 1,
     Kali: 1,
     Siri: 5,
     Tili: 5,
