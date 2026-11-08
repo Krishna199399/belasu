@@ -57,9 +57,9 @@ export const metadata: Metadata = {
     siteName: 'Belesu',
     images: [
       {
-        url: 'https://belesu.in/wp-content/uploads/2024/04/Belesu-logo1.png',
-        width: 800,
-        height: 600,
+        url: 'https://belesu.in/Belesu-logo1.png',
+        width: 788,
+        height: 296,
         alt: 'Belesu Logo'
       }
     ],
@@ -77,6 +77,7 @@ export const metadata: Metadata = {
       { url: '/favicon.ico' },
       { url: '/icon.png', sizes: '32x32', type: 'image/png' },
       { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
     shortcut: '/favicon.ico',
     apple: [
