@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { fulfillOrder } from '@/lib/orderFulfillment';
+import { fulfillDigitalOrder } from '@/lib/digitalFulfillment';
 import { createAdminClient } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
@@ -56,7 +57,40 @@ export async function POST(request: NextRequest) {
       const customerEmail = paymentEntity?.email || notes.customer_email || '';
       const customerName = notes.customer_name || '';
 
-      if (userId) {
+      // ── Digital Book Purchase Detection ──────────────────────────────────────
+      // Digital purchases store bookId in notes (not items_summary).
+      // This is the server-side safety net: if the client-side POST to
+      // /api/digital/purchase failed (network drop, browser close, etc.),
+      // this webhook fires and fulfills the digital order idempotently.
+      const bookId = notes.bookId || notes.book_id || null;
+      const isDigitalPurchase = !!bookId;
+
+      if (!userId) {
+        console.warn('[Razorpay Webhook] No user_id present in payment notes:', paymentId);
+      } else if (isDigitalPurchase) {
+        // Digital book webhook fulfillment path
+        try {
+          const result = await fulfillDigitalOrder({
+            userId,
+            bookId,
+            paymentId,
+            razorpayOrderId,
+            paymentMethod: `Razorpay - ${paymentEntity?.method?.toUpperCase() || 'UPI'}`,
+            customerEmail,
+            customerPhone,
+            customerName,
+            amountPaid: (paymentEntity?.amount || 0) / 100,
+          });
+
+          console.log(`[Razorpay Webhook] Digital fulfillment result for ${paymentId}:`, {
+            orderNumber: result.orderNumber,
+            alreadyProcessed: result.alreadyProcessed,
+          });
+        } catch (digitalErr) {
+          console.error('[Razorpay Webhook] Digital order fulfillment failed:', digitalErr);
+        }
+      } else {
+        // Physical / mixed book webhook fulfillment path
         try {
           const result = await fulfillOrder({
             userId,
@@ -78,8 +112,6 @@ export async function POST(request: NextRequest) {
         } catch (fulfillErr) {
           console.error('[Razorpay Webhook] Failed to fulfill order automatically:', fulfillErr);
         }
-      } else {
-        console.warn('[Razorpay Webhook] No user_id present in payment notes:', paymentId);
       }
     }
 
