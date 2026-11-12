@@ -275,3 +275,4 @@ console.log(`✅ public/favicon.ico  (${Math.round(icoBuf.length/1024)}KB)`);
 console.log(`✅ src/app/favicon.ico  (${Math.round(icoBuf.length/1024)}KB)`);
 
 console.log('\n🎉 All icon files generated from full Belesu logo!');
+
