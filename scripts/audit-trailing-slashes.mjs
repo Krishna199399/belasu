@@ -26,3 +26,4 @@ function scanDir(dir) {
 
 console.log('--- Scanning src for missing trailing slash on book links ---');
 scanDir('d:\\belasu\\src');
+

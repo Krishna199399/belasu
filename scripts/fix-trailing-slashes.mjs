@@ -79,3 +79,4 @@ if (fs.existsSync(navPath)) {
 }
 
 console.log('Finished updating trailing slashes across all files.');
+
