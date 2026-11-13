@@ -71,6 +71,56 @@ const nextConfig: NextConfig = {
       },
 
       // ─── 2. Legacy Shop & Category Listings ───────────────────────────────
+      // 2a. Legacy WooCommerce Specific Book Products
+      {
+        source: '/shop/books/:slug',
+        destination: '/books/:slug/',
+        permanent: true,
+      },
+      {
+        source: '/shop/kali/:slug',
+        destination: '/books/:slug/',
+        permanent: true,
+      },
+      {
+        source: '/shop/savi/:slug',
+        destination: '/books/:slug/',
+        permanent: true,
+      },
+      {
+        source: '/shop/:category/:slug',
+        destination: '/books/:slug/',
+        permanent: true,
+      },
+
+      // 2b. Legacy WooCommerce Product Categories
+      {
+        source: '/product-category/siri',
+        destination: '/books/siri-kannada-english-translated-guidebook-class-5/',
+        permanent: true,
+      },
+      {
+        source: '/product-category/tili',
+        destination: '/books/tili-kannada-english-translated-innovative-guidebook-class-5/',
+        permanent: true,
+      },
+      {
+        source: '/product-category/savi',
+        destination: '/books/?series=Savi',
+        permanent: true,
+      },
+      {
+        source: '/product-category/kali',
+        destination: '/books/?series=Kali',
+        permanent: true,
+      },
+      {
+        source: '/product-category/:path*',
+        destination: '/books/',
+        permanent: true,
+      },
+
+      // 2c. Legacy Generic Fallbacks (/shop, /products)
       {
         source: '/shop',
         destination: '/books/',
@@ -88,11 +138,6 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/products/:path*',
-        destination: '/books/',
-        permanent: true,
-      },
-      {
-        source: '/product-category/:path*',
         destination: '/books/',
         permanent: true,
       },
