@@ -19,6 +19,7 @@ import {
   Boxes,
   Star,
   Send,
+  ShoppingCart,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AuthPayload } from '@/lib/auth';
@@ -35,6 +36,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ authUser }) => {
   const navItems = [
     { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { label: 'Orders', href: '/admin/orders', icon: ShoppingBag },
+    { label: 'Abandoned Carts', href: '/admin/abandoned-carts', icon: ShoppingCart },
     { label: 'Inventory (Stock)', href: '/admin/inventory', icon: Boxes },
     { label: 'Hard Copy Books', href: '/admin/products', icon: BookOpen },
     { label: 'Digital Reader', href: '/admin/digital', icon: Laptop },

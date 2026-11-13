@@ -1,14 +1,35 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { formatPrice, SHIPPING_FEE } from '@/lib/utils';
 import Link from 'next/link';
 import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
+import toast from 'react-hot-toast';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping } = useCart();
+  const { cart, removeFromCart, updateQuantity, subtotal, totalItems, needsShipping, syncCart } = useCart();
+  const [savePhone, setSavePhone] = useState('');
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleQuickSaveCart = async () => {
+    if (!/^\d{10}$/.test(savePhone)) {
+      toast.error('Please enter a valid 10-digit mobile number');
+      return;
+    }
+    setIsSaving(true);
+    try {
+      await syncCart(savePhone, 'Shopper');
+      setIsSaved(true);
+      toast.success('Cart saved! We reserved your books.');
+    } catch {
+      toast.error('Failed to save cart');
+    } finally {
+      setIsSaving(false);
+    }
+  };
   const shippingFee = needsShipping() ? SHIPPING_FEE : 0;
   const grandTotal = subtotal + shippingFee;
 
@@ -150,6 +171,43 @@ export default function CartPage() {
                   >
                     Proceed to Checkout <ArrowRight className="w-4 h-4" />
                   </Link>
+                </div>
+
+                {/* Quick Save Cart / Reserve via WhatsApp */}
+                <div className="pt-1">
+                  {!isSaved ? (
+                    <div className="p-3 bg-amber-50/60 border border-amber-200/80 rounded-xl space-y-2">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-900">
+                        <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Reserve Copies via WhatsApp</span>
+                      </div>
+                      <p className="text-[10px] text-amber-800 leading-tight">
+                        Busy right now? Save your cart to complete your order later.
+                      </p>
+                      <div className="flex gap-1.5">
+                        <input
+                          type="tel"
+                          maxLength={10}
+                          placeholder="10-digit Mobile"
+                          value={savePhone}
+                          onChange={(e) => setSavePhone(e.target.value.replace(/\D/g, ''))}
+                          className="flex-1 bg-white border border-amber-200 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                        />
+                        <button
+                          onClick={handleQuickSaveCart}
+                          disabled={isSaving}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition active:scale-95 cursor-pointer disabled:opacity-50"
+                        >
+                          {isSaving ? '...' : 'Save'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Your cart is reserved! We'll keep your copies safe.</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -15,7 +15,7 @@ import toast from 'react-hot-toast';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, subtotal, clearCart, hasPhysicalBooks, hasDigitalBooks, getPhysicalItems, getDigitalItems, needsShipping } = useCart();
+  const { cart, subtotal, clearCart, hasPhysicalBooks, hasDigitalBooks, getPhysicalItems, getDigitalItems, needsShipping, syncCart } = useCart();
   const { user, isLoading: authLoading, refreshUser } = useAuth();
   
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
@@ -38,6 +38,13 @@ export default function CheckoutPage() {
       refreshUser();
     }
   }, [user, refreshUser]);
+
+  // Sync abandoned cart in real-time with customer contact info
+  useEffect(() => {
+    if (user?.phone && cart.length > 0) {
+      syncCart(user.phone, user.name, user.email);
+    }
+  }, [user, cart, syncCart]);
 
   // Digital access contact fields
   const [digitalEmail, setDigitalEmail] = useState(() => user?.email || '');

@@ -519,6 +519,35 @@ async function executeFulfillment(params: FulfillOrderParams) {
     }).catch((err) => console.error('[fulfillOrder] Customer email error:', err));
   }
 
+  // ── Auto-recover any abandoned carts for this customer ──────────────────────
+  try {
+    const rawCustomerPhone = targetPhone || user.phone;
+    if (rawCustomerPhone) {
+      const cleanDigits = rawCustomerPhone.replace(/\D/g, '');
+      const last10 = cleanDigits.slice(-10);
+      const phoneVariants = [
+        rawCustomerPhone,
+        cleanDigits,
+        `+91${last10}`,
+        `91${last10}`,
+        last10,
+      ].filter(Boolean);
+
+      await supabase
+        .from('abandoned_carts')
+        .update({
+          status: 'recovered',
+          recovered_order_id: order.id,
+          updated_at: new Date().toISOString(),
+        })
+        .in('customer_phone', phoneVariants)
+        .in('status', ['active', 'abandoned']);
+    }
+  } catch (cartRecoverErr: any) {
+    // Non-fatal: order fulfillment must never fail because of cart tracking
+    console.warn('[fulfillOrder] Auto-recover cart notice:', cartRecoverErr?.message);
+  }
+
   return {
     success: true,
     order,

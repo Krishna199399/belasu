@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 import {
   Phone,
   ShieldCheck,
@@ -23,6 +24,7 @@ type Step = 'phone' | 'otp';
 export default function LoginPage({ searchParams }: { searchParams: Promise<{ redirect?: string }> }) {
   const { redirect: redirectTo } = use(searchParams);
   const { sendOtp, retryOtp, verifyOtp, user } = useAuth();
+  const { cart, syncCart } = useCart();
   const router = useRouter();
 
   const [step, setStep] = useState<Step>('phone');
@@ -129,6 +131,11 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
           sessionStorage.setItem('belasu_auth_name', name.trim());
           sessionStorage.setItem('belasu_auth_step', 'otp');
         } catch {}
+
+        // Instantly save cart as abandoned lead if customer drops off at OTP screen
+        if (cart.length > 0) {
+          syncCart(phone, name.trim());
+        }
 
         if (result.message?.includes('[DEV MODE]')) {
           setDevMessage(result.message);
