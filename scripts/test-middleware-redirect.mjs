@@ -12,3 +12,4 @@ console.log('1. Current (NextURL.clone()):', cloned.toString());
 const standardUrl = new URL('http://localhost:3000/cart');
 const target = new URL('/cart/' + standardUrl.search, standardUrl);
 console.log('2. Fixed (standard new URL):', target.toString());
+

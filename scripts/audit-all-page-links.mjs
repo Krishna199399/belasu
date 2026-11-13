@@ -40,3 +40,4 @@ console.log(`Found ${pages.length} internal links missing trailing slashes:`);
 for (const p of pages) {
   console.log(`- ${p.file}: ${p.link}`);
 }
+

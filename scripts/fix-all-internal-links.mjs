@@ -79,3 +79,4 @@ function walk(dir) {
 
 walk('./src');
 console.log(`\nFinished updating ${modifiedCount} files with canonical trailing slashes.`);
+
