@@ -18,6 +18,7 @@ import {
   X,
   Boxes,
   Star,
+  Send,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { AuthPayload } from '@/lib/auth';
@@ -37,8 +38,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ authUser }) => {
     { label: 'Inventory (Stock)', href: '/admin/inventory', icon: Boxes },
     { label: 'Hard Copy Books', href: '/admin/products', icon: BookOpen },
     { label: 'Digital Reader', href: '/admin/digital', icon: Laptop },
-    { label: 'Customers', href: '/admin/users', icon: Users },
-    { label: 'Parent Reviews', href: '/admin/reviews', icon: Star },
+    { label: 'Customers', href: '/admin/users/', icon: Users },
+    { label: 'Broadcast Audiences', href: '/admin/audience/', icon: Send },
+    { label: 'Parent Reviews', href: '/admin/reviews/', icon: Star },
     { label: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { label: 'Settings', href: '/admin/settings', icon: Settings },
   ];
