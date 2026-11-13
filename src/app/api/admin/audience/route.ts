@@ -42,21 +42,50 @@ export async function GET(request: NextRequest) {
 
     const supabase = createAdminClient();
 
-    // 1. Fetch all paid/completed orders with items
-    const { data: orders, error: ordersError } = await supabase
-      .from('orders')
-      .select('id, user_id, order_number, billing_first_name, billing_last_name, billing_phone, billing_email, payment_status, order_status, created_at, order_items(id, item_sku, item_name, product_id, quantity)')
-      .or('payment_status.eq.Paid,order_status.eq.Completed')
-      .order('created_at', { ascending: false });
+    // ── IMPORTANT: Supabase PostgREST has a default 1,000-row cap per query.
+    // We must paginate in chunks of 1,000 to retrieve ALL rows from large tables.
+    const PAGE = 1000;
 
-    if (ordersError) throw ordersError;
+    async function fetchAllRows<T>(
+      table: string,
+      selectColumns: string,
+      // Using `any` here because PostgREST builder types vary across filter/order methods
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      extraFilter?: (q: any) => any
+    ): Promise<T[]> {
+      const allRows: T[] = [];
+      let from = 0;
 
-    // 2. Fetch users for phone/name resolution & digital access books
-    const { data: users, error: usersError } = await supabase
-      .from('users')
-      .select('id, name, phone, email, purchased_books, created_at');
+      while (true) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let q: any = supabase.from(table).select(selectColumns).range(from, from + PAGE - 1);
+        if (extraFilter) q = extraFilter(q);
+        const { data, error } = await q;
+        if (error) throw error;
+        const chunk = (data || []) as T[];
+        allRows.push(...chunk);
+        if (chunk.length < PAGE) break; // Last page — done
+        from += PAGE;
+      }
 
-    if (usersError) throw usersError;
+      return allRows;
+    }
+
+    // 1. Fetch ALL orders (paginated) — no payment filter yet, so we get all users into the map
+    // then separately include only paid orders for purchase tracking
+    const [orders, users] = await Promise.all([
+      fetchAllRows<any>(
+        'orders',
+        'id, user_id, order_number, billing_first_name, billing_last_name, billing_phone, billing_email, payment_status, order_status, created_at, order_items(id, item_sku, item_name, product_id, quantity)',
+        // Only include paid/completed orders so purchase data is accurate
+        (q) => q.or('payment_status.eq.Paid,order_status.eq.Completed').order('created_at', { ascending: false })
+      ),
+      // 2. Fetch ALL users (paginated) — this is the master list of all 4,000+ accounts
+      fetchAllRows<any>(
+        'users',
+        'id, name, phone, email, purchased_books, created_at'
+      ),
+    ]);
 
     const userMap = new Map((users || []).map((u) => [u.id, u]));
 
@@ -256,6 +285,11 @@ export async function GET(request: NextRequest) {
       batchSize,
       totalBatches,
       batches,
+      _debug: {
+        totalOrdersLoaded: orders.length,
+        totalUsersLoaded: users.length,
+        totalUniquePhones: customerMap.size,
+      },
       contactsPreview: filteredCustomers.slice(0, 25).map((c) => ({
         phone: c.phone,
         name: c.name,
