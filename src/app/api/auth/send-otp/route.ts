@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+import { sendWhatsAppOtp } from '@/lib/wacrm';
 
 // In development: optional fallback dev OTP 123456
 const DEV_OTP = '123456';
@@ -14,6 +15,43 @@ export async function POST(request: NextRequest) {
     }
 
     const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+    const rawOtp = String(Math.floor(100000 + Math.random() * 900000));
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes
+    const supabase = createAdminClient();
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // 1. PRIMARY: Official Meta WhatsApp Authentication Template (belesu_authentication)
+    // ──────────────────────────────────────────────────────────────────────────
+    try {
+      const metaRes = await sendWhatsAppOtp(cleanPhone, rawOtp, name);
+      if (metaRes.success) {
+        console.log(`[send-otp] Dispatched via Meta WhatsApp Cloud API to 91${cleanPhone} (Message ID: ${metaRes.messageId})`);
+
+        await supabase.from('otps').upsert(
+          {
+            phone: cleanPhone,
+            otp_code: rawOtp,
+            expires_at: expiresAt,
+            name: name || null,
+          },
+          { onConflict: 'phone' }
+        );
+
+        return Response.json({
+          success: true,
+          provider: 'meta',
+          message: 'WhatsApp verification code sent',
+        });
+      }
+
+      console.warn(`[send-otp] Meta WhatsApp dispatch failed (${metaRes.error}), falling back to MSG91...`);
+    } catch (metaErr) {
+      console.warn('[send-otp] Meta WhatsApp exception, falling back to MSG91:', metaErr);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // 2. FALLBACK: MSG91 Multi-Channel Widget API
+    // ──────────────────────────────────────────────────────────────────────────
     const authKey = process.env.MSG91_AUTH_KEY || '586335A5gpZuvFpB6ae66a79P1';
     const widgetId = process.env.NEXT_PUBLIC_MSG91_WIDGET_ID || '366a45776b7a393936333337';
     const tokenAuth = process.env.NEXT_PUBLIC_MSG91_TOKEN_AUTH || '586335TnpNGKx14of6ae675f2P1';
@@ -22,17 +60,15 @@ export async function POST(request: NextRequest) {
     let msg91ReqId: string | null = null;
     let msg91Error: string | null = null;
 
-    // Forward real client IP so MSG91 tracks each user's IP, not the shared server IP
     const clientIp =
       request.headers.get('x-real-ip') ||
       request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       request.headers.get('cf-connecting-ip') ||
       '';
 
-    // Dispatch WhatsApp OTP directly via MSG91 Widget API (Default Channel 12: WHATSAPP)
     try {
       const sendHeaders: Record<string, string> = {
-        'authkey': authKey,
+        authkey: authKey,
         'Content-Type': 'application/json',
       };
       if (clientIp) sendHeaders['X-Forwarded-For'] = clientIp;
@@ -48,8 +84,6 @@ export async function POST(request: NextRequest) {
       });
 
       const msg91Data = await msg91Res.json();
-
-      // Detect IP block - MSG91 returns message="IPBlocked" even with type="success"
       const isIpBlocked =
         String(msg91Data.message).toLowerCase().includes('ipblocked') ||
         String(msg91Data.message).toLowerCase().includes('ip blocked') ||
@@ -58,48 +92,59 @@ export async function POST(request: NextRequest) {
       if (!isIpBlocked && (msg91Data.type === 'success' || msg91Res.ok)) {
         msg91Success = true;
         msg91ReqId = msg91Data.message || null;
-        console.log(`[MSG91] WhatsApp OTP dispatched to 91${cleanPhone}, reqId: ${msg91ReqId}, clientIp: ${clientIp || 'not forwarded'}`);
+        console.log(`[MSG91 Fallback] OTP dispatched to 91${cleanPhone}, reqId: ${msg91ReqId}`);
       } else {
         const isIpBlockedOnFailure = String(msg91Data.message).toLowerCase().includes('ipblocked');
         msg91Error = isIpBlockedOnFailure
           ? 'Too many OTP requests from this device. Please wait a few minutes and try again.'
-          : (msg91Data.message || 'MSG91 send failed');
-        console.warn('[MSG91 sendOtp API] Failed:', msg91Data);
+          : msg91Data.message || 'MSG91 send failed';
+        console.warn('[MSG91 Fallback sendOtp] Failed:', msg91Data);
       }
     } catch (fetchErr) {
-      console.error('[MSG91 sendOtp API] Network error:', fetchErr);
+      console.error('[MSG91 Fallback sendOtp] Network error:', fetchErr);
       msg91Error = fetchErr instanceof Error ? fetchErr.message : 'Network error';
     }
 
-    // Upsert record in Supabase (saving reqId for server-side verification)
-    const storedCode = msg91ReqId || (IS_DEV ? DEV_OTP : String(Math.floor(100000 + Math.random() * 900000)));
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes matching MSG91 WhatsApp OTP
+    if (msg91Success && msg91ReqId) {
+      await supabase.from('otps').upsert(
+        {
+          phone: cleanPhone,
+          otp_code: msg91ReqId,
+          expires_at: expiresAt,
+          name: name || null,
+        },
+        { onConflict: 'phone' }
+      );
 
-    const supabase = createAdminClient();
-    await supabase
-      .from('otps')
-      .upsert({ phone: cleanPhone, otp_code: storedCode, expires_at: expiresAt, name: name || null }, { onConflict: 'phone' });
-
-    if (msg91Success) {
       return Response.json({
         success: true,
         reqId: msg91ReqId,
-        message: 'WhatsApp OTP sent successfully via MSG91',
+        provider: 'msg91',
+        message: 'Verification code sent via SMS/WhatsApp fallback',
       });
     }
 
     if (IS_DEV) {
-      console.log(`[DEV MODE] OTP for ${cleanPhone}: ${storedCode}`);
+      console.log(`[DEV MODE] OTP for ${cleanPhone}: ${rawOtp}`);
+      await supabase.from('otps').upsert(
+        {
+          phone: cleanPhone,
+          otp_code: rawOtp,
+          expires_at: expiresAt,
+          name: name || null,
+        },
+        { onConflict: 'phone' }
+      );
       return Response.json({
         success: true,
-        message: `[DEV MODE] OTP: ${storedCode}`,
+        message: `[DEV MODE] OTP: ${rawOtp}`,
       });
     }
 
     return Response.json(
       {
         success: false,
-        error: msg91Error || 'Failed to dispatch WhatsApp OTP via MSG91. Please try again.',
+        error: msg91Error || 'Failed to dispatch verification code. Please try again.',
       },
       { status: 500 }
     );

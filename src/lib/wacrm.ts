@@ -59,15 +59,87 @@ function decryptToken(encryptedText: string, keyHex: string): string {
 }
 
 /**
- * Sends a real-time WhatsApp OTP message (Managed via MSG91 widget/API)
+ * Sends a real-time WhatsApp OTP message using the Meta approved authentication template:
+ * belesu_authentication
  */
 export async function sendWhatsAppOtp(
   phone: string,
   otp: string,
   name?: string
-): Promise<{ success: boolean; error?: string }> {
-  // MSG91 handles live login OTP dispatch
-  return { success: true };
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  try {
+    const cleanPhone = formatIndianPhone(phone);
+    const supabase = createAdminClient();
+
+    const { data: cfg, error: cfgErr } = await supabase
+      .from('whatsapp_config')
+      .select('phone_number_id, access_token')
+      .eq('account_id', WACRM_ACCOUNT_ID)
+      .single();
+
+    if (cfgErr || !cfg?.access_token || !cfg?.phone_number_id) {
+      return { success: false, error: 'WhatsApp config not found in database' };
+    }
+
+    const token = decryptToken(cfg.access_token, ENCRYPTION_KEY);
+    const phoneNumberId = cfg.phone_number_id;
+
+    const payload = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: cleanPhone,
+      type: 'template',
+      template: {
+        name: 'belesu_authentication',
+        language: { code: 'en' },
+        components: [
+          {
+            type: 'body',
+            parameters: [
+              {
+                type: 'text',
+                text: otp,
+              },
+            ],
+          },
+          {
+            type: 'button',
+            sub_type: 'url',
+            index: '0',
+            parameters: [
+              {
+                type: 'text',
+                text: otp,
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    const res = await fetch(`https://graph.facebook.com/v21.0/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const resJson = await res.json();
+
+    if (!res.ok) {
+      console.warn(`[WhatsApp OTP] Meta API rejected (${res.status}):`, resJson);
+      return { success: false, error: resJson?.error?.message || 'Meta API error' };
+    }
+
+    const messageId = resJson.messages?.[0]?.id;
+    console.log(`✅ [WhatsApp OTP] Dispatched via Meta to +${cleanPhone} (Message ID: ${messageId})`);
+    return { success: true, messageId };
+  } catch (err: any) {
+    console.error('[WhatsApp OTP] Dispatch network error:', err);
+    return { success: false, error: err?.message || 'Network error' };
+  }
 }
 
 /**
