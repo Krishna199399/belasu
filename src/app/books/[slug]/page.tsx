@@ -38,7 +38,7 @@ export default function BookDetailPage() {
         
         {/* Back Link */}
         <Link
-          href="/books"
+          href="/books/"
           className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-amber-600 mb-6 sm:mb-8 min-h-[40px] py-1 transition"
         >
           <ArrowLeft className="w-4 h-4" /> Back to All Books

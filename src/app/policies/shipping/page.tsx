@@ -298,7 +298,7 @@ export default function ShippingPolicyPage() {
 
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:justify-end gap-3">
               <Link
-                href="/contact"
+                href="/contact/"
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider transition"
               >
                 <Phone className="w-3.5 h-3.5" />

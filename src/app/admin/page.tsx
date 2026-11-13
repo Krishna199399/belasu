@@ -169,7 +169,7 @@ export default function AdminDashboardPage() {
             <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
           </button>
           <Link
-            href="/admin/orders"
+            href="/admin/orders/"
             className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition shadow-sm shadow-amber-500/20"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
@@ -273,7 +273,7 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
-          href="/admin/users"
+          href="/admin/users/"
           className="p-4 rounded-xl bg-purple-50 border border-purple-200/60 hover:bg-purple-100/60 transition flex items-center justify-between group"
         >
           <div>
@@ -284,7 +284,7 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
-          href="/admin/products"
+          href="/admin/products/"
           className="p-4 rounded-xl bg-blue-50 border border-blue-200/60 hover:bg-blue-100/60 transition flex items-center justify-between group"
         >
           <div>
@@ -295,7 +295,7 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
-          href="/admin/digital"
+          href="/admin/digital/"
           className="p-4 rounded-xl bg-indigo-50 border border-indigo-200/60 hover:bg-indigo-100/60 transition flex items-center justify-between group"
         >
           <div>
@@ -316,7 +316,7 @@ export default function AdminDashboardPage() {
               <p className="text-xs text-slate-500">Latest customer purchases across hard copy and digital</p>
             </div>
             <Link
-              href="/admin/orders"
+              href="/admin/orders/"
               className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1"
             >
               <span>View All</span>
@@ -446,7 +446,7 @@ export default function AdminDashboardPage() {
 
           <div className="p-4 bg-slate-50 border-t border-slate-100">
             <Link
-              href="/admin/analytics"
+              href="/admin/analytics/"
               className="text-xs font-bold text-slate-700 hover:text-amber-600 flex items-center justify-center gap-1"
             >
               <span>View Detailed Sales Analytics</span>

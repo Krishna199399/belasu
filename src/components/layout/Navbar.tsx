@@ -508,13 +508,13 @@ export const Navbar: React.FC = () => {
                 {userDropdownOpen && (
                   <div className="absolute top-full right-0 w-52 bg-white rounded-xl shadow-xl border border-stone-200 py-2 z-50">
                     {user.isAdmin ? (
-                      <Link href="/admin" onClick={() => setUserDropdownOpen(false)}
+                      <Link href="/admin/" onClick={() => setUserDropdownOpen(false)}
                         className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-amber-700 bg-amber-50/70 hover:bg-amber-100 transition">
                         <Shield className="w-3.5 h-3.5 text-amber-600" /> Admin Portal
                       </Link>
                     ) : (
                       <>
-                        <Link href="/library" onClick={() => setUserDropdownOpen(false)}
+                        <Link href="/library/" onClick={() => setUserDropdownOpen(false)}
                           className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition">
                           <Library className="w-3.5 h-3.5" /> My Library
                         </Link>
@@ -534,7 +534,7 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
             ) : (
-              <Link href="/auth/login"
+              <Link href="/auth/login/"
                 className="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 px-2.5 2xl:px-3 py-2 rounded-lg hover:bg-indigo-50 transition shrink-0 whitespace-nowrap">
                 <User className="w-3.5 h-3.5 shrink-0" /> Login
               </Link>
@@ -843,7 +843,7 @@ export const Navbar: React.FC = () => {
 
                     {user.isAdmin ? (
                       <Link
-                        href="/admin"
+                        href="/admin/"
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 rounded-xl transition min-h-[44px]"
                       >
@@ -852,7 +852,7 @@ export const Navbar: React.FC = () => {
                     ) : (
                       <>
                         <Link
-                          href="/library"
+                          href="/library/"
                           onClick={() => setMobileMenuOpen(false)}
                           className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 rounded-xl transition min-h-[44px]"
                         >
@@ -880,7 +880,7 @@ export const Navbar: React.FC = () => {
                   </>
                 ) : (
                   <Link
-                    href="/auth/login"
+                    href="/auth/login/"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50/70 hover:bg-indigo-100 transition min-h-[44px]"
                   >

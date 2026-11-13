@@ -35,7 +35,7 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
   const handleCombineWithCart = () => {
     if (!book) return;
     addToCart(book, 'digital', 1);
-    router.push('/checkout');
+    router.push('/checkout/');
   };
 
   // Contact details for Razorpay prefill & order invoice

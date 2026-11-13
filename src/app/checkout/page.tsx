@@ -117,7 +117,7 @@ export default function CheckoutPage() {
   // Redirect if cart is empty (unless routing to dedicated order success page)
   useEffect(() => {
     if (!authLoading && cart.length === 0 && !isNavigatingToSuccess) {
-      router.push('/cart');
+      router.push('/cart/');
     }
   }, [cart.length, authLoading, router, isNavigatingToSuccess]);
 

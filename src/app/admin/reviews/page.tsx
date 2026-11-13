@@ -149,7 +149,7 @@ export default function AdminReviewsPage() {
           </button>
 
           <Link
-            href="/reviews"
+            href="/reviews/"
             target="_blank"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition shadow-xs"
           >

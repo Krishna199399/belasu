@@ -56,7 +56,7 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
 
   const handleBuyNow = () => {
     addToCart(book, 'digital', 1);
-    router.push('/checkout');
+    router.push('/checkout/');
   };
 
   const subjectEmoji: Record<string, string> = {
@@ -87,7 +87,7 @@ export default function DigitalBookDetailPage({ params }: { params: Promise<{ sl
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-slate-500">
             <Link href="/" className="hover:text-amber-700 transition">Home</Link>
             <span aria-hidden="true">&rsaquo;</span>
-            <Link href="/digital" className="hover:text-amber-700 transition">Digital Books</Link>
+            <Link href="/digital/" className="hover:text-amber-700 transition">Digital Books</Link>
             <span aria-hidden="true">&rsaquo;</span>
             <span className="text-amber-700 font-bold truncate max-w-[200px] sm:max-w-none" aria-current="page">
               {book.title}

@@ -47,7 +47,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ authUser }) => {
     <div className="flex flex-col h-full bg-slate-900 text-slate-300 border-r border-slate-800">
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
-        <Link href="/admin" className="flex items-center gap-2.5">
+        <Link href="/admin/" className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 font-black">
             B
           </div>

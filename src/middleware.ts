@@ -3,11 +3,23 @@ import type { NextRequest } from 'next/server';
 
 /**
  * Enforce canonical trailing slash on all page routes while exempting:
- * 1. /api/* routes (so webhooks like Razorpay / WhatsApp are NEVER 308-redirected)
- * 2. Next.js internals (_next/static, _next/image)
- * 3. Static asset files (containing file extensions like .png, .jpg, .ico, .svg, .json)
+ * 1. Non-GET/HEAD methods (POST, PUT, DELETE for forms/actions are never redirected)
+ * 2. Next.js Server Actions (next-action header)
+ * 3. /api/* routes (so webhooks like Razorpay / WhatsApp are NEVER 308-redirected)
+ * 4. Next.js internals (_next/static, _next/image, etc.)
+ * 5. Static asset files (containing file extensions like .png, .jpg, .ico, .svg, .json)
  */
 export function middleware(request: NextRequest) {
+  // Only redirect safe read-only navigation requests
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return NextResponse.next();
+  }
+
+  // Never redirect Next.js Server Actions
+  if (request.headers.has('next-action')) {
+    return NextResponse.next();
+  }
+
   const { pathname } = request.nextUrl;
 
   // Never redirect API routes, internal Next assets, or files with extensions
@@ -19,11 +31,19 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect pages missing a trailing slash (e.g. /books/savi-kannada-class-1 -> /books/savi-kannada-class-1/)
+  // Redirect pages missing a trailing slash (e.g. /cart -> /cart/, /admin -> /admin/)
   if (!pathname.endsWith('/')) {
-    const url = request.nextUrl.clone();
-    url.pathname = `${pathname}/`;
-    return NextResponse.redirect(url, 308);
+    const proto =
+      request.headers.get('x-forwarded-proto') ||
+      request.nextUrl.protocol.replace(':', '');
+    const host =
+      request.headers.get('x-forwarded-host') ||
+      request.headers.get('host') ||
+      request.nextUrl.host;
+    const search = request.nextUrl.search || '';
+
+    const targetUrl = `${proto}://${host}${pathname}/${search}`;
+    return NextResponse.redirect(new URL(targetUrl), 308);
   }
 
   return NextResponse.next();
@@ -40,4 +60,3 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|icon.png).*)',
   ],
 };
-

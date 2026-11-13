@@ -216,7 +216,7 @@ export default function DestinationToSpeakKannadaPage() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
             <div className="flex items-center gap-2">
-              <Link href="/books" className="hover:text-amber-600 flex items-center gap-1.5 transition">
+              <Link href="/books/" className="hover:text-amber-600 flex items-center gap-1.5 transition">
                 <ArrowLeft className="w-3.5 h-3.5" /> Back to All Books
               </Link>
               <span>/</span>
@@ -793,14 +793,14 @@ export default function DestinationToSpeakKannadaPage() {
 
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:justify-end gap-3">
               <Link
-                href="/books"
+                href="/books/"
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider transition"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>All Guidebooks</span>
               </Link>
               <Link
-                href="/contact"
+                href="/contact/"
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider border border-slate-700 transition"
               >
                 <Phone className="w-3.5 h-3.5 text-amber-400" />

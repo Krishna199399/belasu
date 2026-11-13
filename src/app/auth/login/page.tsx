@@ -509,11 +509,11 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
             {/* Terms and Privacy Footer Note */}
             <p className="mt-6 text-center text-xs text-slate-500">
               By signing in, you agree to Belesu&apos;s{' '}
-              <Link href="/terms-and-conditions" className="text-amber-700 hover:underline">
+              <Link href="/terms-and-conditions/" className="text-amber-700 hover:underline">
                 Terms of Use
               </Link>{' '}
               and{' '}
-              <Link href="/privacy-policy" className="text-amber-700 hover:underline">
+              <Link href="/privacy-policy/" className="text-amber-700 hover:underline">
                 Privacy Policy
               </Link>
               .

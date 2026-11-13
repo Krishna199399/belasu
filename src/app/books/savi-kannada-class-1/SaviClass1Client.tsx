@@ -133,7 +133,7 @@ export default function SaviClass1Client() {
                 Home
               </Link>
               <span>/</span>
-              <Link href="/books" className="hover:text-amber-600 flex items-center gap-1 transition">
+              <Link href="/books/" className="hover:text-amber-600 flex items-center gap-1 transition">
                 All Books
               </Link>
               <span>/</span>
