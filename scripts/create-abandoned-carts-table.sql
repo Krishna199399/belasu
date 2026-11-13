@@ -66,3 +66,4 @@ BEGIN
       WITH CHECK (TRUE);
   END IF;
 END $$;
+

@@ -21,3 +21,4 @@ async function checkTable() {
 }
 
 checkTable();
+
