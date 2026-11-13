@@ -668,7 +668,7 @@ export function SecureBookReader({ book, userPhone, isOwned, initialPage = 1 }: 
                     You have previewed the first {book.isFreePreviewPages} pages. Unlock full lifetime access to read all {book.totalPages} pages.
                   </p>
                   <Link
-                    href={`/digital/${book.slug}/purchase`}
+                    href={`/digital/${book.slug}/purchase/`}
                     className="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-3 rounded-xl text-xs sm:text-sm transition shadow-lg min-h-[44px] cursor-pointer"
                   >
                     <span>Unlock Full Book for ₹{book.price}</span>

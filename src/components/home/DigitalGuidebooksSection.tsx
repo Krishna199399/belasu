@@ -176,7 +176,7 @@ export const DigitalGuidebooksSection: React.FC = () => {
               {/* Direct CTAs matching home page.md verbatim */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
                 <Link
-                  href="/digital/kannada-class-6-guide"
+                  href="/digital/kannada-class-6-guide/"
                   className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition transform active:scale-95 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer min-h-[44px]"
                 >
                   <BookOpen className="w-4 h-4" />

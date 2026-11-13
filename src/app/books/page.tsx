@@ -686,7 +686,7 @@ function BooksContent() {
 
                           {/* Cover Image Container */}
                           <Link
-                            href={`/books/${book.slug}`}
+                            href={`/books/${book.slug}/`}
                             className="relative w-full h-48 sm:h-52 rounded-xl bg-stone-50/60 border border-stone-100 flex items-center justify-center p-2 mb-3 group-hover:bg-amber-50/30 transition-colors block overflow-hidden"
                           >
                             <img
@@ -704,7 +704,7 @@ function BooksContent() {
                           </div>
 
                           {/* Title */}
-                          <Link href={`/books/${book.slug}`}>
+                          <Link href={`/books/${book.slug}/`}>
                             <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 hover:text-amber-700 transition mb-1.5">
                               {book.title}
                             </h3>
@@ -766,7 +766,7 @@ function BooksContent() {
                           </div>
 
                           <Link
-                            href={`/digital/${digitalBookClass6.slug}`}
+                            href={`/digital/${digitalBookClass6.slug}/`}
                             className="relative w-full h-48 sm:h-52 rounded-xl bg-gradient-to-br from-emerald-500/10 via-emerald-100/30 to-teal-50 flex items-center justify-center p-2 mb-3 overflow-hidden block"
                             title={`View ${digitalBookClass6.title}`}
                           >
@@ -783,7 +783,7 @@ function BooksContent() {
                             </span>
                           </div>
 
-                          <Link href={`/digital/${digitalBookClass6.slug}`}>
+                          <Link href={`/digital/${digitalBookClass6.slug}/`}>
                             <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 hover:text-emerald-700 transition mb-1.5">
                               {digitalBookClass6.title}
                             </h3>
@@ -808,7 +808,7 @@ function BooksContent() {
                               <BookOpen className="w-4 h-4 text-slate-800" />
                             </Link>
                             <Link
-                              href={`/digital/${digitalBookClass6.slug}`}
+                              href={`/digital/${digitalBookClass6.slug}/`}
                               className="px-3.5 py-2 rounded-xl text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white uppercase tracking-wider shadow-xs transition"
                             >
                               Explore
@@ -828,7 +828,7 @@ function BooksContent() {
                       >
                         {/* Left: Thumbnail & Class Pill */}
                         <Link
-                          href={`/books/${book.slug}`}
+                          href={`/books/${book.slug}/`}
                           className="relative shrink-0 w-20 h-24 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5 overflow-hidden active:scale-95 transition-transform cursor-pointer"
                           title={`View ${book.title}`}
                         >
@@ -847,7 +847,7 @@ function BooksContent() {
                           <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 block truncate">
                             {book.series.toUpperCase()} KANNADA SERIES
                           </span>
-                          <Link href={`/books/${book.slug}`}>
+                          <Link href={`/books/${book.slug}/`}>
                             <h3 className="font-bold text-slate-900 text-xs leading-snug line-clamp-2 hover:text-amber-700 transition mt-0.5">
                               {book.title}
                             </h3>
@@ -893,7 +893,7 @@ function BooksContent() {
                     {showDigitalClass6 && (
                       <div className="bg-white rounded-2xl border border-emerald-200 p-3 shadow-2xs flex items-center gap-3">
                         <Link
-                          href={`/digital/${digitalBookClass6.slug}`}
+                          href={`/digital/${digitalBookClass6.slug}/`}
                           className="relative shrink-0 w-20 h-24 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center p-1.5 overflow-hidden active:scale-95 transition-transform cursor-pointer"
                           title={`View ${digitalBookClass6.title}`}
                         >
@@ -910,7 +910,7 @@ function BooksContent() {
                           <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 block truncate">
                             SIRI KANNADA DIGITAL
                           </span>
-                          <Link href={`/digital/${digitalBookClass6.slug}`}>
+                          <Link href={`/digital/${digitalBookClass6.slug}/`}>
                             <h3 className="font-bold text-slate-900 text-xs leading-snug line-clamp-2 hover:text-emerald-700 transition mt-0.5">
                               {digitalBookClass6.title}
                             </h3>
@@ -920,7 +920,7 @@ function BooksContent() {
                               {formatPrice(digitalBookClass6.price)}
                             </span>
                             <Link
-                              href={`/digital/${digitalBookClass6.slug}`}
+                              href={`/digital/${digitalBookClass6.slug}/`}
                               className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-black text-[11px] uppercase tracking-wider shadow-2xs"
                             >
                               Explore
@@ -1108,7 +1108,7 @@ function BooksContent() {
                   {/* CTAs */}
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                     <Link
-                      href={`/digital/${digitalBookClass6.slug}`}
+                      href={`/digital/${digitalBookClass6.slug}/`}
                       className="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition active:scale-95 flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer min-h-[44px]"
                     >
                       <BookOpen className="w-4 h-4" />

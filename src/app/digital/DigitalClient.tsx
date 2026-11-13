@@ -244,7 +244,7 @@ export default function DigitalClient() {
                   {/* CTAs */}
                   <div className="pt-2 flex flex-col sm:flex-row gap-3">
                     <Link
-                      href="/digital/kannada-class-6-guide"
+                      href="/digital/kannada-class-6-guide/"
                       className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-md shadow-amber-500/20 cursor-pointer active:scale-98"
                     >
                       <BookOpen className="w-4 h-4 text-slate-950" />
@@ -328,7 +328,7 @@ export default function DigitalClient() {
                     </Link>
 
                     <Link
-                      href="/books/savi-kannada-class-4?format=digital"
+                      href="/books/savi-kannada-class-4/?format=digital"
                       className="w-full min-h-[40px] inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer"
                     >
                       <ShoppingBag className="w-3.5 h-3.5 text-indigo-600" />
@@ -383,7 +383,7 @@ export default function DigitalClient() {
                     </Link>
 
                     <Link
-                      href="/books/savi-kannada-class-3?format=digital"
+                      href="/books/savi-kannada-class-3/?format=digital"
                       className="w-full min-h-[40px] inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 transition cursor-pointer"
                     >
                       <ShoppingBag className="w-3.5 h-3.5 text-indigo-600" />

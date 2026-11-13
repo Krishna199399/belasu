@@ -145,14 +145,14 @@ export const Navbar: React.FC = () => {
     {
       title: 'Class 3 Savi Digital Edition',
       subtitle: '₹280 • Instant Web Reader',
-      href: '/books/savi-kannada-class-3?format=digital',
+      href: '/books/savi-kannada-class-3/?format=digital',
       badge: 'Available',
       badgeColor: 'bg-emerald-100 text-emerald-800',
     },
     {
       title: 'Class 4 Savi Digital Edition',
       subtitle: '₹290 • Instant Web Reader',
-      href: '/books/savi-kannada-class-4?format=digital',
+      href: '/books/savi-kannada-class-4/?format=digital',
       badge: 'Available',
       badgeColor: 'bg-emerald-100 text-emerald-800',
     },

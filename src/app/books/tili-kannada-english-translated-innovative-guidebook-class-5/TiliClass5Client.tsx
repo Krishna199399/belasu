@@ -385,7 +385,7 @@ export default function TiliClass5Client() {
                     </span>
                   </div>
 
-                  <Link href={`/books/${relBook.slug}`} className="block">
+                  <Link href={`/books/${relBook.slug}/`} className="block">
                     <div className="h-48 flex items-center justify-center p-2 mb-3 bg-stone-50 rounded-xl group-hover:scale-105 transition-transform duration-300">
                       <img
                         src={relBook.coverImage}
@@ -400,7 +400,7 @@ export default function TiliClass5Client() {
                 </div>
 
                 <Link
-                  href={`/books/${relBook.slug}`}
+                  href={`/books/${relBook.slug}/`}
                   className="w-full min-h-[40px] py-2.5 px-3 rounded-xl text-xs font-bold bg-stone-100 hover:bg-amber-500 hover:text-slate-950 text-slate-800 border border-stone-200 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
                 >
                   <span>View Class {relBook.gradeClass}</span>

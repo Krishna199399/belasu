@@ -211,7 +211,7 @@ export default function PurchasePage({ params }: { params: Promise<{ slug: strin
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-4 border-b border-stone-200/80 pb-3.5">
           <div className="min-w-0">
             <Link
-              href={`/digital/${book.slug}`}
+              href={`/digital/${book.slug}/`}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 transition py-1 truncate max-w-[280px] sm:max-w-none"
             >
               &larr; Back to {book.title}
