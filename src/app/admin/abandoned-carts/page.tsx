@@ -112,10 +112,13 @@ export default function AbandonedCartsPage() {
     fetchCarts();
   }, [fetchCarts]);
 
-  // Handle 1-Click WhatsApp Direct Chat
-  const handleOpenWhatsAppChat = async (cart: AbandonedCart) => {
+  // Handle 1-Click WhatsApp Direct Chat (WACRM or WhatsApp Web)
+  const handleOpenWhatsAppChat = async (cart: AbandonedCart, target: 'wacrm' | 'wa_me' = 'wacrm') => {
     const rawDigits = cart.customer_phone.replace(/\D/g, '');
-    const cleanPhone = rawDigits.startsWith('91') && rawDigits.length === 12 ? rawDigits : `91${rawDigits.slice(-10)}`;
+    const cleanPhoneWithPlus = rawDigits.startsWith('91') && rawDigits.length === 12
+      ? `+${rawDigits}`
+      : `+91${rawDigits.slice(-10)}`;
+    const cleanDigits = cleanPhoneWithPlus.replace(/\D/g, '');
     const booksList = cart.cart_items.map((i) => i.title).join(', ');
     const recoveryLink = cart.recovery_url || `https://belesu.in/cart?recover=${cart.session_id}`;
 
@@ -130,8 +133,15 @@ You can complete your order directly with instant delivery here:
 Please let us know if you have any questions or need help with Kannada guidebooks!
 – Belesu Bookstore Team`;
 
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-    window.open(waUrl, '_blank');
+    if (target === 'wacrm') {
+      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      const wacrmBase = isLocal ? 'http://localhost:3001' : 'https://crm.belesu.in';
+      const wacrmUrl = `${wacrmBase}/inbox?phone=${encodeURIComponent(cleanPhoneWithPlus)}&name=${encodeURIComponent(cart.customer_name || '')}&text=${encodeURIComponent(message)}`;
+      window.open(wacrmUrl, '_blank');
+    } else {
+      const waUrl = `https://wa.me/${cleanDigits}?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, '_blank');
+    }
 
     // Automatically record WhatsApp contact in backend
     try {
@@ -148,7 +158,7 @@ Please let us know if you have any questions or need help with Kannada guidebook
             : c
         )
       );
-      toast.success('WhatsApp opened & reminder recorded!');
+      toast.success(target === 'wacrm' ? 'Opening WACRM Inbox...' : 'WhatsApp Web opened & reminder recorded!');
     } catch {}
   };
 
@@ -487,14 +497,24 @@ Please let us know if you have any questions or need help with Kannada guidebook
                       {/* Actions */}
                       <td className="py-4 px-4 align-top text-right whitespace-nowrap">
                         <div className="inline-flex items-center gap-1.5">
-                          {/* 1-Click WhatsApp Button */}
+                          {/* 1-Click WACRM Chat Button */}
                           <button
-                            onClick={() => handleOpenWhatsAppChat(cart)}
-                            title="Send WhatsApp recovery message"
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] shadow-xs transition cursor-pointer active:scale-95"
+                            onClick={() => handleOpenWhatsAppChat(cart, 'wacrm')}
+                            title="Open chat & send via WACRM Inbox (Official WhatsApp API)"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] shadow-xs transition cursor-pointer active:scale-95"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
-                            WhatsApp
+                            <span>WhatsApp</span>
+                            <span className="text-[9px] bg-emerald-800/80 px-1 py-0.5 rounded font-black tracking-wider uppercase">CRM</span>
+                          </button>
+
+                          {/* Quick WhatsApp Web (wa.me) shortcut */}
+                          <button
+                            onClick={() => handleOpenWhatsAppChat(cart, 'wa_me')}
+                            title="Open in personal WhatsApp Web / App (wa.me)"
+                            className="p-1.5 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition cursor-pointer"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Copy Recovery Link */}
