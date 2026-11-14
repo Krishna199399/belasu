@@ -32,24 +32,52 @@ export async function GET(request: NextRequest) {
     const { data: users, count, error } = await query;
     if (error) throw error;
 
-    // Fetch user order stats for the current users
+    // Fetch user order stats and cities for the current users
     const userIds = (users || []).map((u) => u.id);
 
     let ordersMap: Record<string, { count: number; totalSpent: number }> = {};
+    let cityMap: Record<string, string> = {};
 
     if (userIds.length > 0) {
-      const { data: orders } = await supabase
-        .from('orders')
-        .select('user_id, order_total_amount, payment_status, order_status')
-        .in('user_id', userIds);
+      const [ordersRes, addressesRes] = await Promise.all([
+        supabase
+          .from('orders')
+          .select('user_id, order_total_amount, payment_status, order_status, billing_city, shipping_city, created_at')
+          .in('user_id', userIds)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('addresses')
+          .select('user_id, city, state, is_default, created_at')
+          .in('user_id', userIds)
+          .order('is_default', { ascending: false })
+          .order('created_at', { ascending: false }),
+      ]);
 
-      (orders || []).forEach((o) => {
+      const orders = ordersRes.data || [];
+      const addresses = addressesRes.data || [];
+
+      // 1. Resolve city from default / latest addresses first
+      addresses.forEach((a) => {
+        if (!cityMap[a.user_id] && a.city?.trim()) {
+          cityMap[a.user_id] = a.city.trim();
+        }
+      });
+
+      // 2. Resolve stats and fallback city from orders
+      orders.forEach((o) => {
         if (!ordersMap[o.user_id]) {
           ordersMap[o.user_id] = { count: 0, totalSpent: 0 };
         }
         ordersMap[o.user_id].count++;
         if (o.payment_status === 'Paid' || o.order_status === 'Completed') {
           ordersMap[o.user_id].totalSpent += Number(o.order_total_amount) || 0;
+        }
+
+        if (!cityMap[o.user_id]) {
+          const ordCity = o.billing_city?.trim() || o.shipping_city?.trim();
+          if (ordCity) {
+            cityMap[o.user_id] = ordCity;
+          }
         }
       });
     }
@@ -59,10 +87,12 @@ export async function GET(request: NextRequest) {
       const digitalBooksCount = u.purchased_books?.digital?.length || 0;
       const physicalBooksCount = u.purchased_books?.physical?.length || 0;
       const isAdmin = Boolean((u as any).is_admin || isPhoneAdmin(u.phone));
+      const city = cityMap[u.id] || null;
 
       return {
         ...u,
         isAdmin,
+        city,
         ordersCount: stats.count,
         totalSpent: stats.totalSpent,
         digitalBooksCount,

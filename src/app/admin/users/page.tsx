@@ -11,6 +11,7 @@ import {
   RefreshCw,
   IndianRupee,
   ShoppingBag,
+  MapPin,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 
@@ -19,6 +20,7 @@ interface UserRecord {
   name: string;
   phone: string;
   email?: string;
+  city?: string;
   created_at: string;
   isAdmin: boolean;
   ordersCount: number;
@@ -120,7 +122,7 @@ export default function AdminUsersPage() {
               <thead className="bg-slate-50/75 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="py-3.5 px-4">Customer</th>
-                  <th className="py-3.5 px-4">Role</th>
+                  <th className="py-3.5 px-4">City</th>
                   <th className="py-3.5 px-4">Joined Date</th>
                   <th className="py-3.5 px-4 text-center">Orders</th>
                   <th className="py-3.5 px-4 text-right">Total Spent</th>
@@ -139,12 +141,19 @@ export default function AdminUsersPage() {
                   return (
                     <tr key={u.id} className="hover:bg-slate-50/60 transition">
                       <td className="py-3.5 px-4">
-                        <Link
-                          href={`/admin/users/${u.id}`}
-                          className="font-bold text-slate-900 hover:text-indigo-600 transition block text-sm"
-                        >
-                          {u.name || 'Anonymous User'}
-                        </Link>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <Link
+                            href={`/admin/users/${u.id}`}
+                            className="font-bold text-slate-900 hover:text-indigo-600 transition block text-sm"
+                          >
+                            {u.name || 'Anonymous User'}
+                          </Link>
+                          {u.isAdmin && (
+                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                              <Shield className="w-2.5 h-2.5 text-amber-600" /> Admin
+                            </span>
+                          )}
+                        </div>
                         <span className="font-mono text-slate-500 text-xs block">
                           📞 {u.phone}
                         </span>
@@ -156,14 +165,13 @@ export default function AdminUsersPage() {
                       </td>
 
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        {u.isAdmin ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                            <Shield className="w-3 h-3 text-amber-600" /> Admin
+                        {u.city ? (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">
+                            <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                            <span>{u.city}</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                            Customer
-                          </span>
+                          <span className="text-slate-400 text-xs italic">—</span>
                         )}
                       </td>
 
