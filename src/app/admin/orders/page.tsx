@@ -273,6 +273,13 @@ export default function AdminOrdersPage() {
               <span>Reset Filters</span>
             </button>
           )}
+          <Link
+            href="/dispatch"
+            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition shadow-xs active:scale-95"
+          >
+            <Truck className="w-3.5 h-3.5 text-slate-950" />
+            <span>Packing & Dispatch</span>
+          </Link>
           <button
             onClick={handleExportCSV}
             disabled={orders.length === 0}
