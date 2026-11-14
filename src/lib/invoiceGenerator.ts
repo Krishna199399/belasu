@@ -12,6 +12,7 @@ export interface InvoiceItem {
 export interface InvoiceOrderData {
   id: string;
   order_number: string;
+  order_date?: string;
   created_at: string;
   order_status: string;
   payment_status: string;
@@ -65,7 +66,7 @@ export function generateInvoiceHtml(order: InvoiceOrderData): string {
     order.shipping_postcode || order.billing_postcode,
   ].filter(Boolean).join(', ') || billingAddress;
 
-  const orderDate = new Date(order.created_at).toLocaleString('en-IN', {
+  const orderDate = new Date(order.order_date || order.created_at).toLocaleString('en-IN', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',

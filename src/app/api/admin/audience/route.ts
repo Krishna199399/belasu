@@ -188,7 +188,7 @@ export async function GET(request: NextRequest) {
     const [orders, users] = await Promise.all([
       fetchAllRows<any>(
         'orders',
-        'id, user_id, order_number, billing_first_name, billing_last_name, billing_phone, billing_email, payment_status, order_status, created_at, order_items(id, item_sku, item_name, product_id, quantity)',
+        'id, user_id, order_number, billing_first_name, billing_last_name, billing_phone, billing_email, payment_status, order_status, order_date, created_at, order_items(id, item_sku, item_name, product_id, quantity)',
         (q) => q.or('payment_status.eq.Paid,order_status.eq.Completed').order('created_at', { ascending: false })
       ),
       fetchAllRows<any>(
@@ -221,7 +221,7 @@ export async function GET(request: NextRequest) {
           userId: order.user_id,
           orderCount: 0,
           lastOrderNumber: order.order_number,
-          lastOrderDate: order.created_at,
+          lastOrderDate: order.order_date || order.created_at,
           purchases: [],
         };
         customerMap.set(cleanPhone, entry);
@@ -236,7 +236,7 @@ export async function GET(request: NextRequest) {
         const meta = productLookup.get(prodId) || productLookup.get(sku);
         const grade = meta?.gradeClass || extractGradeFromText(item.item_name || '');
 
-        const pDate = order.created_at || new Date().toISOString();
+        const pDate = order.order_date || order.created_at || new Date().toISOString();
         const d = new Date(pDate);
         const yr = d.getFullYear();
         const mo = d.getMonth() + 1;

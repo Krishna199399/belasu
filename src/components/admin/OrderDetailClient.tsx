@@ -35,6 +35,7 @@ interface OrderItem {
 interface OrderData {
   id: string;
   order_number: string;
+  order_date?: string;
   created_at: string;
   order_status: string;
   payment_status: string;
@@ -245,7 +246,7 @@ export const OrderDetailClient: React.FC<{ initialOrder: OrderData }> = ({
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Placed on {new Date(order.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+              Placed on {new Date(order.order_date || order.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
             </p>
           </div>
         </div>

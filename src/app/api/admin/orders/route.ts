@@ -39,7 +39,10 @@ export async function GET(request: NextRequest) {
       query = query.or(`order_number.ilike.%${search}%,billing_first_name.ilike.%${search}%,billing_last_name.ilike.%${search}%,billing_phone.ilike.%${search}%,billing_email.ilike.%${search}%,billing_city.ilike.%${search}%`);
     }
 
-    query = query.order('created_at', { ascending: false }).range(from, to);
+    query = query
+      .order('created_at', { ascending: false })
+      .order('order_number', { ascending: false })
+      .range(from, to);
 
     const { data: orders, count, error } = await query;
 

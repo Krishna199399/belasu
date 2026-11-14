@@ -29,6 +29,7 @@ interface OrderItem {
 interface Order {
   id: string;
   order_number: string;
+  order_date?: string;
   created_at: string;
   order_status: string;
   payment_status: string;
@@ -155,7 +156,7 @@ export default function AdminOrdersPage() {
         .join('; ');
       return [
         `"${o.order_number}"`,
-        `"${new Date(o.created_at).toLocaleDateString('en-IN')}"`,
+        `"${new Date(o.order_date || o.created_at).toLocaleDateString('en-IN')}"`,
         `"${o.billing_first_name} ${o.billing_last_name}"`,
         `"${o.billing_phone}"`,
         `"${o.billing_email || ''}"`,
@@ -304,7 +305,7 @@ export default function AdminOrdersPage() {
                   const customerName =
                     `${order.billing_first_name || ''} ${order.billing_last_name || ''}`.trim() ||
                     'Customer';
-                  const dateStr = new Date(order.created_at).toLocaleDateString('en-IN', {
+                  const dateStr = new Date(order.order_date || order.created_at).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric',

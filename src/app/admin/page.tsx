@@ -30,6 +30,7 @@ interface OrderItem {
 interface Order {
   id: string;
   order_number: string;
+  order_date?: string;
   created_at: string;
   order_status: string;
   payment_status: string;
@@ -346,7 +347,7 @@ export default function AdminDashboardPage() {
                     const customerName =
                       `${order.billing_first_name || ''} ${order.billing_last_name || ''}`.trim() ||
                       'Customer';
-                    const dateStr = new Date(order.created_at).toLocaleDateString('en-IN', {
+                    const dateStr = new Date(order.order_date || order.created_at).toLocaleDateString('en-IN', {
                       day: 'numeric',
                       month: 'short',
                     });
