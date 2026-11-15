@@ -194,48 +194,55 @@ export async function fulfillDigitalOrder(
     }
   }
 
-  // ── 7. Insert order record ───────────────────────────────────────────────
+  // ── 7. Upsert order record ───────────────────────────────────────────────
+  // Using upsert (not insert) so that if the webhook and client-side call arrive
+  // simultaneously, the second one simply returns the already-inserted row
+  // instead of creating a duplicate. Requires a UNIQUE constraint on
+  // razorpay_payment_id in the orders table (add via Supabase SQL if missing).
   const { data: order, error: orderErr } = await supabase
     .from('orders')
-    .insert({
-      order_number: orderNumber,
-      user_id: user.id,
-      order_status: 'Completed',
-      order_date: new Date().toISOString(),
+    .upsert(
+      {
+        order_number: orderNumber,
+        user_id: user.id,
+        order_status: 'Completed',
+        order_date: new Date().toISOString(),
 
-      billing_first_name: firstName,
-      billing_last_name: lastName,
-      billing_address1: 'Digital Instant Delivery (Web Reader)',
-      billing_address2: null,
-      billing_city: billingCity,
-      billing_state: billingState,
-      billing_postcode: billingPostcode,
-      billing_phone: billingPhone,
-      billing_email: billingEmail,
+        billing_first_name: firstName,
+        billing_last_name: lastName,
+        billing_address1: 'Digital Instant Delivery (Web Reader)',
+        billing_address2: null,
+        billing_city: billingCity,
+        billing_state: billingState,
+        billing_postcode: billingPostcode,
+        billing_phone: billingPhone,
+        billing_email: billingEmail,
 
-      shipping_method: 'Digital Instant Access',
+        shipping_method: 'Digital Instant Access',
 
-      payment_method: paymentMethod,
-      payment_status: 'Paid',
-      razorpay_order_id: razorpayOrderId || null,
-      razorpay_payment_id: paymentId || null,
+        payment_method: paymentMethod,
+        payment_status: 'Paid',
+        razorpay_order_id: razorpayOrderId || null,
+        razorpay_payment_id: paymentId || null,
 
-      order_subtotal_amount: orderAmount,
-      order_shipping_amount: 0,
-      order_total_tax_amount: 0,
-      order_refund_amount: 0,
-      order_total_amount: orderAmount,
+        order_subtotal_amount: orderAmount,
+        order_shipping_amount: 0,
+        order_total_tax_amount: 0,
+        order_refund_amount: 0,
+        order_total_amount: orderAmount,
 
-      has_hard_copy_books: false,
-      has_physical_books: false,
-      has_digital_books: true,
-    })
+        has_hard_copy_books: false,
+        has_physical_books: false,
+        has_digital_books: true,
+      },
+      { onConflict: 'razorpay_payment_id', ignoreDuplicates: false }
+    )
     .select()
     .single();
 
   if (orderErr || !order) {
     throw new Error(
-      `[digitalFulfillment] Order insert failed: ${orderErr?.message || 'unknown DB error'}`
+      `[digitalFulfillment] Order upsert failed: ${orderErr?.message || 'unknown DB error'}`
     );
   }
 

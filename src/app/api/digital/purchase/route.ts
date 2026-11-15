@@ -1,22 +1,10 @@
 import { NextRequest } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
-import { createAdminClient } from '@/lib/supabase';
-import { DIGITAL_BOOKS_DATA, HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
-import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
-import { sendAdminOrderNotification, sendCustomerOrderReceipt } from '@/lib/email';
+import { fulfillDigitalOrder } from '@/lib/digitalFulfillment';
+import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
 import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
-
-interface DigitalBookRecord {
-  id: string;
-  title: string;
-  sku?: string;
-  price?: number;
-  grade_class?: number;
-  gradeClass?: number;
-  slug?: string;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,7 +43,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify Razorpay HMAC signature if secret is configured
+    // Verify Razorpay HMAC signature
     const keySecret = (
       process.env.RAZORPAY_KEY_SECRET ||
       process.env.RAZORPAY_SECRET ||
@@ -82,277 +70,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const supabase = createAdminClient();
-
-    // 0. Idempotency guard — prevent duplicate orders for same payment
-    if (razorpay_payment_id) {
-      const { data: existingOrder } = await supabase
-        .from('orders')
-        .select('id, order_number')
-        .eq('razorpay_payment_id', razorpay_payment_id)
-        .maybeSingle();
-
-      if (existingOrder) {
-        console.log(`[digital/purchase] Duplicate call — order already exists for payment ${razorpay_payment_id}:`, existingOrder.order_number);
-        return Response.json({
-          success: true,
-          message: 'Purchase already recorded',
-          orderId: existingOrder.id,
-          orderNumber: existingOrder.order_number,
-          bookId,
-        });
-      }
-    }
-
-    // 1. Fetch book details from database or static fallback
-    let book: DigitalBookRecord | null = null;
-    const { data: dbBook } = await supabase
-      .from('digital_books')
-      .select('*')
-      .eq('id', bookId)
-      .maybeSingle();
-
-    if (dbBook) {
-      book = dbBook as DigitalBookRecord;
-    } else {
-      const found = DIGITAL_BOOKS_DATA.find((b) => b.id === bookId);
-      if (found) {
-        book = {
-          id: found.id,
-          title: found.title,
-          sku: found.sku,
-          price: found.price,
-          grade_class: found.gradeClass,
-          gradeClass: found.gradeClass,
-          slug: found.slug,
-        };
-      }
-    }
-
-    if (!book) {
-      return Response.json({ success: false, error: 'Book not found' }, { status: 404 });
-    }
-
-    // 2. Fetch user details
-    const { data: user, error: userErr } = await supabase
-      .from('users')
-      .select('id, name, phone, email, purchased_books')
-      .eq('id', authUser.userId)
-      .single();
-
-    if (userErr || !user) {
-      return Response.json({ success: false, error: 'User profile not found' }, { status: 404 });
-    }
-
-    // 3. Update user email/name if provided and not previously recorded
-    const finalEmail = (email && typeof email === 'string' && email.trim()) ? email.trim() : user.email;
-    const finalName = (name && typeof name === 'string' && name.trim()) ? name.trim() : user.name;
-    const finalPhone = (phone && typeof phone === 'string' && phone.trim()) ? phone.trim() : (user.phone || authUser.phone);
-
-    if ((finalEmail && finalEmail !== user.email) || (finalName && finalName !== user.name)) {
-      await supabase
-        .from('users')
-        .update({
-          ...(finalEmail ? { email: finalEmail } : {}),
-          ...(finalName ? { name: finalName } : {}),
-        })
-        .eq('id', user.id);
-    }
-
-    // 4. Fetch user default address if exists, or fallback to user profile details
-    const { data: defaultAddr } = await supabase
-      .from('addresses')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('is_default', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    const firstName = defaultAddr?.first_name || finalName?.trim().split(/\s+/)[0] || 'Valued';
-    const lastName = defaultAddr?.last_name || finalName?.trim().split(/\s+/).slice(1).join(' ') || 'Student';
-    const billingAddress1 = defaultAddr?.address1 || 'Digital Instant Delivery (Web Reader)';
-    const billingAddress2 = defaultAddr?.address2 || null;
-    const billingCity = defaultAddr?.city || 'Online';
-    const billingState = defaultAddr?.state || 'Karnataka';
-    const billingPostcode = defaultAddr?.postcode || '560001';
-    const billingPhone = defaultAddr?.phone || finalPhone;
-    const billingEmail = defaultAddr?.email || finalEmail || null;
-
-    // Generate valid order number using DB sequence or fallback (pure numeric, no BLS- prefix)
-    let orderNumber = `${Date.now()}`;
-    try {
-      const { data: orderNumData } = await supabase.rpc('generate_order_number');
-      if (orderNumData) {
-        orderNumber = String(orderNumData).replace(/^BLS-?/i, '').replace(/^#+/, '').trim() || `${Date.now()}`;
-      }
-    } catch {
-      // Keep timestamp fallback
-    }
-
-    const orderAmount = Number(amount) || Number(book.price) || 295;
-
-    // 5. Insert into orders table (matching public.orders schema)
-    const { data: order, error: orderErr } = await supabase
-      .from('orders')
-      .insert({
-        order_number: orderNumber,
-        user_id: user.id,
-        order_status: 'Completed',
-        order_date: new Date().toISOString(),
-
-        billing_first_name: firstName,
-        billing_last_name: lastName,
-        billing_address1: billingAddress1,
-        billing_address2: billingAddress2,
-        billing_city: billingCity,
-        billing_state: billingState,
-        billing_postcode: billingPostcode,
-        billing_phone: billingPhone,
-        billing_email: billingEmail,
-
-        shipping_method: 'Digital Instant Access',
-
-        payment_method: 'Razorpay - Online Payment',
-        payment_status: 'Paid',
-        razorpay_order_id: razorpay_order_id || null,
-        razorpay_payment_id: razorpay_payment_id || null,
-
-        order_subtotal_amount: orderAmount,
-        order_shipping_amount: 0,
-        order_total_tax_amount: 0,
-        order_refund_amount: 0,
-        order_total_amount: orderAmount,
-
-        has_hard_copy_books: false,
-        has_physical_books: false,
-        has_digital_books: true,
-      })
-      .select()
-      .single();
-
-    if (orderErr || !order) {
-      console.error('Failed to create order record for digital purchase:', orderErr);
-      return Response.json(
-        { success: false, error: 'Failed to record digital order: ' + (orderErr?.message || 'Database error') },
-        { status: 500 }
-      );
-    }
-
-    // 6. Insert into order_items table (matching public.order_items schema)
-    const { error: itemErr } = await supabase.from('order_items').insert({
-      order_id: order.id,
-      product_id: book.id,
-      item_name: book.title,
-      item_sku: book.sku || `SD${book.grade_class || book.gradeClass || 6}-KN`,
-      item_type: 'digital',
-      quantity: 1,
-      item_cost: orderAmount,
-      item_total: orderAmount,
-    });
-
-    if (itemErr) {
-      console.error('Failed to insert digital order item:', itemErr);
-    }
-
-    // 7. Add to purchased_books if not already present
-    const currentBooks = user.purchased_books || { physical: [], digital: [] };
-    const currentDigital = Array.isArray(currentBooks.digital) ? currentBooks.digital : [];
-
-    if (!currentDigital.includes(bookId)) {
-      const updatedBooks = {
-        ...currentBooks,
-        digital: [...currentDigital, bookId],
-      };
-
-      const { error: updateErr } = await supabase
-        .from('users')
-        .update({ purchased_books: updatedBooks })
-        .eq('id', user.id);
-
-      if (updateErr) {
-        console.error('Failed to update user purchased_books:', updateErr);
-        return Response.json({ success: false, error: 'Failed to grant digital access' }, { status: 500 });
-      }
-    }
-
-    // 8. Send WhatsApp notification
-    try {
-      await sendWhatsAppOrderConfirmation({
-        orderNumber: order.order_number,
-        name: finalName || firstName || 'Student',
-        phone: finalPhone,
-        totalAmount: orderAmount,
-        itemsSummary: `${book.title} (Class ${book.grade_class || book.gradeClass || 6} Digital Reader)`,
-        isDigital: true,
-      });
-    } catch (waErr) {
-      console.warn('Non-fatal WhatsApp delivery notice error:', waErr);
-    }
-
-    // 9. Send Email order notification to Client / Admin
-    sendAdminOrderNotification({
-      orderNumber: order.order_number,
-      orderDate: order.order_date,
-      customerName: finalName || firstName || 'Student',
-      customerPhone: finalPhone,
-      customerEmail: finalEmail || billingEmail,
-      items: [
-        {
-          title: book.title,
-          quantity: 1,
-          price: orderAmount,
-          productType: 'digital',
-          sku: book.sku || `SD${book.grade_class || book.gradeClass || 6}-KN`,
-        },
-      ],
-      subtotal: orderAmount,
-      shippingFee: 0,
-      totalAmount: orderAmount,
+    // Delegate ALL order insertion + notifications to the centralised fulfillDigitalOrder.
+    // fulfillDigitalOrder is idempotent — concurrent webhook + client calls for the same
+    // payment are safely absorbed without creating duplicate orders.
+    const result = await fulfillDigitalOrder({
+      userId: authUser.userId,
+      bookId,
+      paymentId: razorpay_payment_id,
+      razorpayOrderId: razorpay_order_id,
       paymentMethod: 'Razorpay - Online Payment',
-      paymentId: razorpay_payment_id || undefined,
-      razorpayOrderId: razorpay_order_id || undefined,
-      shippingAddress: null,
-      isDigitalOnly: true,
-    }).catch((emailErr) => {
-      console.warn('[digital/purchase] Non-fatal admin email delivery error:', emailErr);
+      customerEmail: typeof email === 'string' ? email.trim() : undefined,
+      customerPhone: typeof phone === 'string' ? phone.trim() : undefined,
+      customerName: typeof name === 'string' ? name.trim() : undefined,
+      amountPaid: Number(amount) || undefined,
     });
-
-    // Also send receipt to customer if customer email is available
-    const recipientCustomerEmail = finalEmail || billingEmail;
-    if (recipientCustomerEmail) {
-      sendCustomerOrderReceipt({
-        orderNumber: order.order_number,
-        orderDate: order.order_date,
-        customerName: finalName || firstName || 'Student',
-        customerPhone: finalPhone,
-        customerEmail: recipientCustomerEmail,
-        items: [
-          {
-            title: book.title,
-            quantity: 1,
-            price: orderAmount,
-            productType: 'digital',
-            sku: book.sku || `SD${book.grade_class || book.gradeClass || 6}-KN`,
-          },
-        ],
-        subtotal: orderAmount,
-        shippingFee: 0,
-        totalAmount: orderAmount,
-        paymentMethod: 'Razorpay - Online Payment',
-        paymentId: razorpay_payment_id || undefined,
-        razorpayOrderId: razorpay_order_id || undefined,
-        shippingAddress: null,
-        isDigitalOnly: true,
-      }).catch((receiptErr) => {
-        console.warn('[digital/purchase] Non-fatal customer email receipt error:', receiptErr);
-      });
-    }
 
     return Response.json({
       success: true,
-      message: 'Purchase completed and recorded in orders successfully',
-      orderId: order.id,
-      orderNumber: order.order_number,
+      message: result.alreadyProcessed
+        ? 'Purchase already recorded'
+        : 'Purchase completed and recorded in orders successfully',
+      orderId: result.orderId,
+      orderNumber: result.orderNumber,
       bookId,
     });
   } catch (err: unknown) {

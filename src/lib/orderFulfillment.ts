@@ -291,56 +291,63 @@ async function executeFulfillment(params: FulfillOrderParams) {
     orderNumber = `${Date.now()}`;
   }
 
-  // 8. Insert main order record
+  // 8. Upsert main order record
+  // Using upsert (not insert) so that if the webhook and client-side call arrive
+  // simultaneously, the second one simply returns the already-inserted row
+  // instead of creating a duplicate. Requires a UNIQUE constraint on
+  // razorpay_payment_id in the orders table (add via Supabase SQL if missing).
   const { data: order, error: orderError } = await supabase
     .from('orders')
-    .insert({
-      order_number: orderNumber,
-      user_id: user.id,
-      order_status: 'Completed',
-      order_date: new Date().toISOString(),
+    .upsert(
+      {
+        order_number: orderNumber,
+        user_id: user.id,
+        order_status: 'Completed',
+        order_date: new Date().toISOString(),
 
-      billing_first_name: billingInfo.first_name,
-      billing_last_name: billingInfo.last_name,
-      billing_address1: billingInfo.address1,
-      billing_address2: billingInfo.address2,
-      billing_city: billingInfo.city,
-      billing_state: billingInfo.state,
-      billing_postcode: billingInfo.postcode,
-      billing_email: billingInfo.email || null,
-      billing_phone: billingInfo.phone,
+        billing_first_name: billingInfo.first_name,
+        billing_last_name: billingInfo.last_name,
+        billing_address1: billingInfo.address1,
+        billing_address2: billingInfo.address2,
+        billing_city: billingInfo.city,
+        billing_state: billingInfo.state,
+        billing_postcode: billingInfo.postcode,
+        billing_email: billingInfo.email || null,
+        billing_phone: billingInfo.phone,
 
-      shipping_address_id: targetAddressId || null,
-      shipping_first_name: shippingAddress ? shippingAddress.first_name : null,
-      shipping_last_name: shippingAddress ? shippingAddress.last_name : null,
-      shipping_address1: shippingAddress ? shippingAddress.address1 : null,
-      shipping_address2: shippingAddress ? shippingAddress.address2 : null,
-      shipping_city: shippingAddress ? shippingAddress.city : null,
-      shipping_state: shippingAddress ? shippingAddress.state : null,
-      shipping_postcode: shippingAddress ? shippingAddress.postcode : null,
-      shipping_phone: shippingAddress ? shippingAddress.phone : null,
-      shipping_method: hasPhysical ? 'Flat rate' : null,
+        shipping_address_id: targetAddressId || null,
+        shipping_first_name: shippingAddress ? shippingAddress.first_name : null,
+        shipping_last_name: shippingAddress ? shippingAddress.last_name : null,
+        shipping_address1: shippingAddress ? shippingAddress.address1 : null,
+        shipping_address2: shippingAddress ? shippingAddress.address2 : null,
+        shipping_city: shippingAddress ? shippingAddress.city : null,
+        shipping_state: shippingAddress ? shippingAddress.state : null,
+        shipping_postcode: shippingAddress ? shippingAddress.postcode : null,
+        shipping_phone: shippingAddress ? shippingAddress.phone : null,
+        shipping_method: hasPhysical ? 'Flat rate' : null,
 
-      payment_method: paymentMethod,
-      payment_status: 'Paid',
-      razorpay_order_id: razorpayOrderId || null,
-      razorpay_payment_id: paymentId || null,
+        payment_method: paymentMethod,
+        payment_status: 'Paid',
+        razorpay_order_id: razorpayOrderId || null,
+        razorpay_payment_id: paymentId || null,
 
-      order_subtotal_amount: subtotal,
-      order_shipping_amount: shippingAmount,
-      order_total_tax_amount: taxAmount,
-      order_refund_amount: 0,
-      order_total_amount: totalAmount,
+        order_subtotal_amount: subtotal,
+        order_shipping_amount: shippingAmount,
+        order_total_tax_amount: taxAmount,
+        order_refund_amount: 0,
+        order_total_amount: totalAmount,
 
-      has_hard_copy_books: hasPhysical,
-      has_physical_books: hasPhysical,
-      has_digital_books: hasDigital,
-    })
+        has_hard_copy_books: hasPhysical,
+        has_physical_books: hasPhysical,
+        has_digital_books: hasDigital,
+      },
+      { onConflict: 'razorpay_payment_id', ignoreDuplicates: false }
+    )
     .select()
     .single();
 
   if (orderError || !order) {
-    console.error('[fulfillOrder] Order insert error:', orderError);
+    console.error('[fulfillOrder] Order upsert error:', orderError);
     throw new Error(`Failed to create order: ${orderError?.message}`);
   }
 
