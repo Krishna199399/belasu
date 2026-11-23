@@ -3,19 +3,16 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { MessageCircle } from 'lucide-react';
+import { hasBottomStickyBar, isFloatingWidgetHidden } from './floatingWidgets';
 
 export const WhatsAppButton: React.FC = () => {
   const pathname = usePathname();
-  if (pathname?.startsWith('/admin') || pathname?.startsWith('/dispatch') || pathname?.startsWith('/reader')) {
+  if (isFloatingWidgetHidden(pathname)) {
     return null;
   }
 
   // Elevate WhatsApp floating button above mobile sticky purchase/checkout bars to prevent touch collision
-  const hasBottomStickyBar =
-    (pathname?.startsWith('/books/') && pathname !== '/books') ||
-    pathname?.startsWith('/digital/') ||
-    pathname === '/checkout' ||
-    pathname === '/cart';
+  const elevated = hasBottomStickyBar(pathname);
 
   return (
     <a
@@ -23,7 +20,7 @@ export const WhatsAppButton: React.FC = () => {
       target="_blank"
       rel="noreferrer"
       className={`fixed ${
-        hasBottomStickyBar ? 'bottom-20 lg:bottom-6' : 'bottom-5 sm:bottom-6'
+        elevated ? 'bottom-20 lg:bottom-6' : 'bottom-5 sm:bottom-6'
       } right-4 sm:right-6 z-40 p-3.5 sm:p-4 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group min-w-[48px] min-h-[48px]`}
       aria-label="Contact us on WhatsApp"
     >
