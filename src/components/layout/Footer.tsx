@@ -20,7 +20,7 @@ export const Footer: React.FC = () => {
   const pathname = usePathname();
   const [openSection, setOpenSection] = useState<string | null>(null);
 
-  if (pathname?.startsWith('/admin') || pathname?.startsWith('/reader')) {
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/dispatch') || pathname?.startsWith('/reader')) {
     return null;
   }
 

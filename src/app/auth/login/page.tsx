@@ -21,6 +21,11 @@ import {
 
 type Step = 'phone' | 'otp';
 
+/** Dispatch staff land on their portal; everyone else on their library */
+function defaultLanding(user?: { isAdmin?: boolean; isDispatch?: boolean } | null): string {
+  return user?.isDispatch && !user?.isAdmin ? '/dispatch/' : '/library';
+}
+
 export default function LoginPage({ searchParams }: { searchParams: Promise<{ redirect?: string }> }) {
   const { redirect: redirectTo } = use(searchParams);
   const { sendOtp, retryOtp, verifyOtp, user } = useAuth();
@@ -59,7 +64,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   // Auto-redirect if already logged in
   useEffect(() => {
     if (user) {
-      router.replace(redirectTo || '/library');
+      router.replace(redirectTo || defaultLanding(user));
     }
   }, [user, redirectTo, router]);
 
@@ -202,7 +207,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
           sessionStorage.removeItem('belasu_auth_phone');
           sessionStorage.removeItem('belasu_auth_name');
         } catch {}
-        router.replace(redirectTo || '/library');
+        router.replace(redirectTo || defaultLanding(result.user));
       } else {
         setError(result.error || 'Incorrect verification code. Please check and try again.');
       }

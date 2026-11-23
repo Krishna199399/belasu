@@ -182,7 +182,8 @@ export interface AuthUser {
   name: string;
   email?: string;
   isAdmin?: boolean;
-  
+  isDispatch?: boolean;
+
   // Address management
   addresses: Address[];
   defaultAddressId?: string;

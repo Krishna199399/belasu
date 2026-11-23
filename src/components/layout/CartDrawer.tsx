@@ -61,7 +61,7 @@ export const CartDrawer: React.FC = () => {
     };
   }, [isOpen]);
 
-  if (!isOpen || pathname?.startsWith('/admin')) return null;
+  if (!isOpen || pathname?.startsWith('/admin') || pathname?.startsWith('/dispatch')) return null;
 
   return (
     <div

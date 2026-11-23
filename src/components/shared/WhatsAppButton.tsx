@@ -6,7 +6,7 @@ import { MessageCircle } from 'lucide-react';
 
 export const WhatsAppButton: React.FC = () => {
   const pathname = usePathname();
-  if (pathname?.startsWith('/admin') || pathname?.startsWith('/reader')) {
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/dispatch') || pathname?.startsWith('/reader')) {
     return null;
   }
 

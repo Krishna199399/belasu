@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { ShoppingCart, Menu, X, ChevronDown, BookOpen, Library, LogOut, User, Laptop, Package, Shield } from 'lucide-react';
+import { ShoppingCart, Menu, X, ChevronDown, BookOpen, Library, LogOut, User, Laptop, Package, Shield, Truck } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { AnnouncementBar } from './AnnouncementBar';
 import { HIDE_DIGITAL_CLASS_6 } from '@/data/digitalBooksData';
@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  if (rawPathname?.startsWith('/admin') || rawPathname?.startsWith('/reader')) {
+  if (rawPathname?.startsWith('/admin') || rawPathname?.startsWith('/dispatch') || rawPathname?.startsWith('/reader')) {
     return null;
   }
 
@@ -512,6 +512,11 @@ export const Navbar: React.FC = () => {
                         className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-amber-700 bg-amber-50/70 hover:bg-amber-100 transition">
                         <Shield className="w-3.5 h-3.5 text-amber-600" /> Admin Portal
                       </Link>
+                    ) : user.isDispatch ? (
+                      <Link href="/dispatch/" onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-amber-700 bg-amber-50/70 hover:bg-amber-100 transition">
+                        <Truck className="w-3.5 h-3.5 text-amber-600" /> Dispatch Portal
+                      </Link>
                     ) : (
                       <>
                         <Link href="/library/" onClick={() => setUserDropdownOpen(false)}
@@ -848,6 +853,14 @@ export const Navbar: React.FC = () => {
                         className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 rounded-xl transition min-h-[44px]"
                       >
                         <Shield className="w-4 h-4 text-amber-600" /> Admin Portal
+                      </Link>
+                    ) : user.isDispatch ? (
+                      <Link
+                        href="/dispatch/"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 rounded-xl transition min-h-[44px]"
+                      >
+                        <Truck className="w-4 h-4 text-amber-600" /> Dispatch Portal
                       </Link>
                     ) : (
                       <>

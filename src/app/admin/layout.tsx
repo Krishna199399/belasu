@@ -46,6 +46,15 @@ export default async function AdminLayout({
           </p>
 
           <div className="space-y-3">
+            {authUser?.isDispatch && (
+              <Link
+                href="/dispatch/"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-emerald-500/20"
+              >
+                <span>Go to Dispatch Portal</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
             <Link
               href="/auth/login?redirect=/admin"
               className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20"

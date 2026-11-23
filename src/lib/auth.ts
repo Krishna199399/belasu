@@ -13,6 +13,21 @@ export interface AuthPayload {
   phone: string;
   name: string;
   isAdmin?: boolean;
+  isDispatch?: boolean;
+}
+
+/**
+ * Check if a given phone number belongs to packing & dispatch staff (DISPATCH_STAFF_PHONES).
+ * Dispatch staff can only access /dispatch — never /admin.
+ */
+export function isPhoneDispatchStaff(phone?: string | null): boolean {
+  if (!phone) return false;
+  const staffPhones = (process.env.DISPATCH_STAFF_PHONES || '')
+    .split(',')
+    .map((p) => p.trim().replace(/^\+91/, '').replace(/\s+/g, ''))
+    .filter(Boolean);
+  const cleanPhone = phone.trim().replace(/^\+91/, '').replace(/\s+/g, '');
+  return staffPhones.includes(cleanPhone);
 }
 
 /** Check if a given phone number is considered an admin strictly by matching ADMIN_PHONES */
@@ -28,7 +43,8 @@ export function isPhoneAdmin(phone?: string | null): boolean {
 /** Sign a JWT and return the token string */
 export async function signToken(payload: AuthPayload): Promise<string> {
   const isAdmin = isPhoneAdmin(payload.phone);
-  return new SignJWT({ ...payload, isAdmin })
+  const isDispatch = isPhoneDispatchStaff(payload.phone);
+  return new SignJWT({ ...payload, isAdmin, isDispatch })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('30d')
@@ -41,8 +57,9 @@ export async function verifyToken(token: string): Promise<AuthPayload | null> {
     const { payload } = await jwtVerify(token, JWT_SECRET);
     const authData = payload as unknown as AuthPayload;
     if (authData) {
-      // Re-evaluate admin status strictly by authorized phone number
+      // Re-evaluate roles strictly by authorized phone numbers
       authData.isAdmin = isPhoneAdmin(authData.phone);
+      authData.isDispatch = isPhoneDispatchStaff(authData.phone);
     }
     return authData;
   } catch {
@@ -60,6 +77,7 @@ export async function getAuthUser(): Promise<AuthPayload | null> {
   return {
     ...user,
     isAdmin: isPhoneAdmin(user.phone),
+    isDispatch: isPhoneDispatchStaff(user.phone),
   };
 }
 
@@ -126,6 +144,7 @@ export async function getFullUserProfile(userId: string) {
     phone: user.phone,
     email: user.email || '',
     isAdmin: isPhoneAdmin(user.phone),
+    isDispatch: isPhoneDispatchStaff(user.phone),
     purchasedBooks: user.purchased_books || { physical: [], digital: [] },
     addresses,
     defaultAddressId: defaultAddr?.id,
