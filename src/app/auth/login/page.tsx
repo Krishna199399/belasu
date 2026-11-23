@@ -529,7 +529,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
             {/* Direct Support WhatsApp Link */}
             <div className="mt-3 text-center">
               <a
-                href="https://wa.me/918105829199?text=Hi%2C%20I%20need%20help%20logging%20into%20Belesu%20Bookstore"
+                href="https://wa.me/919606636804?text=Hi%2C%20I%20need%20help%20logging%20into%20Belesu%20Bookstore"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs text-emerald-800 font-semibold hover:text-emerald-900 transition"

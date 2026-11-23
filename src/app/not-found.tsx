@@ -53,7 +53,7 @@ export default function NotFound() {
             <p className="text-[11px] text-slate-500">Class 1 to 5 Savi, Kali, Siri, Tili guides available.</p>
           </div>
           <a
-            href="https://wa.me/918105829199?text=Hi%20Belesu,%20I%20am%20looking%20for%20a%20guidebook"
+            href="https://wa.me/919606636804?text=Hi%20Belesu,%20I%20am%20looking%20for%20a%20guidebook"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition shrink-0"
