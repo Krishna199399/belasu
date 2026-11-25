@@ -1,57 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
-import { fulfillOrder } from '@/lib/orderFulfillment';
-import { SHIPPING_FEE } from '@/lib/utils';
+import { fulfillRazorpayPayment } from '@/lib/paymentFulfillment';
+import { createAdminClient } from '@/lib/supabase';
 
+/**
+ * POST /api/orders/create  { paymentId, razorpayOrderId }
+ *
+ * Checkout fallback, used when /api/payment/verify did not return an order number.
+ * It can NOT create an order on its own: it returns the customer's existing order
+ * for this payment, or creates it from what Razorpay says was paid. Any items,
+ * prices or shipping sent by the browser are ignored.
+ */
 export async function POST(request: NextRequest) {
   try {
     const authUser = await getAuthUser();
-    
     if (!authUser) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 });
     }
 
-    const body = await request.json();
-    console.log('[orders/create] Order creation request for user:', authUser.userId);
-    
-    const { 
-      items, 
-      shippingAddressId, 
-      paymentMethod = 'Razorpay - Online Payment',
-      paymentId,
-      razorpayOrderId,
-      shippingFee = SHIPPING_FEE,
-      customerEmail,
-      customerPhone,
-      customerName,
-    } = body;
-
-    // Validation
-    if (!items || items.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Cart is empty' },
-        { status: 400 }
-      );
+    const { paymentId, razorpayOrderId } = await request.json();
+    if (!paymentId || !razorpayOrderId) {
+      return NextResponse.json({ success: false, error: 'Payment details are required' }, { status: 400 });
     }
 
-    // Call centralized fulfillOrder protected by in-flight concurrency mutex
-    const result = await fulfillOrder({
-      userId: authUser.userId,
-      items,
-      shippingAddressId,
-      paymentMethod,
-      paymentId,
-      razorpayOrderId,
-      shippingFee,
-      customerEmail,
-      customerPhone,
-      customerName,
+    const result = await fulfillRazorpayPayment({
+      razorpayOrderId: String(razorpayOrderId),
+      paymentId: String(paymentId),
+      expectedUserId: authUser.userId,
     });
 
-    const order = result.order;
+    const { data: order } = await createAdminClient()
+      .from('orders')
+      .select('id, order_number, order_status, order_date, order_subtotal_amount, order_shipping_amount, order_total_tax_amount, order_total_amount, has_physical_books, has_digital_books')
+      .eq('order_number', result.orderNumber)
+      .eq('user_id', authUser.userId)
+      .maybeSingle();
+
+    if (!order) {
+      return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
+    }
+
     return NextResponse.json({
       success: true,
       order: {
@@ -66,12 +54,12 @@ export async function POST(request: NextRequest) {
         hasPhysical: order.has_physical_books,
         hasDigital: order.has_digital_books,
       },
-      alreadyProcessed: Boolean(result.alreadyProcessed),
+      alreadyProcessed: result.alreadyProcessed,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[orders/create] Order creation error:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to create order' },
+      { success: false, error: 'We could not confirm your payment yet. If money was deducted, your order will appear shortly — please contact support if it does not.' },
       { status: 500 }
     );
   }

@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { clientIp, hitRateLimit } from '@/lib/rateLimit';
 
 interface MapplsSuggestedLocation {
   type?: string;
@@ -96,7 +97,12 @@ export async function GET(request: NextRequest) {
       return Response.json({ success: true, suggestions: cached.data });
     }
 
-    const key = process.env.MAPPLS_REST_KEY || 'tgaycqgfgafeycbzupyvlhvmijvclxytzvfr';
+    const key = process.env.MAPPLS_REST_KEY || '';
+    if (!key) return Response.json({ success: true, suggestions: [] });
+
+    // Each lookup costs Mappls quota: cap per visitor (typing an address needs ~10–20)
+    const limit = hitRateLimit(`autocomplete:${clientIp(request.headers)}`, 60, 5 * 60 * 1000);
+    if (!limit.ok) return Response.json({ success: true, suggestions: [] });
 
     // Mappls search endpoint with Karnataka geographic bias (15.3173, 75.7139)
     const mapplsUrl = `https://search.mappls.com/api/places/search/json?query=${encodeURIComponent(

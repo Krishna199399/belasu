@@ -1,9 +1,18 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'belesu-super-secret-key-change-in-production'
-);
+/**
+ * Session signing key. NO fallback: a default value in public source code would let
+ * anyone forge an admin session. If JWT_SECRET is missing, signing fails and every
+ * session is treated as logged out.
+ */
+function jwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error('JWT_SECRET is missing or too short (min 32 chars) — set it in the environment');
+  }
+  return new TextEncoder().encode(secret);
+}
 
 const COOKIE_NAME = 'belesu_auth';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
@@ -33,7 +42,7 @@ export function isPhoneDispatchStaff(phone?: string | null): boolean {
 /** Check if a given phone number is considered an admin strictly by matching ADMIN_PHONES */
 export function isPhoneAdmin(phone?: string | null): boolean {
   if (!phone) return false;
-  const adminPhones = (process.env.ADMIN_PHONES || '9148155350,8105829199,1234567888')
+  const adminPhones = (process.env.ADMIN_PHONES || '') // no fallback: admins come only from the environment
     .split(',')
     .map((p) => p.trim().replace(/^\+91/, '').replace(/\s+/g, ''));
   const cleanPhone = phone.trim().replace(/^\+91/, '').replace(/\s+/g, '');
@@ -48,13 +57,13 @@ export async function signToken(payload: AuthPayload): Promise<string> {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('30d')
-    .sign(JWT_SECRET);
+    .sign(jwtSecret());
 }
 
 /** Verify a JWT token string and return the payload */
 export async function verifyToken(token: string): Promise<AuthPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, jwtSecret());
     const authData = payload as unknown as AuthPayload;
     if (authData) {
       // Re-evaluate roles strictly by authorized phone numbers

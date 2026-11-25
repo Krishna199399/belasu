@@ -2,10 +2,7 @@ import { createAdminClient } from '@/lib/supabase';
 import { deductStockOnOrder } from '@/lib/inventory';
 import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
 import { sendAdminOrderNotification, sendCustomerOrderReceipt } from '@/lib/email';
-import { BOOKS_DATA } from '@/data/mockData';
-import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
-import { DigitalBook } from '@/types';
-import { SHIPPING_FEE } from '@/lib/utils';
+import { parseItemsSummary, priceCart } from '@/lib/checkoutPricing';
 
 export interface FulfillOrderItem {
   id: string;
@@ -29,56 +26,11 @@ export interface FulfillOrderParams {
   customerEmail?: string | null;
   customerPhone?: string | null;
   customerName?: string | null;
-}
-
-/**
- * Resolves book items by SKU if only itemsSummary was passed (e.g. from Razorpay notes)
- */
-export function resolveItemsFromSummary(itemsSummary?: string): FulfillOrderItem[] {
-  if (!itemsSummary) return [];
-  const entries = itemsSummary.split(',').map((s) => s.trim()).filter(Boolean);
-  const items: FulfillOrderItem[] = [];
-
-  for (const entry of entries) {
-    const [skuOrId, qtyStr] = entry.split(':');
-    const qty = parseInt(qtyStr, 10) || 1;
-    const cleanKey = (skuOrId || '').trim();
-
-    // Check physical books
-    const physical = BOOKS_DATA.find(
-      (b) => b.sku.toLowerCase() === cleanKey.toLowerCase() || b.id === cleanKey
-    );
-    if (physical) {
-      items.push({
-        id: physical.id,
-        sku: physical.sku,
-        title: physical.title,
-        price: physical.price,
-        quantity: qty,
-        productType: 'physical',
-        slug: physical.slug,
-      });
-      continue;
-    }
-
-    // Check digital books
-    const digital = DIGITAL_BOOKS_DATA.find(
-      (d: DigitalBook) => d.sku?.toLowerCase() === cleanKey.toLowerCase() || d.id === cleanKey || d.slug === cleanKey
-    );
-    if (digital) {
-      items.push({
-        id: digital.id,
-        sku: digital.sku || 'DIGITAL',
-        title: digital.title,
-        price: digital.price,
-        quantity: qty,
-        productType: 'digital',
-        slug: digital.slug,
-      });
-    }
-  }
-
-  return items;
+  /**
+   * Rupees actually captured by Razorpay (from Razorpay's API, never the browser).
+   * Required to create a new order; must equal the catalogue-priced total.
+   */
+  amountPaid?: number;
 }
 
 // In-flight mutex locks mapped by razorpayOrderId or paymentId to prevent concurrent executions
@@ -128,7 +80,6 @@ async function executeFulfillment(params: FulfillOrderParams) {
     paymentMethod = 'Razorpay - Online Payment',
     paymentId,
     razorpayOrderId,
-    shippingFee = SHIPPING_FEE,
     customerEmail,
     customerPhone,
     customerName,
@@ -171,10 +122,29 @@ async function executeFulfillment(params: FulfillOrderParams) {
     }
   }
 
-  // 2. Resolve items
-  let items = rawItems && rawItems.length > 0 ? rawItems : resolveItemsFromSummary(itemsSummary);
+  // 2. A new order needs a real, verified payment. Callers must pass the amount
+  //    Razorpay captured (see src/lib/paymentFulfillment.ts) — never a browser value.
+  if (!paymentId || !razorpayOrderId || typeof params.amountPaid !== 'number') {
+    throw new Error('Cannot create an order without a verified payment');
+  }
+
+  // 3. Resolve items and RE-PRICE them from the catalogue — prices or shipping
+  //    sent by a browser are ignored.
+  const entries = (rawItems && rawItems.length > 0
+    ? rawItems.map((i) => ({ key: i.sku || i.id, quantity: i.quantity }))
+    : parseItemsSummary(itemsSummary));
+  const priced = await priceCart(entries);
+  const items = priced.items;
   if (items.length === 0) {
     throw new Error('No items found to fulfill this order');
+  }
+
+  // 4. What was paid must match what the books cost
+  if (Math.abs(priced.total - params.amountPaid) > 0.5) {
+    console.error(
+      `[fulfillOrder] AMOUNT MISMATCH for ${razorpayOrderId}: paid ₹${params.amountPaid}, catalogue total ₹${priced.total} (${priced.itemsSummary})`
+    );
+    throw new Error('Paid amount does not match the order total');
   }
 
   const hasPhysical = items.some((item) => item.productType === 'physical');
@@ -201,10 +171,12 @@ async function executeFulfillment(params: FulfillOrderParams) {
   let targetAddressId = shippingAddressId;
 
   if (targetAddressId) {
+    // Only the customer's OWN saved address may be used
     const { data: addr } = await supabase
       .from('addresses')
       .select('*')
       .eq('id', targetAddressId)
+      .eq('user_id', userId)
       .maybeSingle();
     shippingAddress = addr;
   }
@@ -254,11 +226,11 @@ async function executeFulfillment(params: FulfillOrderParams) {
         email: customerEmail || user.email || '',
       };
 
-  // 6. Calculate amounts
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingAmount = hasPhysical ? shippingFee : 0;
+  // 6. Amounts — from the catalogue pricing above (already checked against the payment)
+  const subtotal = priced.subtotal;
+  const shippingAmount = priced.shippingFee;
   const taxAmount = 0;
-  const totalAmount = subtotal + shippingAmount + taxAmount;
+  const totalAmount = priced.total;
 
   // Double-check DB right before generating order number & inserting
   if (razorpayOrderId || paymentId) {

@@ -1,20 +1,31 @@
 import { NextResponse } from 'next/server';
 import { getPublicApprovedReviews, submitParentReview } from '@/lib/reviewsStorage';
+import { clientIp, hitRateLimit, tooManyRequests } from '@/lib/rateLimit';
 
 export async function GET() {
   try {
     const reviews = await getPublicApprovedReviews();
     return NextResponse.json({ success: true, reviews });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error fetching reviews';
-    return NextResponse.json({ success: false, error: msg }, { status: 500 });
+    console.error('[reviews] fetch error:', err);
+    return NextResponse.json({ success: false, error: 'Could not load reviews' }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { parentName, location, childGrade, rating, reviewText, bookTitle, isHuman } = body || {};
+    const limit = hitRateLimit(`review:${clientIp(req.headers)}`, 5, 60 * 60 * 1000);
+    if (!limit.ok) return tooManyRequests(limit.retryAfter, 'Too many reviews submitted. Please try again later.');
+
+    const body = (await req.json()) || {};
+    const cap = (v: unknown, max: number) => (typeof v === 'string' ? v.slice(0, max) : undefined);
+    const isHuman = body.isHuman;
+    const parentName = cap(body.parentName, 100);
+    const location = cap(body.location, 100);
+    const childGrade = cap(body.childGrade, 30);
+    const reviewText = cap(body.reviewText, 3000);
+    const bookTitle = cap(body.bookTitle, 200);
+    const rating = Math.min(5, Math.max(1, Math.round(Number(body.rating) || 5)));
 
     if (!isHuman) {
       return NextResponse.json(
@@ -35,7 +46,7 @@ export async function POST(req: Request) {
       parentName,
       location,
       childGrade,
-      rating: Number(rating) || 5,
+      rating,
       reviewText,
       bookTitle,
     });
@@ -46,8 +57,8 @@ export async function POST(req: Request) {
       reviewId: review.id,
     });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Server error saving review';
-    return NextResponse.json({ success: false, error: msg }, { status: 500 });
+    console.error('[reviews] submit error:', err);
+    return NextResponse.json({ success: false, error: 'Could not save your review. Please try again.' }, { status: 500 });
   }
 }
 

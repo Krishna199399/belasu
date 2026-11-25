@@ -1,37 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
-import { fulfillOrder } from '@/lib/orderFulfillment';
-import { fulfillDigitalOrder } from '@/lib/digitalFulfillment';
 import { createAdminClient } from '@/lib/supabase';
+import { fulfillRazorpayPayment, hmacMatches } from '@/lib/paymentFulfillment';
 
+/**
+ * Razorpay webhook — server-side safety net for orders whose browser callback
+ * never reached us. Orders are created ONLY via fulfillRazorpayPayment, which reads
+ * the customer/books from the Razorpay ORDER notes written by our server. Payment
+ * notes are ignored: they are set by the browser at checkout.
+ */
 export async function POST(request: NextRequest) {
   try {
     const rawBody = await request.text();
     const signature = request.headers.get('x-razorpay-signature');
-
-    const webhookSecret = (
-      process.env.RAZORPAY_WEBHOOK_SECRET ||
-      process.env.RAZORPAY_KEY_SECRET ||
-      ''
-    ).trim();
+    const webhookSecret = (process.env.RAZORPAY_WEBHOOK_SECRET || process.env.RAZORPAY_KEY_SECRET || '').trim();
 
     if (!webhookSecret) {
       console.error('[Razorpay Webhook] Missing RAZORPAY_WEBHOOK_SECRET in environment');
       return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
     }
-
-    if (!signature) {
-      console.warn('[Razorpay Webhook] Missing x-razorpay-signature header');
-      return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
-    }
-
-    // Verify HMAC-SHA256 signature
-    const expectedSignature = crypto
-      .createHmac('sha256', webhookSecret)
-      .update(rawBody)
-      .digest('hex');
-
-    if (expectedSignature !== signature) {
+    if (!hmacMatches(webhookSecret, rawBody, signature)) {
       console.error('[Razorpay Webhook] Signature verification failed');
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
@@ -40,128 +27,62 @@ export async function POST(request: NextRequest) {
     const event = payload.event;
     console.log(`[Razorpay Webhook] Received verified event: ${event}`);
 
-    // ─── 1. Payment Captured or Order Paid ──────────────────────────────────
+    // ── Payment captured / order paid → create the order if the browser flow missed it
     if (event === 'payment.captured' || event === 'order.paid') {
       const paymentEntity = payload.payload?.payment?.entity;
-      const orderEntity = payload.payload?.order?.entity;
-
-      const paymentId = paymentEntity?.id || null;
-      const razorpayOrderId = paymentEntity?.order_id || orderEntity?.id || null;
-      const notes = paymentEntity?.notes || orderEntity?.notes || {};
-
-      const userId = notes.user_id;
-      const shippingAddressId = notes.shipping_address_id || null;
-      const itemsSummary = notes.items_summary || '';
-      const shippingFee = parseFloat(notes.shipping_fee || '48');
-      const customerPhone = paymentEntity?.contact || notes.customer_phone || '';
-      const customerEmail = paymentEntity?.email || notes.customer_email || '';
-      const customerName = notes.customer_name || '';
-
-      // ── Digital Book Purchase Detection ──────────────────────────────────────
-      // Digital purchases store bookId in notes (not items_summary).
-      // This is the server-side safety net: if the client-side POST to
-      // /api/digital/purchase failed (network drop, browser close, etc.),
-      // this webhook fires and fulfills the digital order idempotently.
-      const bookId = notes.bookId || notes.book_id || null;
-      const isDigitalPurchase = !!bookId;
-
-      if (!userId) {
-        console.warn('[Razorpay Webhook] No user_id present in payment notes:', paymentId);
-      } else if (isDigitalPurchase) {
-        // Digital book webhook fulfillment path
+      const paymentId = paymentEntity?.id;
+      const razorpayOrderId = paymentEntity?.order_id || payload.payload?.order?.entity?.id;
+      if (paymentId && razorpayOrderId) {
         try {
-          const result = await fulfillDigitalOrder({
-            userId,
-            bookId,
-            paymentId,
-            razorpayOrderId,
-            paymentMethod: `Razorpay - ${paymentEntity?.method?.toUpperCase() || 'UPI'}`,
-            customerEmail,
-            customerPhone,
-            customerName,
-            amountPaid: (paymentEntity?.amount || 0) / 100,
-          });
-
-          console.log(`[Razorpay Webhook] Digital fulfillment result for ${paymentId}:`, {
-            orderNumber: result.orderNumber,
-            alreadyProcessed: result.alreadyProcessed,
-          });
-        } catch (digitalErr) {
-          console.error('[Razorpay Webhook] Digital order fulfillment failed:', digitalErr);
-        }
-      } else {
-        // Physical / mixed book webhook fulfillment path
-        try {
-          const result = await fulfillOrder({
-            userId,
-            itemsSummary,
-            shippingAddressId,
-            paymentMethod: `Razorpay - ${paymentEntity?.method?.toUpperCase() || 'UPI'}`,
-            paymentId,
-            razorpayOrderId,
-            shippingFee,
-            customerEmail,
-            customerPhone,
-            customerName,
-          });
-
-          console.log(`[Razorpay Webhook] Order fulfillment result for ${paymentId}:`, {
-            orderNumber: result.orderNumber,
-            alreadyProcessed: result.alreadyProcessed,
-          });
+          const result = await fulfillRazorpayPayment({ razorpayOrderId, paymentId });
+          console.log(`[Razorpay Webhook] ${result.kind} order #${result.orderNumber} (alreadyProcessed=${result.alreadyProcessed})`);
         } catch (fulfillErr) {
-          console.error('[Razorpay Webhook] Failed to fulfill order automatically:', fulfillErr);
+          // Logged loudly: a captured payment without an order needs a human to look at it
+          console.error(`[Razorpay Webhook] FULFILMENT FAILED for payment ${paymentId}:`, fulfillErr instanceof Error ? fulfillErr.message : fulfillErr);
         }
       }
     }
 
-    // ─── 2. Payment Failed ──────────────────────────────────────────────────
+    // ── Payment failed → mark any pre-created order record as Failed
     if (event === 'payment.failed') {
-      const paymentEntity = payload.payload?.payment?.entity;
-      const failedRazorpayOrderId = paymentEntity?.order_id;
-
-      console.warn('[Razorpay Webhook] Payment failed on gateway:', {
-        paymentId: paymentEntity?.id,
-        orderId: failedRazorpayOrderId,
-        errorCode: paymentEntity?.error_code,
-        errorDescription: paymentEntity?.error_description,
-        contact: paymentEntity?.contact,
-      });
-
-      // Mark any pre-created order record as Failed in DB
+      const failedRazorpayOrderId = payload.payload?.payment?.entity?.order_id;
       if (failedRazorpayOrderId) {
-        const supabase = createAdminClient();
-        await supabase
+        await createAdminClient()
           .from('orders')
           .update({ order_status: 'Failed', payment_status: 'Failed' })
-          .eq('razorpay_order_id', failedRazorpayOrderId);
-        console.log(`[Razorpay Webhook] Marked order as Failed for razorpay_order_id ${failedRazorpayOrderId}`);
+          .eq('razorpay_order_id', failedRazorpayOrderId)
+          .neq('payment_status', 'Paid'); // never downgrade an order that was paid by a later attempt
       }
     }
 
-    // ─── 3. Refund Processed ────────────────────────────────────────────────
+    // ── Refund → record the refunded amount; only a FULL refund marks the order Refunded
     if (event === 'refund.processed' || event === 'refund.created') {
       const refundEntity = payload.payload?.refund?.entity;
       const paymentId = refundEntity?.payment_id;
-
       if (paymentId) {
         const supabase = createAdminClient();
-        await supabase
+        const { data: order } = await supabase
           .from('orders')
-          .update({
-            order_status: 'Refunded',
-            order_refund_amount: (refundEntity?.amount || 0) / 100,
-          })
-          .eq('razorpay_payment_id', paymentId);
-
-        console.log(`[Razorpay Webhook] Marked order as Refunded for payment ${paymentId}`);
+          .select('id, order_total_amount')
+          .eq('razorpay_payment_id', paymentId)
+          .maybeSingle();
+        if (order) {
+          // Prefer the payment's cumulative refunded amount; fall back to this refund
+          const refunded =
+            (Number(payload.payload?.payment?.entity?.amount_refunded) || Number(refundEntity?.amount) || 0) / 100;
+          const full = refunded + 0.5 >= Number(order.order_total_amount);
+          await supabase
+            .from('orders')
+            .update({ order_refund_amount: refunded, ...(full ? { order_status: 'Refunded' } : {}) })
+            .eq('id', order.id);
+          console.log(`[Razorpay Webhook] Refund ₹${refunded} recorded for payment ${paymentId} (${full ? 'full' : 'partial'})`);
+        }
       }
     }
 
     return NextResponse.json({ status: 'ok', received: true });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[Razorpay Webhook] Processing error:', err);
-    return NextResponse.json({ error: 'Webhook processing failed', details: err?.message }, { status: 500 });
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }
-

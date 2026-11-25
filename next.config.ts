@@ -1,6 +1,23 @@
 import type { NextConfig } from "next";
 
+/**
+ * Baseline security headers for every response. A full Content-Security-Policy is
+ * intentionally not set yet — it needs testing against Razorpay checkout and the
+ * video embeds before it can be switched on safely.
+ */
+const SECURITY_HEADERS = [
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' }, // no clickjacking via other sites' iframes
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Strict-Transport-Security', value: 'max-age=31536000' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(self "https://checkout.razorpay.com" "https://api.razorpay.com")' },
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: '/:path*', headers: SECURITY_HEADERS }];
+  },
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   devIndicators: false,

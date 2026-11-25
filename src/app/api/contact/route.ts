@@ -1,9 +1,23 @@
 import { NextResponse } from 'next/server';
 import { sendContactInquiryEmail } from '@/lib/email';
+import { clientIp, hitRateLimit, tooManyRequests } from '@/lib/rateLimit';
+
+const cap = (v: unknown, max: number): string | undefined => (typeof v === 'string' ? v.slice(0, max) : undefined);
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    // Every inquiry emails the team — stop spam floods
+    const limit = hitRateLimit(`contact:${clientIp(req.headers)}`, 5, 60 * 60 * 1000);
+    if (!limit.ok) return tooManyRequests(limit.retryAfter, 'Too many messages. Please try again later or WhatsApp us on +91 96066 36804.');
+
+    const raw = (await req.json()) || {};
+    const body = {
+      name: cap(raw.name, 100),
+      email: cap(raw.email, 200),
+      phone: cap(raw.phone, 20),
+      subject: cap(raw.subject, 150),
+      message: cap(raw.message, 5000),
+    };
     const { name, email, phone, subject, message } = body || {};
 
     if (!name || typeof name !== 'string' || !name.trim()) {

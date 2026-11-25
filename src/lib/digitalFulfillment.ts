@@ -10,7 +10,7 @@
  */
 
 import { createAdminClient } from '@/lib/supabase';
-import { DIGITAL_BOOKS_DATA } from '@/data/digitalBooksData';
+import { resolveDigitalBook } from '@/lib/checkoutPricing';
 import { sendWhatsAppOrderConfirmation } from '@/lib/wacrm';
 import { sendAdminOrderNotification, sendCustomerOrderReceipt } from '@/lib/email';
 
@@ -85,36 +85,24 @@ export async function fulfillDigitalOrder(
     }
   }
 
-  // ── 2. Resolve book ──────────────────────────────────────────────────────
-  let book: { id: string; title: string; sku?: string; price: number; grade_class?: number; slug?: string } | null = null;
-
-  const { data: dbBook } = await supabase
-    .from('digital_books')
-    .select('id, title, sku, price, grade_class, slug')
-    .eq('id', bookId)
-    .maybeSingle();
-
-  if (dbBook) {
-    book = dbBook;
-  } else {
-    const found = DIGITAL_BOOKS_DATA.find((b) => b.id === bookId || b.slug === bookId);
-    if (found) {
-      book = {
-        id: found.id,
-        title: found.title,
-        sku: found.sku,
-        price: found.price,
-        grade_class: found.gradeClass,
-        slug: found.slug,
-      };
-    }
+  // ── 2. A new order needs a verified payment that covers the book ─────────
+  if (!paymentId || !razorpayOrderId || typeof amountPaid !== 'number') {
+    throw new Error('[digitalFulfillment] Cannot create an order without a verified payment');
   }
 
+  const book = await resolveDigitalBook(bookId);
   if (!book) {
     throw new Error(`[digitalFulfillment] Book not found for bookId: ${bookId}`);
   }
 
-  const orderAmount = amountPaid && amountPaid > 0 ? amountPaid : (book.price || 295);
+  if (amountPaid + 0.5 < book.price) {
+    console.error(
+      `[digitalFulfillment] AMOUNT MISMATCH for ${razorpayOrderId}: paid ₹${amountPaid}, book ${book.id} costs ₹${book.price}`
+    );
+    throw new Error('[digitalFulfillment] Paid amount is less than the book price');
+  }
+
+  const orderAmount = amountPaid;
 
   // ── 3. Resolve user ──────────────────────────────────────────────────────
   const { data: user, error: userErr } = await supabase
@@ -267,13 +255,13 @@ export async function fulfillDigitalOrder(
   const currentBooks = user.purchased_books || { physical: [], digital: [] };
   const currentDigital = Array.isArray(currentBooks.digital) ? currentBooks.digital : [];
 
-  if (!currentDigital.includes(bookId)) {
+  if (!currentDigital.includes(book.id)) {
     const { error: accessErr } = await supabase
       .from('users')
       .update({
         purchased_books: {
           ...currentBooks,
-          digital: [...currentDigital, bookId],
+          digital: [...currentDigital, book.id],
         },
       })
       .eq('id', user.id);

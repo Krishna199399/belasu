@@ -7,10 +7,9 @@ import { AuthUser, Address } from '@/types';
 interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
-  sendOtp: (phone: string, name?: string) => Promise<{ success: boolean; message?: string; reqId?: string; error?: string }>;
-  retryOtp: (phone: string, retryChannel?: '12' | '11') => Promise<{ success: boolean; message?: string; reqId?: string; error?: string }>;
-  verifyOtp: (phone: string, otp: string, name?: string, reqId?: string) => Promise<{ success: boolean; error?: string; user?: any }>;
-  loginWithMsg91Token: (phone: string, accessToken: string, name?: string) => Promise<{ success: boolean; error?: string }>;
+  sendOtp: (phone: string, name?: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+  retryOtp: (phone: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+  verifyOtp: (phone: string, otp: string, name?: string) => Promise<{ success: boolean; error?: string; user?: any }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   
@@ -100,20 +99,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return res.json();
   }, []);
 
-  const retryOtp = useCallback(async (phone: string, retryChannel: '12' | '11' = '12') => {
+  const retryOtp = useCallback(async (phone: string) => {
     const res = await fetch('/api/auth/retry-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, retryChannel }),
+      body: JSON.stringify({ phone }),
     });
     return res.json();
   }, []);
 
-  const verifyOtp = useCallback(async (phone: string, otp: string, name?: string, reqId?: string) => {
+  const verifyOtp = useCallback(async (phone: string, otp: string, name?: string) => {
     const res = await fetch('/api/auth/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, otp, name, reqId }),
+      body: JSON.stringify({ phone, otp, name }),
     });
     const data = await res.json();
     if (data.success) {
@@ -121,25 +120,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.success(`Welcome back, ${data.user.name}! 🎉`);
     }
     return data;
-  }, []);
-
-  const loginWithMsg91Token = useCallback(async (phone: string, accessToken: string, name?: string) => {
-    try {
-      const res = await fetch('/api/auth/msg91-verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, accessToken, name }),
-      });
-      const data = await res.json();
-      if (data.success && data.user) {
-        setUser(data.user);
-        toast.success(`Welcome back, ${data.user.name}! 🎉`);
-      }
-      return data;
-    } catch (err) {
-      console.error('MSG91 login error:', err);
-      return { success: false, error: 'Network error during login' };
-    }
   }, []);
 
   const logout = useCallback(async () => {
@@ -286,9 +266,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading, 
       sendOtp, 
       retryOtp,
-      verifyOtp, 
-      loginWithMsg91Token,
-      logout, 
+      verifyOtp,
+      logout,
       refreshUser,
       addAddress,
       updateAddress,

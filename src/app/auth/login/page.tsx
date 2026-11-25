@@ -41,7 +41,6 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
   const [successNotice, setSuccessNotice] = useState('');
   const [devMessage, setDevMessage] = useState('');
   const [resendCountdown, setResendCountdown] = useState(0);
-  const [reqId, setReqId] = useState<string>('');
 
   const otpInputRef = useRef<HTMLInputElement>(null);
   const hasLoggedInRef = useRef(false);
@@ -51,12 +50,10 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     try {
       const savedPhone = sessionStorage.getItem('belasu_auth_phone');
       const savedName = sessionStorage.getItem('belasu_auth_name');
-      const savedReqId = sessionStorage.getItem('belasu_otp_reqId');
       const savedStep = sessionStorage.getItem('belasu_auth_step');
 
       if (savedPhone) setPhone(savedPhone);
       if (savedName) setName(savedName);
-      if (savedReqId) setReqId(savedReqId);
       if (savedStep === 'otp') setStep('otp');
     } catch {}
   }, []);
@@ -94,10 +91,8 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     setOtp('');
     setError('');
     setSuccessNotice('');
-    setReqId('');
     setResendCountdown(0);
     try {
-      sessionStorage.removeItem('belasu_otp_reqId');
       sessionStorage.removeItem('belasu_auth_step');
     } catch {}
   }, []);
@@ -125,12 +120,6 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
       if (result.success) {
         setStep('otp');
         setResendCountdown(30);
-        if (result.reqId) {
-          setReqId(result.reqId);
-          try {
-            sessionStorage.setItem('belasu_otp_reqId', result.reqId);
-          } catch {}
-        }
         try {
           sessionStorage.setItem('belasu_auth_phone', phone);
           sessionStorage.setItem('belasu_auth_name', name.trim());
@@ -155,25 +144,19 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     }
   };
 
-  const handleResendOtp = async (channel: '12' | '11' = '12') => {
+  const handleResendOtp = async () => {
     if (isLoading) return;
     setIsLoading(true);
     setError('');
     setSuccessNotice('');
 
     try {
-      const result = await retryOtp(phone, channel);
+      const result = await retryOtp(phone);
       setIsLoading(false);
 
       if (result.success) {
         setResendCountdown(30);
-        if (result.reqId) {
-          setReqId(result.reqId);
-          try {
-            sessionStorage.setItem('belasu_otp_reqId', result.reqId);
-          } catch {}
-        }
-        setSuccessNotice(channel === '11' ? 'SMS code sent successfully!' : 'WhatsApp code resent successfully!');
+        setSuccessNotice('WhatsApp code resent successfully!');
       } else {
         setError(result.error || 'Failed to resend verification code. Please try again.');
       }
@@ -193,16 +176,13 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
     setSuccessNotice('');
     setIsLoading(true);
 
-    const activeReqId = reqId || (typeof window !== 'undefined' ? sessionStorage.getItem('belasu_otp_reqId') : '') || '';
-
     try {
-      const result = await verifyOtp(phone, otp, name.trim(), activeReqId);
+      const result = await verifyOtp(phone, otp, name.trim());
       setIsLoading(false);
 
       if (result.success) {
         hasLoggedInRef.current = true;
         try {
-          sessionStorage.removeItem('belasu_otp_reqId');
           sessionStorage.removeItem('belasu_auth_step');
           sessionStorage.removeItem('belasu_auth_phone');
           sessionStorage.removeItem('belasu_auth_name');
@@ -479,28 +459,15 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ re
                           Resend code in <strong className="text-slate-700 font-mono">{resendCountdown}s</strong>
                         </p>
                       ) : (
-                        <div className="flex flex-wrap items-center justify-center gap-3">
-                          <button
-                            type="button"
-                            onClick={() => handleResendOtp('12')}
-                            disabled={isLoading}
-                            className="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
-                          >
-                            <RotateCw className="w-3.5 h-3.5" />
-                            <span>Resend WhatsApp OTP</span>
-                          </button>
-
-                          <span className="text-slate-300">|</span>
-
-                          <button
-                            type="button"
-                            onClick={() => handleResendOtp('11')}
-                            disabled={isLoading}
-                            className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-slate-800 transition cursor-pointer"
-                          >
-                            <span>Send via SMS</span>
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={handleResendOtp}
+                          disabled={isLoading}
+                          className="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-800 transition cursor-pointer"
+                        >
+                          <RotateCw className="w-3.5 h-3.5" />
+                          <span>Resend WhatsApp OTP</span>
+                        </button>
                       )}
 
                       <button

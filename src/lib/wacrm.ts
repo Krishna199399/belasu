@@ -23,8 +23,8 @@ export interface OrderConfirmationPayload {
 }
 
 const WACRM_ACCOUNT_ID = '7d87d718-75b1-4cda-8df5-1f2780f45cd7';
-const ENCRYPTION_KEY =
-  process.env.ENCRYPTION_KEY || 'fa27331b6e7dded1a2ff99c9a42aad69b208f8ed5a204a19929c7c93a3bb4483';
+/** Key that decrypts the WhatsApp access token stored by WACRM. No fallback — must match WACRM's ENCRYPTION_KEY. */
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || '';
 
 /**
  * Normalizes phone numbers to standard E.164 digits without leading '+' for WhatsApp API
@@ -44,6 +44,9 @@ export function formatIndianPhone(phone: string): string {
  * Helper to decrypt access token stored in whatsapp_config
  */
 function decryptToken(encryptedText: string, keyHex: string): string {
+  if (!/^[0-9a-f]{64}$/i.test(keyHex)) {
+    throw new Error('ENCRYPTION_KEY is missing or invalid (expected 64 hex characters)');
+  }
   const parts = encryptedText.split(':');
   if (parts.length === 3) {
     const [ivHex, ctHex, tagHex] = parts;

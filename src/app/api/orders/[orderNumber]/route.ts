@@ -18,6 +18,13 @@ export async function GET(
       return NextResponse.json({ success: false, error: 'Order number is required' }, { status: 400 });
     }
 
+    // Order details contain the customer's name, phone, email and home address:
+    // only a logged-in owner (or admin) may read them.
+    const authUser = await getAuthUser();
+    if (!authUser) {
+      return NextResponse.json({ success: false, error: 'Please log in to view this order' }, { status: 401 });
+    }
+
     const orderNumber = decodeURIComponent(rawOrderNumber).trim();
     const supabase = createAdminClient();
 
@@ -80,9 +87,8 @@ export async function GET(
       return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
     }
 
-    // Verify access: if user is authenticated and order has user_id, ensure user matches or admin or phone matches
-    const authUser = await getAuthUser();
-    if (authUser && order.user_id && order.user_id !== authUser.userId && !authUser.isAdmin) {
+    // Access: the order's owner, an admin, or the same verified phone number (old migrated orders)
+    if (order.user_id !== authUser.userId && !authUser.isAdmin) {
       const norm = (val?: string | null) => (val || '').replace(/\D/g, '').slice(-10);
       const userPhone = norm(authUser.phone);
       const billingPhone = norm(order.billing_phone);
