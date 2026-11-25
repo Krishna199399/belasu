@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase';
 import { BOOKS_DATA } from '@/data/mockData';
 import { digitalBooks } from '@/data/digitalBooksData';
+import { isSale, saleAmount } from '@/lib/salesRules';
 
 export interface AdminAnalyticsData {
   totalRevenue: number;
@@ -78,7 +79,8 @@ export async function getFullAdminStats(forceRefresh = false): Promise<AdminAnal
   while (hasMore) {
     const { data: chunk, error } = await supabase
       .from('orders')
-      .select('order_total_amount, payment_status, order_status, payment_method, has_physical_books, has_digital_books, billing_city')
+      .select('order_total_amount, order_refund_amount, payment_status, order_status, payment_method, has_physical_books, has_digital_books, billing_city')
+      .order('id', { ascending: true }) // stable paging: chunks never overlap or skip rows
       .range(from, from + CHUNK_SIZE - 1);
 
     if (error) {
@@ -88,11 +90,9 @@ export async function getFullAdminStats(forceRefresh = false): Promise<AdminAnal
 
     if (chunk && chunk.length > 0) {
       for (const o of chunk) {
-        const amt = Number(o.order_total_amount) || 0;
-        const isPaidOrCompleted =
-          o.payment_status === 'Paid' ||
-          o.order_status === 'Completed' ||
-          o.order_status === 'Delivered';
+        // Same sale rule as the Orders page and monthly report (src/lib/salesRules.ts)
+        const amt = saleAmount(o);
+        const isPaidOrCompleted = isSale(o);
 
         if (isPaidOrCompleted) {
           totalRevenue += amt;
@@ -241,6 +241,7 @@ export async function getAggregatedOrderItemSales(forceRefresh = false): Promise
     const { data: chunk, error } = await supabase
       .from('order_items')
       .select('product_id, item_sku, item_name, item_type, quantity, item_total')
+      .order('id', { ascending: true })
       .range(from, from + CHUNK_SIZE - 1);
 
     if (error) {

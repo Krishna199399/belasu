@@ -14,6 +14,7 @@ import {
   Laptop,
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { MonthlySalesReport } from '@/components/admin/MonthlySalesReport';
 
 interface TopProduct {
   name: string;
@@ -189,6 +190,9 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
       </div>
+
+      {/* Month-by-month sales */}
+      <MonthlySalesReport />
 
       {/* Middle Grid: Revenue Mix & Top Cities */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

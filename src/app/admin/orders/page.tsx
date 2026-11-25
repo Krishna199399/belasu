@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
 import {
   Search,
   Download,
@@ -19,6 +21,7 @@ import {
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { formatOrderDate, getAvailableMonths } from '@/lib/orderDateUtils';
+import { monthsSinceFirstOrder, type SalesSummary } from '@/lib/salesRules';
 
 interface OrderItem {
   id: string;
@@ -51,6 +54,16 @@ interface Order {
   order_items?: OrderItem[];
 }
 
+function SummaryStat({ label, value, tone }: { label: string; value: string; tone?: 'rose' | 'amber' }) {
+  const color = tone === 'rose' ? 'text-rose-300' : tone === 'amber' ? 'text-amber-300' : 'text-white';
+  return (
+    <div>
+      <dt className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</dt>
+      <dd className={`font-bold text-sm mt-0.5 ${color}`}>{value}</dd>
+    </div>
+  );
+}
+
 interface PeriodMetrics {
   count: number;
   revenue: number;
@@ -63,38 +76,48 @@ interface Metrics {
 }
 
 export default function AdminOrdersPage() {
+  // ?month=YYYY-MM (from the monthly sales report) opens the page filtered to that month
+  const searchParams = useSearchParams();
+  const linkedMonth = /^\d{4}-\d{2}$/.test(searchParams.get('month') || '') ? searchParams.get('month')! : '';
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('all'); // 'all' | 'today' | 'yesterday' | 'this_week' | 'this_month' | 'month_year'
-  const [selectedMonthYear, setSelectedMonthYear] = useState<string>(''); // e.g. "2026-11"
+  const [selectedPeriod, setSelectedPeriod] = useState<string>(linkedMonth ? 'month_year' : 'all'); // 'all' | 'today' | 'yesterday' | 'this_week' | 'this_month' | 'month_year'
+  const [selectedMonthYear, setSelectedMonthYear] = useState<string>(linkedMonth); // e.g. "2026-11"
   const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [summary, setSummary] = useState<SalesSummary | null>(null);
+  const [exporting, setExporting] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  const availableMonths = useMemo(() => getAvailableMonths(24), []);
+  // Every month back to the first order (May 2024), not just the last 24
+  const availableMonths = useMemo(() => getAvailableMonths(monthsSinceFirstOrder()), []);
+
+  /** Query params for the current filters — shared by the list and the CSV export */
+  const buildFilterParams = () => {
+    const params = new URLSearchParams();
+    if (selectedStatus !== 'all') params.set('status', selectedStatus);
+    if (selectedType !== 'all') params.set('type', selectedType);
+    if (searchTerm.trim()) params.set('search', searchTerm.trim());
+    if (selectedPeriod !== 'all') {
+      params.set('period', selectedPeriod);
+      if (selectedPeriod === 'month_year' && selectedMonthYear) {
+        const [y, m] = selectedMonthYear.split('-');
+        params.set('year', y);
+        params.set('month', m);
+      }
+    }
+    return params;
+  };
 
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (selectedStatus !== 'all') params.set('status', selectedStatus);
-      if (selectedType !== 'all') params.set('type', selectedType);
-      if (searchTerm.trim()) params.set('search', searchTerm.trim());
-
-      // Period filters
-      if (selectedPeriod !== 'all') {
-        params.set('period', selectedPeriod);
-        if (selectedPeriod === 'month_year' && selectedMonthYear) {
-          const [y, m] = selectedMonthYear.split('-');
-          params.set('year', y);
-          params.set('month', m);
-        }
-      }
-
+      const params = buildFilterParams();
       params.set('page', String(page));
       params.set('limit', '25');
 
@@ -106,6 +129,10 @@ export default function AdminOrdersPage() {
         setTotalCount(data.pagination.total || 0);
         if (data.metrics) {
           setMetrics(data.metrics);
+        }
+        // Summary only comes with page 1 — later pages keep the same filter's summary
+        if (data.summary) {
+          setSummary(data.summary);
         }
       }
     } catch (err) {
@@ -180,62 +207,39 @@ export default function AdminOrdersPage() {
   };
 
   // Export orders to CSV with complete day, date, time breakdown
-  const handleExportCSV = () => {
-    if (orders.length === 0) return;
-
-    const headers = [
-      'Order Number',
-      'Day',
-      'Date',
-      'Time (IST)',
-      'Week Number',
-      'Customer Name',
-      'Phone',
-      'Email',
-      'Address',
-      'City',
-      'Pincode',
-      'Payment Method',
-      'Payment Status',
-      'Order Status',
-      'Order Total (INR)',
-      'Items',
-    ];
-
-    const rows = orders.map((o) => {
-      const { dayName, dateStr, timeStr, weekNumber } = formatOrderDate(o.order_date || o.created_at);
-      const itemsStr = (o.order_items || [])
-        .map((i) => `${i.item_name} (x${i.quantity})`)
-        .join('; ');
-      return [
-        `"${o.order_number}"`,
-        `"${dayName}"`,
-        `"${dateStr}"`,
-        `"${timeStr}"`,
-        `"W${weekNumber}"`,
-        `"${o.billing_first_name} ${o.billing_last_name}"`,
-        `"${o.billing_phone}"`,
-        `"${o.billing_email || ''}"`,
-        `"${o.billing_address1 || ''}"`,
-        `"${o.billing_city || ''}"`,
-        `"${o.billing_postcode || ''}"`,
-        `"${o.payment_method}"`,
-        `"${o.payment_status}"`,
-        `"${o.order_status}"`,
-        o.order_total_amount,
-        `"${itemsStr}"`,
-      ].join(',');
-    });
-
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `belesu_orders_${selectedPeriod}_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // Exports EVERY order matching the current filters (not just this page), with a totals block
+  const handleExportCSV = async () => {
+    setExporting(true);
+    try {
+      const res = await fetch(`/api/admin/orders/export?${buildFilterParams().toString()}`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Export failed');
+      }
+      const disposition = res.headers.get('Content-Disposition') || '';
+      const filename = /filename="([^"]+)"/.exec(disposition)?.[1] || 'belesu_orders.csv';
+      const url = URL.createObjectURL(await res.blob());
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Export failed');
+    } finally {
+      setExporting(false);
+    }
   };
+
+  /** Human label for the active filter, e.g. "December 2025" or "This Week" */
+  const periodLabel =
+    selectedPeriod === 'month_year' && selectedMonthYear
+      ? availableMonths.find((m) => m.value === selectedMonthYear)?.label || selectedMonthYear
+      : { all: 'All time', today: 'Today', yesterday: 'Yesterday', this_week: 'This week', this_month: 'This month' }[
+          selectedPeriod
+        ] || 'Selected period';
 
   const periodTabs = [
     { label: 'All Time', value: 'all' },
@@ -248,7 +252,11 @@ export default function AdminOrdersPage() {
   const statusTabs = [
     { label: 'All Statuses', value: 'all' },
     { label: 'Completed', value: 'Completed' },
+    { label: 'Processing', value: 'Processing' },
+    { label: 'Pending', value: 'Pending' },
     { label: 'Cancelled', value: 'Cancelled' },
+    { label: 'Refunded', value: 'Refunded' },
+    { label: 'Failed', value: 'Failed' },
   ];
 
   return (
@@ -275,11 +283,16 @@ export default function AdminOrdersPage() {
           )}
           <button
             onClick={handleExportCSV}
-            disabled={orders.length === 0}
+            disabled={totalCount === 0 || exporting}
+            title={`Download all ${totalCount} orders in this view`}
             className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-700 transition shadow-xs disabled:opacity-50"
           >
-            <Download className="w-3.5 h-3.5 text-slate-500" />
-            <span>Export CSV</span>
+            {exporting ? (
+              <RefreshCw className="w-3.5 h-3.5 text-slate-500 animate-spin" />
+            ) : (
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+            )}
+            <span>{exporting ? 'Exporting…' : `Export CSV (${totalCount})`}</span>
           </button>
         </div>
       </div>
@@ -302,7 +315,7 @@ export default function AdminOrdersPage() {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Today's Orders
+              Today&apos;s Sales
             </span>
             <span className="p-2 rounded-xl bg-emerald-100 text-emerald-700">
               <CalendarDays className="w-4 h-4" />
@@ -413,7 +426,7 @@ export default function AdminOrdersPage() {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Total Orders
+              {isFiltered ? 'Filtered Result' : 'All Time'}
             </span>
             <span className="p-2 rounded-xl bg-amber-100 text-amber-700">
               <Package className="w-4 h-4" />
@@ -421,10 +434,14 @@ export default function AdminOrdersPage() {
           </div>
           <div className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
             {totalCount}
+            <span className="text-xs font-bold text-slate-400 ml-1">orders</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">
-            {selectedPeriod === 'all' && !selectedMonthYear ? 'All-time total' : 'Click to view all'}
-          </p>
+          <div className="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
+            <span className="font-semibold text-amber-700">
+              {formatPrice(summary?.salesAmount ?? 0)} sales
+            </span>
+            {isFiltered && <span>Click to view all</span>}
+          </div>
         </button>
       </div>
 
@@ -544,6 +561,45 @@ export default function AdminOrdersPage() {
           </div>
         </div>
       </div>
+
+      {/* Sales summary for the current filters (all pages, not just this one) */}
+      {summary && (
+        <div className="bg-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-xs">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">
+            <div className="shrink-0">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Sales · {periodLabel}
+                {selectedStatus !== 'all' && ` · ${selectedStatus}`}
+                {selectedType !== 'all' && ` · ${selectedType === 'physical' ? 'Hard copy' : 'Digital'}`}
+                {searchTerm.trim() && ` · "${searchTerm.trim()}"`}
+              </div>
+              <div className="text-3xl font-black text-amber-400 mt-1">{formatPrice(summary.salesAmount)}</div>
+              <div className="text-[11px] text-slate-400">incl. shipping, minus refunds</div>
+            </div>
+            <dl className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-3 flex-1 text-xs">
+              <SummaryStat label="Paid orders" value={`${summary.salesCount} of ${summary.totalOrders}`} />
+              <SummaryStat label="Avg order value" value={formatPrice(summary.averageOrderValue)} />
+              <SummaryStat
+                label="Hard copy / Digital"
+                value={`${summary.hardCopyCount} / ${summary.digitalCount}`}
+              />
+              <SummaryStat
+                label="Cancelled / Failed"
+                value={`${summary.cancelledCount} · ${formatPrice(summary.cancelledAmount)}`}
+                tone={summary.cancelledCount > 0 ? 'rose' : undefined}
+              />
+              <SummaryStat
+                label="Awaiting payment"
+                value={String(summary.unpaidCount)}
+                tone={summary.unpaidCount > 0 ? 'amber' : undefined}
+              />
+              {summary.refundAmount > 0 && (
+                <SummaryStat label="Refunds" value={formatPrice(summary.refundAmount)} tone="rose" />
+              )}
+            </dl>
+          </div>
+        </div>
+      )}
 
       {/* Orders Table */}
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
