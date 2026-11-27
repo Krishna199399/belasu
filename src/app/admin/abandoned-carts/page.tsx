@@ -89,6 +89,60 @@ export default function AbandonedCartsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'abandoned' | 'contacted' | 'recovered'>('all');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
+  // WhatsApp template reminder (preview → send)
+  const [reminderCart, setReminderCart] = useState<AbandonedCart | null>(null);
+  const [reminderPreview, setReminderPreview] = useState<{ to: string; text: string; warning: string | null } | null>(null);
+  const [reminderSending, setReminderSending] = useState(false);
+
+  const openReminder = async (cart: AbandonedCart) => {
+    setReminderCart(cart);
+    setReminderPreview(null);
+    try {
+      const res = await fetch('/api/admin/abandoned-carts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'preview_template', cartId: cart.id }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Could not prepare the message');
+      setReminderPreview({ to: data.preview.to, text: data.preview.text, warning: data.warning || null });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Could not prepare the message');
+      setReminderCart(null);
+    }
+  };
+
+  const sendReminder = async () => {
+    if (!reminderCart) return;
+    setReminderSending(true);
+    try {
+      const res = await fetch('/api/admin/abandoned-carts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send_template', cartId: reminderCart.id, force: Boolean(reminderPreview?.warning) }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'WhatsApp reminder failed');
+      setCarts((prev) =>
+        prev.map((c) =>
+          c.id === reminderCart.id ? { ...c, whatsapp_sent_count: data.newCount, last_whatsapp_sent_at: data.sentAt } : c
+        )
+      );
+      toast.success(`WhatsApp reminder sent to ${reminderCart.customer_name || 'customer'} ✅`);
+      setReminderCart(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'WhatsApp reminder failed', { duration: 6000 });
+    } finally {
+      setReminderSending(false);
+    }
+  };
+
+  const crmChatUrl = (cart: AbandonedCart) => {
+    const digits = cart.customer_phone.replace(/\D/g, '').slice(-10);
+    const isLocal = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    return `${isLocal ? 'http://localhost:3001' : 'https://crm.belesu.in'}/inbox?phone=${encodeURIComponent('+91' + digits)}&name=${encodeURIComponent(cart.customer_name || '')}`;
+  };
+
   const fetchCarts = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -112,13 +166,11 @@ export default function AbandonedCartsPage() {
     fetchCarts();
   }, [fetchCarts]);
 
-  // Handle 1-Click WhatsApp Direct Chat (WACRM or WhatsApp Web)
-  const handleOpenWhatsAppChat = async (cart: AbandonedCart, target: 'wacrm' | 'wa_me' = 'wacrm') => {
+  // Personal WhatsApp (wa.me) shortcut with a pre-filled text. The official WhatsApp
+  // Business reminder goes through openReminder() (approved template via WACRM).
+  const handleOpenWhatsAppChat = async (cart: AbandonedCart) => {
     const rawDigits = cart.customer_phone.replace(/\D/g, '');
-    const cleanPhoneWithPlus = rawDigits.startsWith('91') && rawDigits.length === 12
-      ? `+${rawDigits}`
-      : `+91${rawDigits.slice(-10)}`;
-    const cleanDigits = cleanPhoneWithPlus.replace(/\D/g, '');
+    const cleanDigits = rawDigits.startsWith('91') && rawDigits.length === 12 ? rawDigits : `91${rawDigits.slice(-10)}`;
     const booksList = cart.cart_items.map((i) => i.title).join(', ');
     const recoveryLink = cart.recovery_url || `https://belesu.in/cart?recover=${cart.session_id}`;
 
@@ -133,15 +185,7 @@ You can complete your order directly with instant delivery here:
 Please let us know if you have any questions or need help with Kannada guidebooks!
 – Belesu Bookstore Team`;
 
-    if (target === 'wacrm') {
-      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-      const wacrmBase = isLocal ? 'http://localhost:3001' : 'https://crm.belesu.in';
-      const wacrmUrl = `${wacrmBase}/inbox?phone=${encodeURIComponent(cleanPhoneWithPlus)}&name=${encodeURIComponent(cart.customer_name || '')}&text=${encodeURIComponent(message)}`;
-      window.open(wacrmUrl, '_blank');
-    } else {
-      const waUrl = `https://wa.me/${cleanDigits}?text=${encodeURIComponent(message)}`;
-      window.open(waUrl, '_blank');
-    }
+    window.open(`https://wa.me/${cleanDigits}?text=${encodeURIComponent(message)}`, '_blank');
 
     // Automatically record WhatsApp contact in backend
     try {
@@ -158,7 +202,7 @@ Please let us know if you have any questions or need help with Kannada guidebook
             : c
         )
       );
-      toast.success(target === 'wacrm' ? 'Opening WACRM Inbox...' : 'WhatsApp Web opened & reminder recorded!');
+      toast.success('WhatsApp opened & reminder recorded!');
     } catch {}
   };
 
@@ -497,11 +541,12 @@ Please let us know if you have any questions or need help with Kannada guidebook
                       {/* Actions */}
                       <td className="py-4 px-4 align-top text-right whitespace-nowrap">
                         <div className="inline-flex items-center gap-1.5">
-                          {/* 1-Click WACRM Chat Button */}
+                          {/* Send the approved cart-recovery template via WACRM */}
                           <button
-                            onClick={() => handleOpenWhatsAppChat(cart, 'wacrm')}
-                            title="Open chat & send via WACRM Inbox (Official WhatsApp API)"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] shadow-xs transition cursor-pointer active:scale-95"
+                            onClick={() => openReminder(cart)}
+                            disabled={isRecovered}
+                            title={isRecovered ? 'Customer already ordered' : 'Send WhatsApp reminder (approved template) with this cart'}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] shadow-xs transition cursor-pointer active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
                             <span>WhatsApp</span>
@@ -510,7 +555,7 @@ Please let us know if you have any questions or need help with Kannada guidebook
 
                           {/* Quick WhatsApp Web (wa.me) shortcut */}
                           <button
-                            onClick={() => handleOpenWhatsAppChat(cart, 'wa_me')}
+                            onClick={() => handleOpenWhatsAppChat(cart)}
                             title="Open in personal WhatsApp Web / App (wa.me)"
                             className="p-1.5 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition cursor-pointer"
                           >
@@ -557,6 +602,72 @@ Please let us know if you have any questions or need help with Kannada guidebook
           </div>
         )}
       </div>
+
+      {/* WhatsApp reminder preview → send */}
+      {reminderCart && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/60" onClick={reminderSending ? undefined : () => setReminderCart(null)} />
+          <div role="dialog" aria-modal="true" className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col">
+            <div className="px-5 py-4 border-b border-slate-100">
+              <h3 className="font-black text-slate-900">Send WhatsApp reminder</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Approved template · to <span className="font-mono">{reminderPreview?.to || reminderCart.customer_phone}</span>
+              </p>
+            </div>
+
+            <div className="px-5 py-4 overflow-y-auto">
+              {!reminderPreview ? (
+                <div className="flex items-center justify-center gap-2 py-10 text-xs text-slate-500">
+                  <RefreshCw className="w-4 h-4 animate-spin" /> Preparing message…
+                </div>
+              ) : (
+                <>
+                  {reminderPreview.warning && (
+                    <div className="mb-3 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900">
+                      <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                      <span>{reminderPreview.warning} Sending again may annoy the customer.</span>
+                    </div>
+                  )}
+                  <div className="rounded-xl bg-[#e7ffdb] border border-emerald-100 p-3 text-[12px] leading-relaxed text-slate-800 whitespace-pre-wrap break-words">
+                    {reminderPreview.text}
+                  </div>
+                  <p className="mt-2 text-[10px] text-slate-400">
+                    Marketing template — Meta charges per message and may skip customers who get many promotions.
+                  </p>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-2 px-5 py-4 border-t border-slate-100">
+              <a
+                href={crmChatUrl(reminderCart)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-semibold text-slate-500 hover:text-emerald-700 inline-flex items-center gap-1"
+              >
+                Open chat in CRM <ArrowUpRight className="w-3 h-3" />
+              </a>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setReminderCart(null)}
+                  disabled={reminderSending}
+                  className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl disabled:opacity-40"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={sendReminder}
+                  disabled={!reminderPreview || reminderSending}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl disabled:opacity-40"
+                >
+                  {reminderSending ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <MessageCircle className="w-3.5 h-3.5" />}
+                  {reminderSending ? 'Sending…' : reminderPreview?.warning ? 'Send again anyway' : 'Send on WhatsApp'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

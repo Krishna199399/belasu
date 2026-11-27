@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/adminAuth';
 import { createAdminClient } from '@/lib/supabase';
+import {
+  RecoveryError,
+  buildRecoveryMessage,
+  sendBlockReason,
+  sendRecoveryTemplate,
+  type RecoveryCart,
+} from '@/lib/cartRecovery';
 
 export async function GET(request: NextRequest) {
   const admin = await requireAdmin();
@@ -172,6 +179,51 @@ export async function POST(request: NextRequest) {
 
       if (error) throw error;
       return NextResponse.json({ success: true, newCount });
+    }
+
+    // ── WhatsApp reminder via the approved cart-recovery template ──
+    if (action === 'preview_template' || action === 'send_template') {
+      const { data: cart, error: cartErr } = await supabase
+        .from('abandoned_carts')
+        .select('id, session_id, customer_name, customer_phone, cart_items, status, whatsapp_sent_count, last_whatsapp_sent_at')
+        .eq('id', cartId)
+        .maybeSingle();
+      if (cartErr) throw cartErr;
+      if (!cart) return NextResponse.json({ success: false, error: 'Cart not found' }, { status: 404 });
+
+      try {
+        const message = buildRecoveryMessage(cart as RecoveryCart);
+        const blockReason = sendBlockReason(cart as RecoveryCart);
+
+        if (action === 'preview_template') {
+          return NextResponse.json({
+            success: true,
+            preview: { to: message.to, text: message.previewText, recoveryUrl: message.recoveryUrl },
+            warning: blockReason,
+          });
+        }
+
+        // Recovered carts are never messaged; the 24h cooldown can be overridden explicitly
+        if ((cart as RecoveryCart).status === 'recovered' || (blockReason && body.force !== true)) {
+          return NextResponse.json({ success: false, error: blockReason, needsConfirm: cart.status !== 'recovered' }, { status: 409 });
+        }
+
+        const sent = await sendRecoveryTemplate(message);
+        const newCount = (cart.whatsapp_sent_count || 0) + 1;
+        const now = new Date().toISOString();
+        await supabase
+          .from('abandoned_carts')
+          .update({ whatsapp_sent_count: newCount, last_whatsapp_sent_at: now, updated_at: now })
+          .eq('id', cartId);
+
+        console.log(`[abandoned-carts] Recovery template sent for cart ${cartId} (#${newCount})`);
+        return NextResponse.json({ success: true, newCount, sentAt: now, conversationId: sent.conversationId || null });
+      } catch (e) {
+        if (e instanceof RecoveryError) {
+          return NextResponse.json({ success: false, error: e.message }, { status: e.status });
+        }
+        throw e;
+      }
     }
 
     if (action === 'delete') {
