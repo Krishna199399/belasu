@@ -371,7 +371,7 @@ export const Footer: React.FC = () => {
             <span className="text-xs font-semibold text-slate-700">Follow Belesu:</span>
             <div className="flex items-center gap-2">
               <a
-                href="https://www.facebook.com/share/19bjviS3eW/?mibextid=wwXIfr"
+                href="https://www.facebook.com/belesu.in"
                 target="_blank"
                 rel="noreferrer"
                 className="w-7 h-7 rounded-md bg-white border border-stone-200 hover:border-amber-400 hover:text-amber-600 text-slate-500 flex items-center justify-center transition shadow-2xs"
@@ -726,7 +726,7 @@ export const Footer: React.FC = () => {
             <div className="pt-2 flex items-center gap-2.5">
               {/* Facebook */}
               <a
-                href="https://www.facebook.com/share/19bjviS3eW/?mibextid=wwXIfr"
+                href="https://www.facebook.com/belesu.in"
                 target="_blank"
                 rel="noreferrer"
                 className="w-8 h-8 rounded-lg bg-white border border-stone-200 hover:border-amber-400 hover:bg-amber-500 hover:text-white text-slate-600 flex items-center justify-center transition shadow-xs"
