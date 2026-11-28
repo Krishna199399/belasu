@@ -15,6 +15,12 @@ export const DISPATCH_START_ISO = new Date('2026-11-21T00:00:00+05:30').toISOStr
 export const EXCLUDED_ORDER_STATUSES = ['Cancelled', 'Refunded', 'Failed'] as const;
 
 /**
+ * Orders that were shipped by hand outside the portal. They stay valid sales but never
+ * appear in any dispatch tab and can't be printed. Add order numbers here to hide more.
+ */
+export const SHIPPED_OUTSIDE_PORTAL_ORDERS = ['23514', '23515', '23516', '23517', '23518'] as const;
+
+/**
  * Max orders allowed in one Word sheet. Order IDs travel in the PostgREST URL
  * (`id=in.(...)`), so this also keeps request URLs well under proxy limits.
  */
@@ -167,6 +173,9 @@ export function toDispatchOrder(row: DispatchOrderRow): DispatchOrder {
  */
 export function getSkipReason(row: DispatchOrderRow, includePrinted: boolean): string | null {
   if (!row.has_physical_books) return 'Digital only (nothing to ship)';
+  if ((SHIPPED_OUTSIDE_PORTAL_ORDERS as readonly string[]).includes(row.order_number)) {
+    return 'Already shipped outside the portal';
+  }
   if (new Date(row.created_at).getTime() < new Date(DISPATCH_START_ISO).getTime()) {
     return `Placed before ${DISPATCH_START_LABEL}`;
   }

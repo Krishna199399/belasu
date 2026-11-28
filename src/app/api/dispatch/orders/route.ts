@@ -6,6 +6,7 @@ import {
   DISPATCH_ORDER_COLUMNS,
   DISPATCH_START_ISO,
   EXCLUDED_ORDER_STATUSES,
+  SHIPPED_OUTSIDE_PORTAL_ORDERS,
   DispatchOrderRow,
   toDispatchOrder,
 } from '@/lib/dispatch';
@@ -13,6 +14,7 @@ import {
 export const dynamic = 'force-dynamic';
 
 const EXCLUDED_FILTER = `(${EXCLUDED_ORDER_STATUSES.map((s) => `"${s}"`).join(',')})`;
+const HIDDEN_ORDERS_FILTER = `(${SHIPPED_OUTSIDE_PORTAL_ORDERS.map((n) => `"${n}"`).join(',')})`;
 
 /**
  * GET /api/dispatch/orders
@@ -50,6 +52,7 @@ export async function GET(request: NextRequest) {
       .eq('has_physical_books', true)
       .eq('payment_status', 'Paid')
       .not('order_status', 'in', EXCLUDED_FILTER)
+      .not('order_number', 'in', HIDDEN_ORDERS_FILTER)
       .gte('created_at', DISPATCH_START_ISO);
 
     if (status === 'to_print') query = query.eq('is_printed', false);
@@ -113,6 +116,7 @@ export async function GET(request: NextRequest) {
         .eq('has_physical_books', true)
         .eq('payment_status', 'Paid')
         .not('order_status', 'in', EXCLUDED_FILTER)
+        .not('order_number', 'in', HIDDEN_ORDERS_FILTER)
         .gte('created_at', DISPATCH_START_ISO);
 
     const [toPrintRes, todayRes, printedTodayRes] = await Promise.all([
