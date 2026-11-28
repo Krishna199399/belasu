@@ -1,3 +1,4 @@
+import { JsonLd, getPhysicalBookBySlug, createPhysicalBookSchema } from '@/lib/structuredData';
 import type { Metadata } from 'next';
 import React from 'react';
 
@@ -18,5 +19,11 @@ export const metadata: Metadata = {
 };
 
 export default function SaviClass1Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  const book = getPhysicalBookBySlug('savi-kannada-class-1');
+  return (
+    <>
+      {book && <JsonLd data={createPhysicalBookSchema(book)} />}
+      {children}
+    </>
+  );
 }

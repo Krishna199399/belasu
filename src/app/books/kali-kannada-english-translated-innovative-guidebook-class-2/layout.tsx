@@ -1,5 +1,12 @@
+import { JsonLd, getPhysicalBookBySlug, createPhysicalBookSchema } from '@/lib/structuredData';
 import React from 'react';
 
 export default function KaliClass2Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  const book = getPhysicalBookBySlug('kali-kannada-english-translated-innovative-guidebook-class-2');
+  return (
+    <>
+      {book && <JsonLd data={createPhysicalBookSchema(book)} />}
+      {children}
+    </>
+  );
 }

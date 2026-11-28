@@ -17,6 +17,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/books/siri-kannada-english-translated-guidebook-class-5/',
   },
+  openGraph: {
+    title: 'Buy Siri Kannada Class 5 Guidebook Online | Belesu',
+    description: 'Buy the Siri Kannada Class 5 English-translated guidebook for Kannada literature, essay writing, letter writing, grammar and exam preparation.',
+    url: 'https://belesu.in/books/siri-kannada-english-translated-guidebook-class-5/',
+    siteName: 'Belesu',
+    images: [{ url: 'https://belesu.in/covers/siri-5.png', alt: 'Buy Siri Kannada Class 5 Guidebook Online | Belesu' }],
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Buy Siri Kannada Class 5 Guidebook Online | Belesu',
+    description: 'Buy the Siri Kannada Class 5 English-translated guidebook for Kannada literature, essay writing, letter writing, grammar and exam preparation.',
+    images: ['https://belesu.in/covers/siri-5.png'],
+  },
 };
 
 export default function SiriClass5Page() {

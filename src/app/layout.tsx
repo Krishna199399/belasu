@@ -10,6 +10,7 @@ import { CartDrawer } from '@/components/layout/CartDrawer';
 import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { ChatbotLauncher } from '@/components/chatbot/ChatbotLauncher';
 import { Toaster } from 'react-hot-toast';
+import { JsonLd, createOrganizationSchema, createWebsiteSchema } from '@/lib/structuredData';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -97,6 +98,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-stone-50 text-slate-900 selection:bg-amber-200 selection:text-amber-950">
+        <JsonLd data={createOrganizationSchema()} />
+        <JsonLd data={createWebsiteSchema()} />
         {/* Google Analytics 4 */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}

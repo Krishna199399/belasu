@@ -15,6 +15,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/books/kali-kannada-english-translated-innovative-guidebook-class-3/',
   },
+  openGraph: {
+    title: 'Buy Kali Kannada Class 3 Guidebook Online | Belesu',
+    description: 'Buy the Kali Kannada Class 3 English-translated guidebook for lesson translations, vocabulary, Kannada grammar and exam preparation.',
+    url: 'https://belesu.in/books/kali-kannada-english-translated-innovative-guidebook-class-3/',
+    siteName: 'Belesu',
+    images: [{ url: 'https://belesu.in/covers/kali-3.png', alt: 'Buy Kali Kannada Class 3 Guidebook Online | Belesu' }],
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Buy Kali Kannada Class 3 Guidebook Online | Belesu',
+    description: 'Buy the Kali Kannada Class 3 English-translated guidebook for lesson translations, vocabulary, Kannada grammar and exam preparation.',
+    images: ['https://belesu.in/covers/kali-3.png'],
+  },
 };
 
 export default function KaliClass3Page() {

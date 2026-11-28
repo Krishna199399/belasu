@@ -15,6 +15,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/books/kali-kannada-english-translated-innovative-guidebook-class-1/',
   },
+  openGraph: {
+    title: 'Buy Kali Kannada Class 1 Guidebook Online | Belesu',
+    description: 'Buy the Kali Kannada Class 1 English-translated guidebook for Kannada pronunciation, alphabet practice, basic vocabulary and beginner learning support.',
+    url: 'https://belesu.in/books/kali-kannada-english-translated-innovative-guidebook-class-1/',
+    siteName: 'Belesu',
+    images: [{ url: 'https://belesu.in/covers/kali-1.png', alt: 'Buy Kali Kannada Class 1 Guidebook Online | Belesu' }],
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Buy Kali Kannada Class 1 Guidebook Online | Belesu',
+    description: 'Buy the Kali Kannada Class 1 English-translated guidebook for Kannada pronunciation, alphabet practice, basic vocabulary and beginner learning support.',
+    images: ['https://belesu.in/covers/kali-1.png'],
+  },
 };
 
 export default function KaliClass1Page() {
